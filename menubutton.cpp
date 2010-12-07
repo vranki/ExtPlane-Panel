@@ -1,0 +1,141 @@
+#include "menubutton.h"
+
+MenuButton::MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemFactory *gf) :
+        QObject(parent), panelItems(gaugelist), itemFactory(gf), settings("org.vranki", "extplane-gauges-panels", this)
+         {
+    parentWidget = parent;
+    side = 20;
+    msg = 0;
+}
+
+void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(Qt::yellow);
+    painter->drawRect(0,0,side,side);
+    painter->drawLine(0,side,side,0);
+}
+
+QRectF MenuButton::boundingRect() const {
+    return QRectF(0, 0 , side, side);
+}
+
+void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
+    QGraphicsItem::mousePressEvent(event);
+    if(event->button()!=Qt::LeftButton)
+        return;
+    msg = new QDialog(parentWidget);
+    QVBoxLayout *layout = new QVBoxLayout();
+    QPushButton *addButton = new QPushButton("Add Item", msg);
+    connect(addButton, SIGNAL(clicked()), this, SLOT(addItem()));
+    connect(msg, SIGNAL(rejected()), this, SLOT(closeDialog()));
+    layout->addWidget(addButton);
+
+    if(!selectedGauges().isEmpty()) {
+        QPushButton *deleteButton = new QPushButton("Delete Item(s)", msg);
+        connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteItems()));
+        layout->addWidget(deleteButton);
+    }
+    QPushButton *saveButton = new QPushButton("Save panel", msg);
+    connect(saveButton, SIGNAL(clicked()), this, SLOT(savePanel()));
+    layout->addWidget(saveButton);
+    QPushButton *loadButton = new QPushButton("Load panel", msg);
+    connect(loadButton, SIGNAL(clicked()), this, SLOT(loadPanel()));
+    layout->addWidget(loadButton);
+
+    QPushButton *closeButton = new QPushButton("Close", msg);
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
+    layout->addWidget(closeButton);
+    msg->setLayout(layout);
+    msg->exec();
+}
+
+QList<PanelItem*> MenuButton::selectedGauges() {
+    QList<PanelItem*> selection;
+    foreach(PanelItem* g, panelItems) {
+        if(g->isSelected())
+            selection.append(g);
+    }
+    return selection;
+}
+
+void MenuButton::addItem() {
+    bool ok;
+
+    QString item = QInputDialog::getItem(parentWidget, "Add item", "Choose type:", itemFactory->itemNames(), 0, false, &ok);
+    if(ok) {
+        PanelItem *g=itemFactory->itemForName(item, parentWidget);
+        if(g)
+            emit itemAdded(g);
+    }
+
+    closeDialog();
+}
+
+void MenuButton::deleteItems() {
+    QList<PanelItem*> selection = selectedGauges();
+    foreach(PanelItem* g, selection) {
+//        delete g;
+        Q_ASSERT(panelItems.removeOne(g));
+        g->deleteLater();
+    }
+
+    closeDialog();
+}
+
+void MenuButton::savePanel() {
+    int panelNumber = 0;
+    QString panelName = "Panel";
+    settings.clear();
+    settings.beginGroup("panel-" + QString::number(panelNumber));
+    settings.setValue("number", panelNumber);
+    settings.setValue("name", panelName);
+    settings.setValue("gaugecount", panelItems.size());
+    int gn = 0;
+    foreach(PanelItem *g, panelItems) {
+        settings.beginGroup("gauge-" + QString::number(gn));
+        g->storeSettings(settings);
+        settings.endGroup();
+        gn++;
+    }
+    settings.endGroup();
+    settings.sync();
+    closeDialog();
+}
+
+void MenuButton::closeDialog() {
+    msg->deleteLater();
+}
+
+void MenuButton::loadPanel() {
+    foreach(PanelItem *g, panelItems) {
+        g->deleteLater();
+    }
+    int panelNumber = 0;
+    while(panelNumber >= 0) {
+        settings.beginGroup("panel-" + QString::number(panelNumber));
+        if(settings.contains("name")) {
+            int gc = settings.value("gaugecount", 0).toInt();
+            QString name = settings.value("name").toString();
+            for(int gn=0;gn<gc;gn++) {
+                settings.beginGroup("gauge-" + QString::number(gn));
+                PanelItem *g = itemFactory->itemForName(settings.value("type").toString(), parentWidget);
+                if(g) {
+                    emit itemAdded(g);
+                    g->loadSettings(settings);
+                } else {
+                    qDebug() << Q_FUNC_INFO << "Can't load item of type " << settings.value("type").toString();
+                }
+                settings.endGroup();
+            }
+            panelNumber++;
+        } else {
+            panelNumber = -1;
+        }
+        settings.endGroup();
+    }
+
+    closeDialog();
+}
