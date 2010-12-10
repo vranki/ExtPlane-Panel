@@ -16,7 +16,8 @@ SOURCES += main.cpp \
     menubutton.cpp \
     panelitemfactory.cpp \
     needleinstrument.cpp \
-    compass.cpp
+    compass.cpp \
+    settingsdialog.cpp
 
 HEADERS += \
     panelitem.h \
@@ -30,4 +31,8 @@ HEADERS += \
     menubutton.h \
     panelitemfactory.h \
     needleinstrument.h \
-    compass.h
+    compass.h \
+    settingsdialog.h
+
+FORMS += \
+    settingsdialog.ui

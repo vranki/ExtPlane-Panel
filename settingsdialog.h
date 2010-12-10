@@ -9,8 +9,7 @@ namespace Ui {
     class SettingsDialog;
 }
 
-class SettingsDialog : public QDialog
-{
+class SettingsDialog : public QDialog {
     Q_OBJECT
 
 public:
@@ -22,7 +21,8 @@ protected:
     void changeEvent(QEvent *e);
 signals:
     void rotationChanged(int r);
-
+    void fullscreenChanged(bool fs);
+    void setServerAddress(QString host);
 private:
     Ui::SettingsDialog *ui;
     QSettings settings;

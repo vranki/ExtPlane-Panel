@@ -10,8 +10,10 @@
 #include <QInputDialog>
 #include <QSettings>
 #include <QDebug>
+#include <QCoreApplication>
 #include "panelitem.h"
 #include "panelitemfactory.h"
+#include "settingsdialog.h"
 
 class MenuButton : public QObject, public QGraphicsItem {
     Q_OBJECT
@@ -24,12 +26,17 @@ protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 signals:
     void itemAdded(PanelItem *g);
+    void panelRotationChanged(int r);
+    void fullscreenChanged(bool fs);
+    void setServerAddress(QString host);
 public slots:
     void addItem();
     void deleteItems();
     void closeDialog();
     void savePanel();
     void loadPanel();
+    void showSettings();
+    void quit();
 private:
     QList<PanelItem*> selectedGauges();
     int side;
@@ -38,6 +45,7 @@ private:
     QDialog *msg;
     PanelItemFactory *itemFactory;
     QSettings settings;
+    SettingsDialog *settingsDialog;
 };
 
 #endif // MENUBUTTON_H

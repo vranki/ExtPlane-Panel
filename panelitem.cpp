@@ -5,6 +5,7 @@ PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem() {
     resizing = false;
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
+    _panelRotation = _itemRotation = 0;
 }
 
 void PanelItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -72,6 +73,7 @@ void PanelItem::setSize(float w, float h) {
     nh *= SNAP_GRID_SIZE;
     _width = nw;
     _height = nh;
+    setTransformOriginPoint(width()/2, height()/2);
     update();
     scene()->update();
 }
@@ -94,6 +96,7 @@ void PanelItem::storeSettings(QSettings &settings) {
     settings.setValue("pos_y", pos().y());
     settings.setValue("width", (int) width());
     settings.setValue("height", (int) height());
+    settings.setValue("rotation", _itemRotation);
 }
 
 void PanelItem::loadSettings(QSettings &settings) {
@@ -103,4 +106,16 @@ void PanelItem::loadSettings(QSettings &settings) {
     int w = settings.value("width").toInt();
     int h = settings.value("height").toInt();
     setSize(w, h);
+    _itemRotation = settings.value("rotation", 0).toFloat();
+}
+
+void PanelItem::setPanelRotation(float angle) {
+    _panelRotation = angle;
+    setRotation(_panelRotation + _itemRotation);
+    qDebug() << Q_FUNC_INFO << angle;
+}
+
+void PanelItem::setItemRotation(float angle) {
+    _itemRotation = angle;
+    setRotation(_panelRotation + _itemRotation);
 }

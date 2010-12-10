@@ -34,10 +34,13 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 signals:
     void panelItemSelected(PanelItem *g, bool sel=true);
-
+public slots:
+    void setPanelRotation(float angle);
+    void setItemRotation(float angle);
 private:
     float _width, _height;
     bool resizing;
+    float _panelRotation, _itemRotation;
 };
 
 #endif // GAUGE_H

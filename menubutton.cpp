@@ -6,6 +6,13 @@ MenuButton::MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemF
     parentWidget = parent;
     side = 20;
     msg = 0;
+    settingsDialog = new SettingsDialog(parentWidget);
+    connect(settingsDialog, SIGNAL(rotationChanged(int)), this, SIGNAL(panelRotationChanged(int)));
+    connect(settingsDialog, SIGNAL(fullscreenChanged(bool)), this, SIGNAL(fullscreenChanged(bool)));
+    connect(settingsDialog, SIGNAL(setServerAddress(QString)), this, SIGNAL(setServerAddress(QString)));
+    settingsDialog->setModal(false);
+    settingsDialog->hide();
+
 }
 
 void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -27,6 +34,7 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     if(event->button()!=Qt::LeftButton)
         return;
     msg = new QDialog(parentWidget);
+    msg->move(event->screenPos().x(), event->screenPos().y());
     QVBoxLayout *layout = new QVBoxLayout();
     QPushButton *addButton = new QPushButton("Add Item", msg);
     connect(addButton, SIGNAL(clicked()), this, SLOT(addItem()));
@@ -44,10 +52,15 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     QPushButton *loadButton = new QPushButton("Load panel", msg);
     connect(loadButton, SIGNAL(clicked()), this, SLOT(loadPanel()));
     layout->addWidget(loadButton);
-
+    QPushButton *settingsButton = new QPushButton("App Settings", msg);
+    connect(settingsButton, SIGNAL(clicked()), this, SLOT(showSettings()));
+    layout->addWidget(settingsButton);
     QPushButton *closeButton = new QPushButton("Close", msg);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
     layout->addWidget(closeButton);
+    QPushButton *quitButton = new QPushButton("Quit", msg);
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
+    layout->addWidget(quitButton);
     msg->setLayout(layout);
     msg->exec();
 }
@@ -86,6 +99,7 @@ void MenuButton::deleteItems() {
 }
 
 void MenuButton::savePanel() {
+    settingsDialog->saveSettings();
     int panelNumber = 0;
     QString panelName = "Panel";
     settings.clear();
@@ -110,6 +124,8 @@ void MenuButton::closeDialog() {
 }
 
 void MenuButton::loadPanel() {
+    settingsDialog->loadSettings();
+
     foreach(PanelItem *g, panelItems) {
         g->deleteLater();
     }
@@ -138,4 +154,13 @@ void MenuButton::loadPanel() {
     }
 
     closeDialog();
+}
+
+
+void MenuButton::showSettings() {
+    closeDialog();
+    settingsDialog->show();
+}
+void MenuButton::quit() {
+    QCoreApplication::quit();
 }

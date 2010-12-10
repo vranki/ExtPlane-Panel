@@ -17,7 +17,6 @@ class ExtPlaneConnection : public QTcpSocket, public ClientDataRefProvicer {
     Q_OBJECT
 public:
     explicit ExtPlaneConnection(QObject *parent = 0);
-    void connectTo(QHostAddress addr, unsigned int port);
     void registerClient(ExtPlaneClient* client);
     virtual ClientDataRef *subscribeDataRef(QString name, double accuracy=0);
     virtual void unsubscribeDataRef(ClientDataRef *ref);
@@ -27,6 +26,7 @@ public slots:
     void socketConnected();
     void socketError(QAbstractSocket::SocketError err);
     void readClient();
+    void connectTo(QHostAddress addr, unsigned int port);
     void tryReconnect();
 private:
     void subRef(ClientDataRef *ref);

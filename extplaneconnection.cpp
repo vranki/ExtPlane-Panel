@@ -15,7 +15,7 @@ void ExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port) {
 }
 
 void ExtPlaneConnection::tryReconnect() {
-    qDebug() << Q_FUNC_INFO;
+    qDebug() << Q_FUNC_INFO << _addr.toString() << _port;
     reconnectTimer.stop();
     connectToHost(_addr, _port);
 }
@@ -23,6 +23,7 @@ void ExtPlaneConnection::tryReconnect() {
 void ExtPlaneConnection::socketConnected() {
     qDebug() << Q_FUNC_INFO ;
     reconnectTimer.stop();
+    emit connectionError("");
 }
 
 void ExtPlaneConnection::socketError(QAbstractSocket::SocketError err) {
