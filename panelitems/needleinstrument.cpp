@@ -34,7 +34,9 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     painter->setBrush(needleColor);
 
     painter->save();
-    painter->rotate(value2Angle(_value));
+    float needleValue = qMax(qMin(_value, _maxValue), _zeroValue);
+
+    painter->rotate(value2Angle(needleValue));
     painter->drawConvexPolygon(needle, 3);
     painter->restore();
 
@@ -108,5 +110,5 @@ void NeedleInstrument::setBars(float thick, float thin) {
 }
 
 float NeedleInstrument::value2Angle(float value) {
-    return _zeroangle + (value / _maxValue) * (_maxAngle - _zeroangle);
+    return _zeroangle +  ((value - _zeroValue) / (_maxValue - _zeroValue)) * (_maxAngle - _zeroangle);
 }

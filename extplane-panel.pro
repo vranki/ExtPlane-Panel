@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     dialogs/settingsdialog.cpp \
     dialogs/edititemdialog.cpp \
     widgets/velocityunitcombobox.cpp \
-    widgets/numberinputlineedit.cpp
+    widgets/numberinputlineedit.cpp \
+    panelitems/variometer.cpp
 
 HEADERS += \
     panelitems/panelitem.h \
@@ -38,7 +39,8 @@ HEADERS += \
     dialogs/settingsdialog.h \
     dialogs/edititemdialog.h \
     widgets/velocityunitcombobox.h \
-    widgets/numberinputlineedit.h
+    widgets/numberinputlineedit.h \
+    panelitems/variometer.h
 
 FORMS += \
     dialogs/settingsdialog.ui \

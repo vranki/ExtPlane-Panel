@@ -117,7 +117,6 @@ void PanelItem::setPanelRotation(int angle) {
 }
 
 void PanelItem::setItemRotation(int angle) {
-    qDebug() << Q_FUNC_INFO << angle;
     _itemRotation = angle;
     setRotation(_panelRotation + _itemRotation);
 }

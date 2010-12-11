@@ -12,7 +12,7 @@
 #include "extplaneclient.h"
 #include "extplaneconnection.h"
 
-#define SCALE_HANDLE_SIZE 10
+#define SCALE_HANDLE_SIZE 20
 #define SNAP_GRID_SIZE 10
 
 class PanelItem : public QObject, public QGraphicsItem{

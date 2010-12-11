@@ -39,7 +39,6 @@ void ExtPlaneConnection::registerClient(ExtPlaneClient* client) {
 }
 
 ClientDataRef *ExtPlaneConnection::subscribeDataRef(QString name, double accuracy) {
-    qDebug() << Q_FUNC_INFO << name;
     ClientDataRef *ref = dataRefs.value(name);
     if(ref){
         qDebug() << Q_FUNC_INFO << "Ref already subscribed";
@@ -55,11 +54,12 @@ ClientDataRef *ExtPlaneConnection::subscribeDataRef(QString name, double accurac
             subRef(ref);
     }
 
+    qDebug() << Q_FUNC_INFO << name << ref->subscribers() << server_ok;
     return ref;
 }
 
 void ExtPlaneConnection::unsubscribeDataRef(ClientDataRef *ref) {
-    qDebug() << Q_FUNC_INFO << ref->name();
+    qDebug() << Q_FUNC_INFO << ref->name() << ref->subscribers();
     ref->setSubscribers(ref->subscribers() - 1);
     if(ref->subscribers() > 0) return;
     qDebug() << Q_FUNC_INFO << "Ref not subscribed by anyone anymore";
@@ -67,6 +67,9 @@ void ExtPlaneConnection::unsubscribeDataRef(ClientDataRef *ref) {
         writeLine("unsub " + ref->name());
     dataRefs.remove(ref->name());
     ref->deleteLater();
+    foreach(ClientDataRef *ref, dataRefs) {
+        qDebug() << "refs now:" << ref->name();
+    }
 }
 
 void ExtPlaneConnection::readClient() {

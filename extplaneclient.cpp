@@ -20,3 +20,14 @@ void ExtPlaneClient::subscribeDataRef(QString name, double accuracy) {
 void ExtPlaneClient::cdrChanged(ClientDataRef *ref) {
     emit refChanged(ref->name(), ref->valueString().toDouble());
 }
+
+void ExtPlaneClient::unsubscribeDataRef(QString name) {
+    foreach(ClientDataRef *ref, _dataRefs) {
+        if(ref->name() == name) {
+//            disconnect(ref, 0, this, 0);
+            _connection->unsubscribeDataRef(ref);
+            _dataRefs.removeOne(ref);
+            return;
+        }
+    }
+}

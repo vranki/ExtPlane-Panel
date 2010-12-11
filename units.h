@@ -7,7 +7,8 @@ enum VelocityUnit {
     VELOCITY_UNKNOWN = 0,
     VELOCITY_MS,
     VELOCITY_KMH,
-    VELOCITY_KTS
+    VELOCITY_KTS,
+    VELOCITY_FPM
 };
 
 class Units {
