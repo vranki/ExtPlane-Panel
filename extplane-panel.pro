@@ -5,41 +5,41 @@ TARGET = extplane-panel
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    panelitem.cpp \
+    panelitems/panelitem.cpp \
     extplaneconnection.cpp \
     panelwindow.cpp \
     extplaneclient.cpp \
     clientdataref.cpp \
     clientdatarefprovicer.cpp \
-    airspeedindicator.cpp \
+    panelitems/airspeedindicator.cpp \
     units.cpp \
     menubutton.cpp \
     panelitemfactory.cpp \
-    needleinstrument.cpp \
-    compass.cpp \
-    settingsdialog.cpp \
-    edititemdialog.cpp \
-    velocityunitcombobox.cpp \
-    numberinputlineedit.cpp
+    panelitems/needleinstrument.cpp \
+    panelitems/compass.cpp \
+    dialogs/settingsdialog.cpp \
+    dialogs/edititemdialog.cpp \
+    widgets/velocityunitcombobox.cpp \
+    widgets/numberinputlineedit.cpp
 
 HEADERS += \
-    panelitem.h \
+    panelitems/panelitem.h \
     extplaneconnection.h \
     panelwindow.h \
     extplaneclient.h \
     clientdataref.h \
     clientdatarefprovicer.h \
-    airspeedindicator.h \
+    panelitems/airspeedindicator.h \
     units.h \
     menubutton.h \
     panelitemfactory.h \
-    needleinstrument.h \
-    compass.h \
-    settingsdialog.h \
-    edititemdialog.h \
-    velocityunitcombobox.h \
-    numberinputlineedit.h
+    panelitems/needleinstrument.h \
+    panelitems/compass.h \
+    dialogs/settingsdialog.h \
+    dialogs/edititemdialog.h \
+    widgets/velocityunitcombobox.h \
+    widgets/numberinputlineedit.h
 
 FORMS += \
-    settingsdialog.ui \
-    edititemdialog.ui
+    dialogs/settingsdialog.ui \
+    dialogs/edititemdialog.ui

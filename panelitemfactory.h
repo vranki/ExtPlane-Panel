@@ -1,11 +1,11 @@
 #ifndef PANELITEMFACTORY_H
 #define PANELITEMFACTORY_H
 
-#include "panelitem.h"
+#include "panelitems/panelitem.h"
 #include <QString>
 #include <QStringList>
-#include "airspeedindicator.h"
-#include "compass.h"
+#include "panelitems/airspeedindicator.h"
+#include "panelitems/compass.h"
 #include "extplaneconnection.h"
 
 class PanelItemFactory

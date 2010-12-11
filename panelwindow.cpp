@@ -17,7 +17,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(), itemFacto
     setBackgroundBrush(QBrush(Qt::black));
     connect(&connection, SIGNAL(connectionError(QString)), this, SLOT(connectionError(QString)));
     errorMessage.setDefaultTextColor(Qt::red);
-    errorMessage.setPos(width()/2 - errorMessage.textWidth()/2,0);
+    errorMessage.setPos(0,20);
     scene.addItem(&errorMessage);
     menuButton->loadPanel();
 }
@@ -29,7 +29,6 @@ PanelWindow::~PanelWindow() {
 
 void PanelWindow::connectionError(QString txt) {
     errorMessage.setPlainText(txt);
-    errorMessage.setPos(width()/2 - errorMessage.textWidth()/2,0);
 }
 
 void PanelWindow::itemDestroyed(QObject *obj) {
@@ -62,7 +61,6 @@ void PanelWindow::fullscreenChanged(bool fs) {
 void PanelWindow::resizeEvent(QResizeEvent * event) {
     QWidget::resizeEvent(event);
     setSceneRect(0,0,width(), height());
-    errorMessage.setPos(width()/2 - errorMessage.textWidth()/2,0);
 }
 
 void PanelWindow::setServerAddress(QString host) {

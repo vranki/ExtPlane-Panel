@@ -11,10 +11,10 @@
 #include <QSettings>
 #include <QDebug>
 #include <QCoreApplication>
-#include "panelitem.h"
+#include "panelitems/panelitem.h"
 #include "panelitemfactory.h"
-#include "settingsdialog.h"
-#include "edititemdialog.h"
+#include "dialogs/settingsdialog.h"
+#include "dialogs/edititemdialog.h"
 
 class MenuButton : public QObject, public QGraphicsItem {
     Q_OBJECT

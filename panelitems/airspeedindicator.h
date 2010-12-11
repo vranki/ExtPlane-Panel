@@ -4,8 +4,8 @@
 #include "needleinstrument.h"
 #include "units.h"
 #include <QLabel>
-#include "velocityunitcombobox.h"
-#include "numberinputlineedit.h"
+#include "widgets/velocityunitcombobox.h"
+#include "widgets/numberinputlineedit.h"
 
 class AirspeedIndicator : public NeedleInstrument {
     Q_OBJECT

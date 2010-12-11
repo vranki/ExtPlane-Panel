@@ -33,5 +33,5 @@ QString Compass::typeName() {
 }
 
 QString Compass::typeNameStatic() {
-    return "compass";
+    return "indicator/compass/basic";
 }

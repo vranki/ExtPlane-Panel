@@ -2,7 +2,7 @@
 #define EDITITEMDIALOG_H
 
 #include <QDialog>
-#include "panelitem.h"
+#include "panelitems/panelitem.h"
 
 namespace Ui {
     class EditItemDialog;

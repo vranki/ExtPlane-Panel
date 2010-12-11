@@ -40,7 +40,7 @@ QString AirspeedIndicator::typeName() {
 }
 
 QString AirspeedIndicator::typeNameStatic() {
-    return "airspeed";
+    return "indicator/airspeed/round";
 }
 void AirspeedIndicator::setMaxValue(float mv) {
     maxValue = mv;
