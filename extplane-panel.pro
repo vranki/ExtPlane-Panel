@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     compass.cpp \
     settingsdialog.cpp \
     edititemdialog.cpp \
-    velocityunitcombobox.cpp
+    velocityunitcombobox.cpp \
+    numberinputlineedit.cpp
 
 HEADERS += \
     panelitem.h \
@@ -36,7 +37,8 @@ HEADERS += \
     compass.h \
     settingsdialog.h \
     edititemdialog.h \
-    velocityunitcombobox.h
+    velocityunitcombobox.h \
+    numberinputlineedit.h
 
 FORMS += \
     settingsdialog.ui \

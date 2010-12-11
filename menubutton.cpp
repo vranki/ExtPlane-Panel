@@ -13,9 +13,7 @@ MenuButton::MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemF
     settingsDialog->setModal(false);
     settingsDialog->hide();
 
-    editItemDialog = new EditItemDialog(parentWidget);
-    editItemDialog->setModal(false);
-    editItemDialog->hide();
+    editItemDialog = 0;
 }
 
 void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -175,6 +173,10 @@ void MenuButton::quit() {
 
 void MenuButton::itemProperties() {
     closeDialog();
+    if(editItemDialog)
+        delete editItemDialog;
+    editItemDialog =  new EditItemDialog(parentWidget);
+    editItemDialog->setModal(false);
     editItemDialog->setPanelItem(selectedGauges().first());
     editItemDialog->show();
 }

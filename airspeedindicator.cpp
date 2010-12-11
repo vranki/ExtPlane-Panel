@@ -5,10 +5,10 @@ _client(this, typeName(), conn) {
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/cockpit2/gauges/indicators/airspeed_kts_pilot", 1);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(speedChanged(QString,double)));
-    setScale(180, 0, 180+270, 300);
     setBars(20, 10);
     setNumbers(50);
     setUnit(VELOCITY_KTS);
+    setMaxValue(300);
 }
 
 void AirspeedIndicator::speedChanged(QString name, double speed) {
@@ -24,6 +24,7 @@ void AirspeedIndicator::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
 
     settings.setValue("unit", Units::unitName(units));
+    settings.setValue("maxvalue", maxValue);
 }
 
 void AirspeedIndicator::loadSettings(QSettings &settings) {
@@ -31,6 +32,7 @@ void AirspeedIndicator::loadSettings(QSettings &settings) {
     QString unitname = settings.value("unit").toString();
     VelocityUnit unit = Units::velocityUnitForName(unitname);
     setUnit(unit);
+    setMaxValue(settings.value("maxvalue", 300).toFloat());
 }
 
 QString AirspeedIndicator::typeName() {
@@ -40,6 +42,10 @@ QString AirspeedIndicator::typeName() {
 QString AirspeedIndicator::typeNameStatic() {
     return "airspeed";
 }
+void AirspeedIndicator::setMaxValue(float mv) {
+    maxValue = mv;
+    setScale(180, 0, 180+330, maxValue);
+}
 
 void AirspeedIndicator::createSettings(QGridLayout *layout) {
     QLabel *unitsLabel = new QLabel("Unit", layout->parentWidget());
@@ -47,4 +53,10 @@ void AirspeedIndicator::createSettings(QGridLayout *layout) {
     VelocityUnitComboBox *unitsCombo = new VelocityUnitComboBox(layout->parentWidget(), units);
     connect(unitsCombo, SIGNAL(unitSelected(VelocityUnit)), this, SLOT(setUnit(VelocityUnit)));
     layout->addWidget(unitsCombo);
+    QLabel *maxLabel = new QLabel("Maximum value", layout->parentWidget());
+    layout->addWidget(maxLabel);
+    NumberInputLineEdit *maxValueEdit = new NumberInputLineEdit(layout->parentWidget());
+    maxValueEdit->setText(QString::number(maxValue));
+    layout->addWidget(maxValueEdit);
+    connect(maxValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMaxValue(float)));
 }

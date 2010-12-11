@@ -5,6 +5,7 @@
 #include "units.h"
 #include <QLabel>
 #include "velocityunitcombobox.h"
+#include "numberinputlineedit.h"
 
 class AirspeedIndicator : public NeedleInstrument {
     Q_OBJECT
@@ -18,9 +19,11 @@ public:
 public slots:
     void speedChanged(QString name, double speed);
     void setUnit(VelocityUnit un);
+    void setMaxValue(float mv);
 private:
     ExtPlaneClient _client;
     VelocityUnit units;
+    float maxValue;
 };
 
 #endif // AIRSPEEDINDICATOR_H
