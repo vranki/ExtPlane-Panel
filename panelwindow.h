@@ -37,7 +37,7 @@ private:
     QGraphicsTextItem errorMessage;
     QList<PanelItem *> panelItems;
     PanelItemFactory itemFactory;
-    float panelRotation;
+    int panelRotation;
 };
 
 #endif // PANELWINDOW_H

@@ -14,6 +14,7 @@
 #include "panelitem.h"
 #include "panelitemfactory.h"
 #include "settingsdialog.h"
+#include "edititemdialog.h"
 
 class MenuButton : public QObject, public QGraphicsItem {
     Q_OBJECT
@@ -37,6 +38,7 @@ public slots:
     void loadPanel();
     void showSettings();
     void quit();
+    void itemProperties();
 private:
     QList<PanelItem*> selectedGauges();
     int side;
@@ -46,6 +48,7 @@ private:
     PanelItemFactory *itemFactory;
     QSettings settings;
     SettingsDialog *settingsDialog;
+    EditItemDialog *editItemDialog;
 };
 
 #endif // MENUBUTTON_H

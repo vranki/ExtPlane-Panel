@@ -13,6 +13,9 @@ MenuButton::MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemF
     settingsDialog->setModal(false);
     settingsDialog->hide();
 
+    editItemDialog = new EditItemDialog(parentWidget);
+    editItemDialog->setModal(false);
+    editItemDialog->hide();
 }
 
 void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -45,6 +48,11 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
         QPushButton *deleteButton = new QPushButton("Delete Item(s)", msg);
         connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteItems()));
         layout->addWidget(deleteButton);
+        if(selectedGauges().size()==1) {
+            QPushButton *editButton = new QPushButton("Item Properties", msg);
+            connect(editButton, SIGNAL(clicked()), this, SLOT(itemProperties()));
+            layout->addWidget(editButton);
+        }
     }
     QPushButton *saveButton = new QPushButton("Save panel", msg);
     connect(saveButton, SIGNAL(clicked()), this, SLOT(savePanel()));
@@ -163,4 +171,10 @@ void MenuButton::showSettings() {
 }
 void MenuButton::quit() {
     QCoreApplication::quit();
+}
+
+void MenuButton::itemProperties() {
+    closeDialog();
+    editItemDialog->setPanelItem(selectedGauges().first());
+    editItemDialog->show();
 }

@@ -8,6 +8,7 @@
 #include <QGraphicsScene>
 #include <QVariant>
 #include <QSettings>
+#include <QGridLayout>
 #include "extplaneclient.h"
 #include "extplaneconnection.h"
 
@@ -27,6 +28,8 @@ public:
     virtual QString typeName() = 0;
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
+    int itemRotation();
+    virtual void createSettings(QGridLayout *layout);
 protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
@@ -35,12 +38,13 @@ protected:
 signals:
     void panelItemSelected(PanelItem *g, bool sel=true);
 public slots:
-    void setPanelRotation(float angle);
-    void setItemRotation(float angle);
+    void setPanelRotation(int angle);
+    void setItemRotation(int angle);
+    void setZValue(int z);
 private:
     float _width, _height;
     bool resizing;
-    float _panelRotation, _itemRotation;
+    int _panelRotation, _itemRotation;
 };
 
 #endif // GAUGE_H

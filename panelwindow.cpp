@@ -49,7 +49,6 @@ void PanelWindow::addItem(PanelItem *g) {
 
 void PanelWindow::panelRotationChanged(int r) {
     panelRotation = r;
-    qDebug() << Q_FUNC_INFO << r;
     foreach(PanelItem *i, panelItems)
         i->setPanelRotation(r);
 }

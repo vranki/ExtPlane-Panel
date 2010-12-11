@@ -19,6 +19,7 @@ void AirspeedIndicator::setUnit(VelocityUnit unit) {
     units = unit;
     setLabel(Units::unitName(units));
 }
+
 void AirspeedIndicator::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
 
@@ -35,6 +36,15 @@ void AirspeedIndicator::loadSettings(QSettings &settings) {
 QString AirspeedIndicator::typeName() {
     return typeNameStatic();
 }
+
 QString AirspeedIndicator::typeNameStatic() {
     return "airspeed";
+}
+
+void AirspeedIndicator::createSettings(QGridLayout *layout) {
+    QLabel *unitsLabel = new QLabel("Unit", layout->parentWidget());
+    layout->addWidget(unitsLabel, layout->rowCount(), 0);
+    VelocityUnitComboBox *unitsCombo = new VelocityUnitComboBox(layout->parentWidget(), units);
+    connect(unitsCombo, SIGNAL(unitSelected(VelocityUnit)), this, SLOT(setUnit(VelocityUnit)));
+    layout->addWidget(unitsCombo);
 }

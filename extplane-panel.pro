@@ -17,7 +17,9 @@ SOURCES += main.cpp \
     panelitemfactory.cpp \
     needleinstrument.cpp \
     compass.cpp \
-    settingsdialog.cpp
+    settingsdialog.cpp \
+    edititemdialog.cpp \
+    velocityunitcombobox.cpp
 
 HEADERS += \
     panelitem.h \
@@ -32,7 +34,10 @@ HEADERS += \
     panelitemfactory.h \
     needleinstrument.h \
     compass.h \
-    settingsdialog.h
+    settingsdialog.h \
+    edititemdialog.h \
+    velocityunitcombobox.h
 
 FORMS += \
-    settingsdialog.ui
+    settingsdialog.ui \
+    edititemdialog.ui

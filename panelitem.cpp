@@ -97,6 +97,7 @@ void PanelItem::storeSettings(QSettings &settings) {
     settings.setValue("width", (int) width());
     settings.setValue("height", (int) height());
     settings.setValue("rotation", _itemRotation);
+    settings.setValue("zvalue", zValue());
 }
 
 void PanelItem::loadSettings(QSettings &settings) {
@@ -106,16 +107,29 @@ void PanelItem::loadSettings(QSettings &settings) {
     int w = settings.value("width").toInt();
     int h = settings.value("height").toInt();
     setSize(w, h);
-    _itemRotation = settings.value("rotation", 0).toFloat();
+    setItemRotation(settings.value("rotation", 0).toInt());
+    setZValue(settings.value("zvalue", 0).toInt());
 }
 
-void PanelItem::setPanelRotation(float angle) {
+void PanelItem::setPanelRotation(int angle) {
     _panelRotation = angle;
     setRotation(_panelRotation + _itemRotation);
-    qDebug() << Q_FUNC_INFO << angle;
 }
 
-void PanelItem::setItemRotation(float angle) {
+void PanelItem::setItemRotation(int angle) {
+    qDebug() << Q_FUNC_INFO << angle;
     _itemRotation = angle;
     setRotation(_panelRotation + _itemRotation);
+}
+
+int PanelItem::itemRotation() {
+    return _itemRotation;
+}
+
+void PanelItem::setZValue(int z) {
+    QGraphicsItem::setZValue(z);
+}
+
+void PanelItem::createSettings(QGridLayout *layout) {
+
 }
