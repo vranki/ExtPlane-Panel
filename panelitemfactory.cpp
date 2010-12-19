@@ -13,12 +13,14 @@ PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject) {
         g = new Compass(parentObject, connection);
     } else if(name == Variometer::typeNameStatic()) {
         g = new Variometer(parentObject, connection);
+    } else if(name == Altimeter::typeNameStatic()) {
+        g = new Altimeter(parentObject, connection);
     }
     return g;
 }
 
 QStringList PanelItemFactory::itemNames() {
     QStringList items;
-    items << AirspeedIndicator::typeNameStatic() << Compass::typeNameStatic() << Variometer::typeNameStatic();
+    items << AirspeedIndicator::typeNameStatic() << Compass::typeNameStatic() << Variometer::typeNameStatic() << Altimeter::typeNameStatic();
     return items;
 }

@@ -1,6 +1,6 @@
 #include "velocityunitcombobox.h"
 
-VelocityUnitComboBox::VelocityUnitComboBox(QWidget *parent, VelocityUnit un) :
+VelocityUnitComboBox::VelocityUnitComboBox(QWidget *parent, VelocityUnit un=VELOCITY_KMH) :
     QComboBox(parent) {
     addItem(Units::unitName(VELOCITY_KMH));
     addItem(Units::unitName(VELOCITY_KTS));

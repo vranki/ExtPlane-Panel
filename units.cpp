@@ -23,6 +23,20 @@ double Units::convertSpeed(VelocityUnit from, VelocityUnit to, double value) {
         return ms * 196.850393;
     return ms;
 }
+
+double Units::convertDistance(DistanceUnit from, DistanceUnit to, double value) {
+    double m = 0;
+    if(from == DISTANCE_M)
+        m = value;
+    if(from == DISTANCE_FT)
+        m = value * 0.3048;
+
+    if(to == DISTANCE_FT)
+        return m*3.2808399;
+
+    return m;
+}
+
 QString Units::unitName(VelocityUnit unit) {
     if(unit == VELOCITY_KTS)
         return "kts";
@@ -35,10 +49,24 @@ QString Units::unitName(VelocityUnit unit) {
     return "?";
 }
 
+QString Units::unitName(DistanceUnit unit) {
+    if(unit == DISTANCE_M)
+        return "meters";
+    if(unit == DISTANCE_FT)
+        return "feet";
+    return "?";
+}
+
 VelocityUnit Units::velocityUnitForName(QString name) {
     if(name=="kts") return VELOCITY_KTS;
     if(name=="km/h") return VELOCITY_KMH;
     if(name=="m/s") return VELOCITY_MS;
     if(name=="ft/min") return VELOCITY_FPM;
     return VELOCITY_UNKNOWN;
+}
+
+DistanceUnit Units::distanceUnitForName(QString name) {
+    if(name=="meters") return DISTANCE_M;
+    if(name=="feet") return DISTANCE_FT;
+    return DISTANCE_UNKNOWN;
 }

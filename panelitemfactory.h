@@ -7,6 +7,7 @@
 #include "panelitems/airspeedindicator.h"
 #include "panelitems/compass.h"
 #include "panelitems/variometer.h"
+#include "panelitems/altimeter.h"
 #include "extplaneconnection.h"
 
 class PanelItemFactory
