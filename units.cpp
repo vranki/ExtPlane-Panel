@@ -37,6 +37,24 @@ double Units::convertDistance(DistanceUnit from, DistanceUnit to, double value) 
     return m;
 }
 
+
+double Units::convertPressure(PressureUnit from, PressureUnit to, double value) {
+    double pa = 0;
+    if(from == PRESSURE_PA)
+        pa = value;
+    if(from == PRESSURE_HPA)
+        pa = value*100.0;
+    if(from == PRESSURE_INCHES_HG)
+        pa = value * 3386.389;
+
+    if(to == PRESSURE_HPA)
+        return pa/100.0;
+    if(to == PRESSURE_INCHES_HG)
+        return pa/3386.389;
+
+    return pa;
+}
+
 QString Units::unitName(VelocityUnit unit) {
     if(unit == VELOCITY_KTS)
         return "kts";
@@ -57,6 +75,16 @@ QString Units::unitName(DistanceUnit unit) {
     return "?";
 }
 
+QString Units::unitName(PressureUnit unit) {
+    if(unit == PRESSURE_PA)
+        return "Pa";
+    if(unit == PRESSURE_HPA)
+        return "hPa";
+    if(unit == PRESSURE_INCHES_HG)
+        return "inHg";
+    return "?";
+}
+
 VelocityUnit Units::velocityUnitForName(QString name) {
     if(name=="kts") return VELOCITY_KTS;
     if(name=="km/h") return VELOCITY_KMH;
@@ -69,4 +97,11 @@ DistanceUnit Units::distanceUnitForName(QString name) {
     if(name=="meters") return DISTANCE_M;
     if(name=="feet") return DISTANCE_FT;
     return DISTANCE_UNKNOWN;
+}
+
+PressureUnit Units::pressureUnitForName(QString name) {
+    if(name=="Pa") return PRESSURE_PA;
+    if(name=="hPa") return PRESSURE_HPA;
+    if(name=="inHg") return PRESSURE_INCHES_HG;
+    return PRESSURE_UNKNOWN;
 }
