@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QList>
+#include <QSet>
 #include "clientdataref.h"
 #include "clientdatarefprovicer.h"
 
@@ -14,6 +15,9 @@ public:
     ~ExtPlaneClient();
     void subscribeDataRef(QString name, double accuracy=0);
     void unsubscribeDataRef(QString name);
+    void keyPress(int id);
+    void buttonPress(int id);
+    void buttonRelease(int id);
 signals:
     void refChanged(QString name, double value);
 public slots:
@@ -21,6 +25,7 @@ public slots:
 private:
     QString _name;
     QList<ClientDataRef*> _dataRefs;
+    QSet<int> _heldButtons;
     ClientDataRefProvicer *_connection;
 };
 

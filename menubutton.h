@@ -30,6 +30,7 @@ signals:
     void panelRotationChanged(int r);
     void fullscreenChanged(bool fs);
     void setServerAddress(QString host);
+    void editModeChanged(bool em);
 public slots:
     void addItem();
     void deleteItems();
@@ -39,6 +40,7 @@ public slots:
     void showSettings();
     void quit();
     void itemProperties();
+    void setEditMode(bool em);
 private:
     QList<PanelItem*> selectedGauges();
     int side;
@@ -49,6 +51,7 @@ private:
     QSettings settings;
     SettingsDialog *settingsDialog;
     EditItemDialog *editItemDialog;
+    bool editMode;
 };
 
 #endif // MENUBUTTON_H

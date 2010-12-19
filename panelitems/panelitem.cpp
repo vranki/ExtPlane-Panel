@@ -2,9 +2,7 @@
 
 PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem() {
     _width = _height = 200;
-    resizing = false;
-    setFlag(QGraphicsItem::ItemIsMovable);
-    setFlag(QGraphicsItem::ItemIsSelectable);
+    setEditMode(false);
     _panelRotation = _itemRotation = 0;
 }
 
@@ -131,4 +129,15 @@ void PanelItem::setZValue(int z) {
 
 void PanelItem::createSettings(QGridLayout *layout) {
 
+}
+
+void PanelItem::setEditMode(bool em) {
+    _editMode = em;
+    setFlag(QGraphicsItem::ItemIsMovable, em);
+    setFlag(QGraphicsItem::ItemIsSelectable, em);
+    resizing = false;
+}
+
+bool PanelItem::isEditMode() {
+    return _editMode;
 }

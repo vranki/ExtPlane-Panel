@@ -6,6 +6,7 @@ MenuButton::MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemF
     parentWidget = parent;
     side = 20;
     msg = 0;
+    editMode = false;
     settingsDialog = new SettingsDialog(parentWidget);
     connect(settingsDialog, SIGNAL(rotationChanged(int)), this, SIGNAL(panelRotationChanged(int)));
     connect(settingsDialog, SIGNAL(fullscreenChanged(bool)), this, SIGNAL(fullscreenChanged(bool)));
@@ -37,6 +38,12 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     msg = new QDialog(parentWidget);
     msg->move(event->screenPos().x(), event->screenPos().y());
     QVBoxLayout *layout = new QVBoxLayout();
+    QCheckBox *editModeCheck = new QCheckBox("Edit Panel", msg);
+    editModeCheck->setChecked(editMode);
+    connect(editModeCheck, SIGNAL(clicked(bool)), this, SIGNAL(editModeChanged(bool)));
+    connect(editModeCheck, SIGNAL(clicked(bool)), this, SLOT(setEditMode(bool)));
+
+    layout->addWidget(editModeCheck);
     QPushButton *addButton = new QPushButton("Add Item", msg);
     connect(addButton, SIGNAL(clicked()), this, SLOT(addItem()));
     connect(msg, SIGNAL(rejected()), this, SLOT(closeDialog()));
@@ -179,4 +186,8 @@ void MenuButton::itemProperties() {
     editItemDialog->setModal(false);
     editItemDialog->setPanelItem(selectedGauges().first());
     editItemDialog->show();
+}
+
+void MenuButton::setEditMode(bool em) {
+    editMode = em;
 }

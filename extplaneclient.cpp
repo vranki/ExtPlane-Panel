@@ -31,3 +31,18 @@ void ExtPlaneClient::unsubscribeDataRef(QString name) {
         }
     }
 }
+
+void ExtPlaneClient::keyPress(int id) {
+    _connection->keyPress(id);
+}
+
+void ExtPlaneClient::buttonPress(int id) {
+    _heldButtons.insert(id);
+    _connection->buttonPress(id);
+}
+
+void ExtPlaneClient::buttonRelease(int id) {
+    if(!_heldButtons.contains(id)) return;
+    _heldButtons.remove(id);
+    _connection->buttonRelease(id);
+}

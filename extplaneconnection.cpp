@@ -9,6 +9,7 @@ ExtPlaneConnection::ExtPlaneConnection(QObject *parent) : QTcpSocket(parent) {
 }
 
 void ExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port) {
+    close();
     _addr = addr;
     _port = port;
     tryReconnect();
@@ -22,8 +23,8 @@ void ExtPlaneConnection::tryReconnect() {
 
 void ExtPlaneConnection::socketConnected() {
     qDebug() << Q_FUNC_INFO ;
+    emit connectionError("Connected to ExtPlane, waiting for handshake");
     reconnectTimer.stop();
-    emit connectionError("");
 }
 
 void ExtPlaneConnection::socketError(QAbstractSocket::SocketError err) {
@@ -80,7 +81,7 @@ void ExtPlaneConnection::readClient() {
         if(!server_ok) {
             if(line=="EXTPLANE 1") {
                 server_ok = true;
-                qDebug() << Q_FUNC_INFO << "handshake ok";
+                emit connectionError("");
                 // Sub all refs
                 foreach(ClientDataRef *ref, dataRefs)
                     subRef(ref);
@@ -120,4 +121,19 @@ void ExtPlaneConnection::writeLine(QString line) {
     line +="\n";
     write(line.toUtf8());
     qDebug() << Q_FUNC_INFO << line;
+}
+
+void ExtPlaneConnection::keyPress(int id) {
+    QString line = "key " + QString::number(id);
+    writeLine(line);
+}
+
+void ExtPlaneConnection::buttonPress(int id) {
+    QString line = "but " + QString::number(id);
+    writeLine(line);
+}
+
+void ExtPlaneConnection::buttonRelease(int id) {
+    QString line = "rel " + QString::number(id);
+    writeLine(line);
 }

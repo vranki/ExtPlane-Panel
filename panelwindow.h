@@ -1,6 +1,14 @@
 #ifndef PANELWINDOW_H
 #define PANELWINDOW_H
 
+#ifdef MAEMO
+#include <QDBusConnection>
+#include <QTimer>
+#include <QDBusMessage>
+#include "mce/mode-names.h"
+#include "mce/dbus-names.h"
+#endif
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
@@ -28,6 +36,8 @@ public slots:
     void panelRotationChanged(int r);
     void fullscreenChanged(bool fs);
     void setServerAddress(QString host);
+    void editModeChanged(bool em);
+    void disableBlanking();
 protected:
     virtual void resizeEvent(QResizeEvent * event);
 private:
@@ -38,6 +48,8 @@ private:
     QList<PanelItem *> panelItems;
     PanelItemFactory itemFactory;
     int panelRotation;
+    bool editMode;
+    QTimer blankingTimer;
 };
 
 #endif // PANELWINDOW_H

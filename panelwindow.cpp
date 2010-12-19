@@ -3,6 +3,7 @@
 PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(), itemFactory(&connection) {
     setScene(&scene);
     panelRotation = 0;
+    editMode = false;
     resize(1024, 768);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -11,6 +12,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(), itemFacto
     connect(menuButton, SIGNAL(panelRotationChanged(int)), this, SLOT(panelRotationChanged(int)));
     connect(menuButton, SIGNAL(fullscreenChanged(bool)), this, SLOT(fullscreenChanged(bool)));
     connect(menuButton, SIGNAL(setServerAddress(QString)), this, SLOT(setServerAddress(QString)));
+    connect(menuButton, SIGNAL(editModeChanged(bool)), this, SLOT(editModeChanged(bool)));
     menuButton->setPos(0,0);
     connect(menuButton, SIGNAL(itemAdded(PanelItem*)), this, SLOT(addItem(PanelItem*)));
     scene.addItem(menuButton);
@@ -20,6 +22,10 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(), itemFacto
     errorMessage.setPos(0,20);
     scene.addItem(&errorMessage);
     menuButton->loadPanel();
+
+    connect(&blankingTimer, SIGNAL(timeout()), this, SLOT(disableBlanking()));
+    blankingTimer.start(30000);
+
 }
 
 PanelWindow::~PanelWindow() {
@@ -42,6 +48,7 @@ void PanelWindow::addItem(PanelItem *g) {
     connect(g, SIGNAL(destroyed(QObject*)), this, SLOT(itemDestroyed(QObject*)));
     g->setPos(width()/2, height()/2);
     g->setPanelRotation(panelRotation);
+    g->setEditMode(editMode);
     scene.addItem(g);
     panelItems.append(g);
 }
@@ -78,4 +85,17 @@ void PanelWindow::setServerAddress(QString host) {
     QHostAddress addr;
     addr.setAddress(hostport.value(0));
     connection.connectTo(QHostAddress(hostport.value(0)), port);
+}
+
+void PanelWindow::editModeChanged(bool em) {
+    qDebug() << Q_FUNC_INFO << em;
+    editMode = em;
+    foreach(PanelItem *it, panelItems)
+        it->setEditMode(em);
+}
+void PanelWindow::disableBlanking() {
+#ifdef MAEMO
+    QDBusConnection::systemBus().call(QDBusMessage::createMethodCall(MCE_SERVICE, MCE_REQUEST_PATH,MCE_REQUEST_IF, MCE_PREVENT_BLANK_REQ));
+    blankingTimer.start(30000);
+#endif
 }

@@ -1,5 +1,10 @@
 QT       += gui network
 
+maemo5: {
+ QT += dbus
+ DEFINES += MAEMO
+}
+
 TARGET = extplane-panel
 
 TEMPLATE = app
@@ -23,7 +28,8 @@ SOURCES += main.cpp \
     widgets/numberinputlineedit.cpp \
     panelitems/variometer.cpp \
     panelitems/altimeter.cpp \
-    widgets/distanceunitcombobox.cpp
+    widgets/distanceunitcombobox.cpp \
+    panelitems/button.cpp
 
 HEADERS += \
     panelitems/panelitem.h \
@@ -44,7 +50,8 @@ HEADERS += \
     widgets/numberinputlineedit.h \
     panelitems/variometer.h \
     panelitems/altimeter.h \
-    widgets/distanceunitcombobox.h
+    widgets/distanceunitcombobox.h \
+    panelitems/button.h
 
 FORMS += \
     dialogs/settingsdialog.ui \

@@ -20,6 +20,9 @@ public:
     void registerClient(ExtPlaneClient* client);
     virtual ClientDataRef *subscribeDataRef(QString name, double accuracy=0);
     virtual void unsubscribeDataRef(ClientDataRef *ref);
+    virtual void keyPress(int id);
+    virtual void buttonPress(int id);
+    virtual void buttonRelease(int id);
 signals:
     void connectionError(QString text);
 public slots:

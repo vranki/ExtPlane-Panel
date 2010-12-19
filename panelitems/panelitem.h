@@ -15,7 +15,7 @@
 #define SCALE_HANDLE_SIZE 20
 #define SNAP_GRID_SIZE 10
 
-class PanelItem : public QObject, public QGraphicsItem{
+class PanelItem : public QObject, public QGraphicsItem {
     Q_OBJECT
     Q_INTERFACES(QGraphicsItem)
 public:
@@ -25,6 +25,8 @@ public:
     float width() const;
     float height() const;
     void setSize(float w, float h);
+    void setEditMode(bool em);
+    bool isEditMode();
     virtual QString typeName() = 0;
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
@@ -43,8 +45,9 @@ public slots:
     void setZValue(int z);
 private:
     float _width, _height;
-    bool resizing;
+    bool resizing, _editMode;
     int _panelRotation, _itemRotation;
+
 };
 
 #endif // GAUGE_H
