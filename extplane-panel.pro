@@ -28,6 +28,7 @@ SOURCES += main.cpp \
     widgets/numberinputlineedit.cpp \
     panelitems/variometer.cpp \
     panelitems/altimeter.cpp \
+    panelitems/di.cpp \
     widgets/distanceunitcombobox.cpp \
     panelitems/button.cpp
 
@@ -50,6 +51,7 @@ HEADERS += \
     widgets/numberinputlineedit.h \
     panelitems/variometer.h \
     panelitems/altimeter.h \
+    panelitems/di.h \
     widgets/distanceunitcombobox.h \
     panelitems/button.h
 
