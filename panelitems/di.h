@@ -50,6 +50,7 @@ private:
     float _numbersScale;
     float _baroPressure;
     QString _label;
+    QString _dataRef;
 };
 
 #endif // DI_H

@@ -22,8 +22,13 @@ PanelItem(parent), _client(this, typeName(), conn)
     setNumbersScale(0.01);
     units = DISTANCE_M;
     baroUnits = PRESSURE_HPA;
+    _dataRef = QString("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot");
+    
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    _client.subscribeDataRef("sim/cockpit/misc/compass_indicated", 0.3);
+    //    _client.subscribeDataRef("sim/cockpit/misc/compass_indicated", 0.3);
+    _client.subscribeDataRef(_dataRef,0.1);
+    //_client.subscribeDataRef("sim/cockpit/gyros/indicators/psi_ind_degm3",0.1);
+    // _client.subscribeDataRef("sim/cockpit2/gauges/indicators/compass_heading_deg_magp",0.1);
 }
 
 void DirectionIndicator::setNumbers(float div) {
@@ -33,17 +38,40 @@ void DirectionIndicator::setNumbers(float div) {
 
 void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     static const QPoint needle[3] = {
-        QPoint(4, 8),
-        QPoint(-4, 8),
-        QPoint(0, -95)
-    };/*
-    static const QPoint needle2[3] = {
-        QPoint(8, 8),
-        QPoint(-8, 8),
-        QPoint(0, -70)
-    }; */
+        QPoint(0, -90),
+        QPoint(-5, -103),
+        QPoint(5, -103)
+    };
+    
+    static const QPoint Plane[] = {
+        QPoint(0, 70),
+        QPoint(5, 60),
+        QPoint(5, 30),
+        QPoint(60,-10),
+        QPoint(60,-20),
+        QPoint(5,-10),
+        QPoint(5,-30),
+        QPoint(4,-40),
+        QPoint(25,-55),
+        QPoint(25,-65),
+        QPoint(2,-60),
+        QPoint(0,-65), 
+        
+        QPoint(-2,-60),
+        QPoint(-25,-65),
+        QPoint(-25,-55),
+        QPoint(-4,-40),
+        QPoint(-5,-30),
+        QPoint(-5,-10),
+        QPoint(-60,-20),
+        QPoint(-60,-10),
+        QPoint(-5, 30),
+        QPoint(-5, 60),
+        
+    }; 
+    
+    
     QColor needleColor(255, 255, 255);
-    //QColor needleColor2(200, 200, 200);
     
     int side = qMin(width(), height());
     painter->setRenderHint(QPainter::Antialiasing);
@@ -56,25 +84,13 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->rotate(- _value);
 
     painter->setPen(Qt::white);
-    //if(!_label.isEmpty()) {
-    //    int textwidth = painter->fontMetrics().width(_label);
-    //    painter->drawText(-textwidth/2,-70, textwidth, 200, Qt::AlignCenter, _label);
-    //}
-    //    int textwidth = painter->fontMetrics().width("Altitude");
-    // painter->drawText(-textwidth/2,-130, textwidth, 200, Qt::AlignCenter, "Altitude");
-    
-    //painter->setBrush(Qt::black);
-    //painter->drawRect(30,-10,60,20);
-    //QString pressureText = QString::number(_baroPressure);
-    //textwidth = painter->fontMetrics().width(pressureText);
-    //painter->drawText(30,-10, 60, 20, Qt::AlignRight | Qt::AlignVCenter, pressureText);
     
     painter->setBrush(Qt::white);
     if(_thickBars > 0) {
         for (float i = 0 ; i <= _range1; i+=_thickBars) {
             painter->save();
             painter->rotate(value2Angle1(i));
-            painter->drawRect(-1, -100, 2, 14);
+            painter->drawRect(-0.5, -100, 1.0, 10);
             painter->restore();
         }
     }
@@ -82,38 +98,64 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
         for (float i = 0 ; i <= _range2; i+=_thinBars) {
             painter->save();
             painter->rotate(value2Angle1(i));
-            painter->drawRect(-0.3, -100, 0.6, 8);
+            painter->drawRect(-0.25, -100, 0.5, 8);
             painter->restore();
         }
     }
     painter->setPen(QColor(200,200,200));
+    painter->setFont(QFont(QString("Helvetica"), 16, QFont::Bold, false));
     
     if(_numbers != 0) {
         for (float i = 0 ; i < _range1; i+=_numbers) {
             painter->save();
             painter->rotate(value2Angle1(i));
             painter->save();
-            QString lineNumber = QString::number(i*_numbersScale);
-            painter->translate(0,-70);
-            painter->rotate(-value2Angle1(i));
+            QString lineNumber;
+            switch (int(i*_numbersScale)) {
+                case 0:
+                    lineNumber = QString("N");
+                    break;
+                case 9:
+                    lineNumber = QString("E");
+                    break;
+                case 18:
+                    lineNumber = QString("S");
+                    break;
+                case 27:
+                    lineNumber = QString("W");
+                    break;
+                default:
+                    lineNumber = QString::number(i*_numbersScale);
+                    break;
+            }
+            painter->translate(0,-78);
             int width = painter->fontMetrics().width(lineNumber);
-            int height =painter->fontMetrics().height();
+            int height = painter->fontMetrics().height();
             painter->drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
             painter->restore();
             painter->restore();
         }
     }
     painter->setPen(Qt::NoPen);
-    //painter->setBrush(needleColor2);
-    // painter->save();
-    // painter->rotate(value2Angle2(_value));
-    // painter->drawConvexPolygon(needle2, 3);
-    // painter->restore();
+
     painter->setBrush(needleColor);
+    for(int i=0; i<360;i+=45){
+        painter->save();
+        painter->rotate(value2Angle1(_value)+i);
+        painter->drawConvexPolygon(needle, 3);
+        painter->restore();
+    }
+
+    QPen planePen(QColor(200,200,200));
+    planePen.setWidth(3);
+    painter->setPen(planePen);
+    painter->setBrush(Qt::NoBrush);
     painter->save();
-    painter->rotate(value2Angle1(_value));
-    painter->drawConvexPolygon(needle, 3);
+    painter->rotate(value2Angle1(_value)+180);
+    painter->scale(0.9,0.9);
+    painter->drawConvexPolygon(Plane, sizeof(Plane)/sizeof(Plane[0]));
     painter->restore();
+    
     painter->restore();
     painter->setBrush(Qt::white);
     
@@ -149,7 +191,7 @@ void DirectionIndicator::setUnit(DistanceUnit unit) {
 }
 
 void DirectionIndicator::refChanged(QString name, double hdg) {
-    if(name=="sim/cockpit/misc/compass_indicated") {
+    if(name==_dataRef) {
         if(hdg == _value) return;
         _value = hdg;
     }
