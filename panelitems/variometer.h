@@ -24,11 +24,13 @@ public slots:
     void velocityChanged(QString name, double speed);
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
+    void setNumberScale(float ns);
     void setIsTotalEnergy(bool te);
 private:
     ExtPlaneClient _client;
     VelocityUnit units;
     float maxValue;
+    float numberScale;
     bool isTotalEnergy;
 };
 

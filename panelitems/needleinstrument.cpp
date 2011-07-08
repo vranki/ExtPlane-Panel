@@ -9,11 +9,17 @@ NeedleInstrument::NeedleInstrument(QObject *parent) :
     _maxAngle = 360;
     _thickBars = _thinBars = 0;
     _numbers = 0;
+    _numberScale = 1;
 }
 
 void NeedleInstrument::setNumbers(float div) {
     _numbers = div;
 }
+
+void NeedleInstrument::setNumberMult(float ns) {
+    _numberScale = ns;
+}
+
 
 void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     static const QPoint needle[3] = {
@@ -22,7 +28,7 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         QPoint(0, -95)
     };
 
-    QColor needleColor(255, 255, 255);
+    QColor needleColor(255, 0, 0); //255, 255);
 
     int side = qMin(width(), height());
     painter->setRenderHint(QPainter::Antialiasing);
@@ -67,7 +73,7 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             painter->save();
             painter->rotate(value2Angle(i));
             painter->save();
-            QString lineNumber = QString::number(i);
+            QString lineNumber = QString::number(i * _numberScale);
             painter->translate(0,-70);
             painter->rotate(-value2Angle(i));
             int width = painter->fontMetrics().width(lineNumber);

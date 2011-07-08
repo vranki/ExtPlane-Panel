@@ -11,6 +11,7 @@ public:
     void setScale(float zeroAngle, float zeroValue, float maxAngle, float maxValue);
     void setBars(float thick, float thin);
     void setNumbers(float div);
+    void setNumberMult(float ns);
     void setLabel(QString text);
     virtual QString typeName() = 0;
 public slots:
@@ -18,6 +19,7 @@ public slots:
 private:
     float _thickBars, _thinBars;
     float _numbers;
+    float _numberScale;
     float value2Angle(float value);
     float _value, _zeroangle, _maxAngle, _zeroValue, _maxValue;
     QString _label;
