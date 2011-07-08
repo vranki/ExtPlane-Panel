@@ -3,10 +3,10 @@
 AirspeedIndicator::AirspeedIndicator(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrument(parent),
 _client(this, typeName(), conn) {
     conn->registerClient(&_client);
-    _client.subscribeDataRef("sim/cockpit2/gauges/indicators/airspeed_kts_pilot", 1);
+    _client.subscribeDataRef("sim/cockpit2/gauges/indicators/airspeed_kts_pilot", 0.1);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(speedChanged(QString,double)));
-    setBars(20, 10);
-    setNumbers(50);
+    setBars(10, 5);
+    setNumbers(20);
     setUnit(VELOCITY_KTS);
     setMaxValue(300);
 }
@@ -44,7 +44,7 @@ QString AirspeedIndicator::typeNameStatic() {
 }
 void AirspeedIndicator::setMaxValue(float mv) {
     maxValue = mv;
-    setScale(180, 0, 180+330, maxValue);
+    setScale(25, 40, 0+330, maxValue);
 }
 
 void AirspeedIndicator::createSettings(QGridLayout *layout) {
