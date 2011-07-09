@@ -1,10 +1,11 @@
 #include "panelwindow.h"
+#include <boost/shared_ptr.hpp>
 
 PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(), itemFactory(&connection) {
     setScene(&scene);
     panelRotation = 0;
     editMode = false;
-    resize(1024, 768);
+    resize(1024, 640);  
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setSceneRect(0,0,width(), height());

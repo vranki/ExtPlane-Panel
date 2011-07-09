@@ -25,10 +25,7 @@ PanelItem(parent), _client(this, typeName(), conn)
     _dataRef = QString("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot");
     
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    //    _client.subscribeDataRef("sim/cockpit/misc/compass_indicated", 0.3);
     _client.subscribeDataRef(_dataRef,0.1);
-    //_client.subscribeDataRef("sim/cockpit/gyros/indicators/psi_ind_degm3",0.1);
-    // _client.subscribeDataRef("sim/cockpit2/gauges/indicators/compass_heading_deg_magp",0.1);
 }
 
 void DirectionIndicator::setNumbers(float div) {
