@@ -54,6 +54,7 @@ private:
     void createCard(void);
     void createFrame(void);
     void createGlass(void);
+    void createBackground(void);
     
     float value2Angle1(float value);
     float value2Angle2(float value);
@@ -76,6 +77,7 @@ private:
     QPixmap _card;
     QPixmap _frame;
     QPixmap _glass;
+    QPixmap _background;
     
 };
 
