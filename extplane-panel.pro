@@ -30,6 +30,7 @@ SOURCES += main.cpp \
     panelitems/altimeter.cpp \
     panelitems/di.cpp \
     panelitems/attitudeindicator.cpp \
+    panelitems/turnbank.cpp \
     widgets/distanceunitcombobox.cpp \
     panelitems/button.cpp
 
@@ -54,6 +55,7 @@ HEADERS += \
     panelitems/altimeter.h \
     panelitems/di.h \
     panelitems/attitudeindicator.h \
+    panelitems/turnbank.h \
     widgets/distanceunitcombobox.h \
     panelitems/button.h
 

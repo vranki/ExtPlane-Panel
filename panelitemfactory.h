@@ -10,6 +10,7 @@
 #include "panelitems/altimeter.h"
 #include "panelitems/di.h"
 #include "panelitems/attitudeindicator.h"
+#include "panelitems/turnbank.h"
 #include "panelitems/button.h"
 
 #include "extplaneconnection.h"
