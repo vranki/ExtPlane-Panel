@@ -49,7 +49,7 @@ PanelItem(parent), _client(this, typeName(), conn)
 }
 
 void AttitudeIndicator::createCard(void){
-    QImage _cardImage = QImage(QSize(170,120), QImage::Format_ARGB32);
+    QImage _cardImage = QImage(QSize(510,360), QImage::Format_ARGB32);
     _cardImage.fill(0x00ff0000);
     //_cardImage.moveTo(10,10);
     
@@ -87,43 +87,46 @@ void AttitudeIndicator::createCard(void){
     
     
     // Draw horizon and angle cues 
-    QPen pen(Qt::SolidPattern, 3);
-    pen.setColor(Qt::white);
-    p.setPen(pen);
+    p.setPen(QPen(Qt::white, 7, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
     p.drawLine(0,midy,width-1,midy);
-    pen.setWidthF(1.5);
-    p.setPen(pen);
-    p.drawLine(midx,midy, width-1, midy+sin(30./180.*3.14159)*midx);
-    p.drawLine(midx,midy, midx+cos(30./180.*3.14159)*midy, height-1);
-    p.drawLine(midx,midy, 0, midy+sin(30./180.*3.14159)*midx);
-    p.drawLine(midx,midy, midx-cos(30./180.*3.14159)*midy, height-1 );
+
+    p.setPen(QPen(Qt::white, 5, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+    
+    float sl = midx*0.76;
+    float ll = midx*0.89;
+    
+    p.drawLine(midx,midy, 
+               midx+cos(30./180.*3.14159)*ll, 
+               midy+sin(30./180.*3.14159)*ll);
+    p.drawLine(midx,midy, 
+               midx+cos(60./180.*3.14159)*sl,
+               midy+sin(60./180.*3.14159)*sl);
+    p.drawLine(midx,midy, 
+               midx-cos(30./180.*3.14159)*ll, 
+               midy+sin(30./180.*3.14159)*ll);
+    p.drawLine(midx,midy, 
+               midx-cos(60./180.*3.14159)*sl,
+               midy+sin(60./180.*3.14159)*sl);
     
     // Draw pitch up and down lines
     
-    p.setPen(Qt::SolidPattern);
-    pen.setColor(QColor(0,0,15)); // very slightly blue rather than black
-    pen.setWidthF(2);
-    p.setPen(pen);
-    p.drawLine(midx-10, midy-20, midx+10,midy-20);
-    p.drawLine(midx-5, midy-10, midx+5,midy-10);
+    p.setPen(QPen(QColor(0,0,15), 5, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+    p.drawLine(midx-45, midy-60*pitchPixelsPerDegree, midx+45,midy-60*pitchPixelsPerDegree);
+    p.drawLine(midx-24, midy-30*pitchPixelsPerDegree, midx+24,midy-30*pitchPixelsPerDegree);
              
-    pen.setColor(Qt::white);
-    p.setPen(pen);
-    p.drawLine(midx-10, midy+20, midx+10,midy+20);
-    p.drawLine(midx-5, midy+10, midx+5,midy+10);
+    p.setPen(QPen(Qt::white, 5, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+    p.drawLine(midx-45, midy+60*pitchPixelsPerDegree, midx+45,midy+60*pitchPixelsPerDegree);
+    p.drawLine(midx-24, midy+30*pitchPixelsPerDegree, midx+24,midy+30*pitchPixelsPerDegree);
     
     
     p.end();    
-    
-   
-    
     _card = QPixmap::fromImage(_cardImage, Qt::AutoColor);
     
 }
 
 void AttitudeIndicator::createFrame(void){
     
-    QImage _frameImage = QImage(QSize(200,200), QImage::Format_ARGB32);
+    QImage _frameImage = QImage(QSize(600,600), QImage::Format_ARGB32);
     _frameImage.fill(0x00ff0000);
     
     uint midx, midy, width, height;
@@ -135,55 +138,68 @@ void AttitudeIndicator::createFrame(void){
     QPainter p;
     p.setRenderHint(QPainter::Antialiasing, true);
     p.begin(&_frameImage);
-    p.translate(100, 100);
+    p.translate(300, 300);
+
     
   
      QPainterPath pathTop;
-     pathTop.moveTo(80,0);
-     pathTop.lineTo(100,0);
-     pathTop.arcTo(-100,-100,200,200, 0, 180);
-     pathTop.lineTo(-80,0);
-     pathTop.arcTo(-80,-80,160,160, 180, -180);
+     pathTop.moveTo(240,0);
+     pathTop.lineTo(300,0);
+     pathTop.arcTo(-300,-300,600,600, 0, 180);
+     pathTop.lineTo(-240,0);
+     pathTop.arcTo(-240,-240,480,480, 180, -180);
      
     QPainterPath pathBottom;
-    pathBottom.moveTo(80,0);
-    pathBottom.lineTo(100,0);
-    pathBottom.arcTo(-100,-100,200,200, 0, -180);
-    pathBottom.lineTo(-80,0);
-    pathBottom.arcTo(-80,-80,160,160, 180, 180);
+    pathBottom.moveTo(240,0);
+    pathBottom.lineTo(300,0);
+    pathBottom.arcTo(-300,-300,600,600, 0, -180);
+    pathBottom.lineTo(-240,0);
+    pathBottom.arcTo(-240,-240,480,480, 180, 180);
     
-    p.setPen(QPen(QColor(79, 106, 25), 0, Qt::SolidLine,
-                         Qt::FlatCap, Qt::MiterJoin));
+    //    p.setPen(QPen(QColor(79, 106, 25), 0, Qt::SolidLine,
+    //                     Qt::FlatCap, Qt::MiterJoin));
+    p.setPen(QPen(QColor(0, 0, 75), 4, Qt::SolidLine,
+                  Qt::FlatCap, Qt::MiterJoin));
     p.setBrush(GROUNDBROWN);
     
     p.drawPath(pathBottom);
     p.setPen(Qt::NoPen);
  
-     p.setPen(QPen(QColor(79, 106, 25), 1, Qt::SolidLine,
+     p.setPen(QPen(QColor(0, 0, 75), 4, Qt::SolidLine,
                     Qt::FlatCap, Qt::MiterJoin));
      
      p.setBrush(SKYBLUE);
      p.drawPath(pathTop);
     
     
+    p.setPen(QPen(Qt::white, 5, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+    for(int i=70; i<=110; i+=10){
+        p.drawLine(240.*cos(float(i)/180.*3.1415926),-240.*sin(float(i)/180.*3.1415926),
+                   300.*cos(float(i)/180.*3.1415926),-300.*sin(float(i)/180.*3.1415926));
+    }
+
+    p.setPen(QPen(Qt::white, 10, Qt::SolidLine,
+                  Qt::FlatCap, Qt::MiterJoin));
+    for(int i=0; i<=180; i+=30){
+        p.drawLine(240.*cos(float(i)/180.*3.1415926),-240.*sin(float(i)/180.*3.1415926),
+                   300.*cos(float(i)/180.*3.1415926),-300.*sin(float(i)/180.*3.1415926));
+    }
     
     p.end();    
-    
-    
     
     _frame = QPixmap::fromImage(_frameImage, Qt::AutoColor);
     
 }
 
-
 void AttitudeIndicator::createGlass(void){
-    QImage _glassImage = QImage(QSize(200,200), QImage::Format_ARGB32);
+    QImage _glassImage = QImage(QSize(500,500), QImage::Format_ARGB32);
     _glassImage.fill(0x00ffffff);
     
     QPainter p;
     p.setRenderHint(QPainter::Antialiasing, true);
     p.begin(&_glassImage);
-
+    //p.scale(1./2.5, 1./2.5);
+    
 
     
     // Cosmetics on glass: yellow arrows:
@@ -193,34 +209,69 @@ void AttitudeIndicator::createGlass(void){
     p.setBrush(Qt::yellow);
     
     static const QPointF bigArrow[] = {
-        QPointF(100, 100),
-        QPointF(145, 115),
-        QPointF(55, 115)
+        QPointF(250, 250),
+        QPointF(362.5, 287.5),
+        QPointF(137.5, 287.5)
     };
     int bigArrowNPts = sizeof(bigArrow)/sizeof(bigArrow[0]);
     
     p.drawConvexPolygon(bigArrow, bigArrowNPts);
 
     static const QPointF leftArrow[] = {
-        QPointF(50, 150),
-        QPointF(95, 130),
-        QPointF(96, 131),
-        QPointF(55,155),
-        QPointF(50,155)
+        QPointF(125, 375-10),
+        QPointF(237.5, 320-10),
+        QPointF(240, 322.5-10),
+        QPointF(137.5, 387.5-10),
+        QPointF(125,387.5-10)
     };
     int leftArrowNPts = sizeof(leftArrow)/sizeof(leftArrow[0]);
     p.drawConvexPolygon(leftArrow, leftArrowNPts);
 
     static const QPointF rightArrow[] = {
-        QPointF(150, 150),
-        QPointF(105, 130),
-        QPointF(104, 131),
-        QPointF(145,155),
-        QPointF(150,155)
+        QPointF(375, 375-10),
+        QPointF(262.5, 320-10),
+        QPointF(260, 322.5-10),
+        QPointF(362.5,387.5-10),
+        QPointF(375,387.5-10)
     };
     p.drawConvexPolygon(rightArrow, leftArrowNPts);
     
-    // Cosmetics on glass, little black pyramid and chord at bottom:
+    // Upwards facing orange arrow at vertical up:
+
+    static const QPointF orangeArrow[] = {
+        QPointF(250, 50),
+        QPointF(233, 88),
+        QPointF(267, 88)
+    };
+    p.setBrush(QColor(255,116,0));
+    p.drawConvexPolygon(orangeArrow, 3);
+    
+    // Little black pyramid and chord at bottom:
+    p.setBrush(QColor(25,25,25));
+    static const QPointF pyramid[] = {
+        QPointF(250-19-60, 417+20),
+        QPointF(250+19+60, 417+20),
+        QPointF(250+25, 250+63+20),
+        QPointF(250-25, 250+63+20)
+    };
+    
+    p.drawConvexPolygon(pyramid, 4);
+    p.setPen(QPen(Qt::black, 0, Qt::SolidLine,
+                  Qt::FlatCap, Qt::MiterJoin));
+
+    p.setBrush(QColor(76,76,76));
+    p.drawChord(_glassImage.rect(), -40*16, -100*16);
+
+    p.setBrush(QColor(25,25,25));
+    p.drawChord(_glassImage.rect(), -42*16, -96*16);
+    
+    
+    // Little vacuum text line
+    p.setPen(QColor(200,200,200));
+    p.setFont(QFont(QString("Helvetica"), 24, QFont::Bold, false));
+    int width = p.fontMetrics().width(QString("VACUUM"));
+    int height =p.fontMetrics().height();
+    p.drawText(250-width/2,385,width, height, Qt::AlignCenter,  "VACUUM");
 
     
     
@@ -252,8 +303,6 @@ void AttitudeIndicator::createBackground(void){
     _background = QPixmap::fromImage(_glassImage, Qt::AutoColor);
     
 }    
-
-
 
 void AttitudeIndicator::setNumbers(float div) {
 /*    _numbers = div;
@@ -295,15 +344,44 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     
     painter->drawPixmap(-_background.width()/2, -_background.height()/2, _background.width(), _background.height(), _background);
     
-    painter->drawPixmap(-_card.width()/2, pitch - _card.height()/2, _card.width(), _card.height(), _card);
-    painter->drawPixmap(-_frame.width()/2, - _frame.height()/2, _frame.width(), _frame.height(), _frame);
+    painter->drawPixmap(-_card.width()/6., 
+                        pitch - _card.height()/6., 
+                        _card.width()/3., 
+                        _card.height()/3, 
+                        _card);
     
+    painter->drawPixmap(-_frame.width()/6., 
+                        -_frame.height()/6., 
+                        _frame.width()/3., 
+                        _frame.height()/3., 
+                         _frame);
+    
+/*    painter->drawPixmap(-100,
+                        -100, 
+                        200, 
+                        200, 
+                        _frame);
+*/    
     painter->restore();     //Unroll
     
     // Cosmetics on glass: yellow arrows:
-    painter->drawPixmap(-_glass.width()/2, -_glass.height()/2, _glass.width(), _glass.height(), _glass);
+    painter->drawPixmap(-_glass.width()/5., 
+                        -_glass.height()/5., 
+                         _glass.width()/2.5, 
+                         _glass.height()/2.5, 
+                         _glass);
     
-    
+    if (0){
+        // Print roll and pitch on AI for debugging, if needed.
+        QString pitchS = QString::number(pitch, 'f', 2);
+        int width = painter->fontMetrics().width(pitchS);
+        int height =painter->fontMetrics().height();
+        painter->drawText(-width/2,68,width, height, Qt::AlignCenter,  pitchS);
+        pitchS = QString::number(_rollValue, 'f', 2);
+        width = painter->fontMetrics().width(pitchS);
+        height =painter->fontMetrics().height();
+        painter->drawText(-width/2,80,width, height, Qt::AlignCenter,  pitchS);
+    }
     
     painter->restore();     //Untranslate
     painter->restore();     //Unscale
@@ -360,76 +438,15 @@ QString AttitudeIndicator::typeNameStatic() {
 
 void AttitudeIndicator::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
-/*    settings.setValue("unit", Units::unitName(units));
-    settings.setValue("range1", _range1);
-    settings.setValue("range2", _range2);
-    settings.setValue("thinbars", _thinBars);
-    settings.setValue("thickbars", _thickBars);
-    settings.setValue("numbers", _numbers);
-    settings.setValue("numbersscale", _numbersScale);
-*/
+
 }
 void AttitudeIndicator::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
-/*    QString unitname = settings.value("unit").toString();
-    DistanceUnit unit = Units::distanceUnitForName(unitname);
-    setUnit(unit);
-    setRange1(settings.value("range1", 500).toFloat());
-    setRange2(settings.value("range2", 5000).toFloat());
-    setThinBars(settings.value("thinbars", 10).toFloat());
-    setThickBars(settings.value("thickbars", 50).toFloat());
-    setNumbers(settings.value("numbers", 100).toFloat());
-    setNumbersScale(settings.value("numbersscale", 0.01).toFloat());
-*/ 
+
 }
 
 void AttitudeIndicator::createSettings(QGridLayout *layout) {
-/*    
-    QLabel *unitsLabel = new QLabel("Unit", layout->parentWidget());
-    layout->addWidget(unitsLabel, layout->rowCount(), 0);
-    DistanceUnitComboBox *unitsCombo = new DistanceUnitComboBox(layout->parentWidget(), units);
-    connect(unitsCombo, SIGNAL(unitSelected(DistanceUnit)), this, SLOT(setUnit(DistanceUnit)));
-    layout->addWidget(unitsCombo);
-    QLabel *range1Label = new QLabel("Range", layout->parentWidget());
-    layout->addWidget(range1Label);
-    NumberInputLineEdit *range1Edit = new NumberInputLineEdit(layout->parentWidget());
-    range1Edit->setText(QString::number(_range1));
-    layout->addWidget(range1Edit);
-    connect(range1Edit, SIGNAL(valueChangedFloat(float)), this, SLOT(setRange1(float)));
-    
-    QLabel *range2Label = new QLabel("Range 2", layout->parentWidget());
-    layout->addWidget(range2Label);
-    NumberInputLineEdit *range2Edit = new NumberInputLineEdit(layout->parentWidget());
-    range2Edit->setText(QString::number(_range2));
-    layout->addWidget(range2Edit);
-    connect(range2Edit, SIGNAL(valueChangedFloat(float)), this, SLOT(setRange2(float)));
-    
-    QLabel *thinBarsLabel = new QLabel("Thin bars every", layout->parentWidget());
-    layout->addWidget(thinBarsLabel);
-    NumberInputLineEdit *thinBarsEdit = new NumberInputLineEdit(layout->parentWidget());
-    thinBarsEdit->setText(QString::number(_thinBars));
-    layout->addWidget(thinBarsEdit);
-    connect(thinBarsEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setThinBars(float)));
-    
-    QLabel *thickBarsLabel = new QLabel("Thick bars every", layout->parentWidget());
-    layout->addWidget(thickBarsLabel);
-    NumberInputLineEdit *thickBarsEdit = new NumberInputLineEdit(layout->parentWidget());
-    thickBarsEdit->setText(QString::number(_thickBars));
-    layout->addWidget(thickBarsEdit);
-    connect(thickBarsEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setThickBars(float)));
-    
-    layout->addWidget(new QLabel("Numbers every", layout->parentWidget()));
-    NumberInputLineEdit *numbersEdit = new NumberInputLineEdit(layout->parentWidget());
-    numbersEdit->setText(QString::number(_numbers));
-    layout->addWidget(numbersEdit);
-    connect(numbersEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNumbers(float)));
-    
-    layout->addWidget(new QLabel("Number scale", layout->parentWidget()));
-    NumberInputLineEdit *numbersScaleEdit = new NumberInputLineEdit(layout->parentWidget());
-    numbersScaleEdit->setText(QString::number(_numbersScale));
-    layout->addWidget(numbersScaleEdit);
-    connect(numbersScaleEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNumbersScale(float)));
-*/
+
 }
 
 void AttitudeIndicator::setThickBars(float v){

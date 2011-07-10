@@ -67,7 +67,7 @@ private:
     float _baroPressure;
     
     static const float pitchPixelsPerDegree=1.0;
-    static const float maxPitch=40;
+    static const float maxPitch=35;
     
     float _rollValue;
     float _pitchValue;
