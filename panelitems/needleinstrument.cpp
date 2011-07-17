@@ -36,6 +36,11 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     painter->scale(side / 200.0, side / 200.0);
     painter->save();
     painter->translate(100, 100);
+    
+    painter->setBrush(Qt::black);
+    painter->drawChord(-100,-100,200,200,0,360*16);
+
+    
     painter->setPen(Qt::NoPen);
     painter->setBrush(needleColor);
 

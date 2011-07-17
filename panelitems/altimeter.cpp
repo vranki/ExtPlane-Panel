@@ -44,6 +44,9 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->save();
     painter->translate(100, 100);
 
+    painter->setBrush(Qt::black);
+    painter->drawChord(-100,-100,200,200,0,360*16);
+    
 
     painter->setPen(Qt::white);
     if(!_label.isEmpty()) {

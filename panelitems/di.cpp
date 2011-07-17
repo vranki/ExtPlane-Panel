@@ -82,6 +82,10 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     painter->setPen(Qt::white);
     
+    painter->setBrush(Qt::black);
+    painter->drawChord(-100,-100,200,200,0,360*16);
+
+    
     painter->setBrush(Qt::white);
     if(_thickBars > 0) {
         for (float i = 0 ; i <= _range1; i+=_thickBars) {
