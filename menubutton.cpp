@@ -1,13 +1,15 @@
 #include "menubutton.h"
 
 MenuButton::MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemFactory *gf) :
-        QObject(parent), panelItems(gaugelist), itemFactory(gf), settings("org.vranki", "extplane-gauges-panels", this)
+        QObject(parent), panelItems(gaugelist), itemFactory(gf), 
+        settings(QString("extpanel_gauges.ini"), QSettings::IniFormat, this)
+/*settings("org.vranki", "extplane-gauges-panels", this)*/
          {
     parentWidget = parent;
     side = 20;
     msg = 0;
     editMode = false;
-    settingsDialog = new SettingsDialog(parentWidget);
+    settingsDialog = new SettingsDialog(parentWidget, &settings);
     connect(settingsDialog, SIGNAL(rotationChanged(int)), this, SIGNAL(panelRotationChanged(int)));
     connect(settingsDialog, SIGNAL(fullscreenChanged(bool)), this, SIGNAL(fullscreenChanged(bool)));
     connect(settingsDialog, SIGNAL(setServerAddress(QString)), this, SIGNAL(setServerAddress(QString)));
@@ -62,15 +64,23 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     QPushButton *saveButton = new QPushButton("Save panel", msg);
     connect(saveButton, SIGNAL(clicked()), this, SLOT(savePanel()));
     layout->addWidget(saveButton);
+    
     QPushButton *loadButton = new QPushButton("Load panel", msg);
     connect(loadButton, SIGNAL(clicked()), this, SLOT(loadPanel()));
     layout->addWidget(loadButton);
+    
+    QPushButton *exportButton = new QPushButton("Export panel", msg);
+    connect(exportButton, SIGNAL(clicked()), this, SLOT(exportPanel()));
+    layout->addWidget(exportButton);
+    
     QPushButton *settingsButton = new QPushButton("App Settings", msg);
     connect(settingsButton, SIGNAL(clicked()), this, SLOT(showSettings()));
     layout->addWidget(settingsButton);
+    
     QPushButton *closeButton = new QPushButton("Close", msg);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
     layout->addWidget(closeButton);
+    
     QPushButton *quitButton = new QPushButton("Quit", msg);
     connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
     layout->addWidget(quitButton);
@@ -112,10 +122,11 @@ void MenuButton::deleteItems() {
 }
 
 void MenuButton::savePanel() {
-    settingsDialog->saveSettings();
-    int panelNumber = 0;
-    QString panelName = "Panel";
+  
     settings.clear();
+    settingsDialog->saveSettings(); // First save panel settings 
+    int panelNumber = 0;            // Now save gauge settings 
+    QString panelName = "Panel";
     settings.beginGroup("panel-" + QString::number(panelNumber));
     settings.setValue("number", panelNumber);
     settings.setValue("name", panelName);
@@ -137,8 +148,9 @@ void MenuButton::closeDialog() {
 }
 
 void MenuButton::loadPanel() {
-    settingsDialog->loadSettings();
+    settingsDialog->loadSettings(); // Fetches global panel settings and loads them
 
+    // Now go to gauge settings and load those:
     foreach(PanelItem *g, panelItems) {
         g->deleteLater();
     }
@@ -167,6 +179,41 @@ void MenuButton::loadPanel() {
     }
 
     closeDialog();
+}
+
+void MenuButton::exportPanel(void) {
+    // To be replaced with code to export current panel ini file to external file.    
+    
+/*    settingsDialog->loadSettings();
+    
+    foreach(PanelItem *g, panelItems) {
+        g->deleteLater();
+    }
+    int panelNumber = 0;
+    while(panelNumber >= 0) {
+        settings.beginGroup("panel-" + QString::number(panelNumber));
+        if(settings.contains("name")) {
+            int gc = settings.value("gaugecount", 0).toInt();
+            QString name = settings.value("name").toString();
+            for(int gn=0;gn<gc;gn++) {
+                settings.beginGroup("gauge-" + QString::number(gn));
+                PanelItem *g = itemFactory->itemForName(settings.value("type").toString(), parentWidget);
+                if(g) {
+                    emit itemAdded(g);
+                    g->loadSettings(settings);
+                } else {
+                    qDebug() << Q_FUNC_INFO << "Can't load item of type " << settings.value("type").toString();
+                }
+                settings.endGroup();
+            }
+            panelNumber++;
+        } else {
+            panelNumber = -1;
+        }
+        settings.endGroup();
+    }
+    
+    closeDialog(); */
 }
 
 

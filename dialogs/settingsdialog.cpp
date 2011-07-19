@@ -1,9 +1,22 @@
+/* This file manages the getting and setting of application settings:
+   - panel rotation
+   - panel fullscreen
+   - IP address
+*/
+
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
+SettingsDialog::SettingsDialog(QWidget *parent, QSettings *settings) :
     QDialog(parent),
-    ui(new Ui::SettingsDialog), settings("org.vranki", "extplane-gauges-settings", this) {
+    ui(new Ui::SettingsDialog){
+
+/*    _rotation=0;
+    _fullscreen=false;
+    _serverAddress=QString("127.0.0.1:51000");
+*/
+    _settings = settings;
+
     ui->setupUi(this);
     connect(ui->panelRotationDial, SIGNAL(valueChanged(int)), this, SIGNAL(rotationChanged(int)));
     connect(ui->fullscreenCheckbox, SIGNAL(clicked(bool)), this, SIGNAL(fullscreenChanged(bool)));
@@ -25,21 +38,28 @@ void SettingsDialog::changeEvent(QEvent *e) {
     }
 }
 
+
 void SettingsDialog::loadSettings() {
-    settings.beginGroup("settings");
-    qDebug() << Q_FUNC_INFO << settings.value("panelrotation").toInt();
-    ui->panelRotationDial->setValue(settings.value("panelrotation").toInt());
-    ui->fullscreenCheckbox->setChecked(settings.value("fullscreen", false).toBool());
+    /* Load settings for panel rotation, fullscreen, and address from .ini file */
+    
+    _settings->beginGroup("settings");
+    qDebug() << Q_FUNC_INFO << _settings->value("panelrotation").toInt();
+    ui->panelRotationDial->setValue(_settings->value("panelrotation").toInt());
+    ui->fullscreenCheckbox->setChecked(_settings->value("fullscreen", false).toBool());
     emit fullscreenChanged(ui->fullscreenCheckbox->isChecked());
-    ui->serverAddressEdit->setText(settings.value("serveraddress", "127.0.0.1:51000").toString());
+    ui->serverAddressEdit->setText(_settings->value("serveraddress", "127.0.0.1:51000").toString());
     emit setServerAddress(ui->serverAddressEdit->text());
-    settings.endGroup();
+    _settings->endGroup();
+
 }
 
 void SettingsDialog::saveSettings() {
-    settings.beginGroup("settings");
-    settings.setValue("panelrotation", ui->panelRotationDial->value());
-    settings.setValue("fullscreen", ui->fullscreenCheckbox->isChecked());
-    settings.setValue("serveraddress", ui->serverAddressEdit->text());
-    settings.endGroup();
+    /* Load settings for panel rotation, fullscreen, and address from .ini file */
+    
+    _settings->beginGroup("settings");
+    _settings->setValue("panelrotation", ui->panelRotationDial->value());
+    _settings->setValue("fullscreen", ui->fullscreenCheckbox->isChecked());
+    _settings->setValue("serveraddress", ui->serverAddressEdit->text());
+    _settings->endGroup();
+    
 }

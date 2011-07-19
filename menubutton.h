@@ -37,6 +37,7 @@ public slots:
     void closeDialog();
     void savePanel();
     void loadPanel();
+    void exportPanel(void);
     void showSettings();
     void quit();
     void itemProperties();
