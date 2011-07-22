@@ -214,6 +214,7 @@ QString DirectionIndicator::typeNameStatic() {
 
 void DirectionIndicator::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
+/*    
     settings.setValue("unit", Units::unitName(units));
     settings.setValue("range1", _range1);
     settings.setValue("range2", _range2);
@@ -221,21 +222,23 @@ void DirectionIndicator::storeSettings(QSettings &settings) {
     settings.setValue("thickbars", _thickBars);
     settings.setValue("numbers", _numbers);
     settings.setValue("numbersscale", _numbersScale);
+*/
 }
 void DirectionIndicator::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
     QString unitname = settings.value("unit").toString();
     DistanceUnit unit = Units::distanceUnitForName(unitname);
     setUnit(unit);
-    setRange1(settings.value("range1", 500).toFloat());
-    setRange2(settings.value("range2", 5000).toFloat());
+    setRange1(settings.value("range1", 360).toFloat());
+    setRange2(settings.value("range2", 360).toFloat());
     setThinBars(settings.value("thinbars", 10).toFloat());
-    setThickBars(settings.value("thickbars", 50).toFloat());
-    setNumbers(settings.value("numbers", 100).toFloat());
-    setNumbersScale(settings.value("numbersscale", 0.01).toFloat());
+    setThickBars(settings.value("thickbars", 30).toFloat());
+    setNumbers(settings.value("numbers", 30).toFloat());
+    setNumbersScale(settings.value("numbersscale", 0.1).toFloat());
 }
 
 void DirectionIndicator::createSettings(QGridLayout *layout) {
+/*    
     QLabel *unitsLabel = new QLabel("Unit", layout->parentWidget());
     layout->addWidget(unitsLabel, layout->rowCount(), 0);
     DistanceUnitComboBox *unitsCombo = new DistanceUnitComboBox(layout->parentWidget(), units);
@@ -280,6 +283,8 @@ void DirectionIndicator::createSettings(QGridLayout *layout) {
     numbersScaleEdit->setText(QString::number(_numbersScale));
     layout->addWidget(numbersScaleEdit);
     connect(numbersScaleEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNumbersScale(float)));
+*/
+
 }
 
 void DirectionIndicator::setThickBars(float v){

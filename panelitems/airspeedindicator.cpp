@@ -24,7 +24,7 @@ void AirspeedIndicator::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
 
     settings.setValue("unit", Units::unitName(units));
-    settings.setValue("maxvalue", maxValue);
+    settings.setValue("maxvalue", QString::number(maxValue));
 }
 
 void AirspeedIndicator::loadSettings(QSettings &settings) {

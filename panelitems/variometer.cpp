@@ -30,8 +30,8 @@ void Variometer::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
 
     settings.setValue("unit", Units::unitName(units));
-    settings.setValue("maxvalue", maxValue);
-    settings.setValue("scalevalue", numberScale);
+    settings.setValue("maxvalue", QString::number(maxValue));
+    settings.setValue("scalevalue", QString::number(numberScale));
     settings.setValue("totalenergy", isTotalEnergy);
 }
 

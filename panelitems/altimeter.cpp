@@ -168,12 +168,12 @@ QString Altimeter::typeNameStatic() {
 void Altimeter::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
     settings.setValue("unit", Units::unitName(units));
-    settings.setValue("range1", _range1);
-    settings.setValue("range2", _range2);
-    settings.setValue("thinbars", _thinBars);
-    settings.setValue("thickbars", _thickBars);
-    settings.setValue("numbers", _numbers);
-    settings.setValue("numbersscale", _numbersScale);
+    settings.setValue("range1", QString::number(_range1));
+    settings.setValue("range2", QString::number(_range2));
+    settings.setValue("thinbars", QString::number(_thinBars));
+    settings.setValue("thickbars", QString::number(_thickBars));
+    settings.setValue("numbers", QString::number(_numbers));
+    settings.setValue("numbersscale", QString::number(_numbersScale));
 }
 void Altimeter::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
