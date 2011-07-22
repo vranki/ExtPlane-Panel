@@ -5,6 +5,8 @@ maemo5: {
  DEFINES += MAEMO
 }
 
+ICON = extplane-panel.icns
+
 TARGET = extplane-panel
 
 TEMPLATE = app
