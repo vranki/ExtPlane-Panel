@@ -377,7 +377,15 @@ void TurnAndBank::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     
     float x=0., y=0;
     const float pixelDeflectionPerDegree = 7.;
+    
+    if (_slipValue>maxOffbalance) _slipValue=maxOffbalance;
+    if (_slipValue<(0-maxOffbalance)) _slipValue=0-maxOffbalance;
+    
+    
     x-=pixelDeflectionPerDegree*_slipValue;
+    
+    
+    
     y-=fabs(_slipValue)/3.1;
     painter->setBrush(Qt::black);
     painter->drawEllipse(QRectF(x-10.,35.+y, 20., 25.));

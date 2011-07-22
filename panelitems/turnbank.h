@@ -56,6 +56,7 @@ private:
     float _baroPressure;
     
     static const float maxRoll=70;
+    static const float maxOffbalance=7.5;
     
     float _slipValue;
     float _rollValue;
