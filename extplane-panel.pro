@@ -33,6 +33,7 @@ SOURCES += main.cpp \
     panelitems/di.cpp \
     panelitems/attitudeindicator.cpp \
     panelitems/turnbank.cpp \
+    panelitems/engine_rpm.cpp \
     widgets/distanceunitcombobox.cpp \
     panelitems/button.cpp
 
@@ -58,6 +59,7 @@ HEADERS += \
     panelitems/di.h \
     panelitems/attitudeindicator.h \
     panelitems/turnbank.h \
+    panelitems/engine_rpm.h \
     widgets/distanceunitcombobox.h \
     panelitems/button.h
 

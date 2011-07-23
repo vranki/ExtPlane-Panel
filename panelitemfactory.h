@@ -12,6 +12,8 @@
 #include "panelitems/attitudeindicator.h"
 #include "panelitems/turnbank.h"
 #include "panelitems/button.h"
+#include "panelitems/engine_rpm.h"
+
 
 #include "extplaneconnection.h"
 

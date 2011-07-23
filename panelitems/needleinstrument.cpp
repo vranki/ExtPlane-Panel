@@ -28,7 +28,7 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         QPoint(0, -95)
     };
 
-    QColor needleColor(255, 0, 0); //255, 255);
+    QColor needleColor(255, 255, 255); //0, 0); //255, 255);
 
     int side = qMin(width(), height());
     painter->setRenderHint(QPainter::Antialiasing);

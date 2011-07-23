@@ -214,15 +214,7 @@ QString DirectionIndicator::typeNameStatic() {
 
 void DirectionIndicator::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
-/*    
-    settings.setValue("unit", Units::unitName(units));
-    settings.setValue("range1", _range1);
-    settings.setValue("range2", _range2);
-    settings.setValue("thinbars", _thinBars);
-    settings.setValue("thickbars", _thickBars);
-    settings.setValue("numbers", _numbers);
-    settings.setValue("numbersscale", _numbersScale);
-*/
+
 }
 void DirectionIndicator::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
@@ -238,52 +230,6 @@ void DirectionIndicator::loadSettings(QSettings &settings) {
 }
 
 void DirectionIndicator::createSettings(QGridLayout *layout) {
-/*    
-    QLabel *unitsLabel = new QLabel("Unit", layout->parentWidget());
-    layout->addWidget(unitsLabel, layout->rowCount(), 0);
-    DistanceUnitComboBox *unitsCombo = new DistanceUnitComboBox(layout->parentWidget(), units);
-    connect(unitsCombo, SIGNAL(unitSelected(DistanceUnit)), this, SLOT(setUnit(DistanceUnit)));
-    layout->addWidget(unitsCombo);
-    QLabel *range1Label = new QLabel("Range", layout->parentWidget());
-    layout->addWidget(range1Label);
-    NumberInputLineEdit *range1Edit = new NumberInputLineEdit(layout->parentWidget());
-    range1Edit->setText(QString::number(_range1));
-    layout->addWidget(range1Edit);
-    connect(range1Edit, SIGNAL(valueChangedFloat(float)), this, SLOT(setRange1(float)));
-    
-    QLabel *range2Label = new QLabel("Range 2", layout->parentWidget());
-    layout->addWidget(range2Label);
-    NumberInputLineEdit *range2Edit = new NumberInputLineEdit(layout->parentWidget());
-    range2Edit->setText(QString::number(_range2));
-    layout->addWidget(range2Edit);
-    connect(range2Edit, SIGNAL(valueChangedFloat(float)), this, SLOT(setRange2(float)));
-    
-    QLabel *thinBarsLabel = new QLabel("Thin bars every", layout->parentWidget());
-    layout->addWidget(thinBarsLabel);
-    NumberInputLineEdit *thinBarsEdit = new NumberInputLineEdit(layout->parentWidget());
-    thinBarsEdit->setText(QString::number(_thinBars));
-    layout->addWidget(thinBarsEdit);
-    connect(thinBarsEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setThinBars(float)));
-    
-    QLabel *thickBarsLabel = new QLabel("Thick bars every", layout->parentWidget());
-    layout->addWidget(thickBarsLabel);
-    NumberInputLineEdit *thickBarsEdit = new NumberInputLineEdit(layout->parentWidget());
-    thickBarsEdit->setText(QString::number(_thickBars));
-    layout->addWidget(thickBarsEdit);
-    connect(thickBarsEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setThickBars(float)));
-    
-    layout->addWidget(new QLabel("Numbers every", layout->parentWidget()));
-    NumberInputLineEdit *numbersEdit = new NumberInputLineEdit(layout->parentWidget());
-    numbersEdit->setText(QString::number(_numbers));
-    layout->addWidget(numbersEdit);
-    connect(numbersEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNumbers(float)));
-    
-    layout->addWidget(new QLabel("Number scale", layout->parentWidget()));
-    NumberInputLineEdit *numbersScaleEdit = new NumberInputLineEdit(layout->parentWidget());
-    numbersScaleEdit->setText(QString::number(_numbersScale));
-    layout->addWidget(numbersScaleEdit);
-    connect(numbersScaleEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNumbersScale(float)));
-*/
 
 }
 

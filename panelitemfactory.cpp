@@ -21,6 +21,8 @@ PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject) {
         g = new AttitudeIndicator(parentObject, connection);
     } else if(name == TurnAndBank::typeNameStatic()) {
         g = new TurnAndBank(parentObject, connection);
+    } else if(name == EngineRPM::typeNameStatic()) {
+        g = new EngineRPM(parentObject, connection);
     } else if(name == Button::typeNameStatic()) {
         g = new Button(parentObject, connection);
     }
@@ -29,6 +31,7 @@ PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject) {
 
 QStringList PanelItemFactory::itemNames() {
     QStringList items;
-    items << AirspeedIndicator::typeNameStatic() << TurnAndBank::typeNameStatic() << DirectionIndicator::typeNameStatic() << AttitudeIndicator::typeNameStatic() << Compass::typeNameStatic() << Variometer::typeNameStatic() << Altimeter::typeNameStatic() << Button::typeNameStatic();
+    items << AirspeedIndicator::typeNameStatic() 
+          << EngineRPM::typeNameStatic() << TurnAndBank::typeNameStatic() << DirectionIndicator::typeNameStatic() << AttitudeIndicator::typeNameStatic() << Compass::typeNameStatic() << Variometer::typeNameStatic() << Altimeter::typeNameStatic() << Button::typeNameStatic();
     return items;
 }
