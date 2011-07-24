@@ -41,11 +41,17 @@ PanelItem(parent), _client(this, typeName(), conn)
     createGlass();
     createFrame();
     createBackground();
+    createBezel();
     
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef(_pitchRef,0.1);
     _client.subscribeDataRef(_rollRef,0.1);
     
+}
+
+void AttitudeIndicator::createBezel(void){
+    QImage _bezelImage = QImage(QString("../../images/bezel2.png"));
+    _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
 }
 
 void AttitudeIndicator::createCard(void){
@@ -355,6 +361,7 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
                         _frame.width()/3., 
                         _frame.height()/3., 
                          _frame);
+
     
 /*    painter->drawPixmap(-100,
                         -100, 
@@ -371,6 +378,7 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
                          _glass.height()/2.5, 
                          _glass);
     
+
     if (0){
         // Print roll and pitch on AI for debugging, if needed.
         QString pitchS = QString::number(pitch, 'f', 2);
@@ -382,9 +390,15 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         height =painter->fontMetrics().height();
         painter->drawText(-width/2,80,width, height, Qt::AlignCenter,  pitchS);
     }
+
+    painter->drawPixmap(-_bezel.width()/4.2-3,-_bezel.height()/4.2 +5, 
+                        _bezel.width()/2.1, _bezel.height()/2.1, 
+                        _bezel);
     
     painter->restore();     //Untranslate
     painter->restore();     //Unscale
+
+
     
     
     PanelItem::paint(painter, option, widget);

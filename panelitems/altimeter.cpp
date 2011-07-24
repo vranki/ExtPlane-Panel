@@ -109,6 +109,11 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->restore();
     painter->setBrush(Qt::white);
 
+    QPixmap _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
+    painter->drawPixmap(-_bezel.width()/4.2-3,-_bezel.height()/4.1 +5, 
+                        _bezel.width()/2.1, _bezel.height()/2.05, 
+                        _bezel);
+    
     painter->restore();
 
     painter->restore();

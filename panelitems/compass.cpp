@@ -20,6 +20,7 @@ void Compass::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     while(hdgString.length() < 3)
         hdgString = "0" + hdgString;
     painter->drawText(QRect(0,0,width(), height()), Qt::AlignCenter, hdgString);
+ 
     PanelItem::paint(painter, option, widget);
 }
 
