@@ -19,11 +19,11 @@ public:
 public slots:
     void speedChanged(QString name, double speed);
     void setUnit(VelocityUnit un);
-    void setMaxValue(float mv);
+    //    void setMaxValue(float mv);
 private:
     ExtPlaneClient _client;
     VelocityUnit units;
-    float maxValue;
+    //    float maxValue;
 };
 
 #endif // AIRSPEEDINDICATOR_H

@@ -8,7 +8,7 @@ _client(this, typeName(), conn) {
     setBars(10, 5);
     setNumbers(20);
     setUnit(VELOCITY_KTS);
-    setMaxValue(300);
+    //    setMaxValue(300);
 }
 
 void AirspeedIndicator::speedChanged(QString name, double speed) {
@@ -21,18 +21,18 @@ void AirspeedIndicator::setUnit(VelocityUnit unit) {
 }
 
 void AirspeedIndicator::storeSettings(QSettings &settings) {
-    PanelItem::storeSettings(settings);
+    NeedleInstrument::storeSettings(settings);
 
     settings.setValue("unit", Units::unitName(units));
-    settings.setValue("maxvalue", QString::number(maxValue));
+    //    settings.setValue("maxvalue", QString::number(maxValue));
 }
 
 void AirspeedIndicator::loadSettings(QSettings &settings) {
-    PanelItem::loadSettings(settings);
+    NeedleInstrument::loadSettings(settings);
     QString unitname = settings.value("unit").toString();
     VelocityUnit unit = Units::velocityUnitForName(unitname);
     setUnit(unit);
-    setMaxValue(settings.value("maxvalue", 300).toFloat());
+    //    setMaxValue(settings.value("maxvalue", 300).toFloat());
 }
 
 QString AirspeedIndicator::typeName() {
@@ -42,10 +42,10 @@ QString AirspeedIndicator::typeName() {
 QString AirspeedIndicator::typeNameStatic() {
     return "indicator/airspeed/round";
 }
-void AirspeedIndicator::setMaxValue(float mv) {
-    maxValue = mv;
-    setScale(25, 40, 0+330, maxValue);
-}
+//void AirspeedIndicator::setMaxValue(float mv) {
+    //    maxValue = mv;
+    // setScale(25, NeedleInstrument::_zeroValue, 0+330, maxValue);
+    //}
 
 void AirspeedIndicator::createSettings(QGridLayout *layout) {
     QLabel *unitsLabel = new QLabel("Unit", layout->parentWidget());
@@ -53,10 +53,7 @@ void AirspeedIndicator::createSettings(QGridLayout *layout) {
     VelocityUnitComboBox *unitsCombo = new VelocityUnitComboBox(layout->parentWidget(), units);
     connect(unitsCombo, SIGNAL(unitSelected(VelocityUnit)), this, SLOT(setUnit(VelocityUnit)));
     layout->addWidget(unitsCombo);
-    QLabel *maxLabel = new QLabel("Maximum value", layout->parentWidget());
-    layout->addWidget(maxLabel);
-    NumberInputLineEdit *maxValueEdit = new NumberInputLineEdit(layout->parentWidget());
-    maxValueEdit->setText(QString::number(maxValue));
-    layout->addWidget(maxValueEdit);
-    connect(maxValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMaxValue(float)));
+
+    NeedleInstrument::createSettings(layout);
+
 }
