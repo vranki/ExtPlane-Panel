@@ -20,7 +20,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(), itemFacto
     setBackgroundBrush(QBrush(QColor(103,103,103)));//QBrush(Qt::black));
     connect(&connection, SIGNAL(connectionError(QString)), this, SLOT(connectionError(QString)));
     errorMessage.setDefaultTextColor(Qt::red);
-    errorMessage.setPos(0,20);
+    errorMessage.setPos(0,height()-20);
     scene.addItem(&errorMessage);
     menuButton->loadPanel();
 
