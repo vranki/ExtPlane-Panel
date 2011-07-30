@@ -36,6 +36,7 @@ PanelItem(parent), _client(this, typeName(), conn)
     createGlass();
     createFrame();
     createBall();
+    _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel_square_.png")), Qt::AutoColor);
     
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef(_slipRef,0.02);
@@ -122,7 +123,7 @@ void TurnAndBank::createFrame(void){
     p.drawChord(-outerR, -outerR, 2*outerR, 2*outerR, 0, 360*16);
 
     //Ring outside of intstrument with white line:
-    if (1){
+    if (0){
         p.setPen(QPen(QColor(225,225,225), 2, Qt::SolidLine,
                       Qt::FlatCap, Qt::MiterJoin));
         p.setBrush(Qt::NoBrush);
@@ -361,6 +362,12 @@ void TurnAndBank::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     painter->save();
     painter->translate(100, 100);
     
+    painter->setBrush(Qt::black);
+    painter->drawChord(-95,-95,190,190,0,360*16);
+    
+    painter->save();
+    painter->scale(0.92,0.92);
+    
     painter->setPen(Qt::white);
     
     painter->setBrush(Qt::NoBrush);
@@ -396,34 +403,15 @@ void TurnAndBank::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     if (roll>maxRoll) roll=maxRoll;
     if (roll<(0-maxRoll)) roll=(0-maxRoll);
 
+    
+    
     painter->rotate(roll);
-    
-    
-    // Draw background to moving disk as a gradient from sky to ground:
-    
-    //painter->drawPixmap(-_ball.width()/2, -_ball.height()/2, _ball.width(), _ball.height(), _ball);
     
     painter->drawPixmap(-80, -(_card.height()*160./_card.width())/2., 
                         160, _card.height()*160./_card.width(), 
                         _card);
     
-    
-    /*    painter->drawPixmap(-100,
-     -100, 
-     200, 
-     200, 
-     _frame);
-     */    
     painter->restore();     //Unroll
-    
-    // Cosmetics on glass: yellow arrows:
-/*    painter->drawPixmap(-_glass.width()/5., 
-                        -_glass.height()/5., 
-                        _glass.width()/2.5, 
-                        _glass.height()/2.5, 
-                        _glass);
-*/
-    
     
     if (0){
         // Print roll and pitch on AI for debugging, if needed.
@@ -433,10 +421,8 @@ void TurnAndBank::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         painter->drawText(-width/2,68,width, height, Qt::AlignCenter,  pitchS);
     }
 
-    QPixmap _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
-    painter->drawPixmap(-_bezel.width()/4.2-3,-_bezel.height()/4.1 +5, 
-                        _bezel.width()/2.1, _bezel.height()/2.05, 
-                        _bezel);
+    painter->restore();
+    painter->drawPixmap(-100,-100,200,200, _bezel);
     
     painter->restore();     //Untranslate
     painter->restore();     //Unscale

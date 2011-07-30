@@ -34,24 +34,17 @@ PanelItem(parent), _client(this, typeName(), conn)
     _pitchRef = QString("sim/cockpit2/gauges/indicators/pitch_vacuum_deg_pilot");
     _rollRef = QString("sim/cockpit2/gauges/indicators/roll_vacuum_deg_pilot");
     
-    //    _card = QPixmap(QString("junk"));//../images/engine_FUELP.png"));
-    
-    
     createCard();
     createGlass();
     createFrame();
     createBackground();
-    createBezel();
     
+    _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel_square_.png")), Qt::AutoColor);
+
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef(_pitchRef,0.05);
     _client.subscribeDataRef(_rollRef,0.05);
     
-}
-
-void AttitudeIndicator::createBezel(void){
-    QImage _bezelImage = QImage(QString("../../images/bezel2.png"));
-    _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
 }
 
 void AttitudeIndicator::createCard(void){
@@ -317,11 +310,6 @@ void AttitudeIndicator::setNumbers(float div) {
 }
 
 void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-
-    
-    
-
-
     
     QColor needleColor(255, 255, 255);
     
@@ -335,6 +323,9 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     painter->setPen(Qt::white);
     
     painter->setBrush(Qt::NoBrush);
+    
+    painter->save();
+    painter->scale(0.92, 0.92);
     
     
     painter->save();
@@ -396,9 +387,8 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         painter->drawText(-width/2,80,width, height, Qt::AlignCenter,  pitchS);
     }
 
-    painter->drawPixmap(-_bezel.width()/4.2-3,-_bezel.height()/4.2 +5, 
-                        _bezel.width()/2.1, _bezel.height()/2.1, 
-                        _bezel);
+    painter->restore();
+    painter->drawPixmap(-100,-100,200,200, _bezel);
     
     painter->restore();     //Untranslate
     painter->restore();     //Unscale

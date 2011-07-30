@@ -22,6 +22,9 @@ PanelItem(parent), _client(this, typeName(), conn)
     setNumbersScale(0.1);
     units = DISTANCE_M;
     baroUnits = PRESSURE_HPA;
+    
+    _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel_square_.png")), Qt::AutoColor);
+    
     createCard(); 
     
     _dataRef = QString("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot");
@@ -162,6 +165,10 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->translate(100, 100);
 
     painter->save();
+    painter->scale(0.91,0.91);
+
+    
+    painter->save();
     painter->rotate(- _value);
 
     
@@ -191,10 +198,8 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->restore();
     painter->setBrush(Qt::white);
     
-    QPixmap _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
-    painter->drawPixmap(-_bezel.width()/4.2-3,-_bezel.height()/4.1 +5, 
-                        _bezel.width()/2.1, _bezel.height()/2.05, 
-                        _bezel);
+    painter->restore();
+    painter->drawPixmap(-100,-100,200,200, _bezel);
     
     painter->restore();
     

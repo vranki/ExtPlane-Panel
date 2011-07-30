@@ -11,6 +11,8 @@ Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
     setNumbers(50);
     setNumbersScale(0.01);
     _baroPressure = 1013.25;
+    _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel_square_.png")), Qt::AutoColor);
+
     units = DISTANCE_M;
     baroUnits = PRESSURE_HPA;
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
@@ -47,7 +49,9 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setBrush(Qt::black);
     painter->drawChord(-100,-100,200,200,0,360*16);
     
-
+    painter->save();
+    painter->scale(0.90, 0.90); // Scale to draw within bezel
+    
     painter->setPen(Qt::white);
     if(!_label.isEmpty()) {
         int textwidth = painter->fontMetrics().width(_label);
@@ -113,10 +117,9 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->restore();
     painter->setBrush(Qt::white);
 
-    QPixmap _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
-    painter->drawPixmap(-_bezel.width()/4.2-3,-_bezel.height()/4.1 +5, 
-                        _bezel.width()/2.1, _bezel.height()/2.05, 
-                        _bezel);
+    painter->restore();
+    
+    painter->drawPixmap(-100,-100,200,200,_bezel);
     
     painter->restore();
 

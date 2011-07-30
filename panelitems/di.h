@@ -54,6 +54,8 @@ private:
     QString _label;
     QString _dataRef;
     QPixmap _card;
+    QPixmap _bezel;
+    
 };
 
 #endif // DI_H

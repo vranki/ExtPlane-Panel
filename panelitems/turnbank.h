@@ -67,6 +67,7 @@ private:
     QPixmap _frame;
     QPixmap _glass;
     QPixmap _ball;
+    QPixmap _bezel;
     
 };
 

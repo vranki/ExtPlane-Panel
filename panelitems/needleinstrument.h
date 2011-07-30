@@ -64,7 +64,7 @@ private:
 
     QString _numberFontname;
     int _numberFontsize;
-    
+    QPixmap _bezel;
     QString _label;
 };
 

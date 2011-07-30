@@ -15,7 +15,9 @@ NeedleInstrument::NeedleInstrument(QObject *parent) :
     
     _numberFontname = "Helvetica";
     _numberFontsize = 16;
-   
+
+    _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel_square_.png")), Qt::AutoColor);
+    
 }
 
 void NeedleInstrument::setNumbers(float div) {
@@ -44,15 +46,19 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     painter->translate(100, 100);
     
     painter->setBrush(Qt::black);
-    painter->drawChord(-100,-100,200,200,0,360*16);
+    painter->drawChord(-95,-95,190,190,0,360*16);
 
     
     painter->setPen(Qt::NoPen);
     painter->setBrush(needleColor);
 
     painter->save();
+    
     float needleValue = qMax(qMin(_value, _maxValue), _minValue);
 
+    painter->scale(0.90, 0.90); // Scale to draw within bezel
+    painter->save();
+    
     painter->rotate(value2Angle(needleValue));
     painter->drawConvexPolygon(needle, 3);
     painter->restore();
@@ -62,6 +68,8 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         int textwidth = painter->fontMetrics().width(_label);
         painter->drawText(-textwidth/2,-70, textwidth, 200, Qt::AlignCenter, _label);
     }
+    // painter->drawRect(-100,0,1,20); Test line for fitting bezel
+    
     if(_thickBars != 0) {
         for (float i = _minValue ; i <= _maxValue; i+=_thickBars) {
             if (i>=_minTextValue){
@@ -105,11 +113,17 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             }
         }
     }
-    QPixmap _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
+    
+/*    QPixmap _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
     painter->drawPixmap(-_bezel.width()/4.2-3,-_bezel.height()/4.1 +5, 
                         _bezel.width()/2.1, _bezel.height()/2.05, 
-                        _bezel);
-
+                        _bezel);*/
+    
+    
+    painter->restore();     // Restore to full 200x200 size
+    
+    painter->drawPixmap(-100, -100, 200, 200, _bezel);
+    
     painter->restore();
 
     painter->restore();
