@@ -44,8 +44,8 @@ PanelItem(parent), _client(this, typeName(), conn)
     createBezel();
     
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    _client.subscribeDataRef(_pitchRef,0.1);
-    _client.subscribeDataRef(_rollRef,0.1);
+    _client.subscribeDataRef(_pitchRef,0.05);
+    _client.subscribeDataRef(_rollRef,0.05);
     
 }
 
@@ -348,13 +348,25 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     
     // Draw background to moving disk as a gradient from sky to ground:
     
-    painter->drawPixmap(-_background.width()/2, -_background.height()/2, _background.width(), _background.height(), _background);
+    painter->drawPixmap(-_background.width()/2, 
+                        -_background.height()/2, 
+                        _background.width(), 
+                        _background.height(), 
+                        _background);
     
-    painter->drawPixmap(-_card.width()/6., 
+    QRectF source(0.,0.,(float)_card.width(), (float)_card.height());
+    
+    QRectF target((float)-_card.width()/6., 
+                  (float)pitch - (float)_card.height()/6., 
+                  (float)_card.width()/3., 
+                  (float)_card.height()/3);
+    
+    painter->drawPixmap(target, _card, source);
+                        /*-_card.width()/6., 
                         pitch - _card.height()/6., 
                         _card.width()/3., 
                         _card.height()/3, 
-                        _card);
+                        _card); */
     
     painter->drawPixmap(-_frame.width()/6., 
                         -_frame.height()/6., 
@@ -362,13 +374,6 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
                         _frame.height()/3., 
                          _frame);
 
-    
-/*    painter->drawPixmap(-100,
-                        -100, 
-                        200, 
-                        200, 
-                        _frame);
-*/    
     painter->restore();     //Unroll
     
     // Cosmetics on glass: yellow arrows:
