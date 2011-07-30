@@ -45,6 +45,7 @@ public:
 public slots:
     void setValue(float value);
     void setMinValue(float value);
+    void setMinTextValue(float value);
     void setMaxValue(float value);    
     void setMinAngle(float value);
     void setMaxAngle(float value);   
@@ -56,7 +57,10 @@ private:
     float _numberScale;
     float value2Angle(float value);
     
-    float _value, _minAngle, _maxAngle, _minValue, _maxValue;
+    float _value;
+    float _minAngle, _maxAngle;
+    float _minValue, _maxValue;
+    float _minTextValue;        // Values less than this aren't labelled
 
     QString _numberFontname;
     int _numberFontsize;

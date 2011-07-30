@@ -8,6 +8,7 @@ NeedleInstrument::NeedleInstrument(QObject *parent) :
     _minAngle = 0;
     _maxValue = 1.;
     _maxAngle = 360.;
+    _minTextValue = 0;
     _thickBars = _thinBars = 0;
     _numbers = 0;
     _numberScale = 1;
@@ -63,39 +64,45 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     }
     if(_thickBars != 0) {
         for (float i = _minValue ; i <= _maxValue; i+=_thickBars) {
-            painter->save();
-            painter->rotate(value2Angle(i));
-            painter->drawRect(-1, -100, 2, 14);
-            painter->restore();
+            if (i>=_minTextValue){
+                painter->save();
+                painter->rotate(value2Angle(i));
+                painter->drawRect(-1, -100, 2, 14);
+                painter->restore();
+            }
         }
     }
     if(_thinBars != 0) {
         for (float i = _minValue ; i <= _maxValue; i+=_thinBars) {
-            painter->save();
-            painter->rotate(value2Angle(i));
-            painter->drawRect(-0.3, -100, 0.6, 8);
-            painter->restore();
+            if (i>=_minTextValue){
+                painter->save();
+                painter->rotate(value2Angle(i));
+                painter->drawRect(-0.3, -100, 0.6, 8);
+                painter->restore();
+            }
         }
     }
     painter->setPen(QColor(200,200,200));
     if(_numbers != 0) {
         for (float i = _minValue ; i <= _maxValue; i+=_numbers) {
-            painter->save();
-            painter->rotate(value2Angle(i));
-            painter->save();
-            QString lineNumber = QString::number(i * _numberScale);
-            painter->translate(0,-73);
-            painter->rotate(-value2Angle(i));
+            if (i>=_minTextValue){
+                painter->save();
+                painter->rotate(value2Angle(i));
+                painter->save();
+                QString lineNumber = QString::number(i * _numberScale);
+                painter->translate(0,-73);
+                painter->rotate(-value2Angle(i));
 
-            painter->setPen(QColor(200,200,200));
-            painter->setFont(QFont(QString(_numberFontname), 
-                                   _numberFontsize, QFont::Bold, false));
-            
-            int width = painter->fontMetrics().width(lineNumber);
-            int height =painter->fontMetrics().height();
-            painter->drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
-            painter->restore();
-            painter->restore();
+                painter->setPen(QColor(200,200,200));
+                painter->setFont(QFont(QString(_numberFontname), 
+                                       _numberFontsize, QFont::Bold, false));
+                
+                int width = painter->fontMetrics().width(lineNumber);
+                int height =painter->fontMetrics().height();
+                painter->drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
+                painter->restore();
+                painter->restore();
+            }
         }
     }
     QPixmap _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
@@ -136,6 +143,12 @@ void NeedleInstrument::setMinValue(float value) {
     update();
 }
 
+void NeedleInstrument::setMinTextValue(float value) {
+    if(value == _minTextValue) return;
+    _minTextValue = value;
+    update();
+}
+
 void NeedleInstrument::setMaxValue(float value) {
     if(value == _maxValue) return;
     _maxValue = value;
@@ -172,6 +185,7 @@ float NeedleInstrument::value2Angle(float value) {
 void NeedleInstrument::storeSettings(QSettings &settings){
     PanelItem::storeSettings(settings);
     settings.setValue("minValue", _minValue);
+    settings.setValue("minTextValue", _minTextValue);
     settings.setValue("maxValue", _maxValue);
     settings.setValue("minAngle", _minAngle);
     settings.setValue("maxAngle", _maxAngle);
@@ -180,6 +194,7 @@ void NeedleInstrument::storeSettings(QSettings &settings){
 void NeedleInstrument::loadSettings(QSettings &settings){
     PanelItem::loadSettings(settings);
     setMinValue(settings.value("minValue", 30).toFloat());
+    setMinTextValue(settings.value("minTextValue", 0).toFloat());
     setMinAngle(settings.value("minAngle", 30).toFloat());
     setMaxValue(settings.value("maxValue", 190).toFloat());
     setMaxAngle(settings.value("maxAngle", 330).toFloat());
@@ -195,6 +210,13 @@ void NeedleInstrument::createSettings(QGridLayout *layout){
     zeroValueEdit->setText(QString::number(_minValue));
     layout->addWidget(zeroValueEdit);
     connect(zeroValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMinValue(float)));
+
+    QLabel *minTLabel = new QLabel("Minimum text value", layout->parentWidget());
+    layout->addWidget(minTLabel);
+    NumberInputLineEdit *minTextValueEdit = new NumberInputLineEdit(layout->parentWidget());
+    minTextValueEdit->setText(QString::number(_minTextValue));
+    layout->addWidget(minTextValueEdit);
+    connect(minTextValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMinTextValue(float)));
 
     QLabel *minALabel = new QLabel("Angle of min value", layout->parentWidget());
     layout->addWidget(minALabel);

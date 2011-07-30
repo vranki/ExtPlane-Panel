@@ -20,7 +20,6 @@ EngineRPM::EngineRPM(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrume
     setMaxValue(3000);
     setValue(2900);
     isTotalEnergy = false;
-    setIsTotalEnergy(false);
     setNumberFontsize(20);
 }
 
@@ -56,7 +55,6 @@ void EngineRPM::loadSettings(QSettings &settings) {
     setUnit(unit);
     setMaxValue(settings.value("maxvalue", 300).toFloat());
     setNumberScale(settings.value("scalevalue", 1.).toFloat());
-    setIsTotalEnergy(settings.value("totalenergy", false).toBool());
 }
 
 QString EngineRPM::typeName() {
@@ -98,10 +96,5 @@ void EngineRPM::createSettings(QGridLayout *layout) {
     layout->addWidget(scaleValueEdit);
     connect(scaleValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNumberScale(float)));
     
-    
-    QCheckBox *totalCheckbox = new QCheckBox("Total energy", layout->parentWidget());
-    totalCheckbox->setChecked(isTotalEnergy);
-    layout->addWidget(totalCheckbox);
-    connect(totalCheckbox, SIGNAL(clicked(bool)), this, SLOT(setIsTotalEnergy(bool)));
 }
 

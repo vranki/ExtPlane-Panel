@@ -9,6 +9,7 @@ Variometer::Variometer(QObject *parent, ExtPlaneConnection *conn) : NeedleInstru
     setNumberScale(0.01);
     setUnit(VELOCITY_FPM);
     setMaxValue(2000);
+    setMinTextValue(-2000);
     isTotalEnergy = false;
     setIsTotalEnergy(false);
 }
@@ -56,6 +57,7 @@ QString Variometer::typeNameStatic() {
 void Variometer::setMaxValue(float mv) {
     maxValue = mv;
     setScale(180-70, -maxValue, 360+70, maxValue);
+    setMinTextValue(-mv);
 }
 
 void Variometer::setNumberScale(float ns) {
