@@ -14,16 +14,17 @@ DirectionIndicator::DirectionIndicator(QObject *parent, ExtPlaneConnection *conn
 PanelItem(parent), _client(this, typeName(), conn)
 {
     _value = 0;
-    setThickBars(50);
-    setThinBars(10);
-    setRange1(500);
-    setRange2(5000);
-    setNumbers(50);
-    setNumbersScale(0.01);
+    setThickBars(10);
+    setThinBars(5);
+    setRange1(360);
+    setRange2(360);
+    setNumbers(30);
+    setNumbersScale(0.1);
     units = DISTANCE_M;
     baroUnits = PRESSURE_HPA;
-    _dataRef = QString("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot");
+    createCard(); 
     
+    _dataRef = QString("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot");
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef(_dataRef,0.1);
 }
@@ -32,6 +33,89 @@ void DirectionIndicator::setNumbers(float div) {
     _numbers = div;
     update();
 }
+
+void DirectionIndicator::createCard(void){
+    QImage _cardImage = QImage(QSize(600,600), QImage::Format_ARGB32);
+    _cardImage.fill(0x00ff0000);
+    //_cardImage.moveTo(10,10);
+    
+    uint midx, midy, width, height;
+    width = _cardImage.width();
+    midx = width/2;
+    height = _cardImage.height();
+    midy = height/2;
+    
+    
+    QPainter p;
+    p.setRenderHint(QPainter::Antialiasing, true);
+    p.begin(&_cardImage);
+
+    p.translate(midx, midy);
+    p.setPen(Qt::white);
+    
+    p.setBrush(Qt::black);
+    p.drawChord(-midx,-midy,width,height,0,360*16);
+    
+    
+    p.setBrush(Qt::white);
+    if(_thickBars > 0) {
+        for (float i = 0 ; i <= _range1; i+=_thickBars) {
+            p.save();
+            p.rotate(value2Angle1(i));
+            p.drawRect(-2.5, -300, 5.0, 30);
+            p.restore();
+        }
+    }
+    if(_thinBars > 0) {
+        for (float i = 0 ; i <= _range2; i+=_thinBars) {
+            p.save();
+            p.rotate(value2Angle1(i));
+            p.drawRect(-1.0, -300, 2.0, 20);
+            p.restore();
+        }
+    }
+    p.setPen(QColor(200,200,200));
+    p.setFont(QFont(QString("Helvetica"), 48, QFont::Bold, false));
+    
+    if(_numbers != 0) {
+        for (float i = 0 ; i < _range1; i+=_numbers) {
+            p.save();
+            p.rotate(value2Angle1(i));
+            p.save();
+            QString lineNumber;
+            switch (int(i*_numbersScale)) {
+                case 0:
+                    lineNumber = QString("N");
+                    break;
+                case 9:
+                    lineNumber = QString("E");
+                    break;
+                case 18:
+                    lineNumber = QString("S");
+                    break;
+                case 27:
+                    lineNumber = QString("W");
+                    break;
+                default:
+                    lineNumber = QString::number(i*_numbersScale);
+                    break;
+            }
+            p.translate(0,-234);
+            int width = p.fontMetrics().width(lineNumber);
+            int height = p.fontMetrics().height();
+            p.drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
+            p.restore();
+            p.restore();
+        }
+    }
+    
+    
+    
+    p.end();    
+    _card = QPixmap::fromImage(_cardImage, Qt::AutoColor);
+        
+}
+
 
 void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     static const QPoint needle[3] = {
@@ -80,63 +164,10 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->save();
     painter->rotate(- _value);
 
-    painter->setPen(Qt::white);
     
-    painter->setBrush(Qt::black);
-    painter->drawChord(-100,-100,200,200,0,360*16);
-
+    painter->drawPixmap(-100, -100, 200, 200, _card);
     
-    painter->setBrush(Qt::white);
-    if(_thickBars > 0) {
-        for (float i = 0 ; i <= _range1; i+=_thickBars) {
-            painter->save();
-            painter->rotate(value2Angle1(i));
-            painter->drawRect(-0.5, -100, 1.0, 10);
-            painter->restore();
-        }
-    }
-    if(_thinBars > 0) {
-        for (float i = 0 ; i <= _range2; i+=_thinBars) {
-            painter->save();
-            painter->rotate(value2Angle1(i));
-            painter->drawRect(-0.25, -100, 0.5, 8);
-            painter->restore();
-        }
-    }
-    painter->setPen(QColor(200,200,200));
-    painter->setFont(QFont(QString("Helvetica"), 16, QFont::Bold, false));
     
-    if(_numbers != 0) {
-        for (float i = 0 ; i < _range1; i+=_numbers) {
-            painter->save();
-            painter->rotate(value2Angle1(i));
-            painter->save();
-            QString lineNumber;
-            switch (int(i*_numbersScale)) {
-                case 0:
-                    lineNumber = QString("N");
-                    break;
-                case 9:
-                    lineNumber = QString("E");
-                    break;
-                case 18:
-                    lineNumber = QString("S");
-                    break;
-                case 27:
-                    lineNumber = QString("W");
-                    break;
-                default:
-                    lineNumber = QString::number(i*_numbersScale);
-                    break;
-            }
-            painter->translate(0,-78);
-            int width = painter->fontMetrics().width(lineNumber);
-            int height = painter->fontMetrics().height();
-            painter->drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
-            painter->restore();
-            painter->restore();
-        }
-    }
     painter->setPen(Qt::NoPen);
 
     painter->setBrush(needleColor);

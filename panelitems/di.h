@@ -39,6 +39,8 @@ public:
     void setThinBars(float v);
     void setNumbersScale(float v);
     void setNumbers(float div);
+    void createCard(void);
+    
 private:
     float value2Angle1(float value);
     float value2Angle2(float value);
@@ -51,6 +53,7 @@ private:
     float _baroPressure;
     QString _label;
     QString _dataRef;
+    QPixmap _card;
 };
 
 #endif // DI_H
