@@ -87,8 +87,12 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
             painter->rotate(value2Angle1(i));
             painter->save();
             QString lineNumber = QString::number(i*_numbersScale);
-            painter->translate(0,-70);
+            painter->translate(0,-73);
             painter->rotate(-value2Angle1(i));
+            
+            painter->setPen(QColor(200,200,200));
+            painter->setFont(QFont(QString("Helvetica"), 16, QFont::Bold, false));
+            
             int width = painter->fontMetrics().width(lineNumber);
             int height =painter->fontMetrics().height();
             painter->drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);

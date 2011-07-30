@@ -34,7 +34,7 @@ signals:
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
     void setNumberScale(float ns);
-    void setIsTotalEnergy(bool te);
+
 private:
     ExtPlaneClient _client;
     VelocityUnit units;

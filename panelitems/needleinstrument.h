@@ -47,7 +47,8 @@ public slots:
     void setMinValue(float value);
     void setMaxValue(float value);    
     void setMinAngle(float value);
-    void setMaxAngle(float value);    
+    void setMaxAngle(float value);   
+    void setNumberFontsize(int fs);
 
 private:
     float _thickBars, _thinBars;
@@ -57,6 +58,8 @@ private:
     
     float _value, _minAngle, _maxAngle, _minValue, _maxValue;
 
+    QString _numberFontname;
+    int _numberFontsize;
     
     QString _label;
 };

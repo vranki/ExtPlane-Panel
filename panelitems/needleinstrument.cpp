@@ -11,6 +11,10 @@ NeedleInstrument::NeedleInstrument(QObject *parent) :
     _thickBars = _thinBars = 0;
     _numbers = 0;
     _numberScale = 1;
+    
+    _numberFontname = "Helvetica";
+    _numberFontsize = 16;
+   
 }
 
 void NeedleInstrument::setNumbers(float div) {
@@ -80,8 +84,13 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             painter->rotate(value2Angle(i));
             painter->save();
             QString lineNumber = QString::number(i * _numberScale);
-            painter->translate(0,-70);
+            painter->translate(0,-73);
             painter->rotate(-value2Angle(i));
+
+            painter->setPen(QColor(200,200,200));
+            painter->setFont(QFont(QString(_numberFontname), 
+                                   _numberFontsize, QFont::Bold, false));
+            
             int width = painter->fontMetrics().width(lineNumber);
             int height =painter->fontMetrics().height();
             painter->drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
@@ -148,6 +157,12 @@ void NeedleInstrument::setMaxAngle(float value) {
 void NeedleInstrument::setBars(float thick, float thin) {
     _thinBars = thin;
     _thickBars = thick;
+}
+
+void NeedleInstrument::setNumberFontsize(int fs)
+{
+    _numberFontsize = fs;
+    update();
 }
 
 float NeedleInstrument::value2Angle(float value) {

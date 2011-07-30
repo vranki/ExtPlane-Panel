@@ -21,6 +21,7 @@ EngineRPM::EngineRPM(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrume
     setValue(2900);
     isTotalEnergy = false;
     setIsTotalEnergy(false);
+    setNumberFontsize(20);
 }
 
 void EngineRPM::rpmChanged(QString name, QString valueString) {
@@ -104,16 +105,3 @@ void EngineRPM::createSettings(QGridLayout *layout) {
     connect(totalCheckbox, SIGNAL(clicked(bool)), this, SLOT(setIsTotalEnergy(bool)));
 }
 
-void EngineRPM::setIsTotalEnergy(bool te) {
-/*    
-    if(te == isTotalEnergy) return;
-    isTotalEnergy = te;
-    if(isTotalEnergy) {
-        _client.unsubscribeDataRef("sim/flightmodel/position/vh_ind_fpm");
-        _client.subscribeDataRef("sim/cockpit2/gauges/indicators/total_energy_fpm", 0.5);
-    } else {
-        _client.unsubscribeDataRef("sim/cockpit2/gauges/indicators/total_energy_fpm");
-        _client.subscribeDataRef("sim/flightmodel/position/vh_ind_fpm", 10.);
-    }
-*/
-}
