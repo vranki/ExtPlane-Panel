@@ -54,12 +54,13 @@ void DirectionIndicator::createCard(void){
     p.begin(&_cardImage);
 
     p.translate(midx, midy);
-    p.setPen(Qt::white);
+    p.setPen(Qt::black);
     
     p.setBrush(Qt::black);
     p.drawChord(-midx,-midy,width,height,0,360*16);
     
     
+    p.setPen(Qt::white);
     p.setBrush(Qt::white);
     if(_thickBars > 0) {
         for (float i = 0 ; i <= _range1; i+=_thickBars) {
