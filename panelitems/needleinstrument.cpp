@@ -39,13 +39,14 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     QColor needleColor(255, 255, 255); //0, 0); //255, 255);
 
     int side = qMin(width(), height());
-    painter->setRenderHint(QPainter::Antialiasing);
     painter->save();
     painter->scale(side / 200.0, side / 200.0);
     painter->save();
     painter->translate(100, 100);
     
     painter->setBrush(Qt::black);
+    painter->setRenderHint(QPainter::Antialiasing);
+    qDebug() << Q_FUNC_INFO << "setting hint "; 
     painter->drawChord(-95,-95,190,190,0,360*16);
 
     

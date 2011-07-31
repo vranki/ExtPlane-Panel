@@ -13,6 +13,7 @@ class Altimeter : public PanelItem
     Q_OBJECT
 public:
     Altimeter(QObject *parent, ExtPlaneConnection *conn);
+    ~Altimeter();
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

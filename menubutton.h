@@ -11,10 +11,13 @@
 #include <QSettings>
 #include <QDebug>
 #include <QCoreApplication>
+#include <QFileDialog>
 #include "panelitems/panelitem.h"
 #include "panelitemfactory.h"
 #include "dialogs/settingsdialog.h"
 #include "dialogs/edititemdialog.h"
+#include "utils.h"
+
 
 class MenuButton : public QObject, public QGraphicsItem {
     Q_OBJECT
@@ -23,6 +26,7 @@ public:
     explicit MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemFactory *gf);
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
 protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 signals:
@@ -31,6 +35,7 @@ signals:
     void fullscreenChanged(bool fs);
     void setServerAddress(QString host);
     void editModeChanged(bool em);
+    
 public slots:
     void addItem();
     void deleteItems();
@@ -38,10 +43,12 @@ public slots:
     void savePanel();
     void loadPanel();
     void exportPanel(void);
+    void importPanel(void);
     void showSettings();
     void quit();
     void itemProperties();
     void setEditMode(bool em);
+    
 private:
     QList<PanelItem*> selectedGauges();
     int side;

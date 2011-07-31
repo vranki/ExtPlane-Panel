@@ -20,6 +20,13 @@ Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
     _client.subscribeDataRef("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot");
 }
 
+Altimeter::~Altimeter(){
+    _client.unsubscribeDataRef("sim/flightmodel/misc/h_ind");
+    _client.unsubscribeDataRef("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot");
+    qDebug() << Q_FUNC_INFO << "deleting Altimeter"; 
+}
+
+
 void Altimeter::setNumbers(float div) {
     _numbers = div;
     update();

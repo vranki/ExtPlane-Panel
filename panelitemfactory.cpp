@@ -31,7 +31,14 @@ PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject) {
 
 QStringList PanelItemFactory::itemNames() {
     QStringList items;
-    items << AirspeedIndicator::typeNameStatic() 
-          << EngineRPM::typeNameStatic() << TurnAndBank::typeNameStatic() << DirectionIndicator::typeNameStatic() << AttitudeIndicator::typeNameStatic() << Compass::typeNameStatic() << Variometer::typeNameStatic() << Altimeter::typeNameStatic() << Button::typeNameStatic();
+    items << AirspeedIndicator::typeNameStatic() <<
+             Altimeter::typeNameStatic() << 
+             AttitudeIndicator::typeNameStatic() << 
+             Compass::typeNameStatic() << 
+             DirectionIndicator::typeNameStatic() << 
+             EngineRPM::typeNameStatic() << 
+             TurnAndBank::typeNameStatic() << 
+             Variometer::typeNameStatic() << 
+             Button::typeNameStatic();
     return items;
 }

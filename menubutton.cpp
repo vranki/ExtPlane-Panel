@@ -69,6 +69,10 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     connect(loadButton, SIGNAL(clicked()), this, SLOT(loadPanel()));
     layout->addWidget(loadButton);
     
+    QPushButton *importButton = new QPushButton("Import panel", msg);
+    connect(importButton, SIGNAL(clicked()), this, SLOT(importPanel()));
+    layout->addWidget(importButton);
+    
     QPushButton *exportButton = new QPushButton("Export panel", msg);
     connect(exportButton, SIGNAL(clicked()), this, SLOT(exportPanel()));
     layout->addWidget(exportButton);
@@ -151,9 +155,13 @@ void MenuButton::loadPanel() {
     settingsDialog->loadSettings(); // Fetches global panel settings and loads them
 
     // Now go to gauge settings and load those:
+    
     foreach(PanelItem *g, panelItems) {
-        g->deleteLater();
+        qDebug() << Q_FUNC_INFO << "deleting panelitem "; 
+        panelItems.removeOne(g);
+        delete g;
     }
+    
     int panelNumber = 0;
     while(panelNumber >= 0) {
         settings.beginGroup("panel-" + QString::number(panelNumber));
@@ -162,8 +170,10 @@ void MenuButton::loadPanel() {
             QString name = settings.value("name").toString();
             for(int gn=0;gn<gc;gn++) {
                 settings.beginGroup("gauge-" + QString::number(gn));
+                
                 PanelItem *g = itemFactory->itemForName(settings.value("type").toString(), parentWidget);
                 if(g) {
+                    qDebug() << Q_FUNC_INFO << "adding panelitem "; 
                     emit itemAdded(g);
                     g->loadSettings(settings);
                 } else {
@@ -177,45 +187,36 @@ void MenuButton::loadPanel() {
         }
         settings.endGroup();
     }
-
     closeDialog();
 }
 
 void MenuButton::exportPanel(void) {
-    // To be replaced with code to export current panel ini file to external file.    
-    
-/*    settingsDialog->loadSettings();
-    
-    foreach(PanelItem *g, panelItems) {
-        g->deleteLater();
+
+    savePanel();
+    QString fileName = QFileDialog::getSaveFileName(parentWidget,
+                        tr("Save panel as"), 
+                        "", tr("Panel Files (*.pnl)")); 
+    if (!fileName.isNull()){
+        bool success = SRCopyFile(QString("extpanel_gauges.ini"), fileName);
+        if (!success){
+            
+        }    
     }
-    int panelNumber = 0;
-    while(panelNumber >= 0) {
-        settings.beginGroup("panel-" + QString::number(panelNumber));
-        if(settings.contains("name")) {
-            int gc = settings.value("gaugecount", 0).toInt();
-            QString name = settings.value("name").toString();
-            for(int gn=0;gn<gc;gn++) {
-                settings.beginGroup("gauge-" + QString::number(gn));
-                PanelItem *g = itemFactory->itemForName(settings.value("type").toString(), parentWidget);
-                if(g) {
-                    emit itemAdded(g);
-                    g->loadSettings(settings);
-                } else {
-                    qDebug() << Q_FUNC_INFO << "Can't load item of type " << settings.value("type").toString();
-                }
-                settings.endGroup();
-            }
-            panelNumber++;
-        } else {
-            panelNumber = -1;
-        }
-        settings.endGroup();
-    }
-    
-    closeDialog(); */
+    closeDialog();
 }
 
+void MenuButton::importPanel(void) {   
+    QString fileName = QFileDialog::getOpenFileName(parentWidget,
+                                                    tr("Open panel"), 
+                                                    "", tr("Panel Files (*.pnl)")); 
+    if (!fileName.isNull()){
+        bool success = SRCopyFile(fileName, QString("extpanel_gauges.ini"));
+        if (success){
+            settings.sync();    // reloads settings file into memory
+            loadPanel();
+        }    
+    }
+}
 
 void MenuButton::showSettings() {
     closeDialog();

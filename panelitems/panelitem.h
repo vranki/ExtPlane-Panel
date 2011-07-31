@@ -20,6 +20,7 @@ class PanelItem : public QObject, public QGraphicsItem {
     Q_INTERFACES(QGraphicsItem)
 public:
     explicit PanelItem(QObject *parent);
+    ~PanelItem();
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     float width() const;

@@ -42,6 +42,7 @@ void PanelWindow::itemDestroyed(QObject *obj) {
     PanelItem *g = qobject_cast<PanelItem*> (obj);
     qDebug() << Q_FUNC_INFO << obj << (const void*) g;
     if(g)
+        scene.removeItem(g);
         panelItems.removeOne(g);
 }
 
@@ -50,6 +51,7 @@ void PanelWindow::addItem(PanelItem *g) {
     g->setPos(width()/2, height()/2);
     g->setPanelRotation(panelRotation);
     g->setEditMode(editMode);
+    qDebug() << Q_FUNC_INFO << (const void*) g;
     scene.addItem(g);
     panelItems.append(g);
 }
