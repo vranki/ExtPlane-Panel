@@ -1,5 +1,44 @@
 #include "needleinstrument.h"
 
+Arc::Arc(QObject *parent, PanelItem *panel) : QObject(parent){
+    _parent = parent;
+    _panel = panel;
+}
+
+void Arc::update(void){
+    _panel->update();
+}
+
+void Arc::setMin(float value){
+    if (value == _minValue) return;
+    _minValue = value;
+    update();
+}
+
+void Arc::setUse(bool use){
+
+}
+
+void Arc::setMax(float value){
+    if (value == _maxValue) return;
+    _maxValue = value;
+    update();
+}
+void Arc::setInner(float value){
+    if (value == _radius_inner) return;
+    _radius_inner = value;
+    update();
+}
+void Arc::setOuter(float value){
+    if (value == _radius_outer) return;
+    _radius_outer = value;
+    update();
+}
+
+void Arc::setColor(QString colorString){
+
+}
+
 NeedleInstrument::NeedleInstrument(QObject *parent) :
     PanelItem(parent)
 {
@@ -15,7 +54,9 @@ NeedleInstrument::NeedleInstrument(QObject *parent) :
     
     _numberFontname = "Helvetica";
     _numberFontsize = 16;
-
+    _numberOfArcs = 0;
+    //    _arcs = new QList<Arc *>();
+  
     _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel_square_.png")), Qt::AutoColor);
     
 }
@@ -28,6 +69,60 @@ void NeedleInstrument::setNumberMult(float ns) {
     _numberScale = ns;
 }
 
+void NeedleInstrument::paintArcs(QPainter *painter)
+{
+    float       startAngleD, endAngleD, sweep;
+    float       startAngle, endAngle;
+    float       outer, inner;
+    Arc         *arc;
+   
+    qDebug() << Q_FUNC_INFO << "______painting arc. No of arcs " << _numberOfArcs;
+    
+    if (_numberOfArcs){
+        for(int i=0;i<_numberOfArcs;i++){
+            arc = _arcs[i];
+            if (arc->_use) {
+                
+                startAngleD = 90-value2Angle(arc->_minValue);
+                endAngleD = 90-value2Angle(arc->_maxValue);
+                sweep = 0.-(endAngleD - startAngleD);
+                
+                startAngle = startAngleD * 3.1415926/180.0;
+                endAngle = endAngleD * 3.1415926/180.0;
+                
+                
+                inner = arc->_radius_inner * 100.;
+                outer = arc->_radius_outer * 100.;
+                
+                QPainterPath arcPath;
+                
+                arcPath.moveTo(inner * cos(startAngle), -inner * sin(startAngle));
+                arcPath.lineTo(outer * cos(startAngle), -outer * sin(startAngle));
+                arcPath.arcTo(-outer,-outer,2*outer,2*outer, startAngleD, -sweep);
+                //arcPath.lineTo(outer * cos(endAngle), -outer * sin(endAngle));
+                arcPath.lineTo(inner * cos(endAngle), -inner * sin(endAngle));
+                arcPath.arcTo(-inner,-inner,2*inner,2*inner, endAngleD, sweep);
+                arcPath.closeSubpath();
+                
+                /*
+                arcPath.moveTo(inner * cos(startAngle), -inner * sin(startAngle));
+                arcPath.lineTo(outer * cos(startAngle), -outer * sin(startAngle));
+                arcPath.arcTo(-outer,-outer,2*outer,2*outer, 90-startAngleD, -sweep);
+                arcPath.lineTo(inner * cos(endAngle), -inner * sin(endAngle));
+                arcPath.arcTo(-inner,-inner,2*inner,2*inner, 90-endAngleD, sweep);
+                arcPath.closeSubpath();
+                */
+                
+                painter->setPen(Qt::NoPen); 
+                painter->setBrush(arc->_color);
+                
+                painter->drawPath(arcPath);
+                
+            }
+        }
+    }
+    
+}
 
 void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     static const QPoint needle[3] = {
@@ -70,6 +165,10 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         painter->drawText(-textwidth/2,-70, textwidth, 200, Qt::AlignCenter, _label);
     }
     // painter->drawRect(-100,0,1,20); Test line for fitting bezel
+    
+    paintArcs(painter);
+    painter->setPen(Qt::white);
+    painter->setBrush(Qt::white);
     
     if(_thickBars != 0) {
         for (float i = _minValue ; i <= _maxValue; i+=_thickBars) {
@@ -115,12 +214,6 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         }
     }
     
-/*    QPixmap _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel2.png")), Qt::AutoColor);//_bezelImage, Qt::AutoColor);
-    painter->drawPixmap(-_bezel.width()/4.2-3,-_bezel.height()/4.1 +5, 
-                        _bezel.width()/2.1, _bezel.height()/2.05, 
-                        _bezel);*/
-    
-    
     painter->restore();     // Restore to full 200x200 size
     
     painter->drawPixmap(-100, -100, 200, 200, _bezel);
@@ -128,7 +221,10 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     painter->restore();
 
     painter->restore();
+    qDebug() << Q_FUNC_INFO << "finishing paint "; 
     PanelItem::paint(painter, option, widget);
+    qDebug() << Q_FUNC_INFO << "after supercall "; 
+
 }
 
 
@@ -145,6 +241,35 @@ void NeedleInstrument::setScale(float zeroAngle, float zeroValue, float maxAngle
     update();
 }
 
+int NeedleInstrument::numberOfArcs(void)
+{
+    return _numberOfArcs;
+}
+
+Arc * NeedleInstrument::getArc(int arcNo)
+{
+    return _arcs[arcNo];
+}
+
+
+void NeedleInstrument::clearArcs(void)
+{
+    foreach(Arc *g, _arcs) {
+        qDebug() << Q_FUNC_INFO << "deleting arc "; 
+        _arcs.removeOne(g);
+        delete g;
+    }
+    _numberOfArcs=0;
+}
+
+void NeedleInstrument::addArc(Arc *arc)
+{
+    _arcs.append(arc);
+    _numberOfArcs+=1;
+    int dummy = _arcs.count();
+    qDebug() << Q_FUNC_INFO << "Now: " << dummy << " arcs in _arc"; 
+    
+}
 
 void NeedleInstrument::setValue(float value) {
     if(value == _value) return;
@@ -199,13 +324,30 @@ float NeedleInstrument::value2Angle(float value) {
 
 void NeedleInstrument::storeSettings(QSettings &settings){
     PanelItem::storeSettings(settings);
-    settings.setValue("minValue", _minValue);
-    settings.setValue("minTextValue", _minTextValue);
-    settings.setValue("maxValue", _maxValue);
-    settings.setValue("minAngle", _minAngle);
-    settings.setValue("maxAngle", _maxAngle);
+    settings.setValue("minValue", QString::number(_minValue));
+    settings.setValue("minTextValue", QString::number(_minTextValue));
+    settings.setValue("maxValue", QString::number(_maxValue));
+    settings.setValue("minAngle", QString::number(_minAngle));
+    settings.setValue("maxAngle", QString::number(_maxAngle));
+    
+/*    settings.setValue("numberOfArcs", QString::number(_numberOfArcs));
+    
+    if (_numberOfArcs){
+        for(int i=0;i<_numberOfArcs;i++){
+            settings.beginGroup("arc" + QString::number(i));
+            settings.setValue("use", QString::number(_arcs[i]->_use));
+            settings.setValue("minValue", QString::number(_arcs[i]->_minValue));
+            settings.setValue("maxValue", QString::number(_arcs[i]->_maxValue));
+            settings.setValue("innerRadius", QString::number(_arcs[i]->_radius_inner));
+            settings.setValue("outerRadius", QString::number(_arcs[i]->_radius_outer));
+            settings.setValue("color", _arcs[i]->_color.name());
+            settings.endGroup();
+        }
+    }
+*/
 }
 
+    
 void NeedleInstrument::loadSettings(QSettings &settings){
     PanelItem::loadSettings(settings);
     setMinValue(settings.value("minValue", 30).toFloat());
@@ -215,47 +357,63 @@ void NeedleInstrument::loadSettings(QSettings &settings){
     setMaxAngle(settings.value("maxAngle", 330).toFloat());
 }
 
-
-
+void NeedleInstrument::CreateNumberEntry(QGridLayout *layout, QString legend, 
+                                         float value, 
+                                         QObject *which,
+                                         char const * slot_method)
+{
+    QLabel *junkLabel = new QLabel(legend, layout->parentWidget());
+    layout->addWidget(junkLabel);
+    NumberInputLineEdit *junkValueEdit = new NumberInputLineEdit(layout->parentWidget());
+    junkValueEdit->setText(QString::number(value));
+    layout->addWidget(junkValueEdit);
+    connect(junkValueEdit, SIGNAL(valueChangedFloat(float)), which, slot_method);
+}
+                                    
+void NeedleInstrument::setArcMin(int arcNumber, float value)
+{   
+    if (_arcs[arcNumber]->_minValue==value) return;
+    _arcs[arcNumber]->_minValue=value;
+    update();
+}
 
 void NeedleInstrument::createSettings(QGridLayout *layout){
-    QLabel *zeroLabel = new QLabel("Minimum value", layout->parentWidget());
-    layout->addWidget(zeroLabel);
-    NumberInputLineEdit *zeroValueEdit = new NumberInputLineEdit(layout->parentWidget());
-    zeroValueEdit->setText(QString::number(_minValue));
-    layout->addWidget(zeroValueEdit);
-    connect(zeroValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMinValue(float)));
+    
+    CreateNumberEntry(layout, "Minimum value", 
+                      _minValue, this, SLOT(setMinValue(float)));
+    CreateNumberEntry(layout, "Minimum text value", 
+                      _minTextValue, this, SLOT(setMinTextValue(float)));
+    CreateNumberEntry(layout, "Angle of min value", 
+                      _minAngle, this, SLOT(setMinAngle(float)));
+    CreateNumberEntry(layout, "Maximum value", 
+                      _maxValue, this, SLOT(setMaxValue(float)));
+    CreateNumberEntry(layout, "Angle of max value", 
+                      _maxAngle, this, SLOT(setMaxAngle(float)));
+    
 
-    QLabel *minTLabel = new QLabel("Minimum text value", layout->parentWidget());
-    layout->addWidget(minTLabel);
-    NumberInputLineEdit *minTextValueEdit = new NumberInputLineEdit(layout->parentWidget());
-    minTextValueEdit->setText(QString::number(_minTextValue));
-    layout->addWidget(minTextValueEdit);
-    connect(minTextValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMinTextValue(float)));
+    QString legend;
 
-    QLabel *minALabel = new QLabel("Angle of min value", layout->parentWidget());
-    layout->addWidget(minALabel);
-    NumberInputLineEdit *minAngleEdit = new NumberInputLineEdit(layout->parentWidget());
-    minAngleEdit->setText(QString::number(_minAngle));
-    layout->addWidget(minAngleEdit);
-    connect(minAngleEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMinAngle(float)));
-    
-    
-    QLabel *maxLabel = new QLabel("Maximum value", layout->parentWidget());
-    layout->addWidget(maxLabel);
-    NumberInputLineEdit *maxValueEdit = new NumberInputLineEdit(layout->parentWidget());
-    maxValueEdit->setText(QString::number(_maxValue));
-    layout->addWidget(maxValueEdit);
-    connect(maxValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMaxValue(float)));
-
-    QLabel *maxALabel = new QLabel("Angle of max value", layout->parentWidget());
-    layout->addWidget(maxALabel);
-    NumberInputLineEdit *maxAngleEdit = new NumberInputLineEdit(layout->parentWidget());
-    maxAngleEdit->setText(QString::number(_maxAngle));
-    layout->addWidget(maxAngleEdit);
-    connect(maxAngleEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMaxAngle(float)));
-    
-    
-    
+    if (_numberOfArcs){
+        for(int i=0;i<_numberOfArcs;i++){
+            if (_arcs[i]->_use){
+                legend = QString("Arc ")+QString::number(i)+QString(" min value:");
+                CreateNumberEntry(layout, legend, 
+                                  _arcs[i]->_minValue, _arcs[i],
+                                  SLOT(setMin(float)));
+                legend = QString("Arc ")+QString::number(i)+QString(" max value:");
+                CreateNumberEntry(layout, legend, 
+                                  _arcs[i]->_maxValue, _arcs[i],
+                                  SLOT(setMax(float)));
+                legend = QString("Arc ")+QString::number(i)+QString(" min radius:");
+                CreateNumberEntry(layout, legend, 
+                                  _arcs[i]->_radius_inner, _arcs[i],
+                                  SLOT(setInner(float)));
+                legend = QString("Arc ")+QString::number(i)+QString(" max radius:");
+                CreateNumberEntry(layout, legend, 
+                                  _arcs[i]->_radius_outer, _arcs[i],
+                                  SLOT(setOuter(float)));
+            }
+        }
+    }
 }
 

@@ -28,7 +28,7 @@ void Variometer::setUnit(VelocityUnit unit) {
 }
 
 void Variometer::storeSettings(QSettings &settings) {
-    PanelItem::storeSettings(settings);
+    NeedleInstrument::storeSettings(settings);
 
     settings.setValue("unit", Units::unitName(units));
     settings.setValue("maxvalue", QString::number(maxValue));
@@ -37,7 +37,7 @@ void Variometer::storeSettings(QSettings &settings) {
 }
 
 void Variometer::loadSettings(QSettings &settings) {
-    PanelItem::loadSettings(settings);
+    NeedleInstrument::loadSettings(settings);
     QString unitname = settings.value("unit").toString();
     VelocityUnit unit = Units::velocityUnitForName(unitname);
     setUnit(unit);

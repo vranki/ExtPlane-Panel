@@ -4,8 +4,9 @@
 #include "panelitem.h"
 #include <QLabel>
 #include "widgets/numberinputlineedit.h"
+#include <math.h>
 
-struct ScaleRangeStruct {
+class ScaleRangeStruct{
     bool    use;
     bool    linear;
     float   minValue;
@@ -14,15 +15,33 @@ struct ScaleRangeStruct {
     float   maxAngle;
 };
 
-struct ArcStruct {
-    bool    use;
-    float   minValue;
-    float   maxValue;
-    float   radius_inner;
-    float   radius_outer;
-    QColor  color;
+class Arc : public QObject {
+    Q_OBJECT
+public:
+    explicit Arc(QObject *parent = 0, PanelItem *panel=0);
+    void update(void);
+    
+    bool    _use;
+    float   _minValue;
+    float   _maxValue;
+    float   _radius_inner;
+    float   _radius_outer;
+    QColor  _color;
+    
+public slots:
+    void setUse(bool);
+    void setMin(float);
+    void setMax(float);
+    void setInner(float);
+    void setOuter(float);
+    void setColor(QString);
+    
+    //private:
+   
+private:
+    QObject * _parent;
+    PanelItem *_panel;
 };
-
 
 
 class NeedleInstrument : public PanelItem {
@@ -40,7 +59,18 @@ public:
     
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
-    virtual void createSettings(QGridLayout *layout);    
+    virtual void createSettings(QGridLayout *layout); 
+    void addArc(Arc *arc);
+    void clearArcs(void);
+
+    void paintArcs(QPainter *painter);
+    
+    void CreateNumberEntry(QGridLayout *layout, QString legend, 
+                           float value, QObject *which, 
+                           char const * slot_method);
+    int numberOfArcs(void);
+    Arc * getArc(int arcNo);
+
 
 public slots:
     void setValue(float value);
@@ -50,6 +80,7 @@ public slots:
     void setMinAngle(float value);
     void setMaxAngle(float value);   
     void setNumberFontsize(int fs);
+    void setArcMin(int arcNumber, float value);
 
 private:
     float _thickBars, _thinBars;
@@ -66,6 +97,11 @@ private:
     int _numberFontsize;
     QPixmap _bezel;
     QString _label;
+    
+    int _numberOfArcs;
+    //    ArcStruct * _arcs;
+    QList<Arc*> _arcs;
+    // Arc *_arcs;
 };
 
 #endif // NEEDLEINSTRUMENT_H
