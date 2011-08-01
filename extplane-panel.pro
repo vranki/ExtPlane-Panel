@@ -14,6 +14,7 @@ TEMPLATE = app
 SOURCES += main.cpp \
     panelitems/panelitem.cpp \
     extplaneconnection.cpp \
+    utils.cpp \
     panelwindow.cpp \
     extplaneclient.cpp \
     clientdataref.cpp \
@@ -33,6 +34,7 @@ SOURCES += main.cpp \
     panelitems/di.cpp \
     panelitems/attitudeindicator.cpp \
     panelitems/turnbank.cpp \
+    panelitems/hsi_ks55.cpp \
     panelitems/engine_rpm.cpp \
     widgets/distanceunitcombobox.cpp \
     panelitems/button.cpp
@@ -41,6 +43,7 @@ HEADERS += \
     panelitems/panelitem.h \
     extplaneconnection.h \
     panelwindow.h \
+    utils.h \
     extplaneclient.h \
     clientdataref.h \
     clientdatarefprovicer.h \
@@ -60,6 +63,7 @@ HEADERS += \
     panelitems/attitudeindicator.h \
     panelitems/turnbank.h \
     panelitems/engine_rpm.h \
+    panelitems/hsi_ks55.h \
     widgets/distanceunitcombobox.h \
     panelitems/button.h
 

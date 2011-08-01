@@ -9,6 +9,7 @@
 #include "panelitems/variometer.h"
 #include "panelitems/altimeter.h"
 #include "panelitems/di.h"
+#include "panelitems/hsi_ks55.h"
 #include "panelitems/attitudeindicator.h"
 #include "panelitems/turnbank.h"
 #include "panelitems/button.h"

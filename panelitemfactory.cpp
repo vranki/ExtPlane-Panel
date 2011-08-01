@@ -17,6 +17,8 @@ PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject) {
         g = new Altimeter(parentObject, connection);
     } else if(name == DirectionIndicator::typeNameStatic()) {
         g = new DirectionIndicator(parentObject, connection);
+    } else if(name == HSI::typeNameStatic()) {
+        g = new HSI(parentObject, connection);
     } else if(name == AttitudeIndicator::typeNameStatic()) {
         g = new AttitudeIndicator(parentObject, connection);
     } else if(name == TurnAndBank::typeNameStatic()) {
@@ -37,6 +39,7 @@ QStringList PanelItemFactory::itemNames() {
              Compass::typeNameStatic() << 
              DirectionIndicator::typeNameStatic() << 
              EngineRPM::typeNameStatic() << 
+             HSI::typeNameStatic() <<
              TurnAndBank::typeNameStatic() << 
              Variometer::typeNameStatic() << 
              Button::typeNameStatic();
