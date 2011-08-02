@@ -43,6 +43,10 @@ EngineRPM::EngineRPM(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrume
 }
 
 void EngineRPM::rpmChanged(QString name, QString valueString) {
+
+    qDebug() << Q_FUNC_INFO << "valueString " << valueString;
+    qDebug() << Q_FUNC_INFO << "name " << name;
+    
     
     QStringList cmd = valueString.split(" ", QString::SkipEmptyParts);
     QString rpmStr = cmd.value(3);

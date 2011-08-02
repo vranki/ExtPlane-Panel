@@ -16,6 +16,19 @@
 #include "panelitem.h"
 #include "../units.h"
 #include "widgets/numberinputlineedit.h"
+#include <QHash>
+
+
+enum DataRefType {
+    drFloat, drInt, drChar
+};
+
+struct DataRefStruct {
+    QString         name;
+    float           tolerance;
+    DataRefType     dataType;
+    void *          value;
+};
 
 class HSI : public PanelItem
 {
@@ -34,7 +47,10 @@ public:
     
     void setLabel(QString text);
     
+    
+    
 public slots:
+    void dataRefsChanged(QString name, QString valueString);
     void refChanged(QString name, double alt);
         
 private:
@@ -56,6 +72,10 @@ private:
     QPixmap _card;
     QPixmap _bezel;
     
+    QList <DataRefStruct *> _dataRefs;
+        QHash <QString, DataRefStruct> _dataRefLookup;
+    //QHash <QString, void * > _dataRefLookup;
+
     float   _thickBars;
     float   _thinBars;
     float   _numbers;

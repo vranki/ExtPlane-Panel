@@ -10,6 +10,7 @@
 #include "hsi_ks55.h"
 
 
+
 HSI::HSI(QObject *parent, ExtPlaneConnection *conn) :
 PanelItem(parent), _client(this, typeName(), conn)
 {
@@ -21,15 +22,70 @@ PanelItem(parent), _client(this, typeName(), conn)
     _numbers=30;
     
     createCard(); 
-    
-    
+   
     _heading=45;
     
+
+    /*  {
+     QString         name;
+     float           tolerance;
+     DataRefType     dataType;
+     void *          value;
+     }; */  
+
+    //QList<DataRefStruct *> _dataRefs;
     
-    _dataRef = QString("sim/cockpit2/radios/indicators/hsi_bearing_deg_mag_pilot");
+    const static DataRefStruct dataRefs[] = {
+        {"sim/cockpit2/gauges/indicators/heading_AHARS_deg_mag_pilot", 0.2, 
+            drFloat, &_heading},
+        {"sim/cockpit2/radios/actuators/hsi_obs_deg_mag_pilot", 0.2,    // direction of yellow line
+            drFloat, &_course},
+        {"sim/cockpit2/autopilot/heading_dial_deg_mag_pilot",0.2,           // Orange bug
+            drFloat, &_bug}
+    };
+
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    _client.subscribeDataRef(_dataRef,0.1);
+    int nDataRefs = 3;
+    
+    for (int i=0;i<nDataRefs;i++){
+        _dataRefLookup.insert(dataRefs[i].name, dataRefs[i]);//.value);
+        _client.subscribeDataRef(dataRefs[i].name, dataRefs[i].tolerance);
+    }
 }
+
+void HSI::refChanged(QString name, double value) {
+    
+    
+    DataRefStruct   ref = _dataRefLookup[name];
+
+    qDebug() << Q_FUNC_INFO << "lookup name is: " << name;
+    qDebug() << Q_FUNC_INFO << "ref name is: " << ref.name;
+
+    if (*(float *)ref.value == value) return;
+    
+    *(float *)ref.value = value;
+    
+    update();
+
+
+}
+
+
+void HSI::dataRefsChanged(QString name, QString valueString) {
+/*    
+    qDebug() << Q_FUNC_INFO << "valueString " << valueString;
+    
+    
+    QStringList cmd = valueString.split(" ", QString::SkipEmptyParts);
+    QString rpmStr = cmd.value(3);
+    rpmStr.chop(1);
+    
+    qDebug() << Q_FUNC_INFO << "rpmStr " << rpmStr;
+*/    
+    
+    //    setValue(rpmStr.toDouble());
+}
+
 
 void HSI::createCard(void){
     QImage _cardImage = QImage(QSize(600,600), QImage::Format_ARGB32);
@@ -185,6 +241,13 @@ void HSI::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
     
     //painter->drawConvexPolygon(Plane, sizeof(Plane)/sizeof(Plane[0]));
     painter->restore();
+
+    
+    painter->drawText(-40,-10, 60, 20, Qt::AlignRight | Qt::AlignVCenter, QString::number(_course));
+    painter->drawText(-40,10, 60, 20, Qt::AlignRight | Qt::AlignVCenter, QString::number(_bug));
+
+    
+    
     
     painter->restore();
     painter->setBrush(Qt::white);
@@ -195,25 +258,12 @@ void HSI::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
     painter->restore();
     
     painter->restore();
-    
-    
-    
-    
+
     PanelItem::paint(painter, option, widget);
 }
 
-
 void HSI::setLabel(QString text) {
     _label = text;
-}
-
-
-void HSI::refChanged(QString name, double hdg) {
-    if(name==_dataRef) {
-        if(hdg == _heading) return;
-        _heading = hdg;
-    }
-    update();
 }
 
 float HSI::value2Angle(float value) {
