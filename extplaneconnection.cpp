@@ -101,14 +101,14 @@ void ExtPlaneConnection::readClient() {
                 
                 
             } else if(cmd.size()==3) {
-                if(cmd.value(0)=="uf") {
+                if ((cmd.value(0)=="uf")||(cmd.value(0)=="ui")) {
                     ClientDataRef *ref = dataRefs.value(cmd.value(1));
                     if(ref) {
                         ref->updateValue(cmd.value(2));
                     } else {
                         qDebug() << Q_FUNC_INFO << "ref not subscribed " << cmd.value(2);
                     }
-                }
+                }  
             }
         }
     }
