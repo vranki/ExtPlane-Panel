@@ -61,11 +61,15 @@ private:
     float   _heading;
     float   _bug;
     float   _course;
+    float   _dme;
+    float   _dmeTime;
     float   _hdots;
     float   _vdots;
-    bool    _hasVertical;
-    bool    _hasHorizontal;
-    int     _toFrom;            // 0 = Flag, 1=To, 2=From
+    float    _hasVertical;      // All float because the import mechanism
+    float    _hasHorizontal;    // expects floats.
+    float    _hasDME;
+    float    _glideslopeFlag;
+    float    _toFrom;  // 0 = Flag, 1=To, 2=From
     
     QString _label;
     QString _dataRef;
