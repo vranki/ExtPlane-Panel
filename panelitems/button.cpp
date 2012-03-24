@@ -81,11 +81,11 @@ void Button::setLabel(QString txt) {
 void Button::setIsKey(bool is) {
     _isKey = is;
 }
+
 void Button::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     if(isEditMode()) {
         PanelItem::mousePressEvent(event);
     } else {
-        qDebug() << Q_FUNC_INFO<< "Button pressed";
         _isHeld = true;
         if(_isKey) {
             _client.keyPress(_buttonId);
@@ -100,7 +100,6 @@ void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     if(isEditMode()) {
         PanelItem::mouseReleaseEvent(event);
     } else {
-        qDebug() << Q_FUNC_INFO<< "Button released";
         _isHeld = false;
         if(!_isKey) {
             _client.buttonRelease(_buttonId);

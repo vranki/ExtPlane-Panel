@@ -28,7 +28,7 @@ void ExtPlaneConnection::socketConnected() {
 }
 
 void ExtPlaneConnection::socketError(QAbstractSocket::SocketError err) {
-    qDebug() << Q_FUNC_INFO << err;
+    // qDebug() << Q_FUNC_INFO << err;
     server_ok = false;
     emit connectionError(errorString() + " : " + peerName() + ":" + QString::number(peerPort()));
     reconnectTimer.setInterval(5000);
@@ -51,6 +51,8 @@ ClientDataRef *ExtPlaneConnection::subscribeDataRef(QString name, double accurac
         ref = new ClientDataRef(this, name, accuracy);
         dataRefs[ref->name()] = ref;
         ref->setSubscribers(1);
+        connect(ref, SIGNAL(unsubscribed(ClientDataRef*)), this, SLOT(unsubscribeDataRef(ClientDataRef*)));
+        connect(ref, SIGNAL(valueSet(ClientDataRef*)), this, SLOT(setValue(ClientDataRef*)));
         if(server_ok)
             subRef(ref);
     }
@@ -136,4 +138,12 @@ void ExtPlaneConnection::buttonPress(int id) {
 void ExtPlaneConnection::buttonRelease(int id) {
     QString line = "rel " + QString::number(id);
     writeLine(line);
+}
+
+void ExtPlaneConnection::setValue(QString name, QString value) {
+    QString line = "set " + name + " " + value;
+    writeLine(line);
+}
+void ExtPlaneConnection::setValue(ClientDataRef *ref) {
+    setValue(ref->name(), ref->valueString());
 }

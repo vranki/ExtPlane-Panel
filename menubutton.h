@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QDebug>
 #include <QCoreApplication>
+#include <QCheckBox>
 #include "panelitems/panelitem.h"
 #include "panelitemfactory.h"
 #include "dialogs/settingsdialog.h"

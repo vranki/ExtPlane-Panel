@@ -4,6 +4,7 @@ ExtPlaneClient::ExtPlaneClient(QObject *parent, QString name, ClientDataRefProvi
     QObject(parent), _name(name), _connection(drp)
 {
 }
+
 ExtPlaneClient::~ExtPlaneClient() {
     foreach(ClientDataRef *ref, _dataRefs) {
         _connection->unsubscribeDataRef(ref);
@@ -11,10 +12,11 @@ ExtPlaneClient::~ExtPlaneClient() {
     _dataRefs.clear();
 }
 
-void ExtPlaneClient::subscribeDataRef(QString name, double accuracy) {
+ClientDataRef* ExtPlaneClient::subscribeDataRef(QString name, double accuracy) {
     ClientDataRef *ref = _connection->subscribeDataRef(name, accuracy);
     connect(ref, SIGNAL(changed(ClientDataRef*)), this, SLOT(cdrChanged(ClientDataRef*)));
     _dataRefs.append(ref);
+    return ref;
 }
 
 void ExtPlaneClient::cdrChanged(ClientDataRef *ref) {
@@ -45,4 +47,12 @@ void ExtPlaneClient::buttonRelease(int id) {
     if(!_heldButtons.contains(id)) return;
     _heldButtons.remove(id);
     _connection->buttonRelease(id);
+}
+
+void ExtPlaneClient::valueSet(ClientDataRef *ref) {
+    _connection->setValue(ref->name(), ref->valueString());
+}
+
+void ExtPlaneClient::unsubscribed(ClientDataRef *ref) {
+    unsubscribeDataRef(ref->name());
 }

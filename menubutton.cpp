@@ -154,6 +154,7 @@ void MenuButton::loadPanel() {
                 if(g) {
                     emit itemAdded(g);
                     g->loadSettings(settings);
+                    g->applySettings();
                 } else {
                     qDebug() << Q_FUNC_INFO << "Can't load item of type " << settings.value("type").toString();
                 }

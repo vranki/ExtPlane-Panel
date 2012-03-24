@@ -12,6 +12,7 @@ public:
     virtual void keyPress(int id)=0;
     virtual void buttonPress(int id)=0;
     virtual void buttonRelease(int id)=0;
+    virtual void setValue(QString name, QString value)=0;
 };
 
 #endif // CLIENTDATAREFPROVICER_H

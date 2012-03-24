@@ -18,18 +18,21 @@ class ExtPlaneConnection : public QTcpSocket, public ClientDataRefProvicer {
 public:
     explicit ExtPlaneConnection(QObject *parent = 0);
     void registerClient(ExtPlaneClient* client);
+signals:
+    void connectionError(QString text);
+public slots:
     virtual ClientDataRef *subscribeDataRef(QString name, double accuracy=0);
     virtual void unsubscribeDataRef(ClientDataRef *ref);
     virtual void keyPress(int id);
     virtual void buttonPress(int id);
     virtual void buttonRelease(int id);
-signals:
-    void connectionError(QString text);
-public slots:
+    virtual void setValue(QString name, QString value);
+    virtual void setValue(ClientDataRef *ref);
+    void connectTo(QHostAddress addr, unsigned int port);
+private slots:
     void socketConnected();
     void socketError(QAbstractSocket::SocketError err);
     void readClient();
-    void connectTo(QHostAddress addr, unsigned int port);
     void tryReconnect();
 private:
     void subRef(ClientDataRef *ref);

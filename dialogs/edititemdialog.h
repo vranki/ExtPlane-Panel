@@ -19,7 +19,8 @@ public slots:
     void setPanelItem(PanelItem *it=0);
 protected:
     void changeEvent(QEvent *e);
-
+private slots:
+    void applySettings();
 private:
     Ui::EditItemDialog *ui;
     PanelItem *currentItem;

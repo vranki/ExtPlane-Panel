@@ -13,7 +13,7 @@ class ExtPlaneClient : public QObject {
 public:
     explicit ExtPlaneClient(QObject *parent, QString name, ClientDataRefProvicer *drp);
     ~ExtPlaneClient();
-    void subscribeDataRef(QString name, double accuracy=0);
+    ClientDataRef* subscribeDataRef(QString name, double accuracy=0);
     void unsubscribeDataRef(QString name);
     void keyPress(int id);
     void buttonPress(int id);
@@ -21,7 +21,10 @@ public:
 signals:
     void refChanged(QString name, double value);
 public slots:
+private slots:
     void cdrChanged(ClientDataRef *ref);
+    void valueSet(ClientDataRef *ref);
+    void unsubscribed(ClientDataRef *ref);
 private:
     QString _name;
     QList<ClientDataRef*> _dataRefs;

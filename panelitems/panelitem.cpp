@@ -141,3 +141,5 @@ void PanelItem::setEditMode(bool em) {
 bool PanelItem::isEditMode() {
     return _editMode;
 }
+void PanelItem::applySettings() {
+}

@@ -7,11 +7,17 @@ EditItemDialog::EditItemDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     currentItem = 0;
+    connect(this, SIGNAL(finished(int)), this, SLOT(applySettings()));
 }
 
 EditItemDialog::~EditItemDialog()
 {
     delete ui;
+}
+
+void EditItemDialog::applySettings() {
+    if(currentItem)
+        currentItem->applySettings();
 }
 
 void EditItemDialog::changeEvent(QEvent *e)
@@ -28,6 +34,7 @@ void EditItemDialog::changeEvent(QEvent *e)
 
 void EditItemDialog::setPanelItem(PanelItem *it) {
     if(currentItem) {
+        applySettings();
         disconnect(currentItem, 0, this, 0);
     }
     currentItem = it;

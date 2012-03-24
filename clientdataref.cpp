@@ -28,3 +28,12 @@ int ClientDataRef::subscribers() {
 void ClientDataRef::setSubscribers(int sub) {
     _subscribers = sub;
 }
+
+void ClientDataRef::setValue(double _newValue) {
+    _value = QString::number(_newValue);
+    emit valueSet(this);
+}
+
+void ClientDataRef::unsubscribe() {
+    emit unsubscribed(this);
+}

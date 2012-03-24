@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     panelitems/variometer.cpp \
     panelitems/altimeter.cpp \
     widgets/distanceunitcombobox.cpp \
-    panelitems/button.cpp
+    panelitems/button.cpp \
+    panelitems/switch.cpp
 
 HEADERS += \
     panelitems/panelitem.h \
@@ -51,8 +52,11 @@ HEADERS += \
     panelitems/variometer.h \
     panelitems/altimeter.h \
     widgets/distanceunitcombobox.h \
-    panelitems/button.h
+    panelitems/button.h \
+    panelitems/switch.h
 
 FORMS += \
     dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui
+
+OTHER_FILES += README

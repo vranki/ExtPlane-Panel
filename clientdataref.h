@@ -13,8 +13,12 @@ public:
     void updateValue(QString newValue);
     int subscribers();
     void setSubscribers(int sub);
+    void setValue(double _newValue);
+    void unsubscribe();
 signals:
     void changed(ClientDataRef *ref);
+    void valueSet(ClientDataRef *ref);
+    void unsubscribed(ClientDataRef *ref);
 public slots:
 
 private:
