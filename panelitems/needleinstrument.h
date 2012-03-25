@@ -13,12 +13,13 @@ public:
     void setNumbers(float div);
     void setLabel(QString text);
     virtual QString typeName() = 0;
+    float value2Angle(float value);
 public slots:
     void setValue(float value);
+protected:
 private:
     float _thickBars, _thinBars;
     float _numbers;
-    float value2Angle(float value);
     float _value, _zeroangle, _maxAngle, _zeroValue, _maxValue;
     QString _label;
 };

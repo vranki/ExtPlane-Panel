@@ -13,6 +13,7 @@ public:
     AirspeedIndicator(QObject *parent, ExtPlaneConnection *conn);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
     static QString typeNameStatic();
     virtual void createSettings(QGridLayout *layout);
@@ -21,9 +22,13 @@ public slots:
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
 private:
+    void paintArc(QPainter *painter,QColor color, double start, double end);
     ExtPlaneClient _client;
     VelocityUnit units;
-    float maxValue;
+    double maxValue;
+    // Always in m/s
+    double vne, yaStart, yaEnd, gaStart, gaEnd, waStart, waEnd;
+    double yellowTriangle;
 };
 
 #endif // AIRSPEEDINDICATOR_H
