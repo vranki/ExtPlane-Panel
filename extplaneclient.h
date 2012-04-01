@@ -25,6 +25,7 @@ private slots:
     void cdrChanged(ClientDataRef *ref);
     void valueSet(ClientDataRef *ref);
     void unsubscribed(ClientDataRef *ref);
+    void refDestroyed(QObject* refqo);
 private:
     QString _name;
     QList<ClientDataRef*> _dataRefs;

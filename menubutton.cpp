@@ -1,8 +1,8 @@
 #include "menubutton.h"
 
 MenuButton::MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemFactory *gf) :
-        QObject(parent), panelItems(gaugelist), itemFactory(gf), settings("org.vranki", "extplane-gauges-panels", this)
-         {
+    QObject(parent), panelItems(gaugelist), itemFactory(gf), settings("org.vranki", "extplane-gauges-panels", this)
+{
     parentWidget = parent;
     side = 20;
     msg = 0;
@@ -49,16 +49,16 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     connect(msg, SIGNAL(rejected()), this, SLOT(closeDialog()));
     layout->addWidget(addButton);
 
-    if(!selectedGauges().isEmpty()) {
-        QPushButton *deleteButton = new QPushButton("Delete Item(s)", msg);
-        connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteItems()));
-        layout->addWidget(deleteButton);
-        if(selectedGauges().size()==1) {
-            QPushButton *editButton = new QPushButton("Item Properties", msg);
-            connect(editButton, SIGNAL(clicked()), this, SLOT(itemProperties()));
-            layout->addWidget(editButton);
-        }
-    }
+    //if(!selectedGauges().isEmpty()) {
+    QPushButton *deleteButton = new QPushButton("Delete Item(s)", msg);
+    connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteItems()));
+    layout->addWidget(deleteButton);
+//    if(selectedGauges().size()==1) {
+    QPushButton *editButton = new QPushButton("Item Properties", msg);
+    connect(editButton, SIGNAL(clicked()), this, SLOT(itemProperties()));
+    layout->addWidget(editButton);
+    //    }
+    //}
     QPushButton *saveButton = new QPushButton("Save panel", msg);
     connect(saveButton, SIGNAL(clicked()), this, SLOT(savePanel()));
     layout->addWidget(saveButton);
@@ -75,7 +75,8 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
     layout->addWidget(quitButton);
     msg->setLayout(layout);
-    msg->exec();
+    msg->setModal(false);
+    msg->show();
 }
 
 QList<PanelItem*> MenuButton::selectedGauges() {
@@ -103,12 +104,10 @@ void MenuButton::addItem() {
 void MenuButton::deleteItems() {
     QList<PanelItem*> selection = selectedGauges();
     foreach(PanelItem* g, selection) {
-//        delete g;
+        //        delete g;
         Q_ASSERT(panelItems.removeOne(g));
         g->deleteLater();
     }
-
-    closeDialog();
 }
 
 void MenuButton::savePanel() {
@@ -133,7 +132,10 @@ void MenuButton::savePanel() {
 }
 
 void MenuButton::closeDialog() {
-    msg->deleteLater();
+    if(editItemDialog)
+        editItemDialog->setPanelItem(0);
+    if(msg)
+        msg->deleteLater();
 }
 
 void MenuButton::loadPanel() {
@@ -180,7 +182,7 @@ void MenuButton::quit() {
 }
 
 void MenuButton::itemProperties() {
-    closeDialog();
+    if(selectedGauges().isEmpty()) return;
     if(editItemDialog)
         delete editItemDialog;
     editItemDialog =  new EditItemDialog(parentWidget);

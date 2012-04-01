@@ -90,8 +90,10 @@ void Switch::setLabel(QString txt) {
 }
 
 void Switch::setRef(QString txt) {
-    if(_ref)
+    if(_ref) {
         _ref->unsubscribe();
+        _ref = 0;
+    }
     _refname = txt;
     update();
 }

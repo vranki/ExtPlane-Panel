@@ -143,3 +143,5 @@ bool PanelItem::isEditMode() {
 }
 void PanelItem::applySettings() {
 }
+
+void PanelItem::tickTime(double dt, int total) {}

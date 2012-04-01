@@ -30,7 +30,10 @@ SOURCES += main.cpp \
     panelitems/altimeter.cpp \
     widgets/distanceunitcombobox.cpp \
     panelitems/button.cpp \
-    panelitems/switch.cpp
+    panelitems/switch.cpp \
+    simulateddatarefs/simulateddataref.cpp \
+    valueinterpolator.cpp \
+    panelitems/rotaryknob.cpp
 
 HEADERS += \
     panelitems/panelitem.h \
@@ -53,7 +56,10 @@ HEADERS += \
     panelitems/altimeter.h \
     widgets/distanceunitcombobox.h \
     panelitems/button.h \
-    panelitems/switch.h
+    panelitems/switch.h \
+    simulateddatarefs/simulateddataref.h \
+    valueinterpolator.h \
+    panelitems/rotaryknob.h
 
 FORMS += \
     dialogs/settingsdialog.ui \

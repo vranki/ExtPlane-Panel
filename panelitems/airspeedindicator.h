@@ -6,6 +6,7 @@
 #include <QLabel>
 #include "widgets/velocityunitcombobox.h"
 #include "widgets/numberinputlineedit.h"
+#include "../valueinterpolator.h"
 
 class AirspeedIndicator : public NeedleInstrument {
     Q_OBJECT
@@ -21,6 +22,7 @@ public slots:
     void speedChanged(QString name, double speed);
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
+    virtual void tickTime(double dt, int total);
 private:
     void paintArc(QPainter *painter,QColor color, double start, double end);
     ExtPlaneClient _client;
@@ -29,6 +31,7 @@ private:
     // Always in m/s
     double vne, yaStart, yaEnd, gaStart, gaEnd, waStart, waEnd;
     double yellowTriangle;
+    ValueInterpolator interpolator;
 };
 
 #endif // AIRSPEEDINDICATOR_H

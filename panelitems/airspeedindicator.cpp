@@ -1,10 +1,12 @@
 #include "airspeedindicator.h"
 
 AirspeedIndicator::AirspeedIndicator(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrument(parent),
-_client(this, typeName(), conn) {
+    _client(this, typeName(), conn), interpolator(0, 10) {
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/cockpit2/gauges/indicators/airspeed_kts_pilot", 1);
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(speedChanged(QString,double)));
+    // _client.subscribeDataRef("simulated", 1);
+    connect(&_client, SIGNAL(refChanged(QString,double)), &interpolator, SLOT(valueChanged(QString,double)));
+    connect(&interpolator, SIGNAL(interpolatedValueChanged(QString,double)), this, SLOT(speedChanged(QString,double)));
     setBars(20, 10);
     setNumbers(50);
     setUnit(VELOCITY_KTS);
@@ -124,4 +126,8 @@ void AirspeedIndicator::createSettings(QGridLayout *layout) {
     maxValueEdit->setText(QString::number(maxValue));
     layout->addWidget(maxValueEdit);
     connect(maxValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMaxValue(float)));
+}
+
+void AirspeedIndicator::tickTime(double dt, int total) {
+    interpolator.tickTime(dt, total);
 }

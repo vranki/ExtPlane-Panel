@@ -44,6 +44,7 @@ public slots:
     void setPanelRotation(int angle);
     void setItemRotation(int angle);
     void setZValue(int z);
+    virtual void tickTime(double dt, int total);
 private:
     float _width, _height;
     bool resizing, _editMode;

@@ -12,6 +12,7 @@
 #include "extplaneclient.h"
 #include "clientdataref.h"
 #include "clientdatarefprovicer.h"
+#include "simulateddatarefs/simulateddataref.h"
 
 class ExtPlaneConnection : public QTcpSocket, public ClientDataRefProvicer {
     Q_OBJECT
@@ -29,6 +30,7 @@ public slots:
     virtual void setValue(QString name, QString value);
     virtual void setValue(ClientDataRef *ref);
     void connectTo(QHostAddress addr, unsigned int port);
+    void tickTime(double dt, int total);
 private slots:
     void socketConnected();
     void socketError(QAbstractSocket::SocketError err);
@@ -37,12 +39,15 @@ private slots:
 private:
     void subRef(ClientDataRef *ref);
     void writeLine(QString line);
+    ClientDataRef *createSimulatedRef(QString name);
     QList<ExtPlaneClient*> clients;
     QMap<QString, ClientDataRef*> dataRefs;
     bool server_ok;
     QTimer reconnectTimer;
     QHostAddress _addr;
     unsigned int _port;
+    QList<SimulatedDataRef*> simulatedRefs;
+    bool enableSimulatedRefs;
 };
 
 #endif // EXTPLANECONNECTION_H

@@ -3,6 +3,7 @@
 ClientDataRef::ClientDataRef(QObject *parent, QString newName, double accuracy) : QObject(parent), _name(newName), _accuracy(accuracy) {
     _subscribers = 0;
 }
+
 QString ClientDataRef::name() {
     return _name;
 }

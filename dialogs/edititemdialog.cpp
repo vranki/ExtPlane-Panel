@@ -33,7 +33,7 @@ void EditItemDialog::changeEvent(QEvent *e)
 }
 
 void EditItemDialog::setPanelItem(PanelItem *it) {
-    if(currentItem) {
+    if(currentItem && currentItem != sender()) {
         applySettings();
         disconnect(currentItem, 0, this, 0);
     }

@@ -6,6 +6,7 @@ ExtPlaneConnection::ExtPlaneConnection(QObject *parent) : QTcpSocket(parent) {
     connect(this, SIGNAL(readyRead()), this, SLOT(readClient()));
     connect(&reconnectTimer, SIGNAL(timeout()), this, SLOT(tryReconnect()));
     server_ok = false;
+    enableSimulatedRefs = false;
 }
 
 void ExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port) {
@@ -16,7 +17,7 @@ void ExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port) {
 }
 
 void ExtPlaneConnection::tryReconnect() {
-    qDebug() << Q_FUNC_INFO << _addr.toString() << _port;
+    // qDebug() << Q_FUNC_INFO << _addr.toString() << _port;
     reconnectTimer.stop();
     connectToHost(_addr, _port);
 }
@@ -48,7 +49,9 @@ ClientDataRef *ExtPlaneConnection::subscribeDataRef(QString name, double accurac
             // @todo update accuracy
         }
     } else {
-        ref = new ClientDataRef(this, name, accuracy);
+        ref = createSimulatedRef(name);
+        if(!ref) ref = new ClientDataRef(this, name, accuracy);
+
         dataRefs[ref->name()] = ref;
         ref->setSubscribers(1);
         connect(ref, SIGNAL(unsubscribed(ClientDataRef*)), this, SLOT(unsubscribeDataRef(ClientDataRef*)));
@@ -61,15 +64,45 @@ ClientDataRef *ExtPlaneConnection::subscribeDataRef(QString name, double accurac
     return ref;
 }
 
+
+ClientDataRef *ExtPlaneConnection::createSimulatedRef(QString name) {
+    if(!enableSimulatedRefs) return 0;
+    SimulatedDataRef *simRef = 0;
+    if(name=="sim/cockpit2/gauges/indicators/airspeed_kts_pilot") {
+        simRef = new SimulatedDataRef(this, 0, 200, "sim/cockpit2/gauges/indicators/airspeed_kts_pilot");
+    } else if(name=="sim/flightmodel/position/vh_ind") {
+        simRef = new SimulatedDataRef(this, -5, 5, "sim/flightmodel/position/vh_ind");
+    } else if(name=="sim/cockpit2/gauges/indicators/total_energy_fpm") {
+        simRef = new SimulatedDataRef(this, -500, 500, "sim/cockpit2/gauges/indicators/total_energy_fpm");
+    }
+    if(simRef) {
+        simulatedRefs.append(simRef);
+        return simRef->clientRef();
+    }
+    return 0;
+}
+
 void ExtPlaneConnection::unsubscribeDataRef(ClientDataRef *ref) {
-    qDebug() << Q_FUNC_INFO << ref->name() << ref->subscribers();
+    qDebug() << Q_FUNC_INFO << ref << ref->name() << ref->subscribers();
     ref->setSubscribers(ref->subscribers() - 1);
     if(ref->subscribers() > 0) return;
     qDebug() << Q_FUNC_INFO << "Ref not subscribed by anyone anymore";
-    if(server_ok)
-        writeLine("unsub " + ref->name());
     dataRefs.remove(ref->name());
-    ref->deleteLater();
+    bool isSimulated = false;
+    foreach(SimulatedDataRef *simRef, simulatedRefs) {
+        if(simRef->clientRef()==ref) {
+            simRef->deleteLater();
+            simulatedRefs.removeOne(simRef);
+            isSimulated = true;
+        }
+    }
+    disconnect(ref, 0, this, 0);
+    if(!isSimulated) {
+        if(server_ok)
+            writeLine("unsub " + ref->name());
+        qDebug() << Q_FUNC_INFO << "Deleting ref " << ref->name() << ref;
+        ref->deleteLater();
+    }
     foreach(ClientDataRef *ref, dataRefs) {
         qDebug() << "refs now:" << ref->name();
     }
@@ -146,4 +179,9 @@ void ExtPlaneConnection::setValue(QString name, QString value) {
 }
 void ExtPlaneConnection::setValue(ClientDataRef *ref) {
     setValue(ref->name(), ref->valueString());
+}
+
+void ExtPlaneConnection::tickTime(double dt, int total) {
+    foreach(SimulatedDataRef *dr, simulatedRefs)
+        dr->tickTime(dt, total);
 }

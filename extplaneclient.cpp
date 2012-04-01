@@ -1,4 +1,5 @@
 #include "extplaneclient.h"
+#include <QDebug>
 
 ExtPlaneClient::ExtPlaneClient(QObject *parent, QString name, ClientDataRefProvicer *drp) :
     QObject(parent), _name(name), _connection(drp)
@@ -7,16 +8,22 @@ ExtPlaneClient::ExtPlaneClient(QObject *parent, QString name, ClientDataRefProvi
 
 ExtPlaneClient::~ExtPlaneClient() {
     foreach(ClientDataRef *ref, _dataRefs) {
+        qDebug() << Q_FUNC_INFO << "unsubbing ref " << ref->name();
+        _dataRefs.removeOne(ref);
         _connection->unsubscribeDataRef(ref);
     }
-    _dataRefs.clear();
 }
 
 ClientDataRef* ExtPlaneClient::subscribeDataRef(QString name, double accuracy) {
     ClientDataRef *ref = _connection->subscribeDataRef(name, accuracy);
     connect(ref, SIGNAL(changed(ClientDataRef*)), this, SLOT(cdrChanged(ClientDataRef*)));
+    connect(ref, SIGNAL(destroyed(QObject*)), this, SLOT(refDestroyed(QObject*)));
     _dataRefs.append(ref);
     return ref;
+}
+
+void ExtPlaneClient::refDestroyed(QObject* refqo) {
+    _dataRefs.removeOne(static_cast<ClientDataRef*>(refqo));
 }
 
 void ExtPlaneClient::cdrChanged(ClientDataRef *ref) {
@@ -24,14 +31,16 @@ void ExtPlaneClient::cdrChanged(ClientDataRef *ref) {
 }
 
 void ExtPlaneClient::unsubscribeDataRef(QString name) {
+    qDebug() << Q_FUNC_INFO << name;
     foreach(ClientDataRef *ref, _dataRefs) {
         if(ref->name() == name) {
 //            disconnect(ref, 0, this, 0);
-            _connection->unsubscribeDataRef(ref);
             _dataRefs.removeOne(ref);
+            _connection->unsubscribeDataRef(ref);
             return;
         }
     }
+    Q_ASSERT(false);
 }
 
 void ExtPlaneClient::keyPress(int id) {

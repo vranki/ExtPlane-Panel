@@ -7,6 +7,7 @@
 #include "../units.h"
 #include "widgets/velocityunitcombobox.h"
 #include "widgets/numberinputlineedit.h"
+#include "../valueinterpolator.h"
 
 class Variometer : public NeedleInstrument
 {
@@ -25,11 +26,13 @@ public slots:
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
     void setIsTotalEnergy(bool te);
+    virtual void tickTime(double dt, int total);
 private:
     ExtPlaneClient _client;
     VelocityUnit units;
     float maxValue;
     bool isTotalEnergy;
+    ValueInterpolator interpolator;
 };
 
 #endif // VARIOMETER_H

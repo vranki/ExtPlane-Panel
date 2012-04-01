@@ -1,6 +1,7 @@
 #include "panelwindow.h"
 
-PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(), itemFactory(&connection) {
+PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(),
+    connection(new ExtPlaneConnection()), itemFactory(connection) {
     setScene(&scene);
     panelRotation = 0;
     editMode = false;
@@ -17,7 +18,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(), itemFacto
     connect(menuButton, SIGNAL(itemAdded(PanelItem*)), this, SLOT(addItem(PanelItem*)));
     scene.addItem(menuButton);
     setBackgroundBrush(QBrush(Qt::black));
-    connect(&connection, SIGNAL(connectionError(QString)), this, SLOT(connectionError(QString)));
+    connect(connection, SIGNAL(connectionError(QString)), this, SLOT(connectionError(QString)));
     errorMessage.setDefaultTextColor(Qt::red);
     errorMessage.setPos(0,20);
     scene.addItem(&errorMessage);
@@ -26,11 +27,20 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(), itemFacto
     connect(&blankingTimer, SIGNAL(timeout()), this, SLOT(disableBlanking()));
     blankingTimer.start(30000);
 
+    connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
+    tickTimer.setInterval(32);
+    tickTimer.setSingleShot(false);
+    tickTimer.start();
+    totalTime.start();
+    time.start();
+
+    connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
 }
 
 PanelWindow::~PanelWindow() {
     qDeleteAll(panelItems);
     panelItems.clear();
+    delete connection;
 }
 
 void PanelWindow::connectionError(QString txt) {
@@ -51,6 +61,7 @@ void PanelWindow::addItem(PanelItem *g) {
     g->setEditMode(editMode);
     scene.addItem(g);
     panelItems.append(g);
+    connect(this, SIGNAL(tickTime(double,int)), g, SLOT(tickTime(double,int)));
 }
 
 void PanelWindow::panelRotationChanged(int r) {
@@ -80,11 +91,11 @@ void PanelWindow::setServerAddress(QString host) {
 
     if(port==0)
         port = 51000;
-    connection.disconnectFromHost();
+    connection->disconnectFromHost();
     qDebug() << Q_FUNC_INFO << hostport.value(0) << hostport.value(1);
     QHostAddress addr;
     addr.setAddress(hostport.value(0));
-    connection.connectTo(QHostAddress(hostport.value(0)), port);
+    connection->connectTo(QHostAddress(hostport.value(0)), port);
 }
 
 void PanelWindow::editModeChanged(bool em) {
@@ -93,6 +104,17 @@ void PanelWindow::editModeChanged(bool em) {
     foreach(PanelItem *it, panelItems)
         it->setEditMode(em);
 }
+
+void PanelWindow::tick() {
+    double dt = time.elapsed() / 1000.0f;
+    time.start();
+    if(dt > 0.2) {
+        qDebug() << "Skipping frame, dt: " << dt;
+        dt = 0;
+    }
+    emit tickTime(dt, totalTime.elapsed());
+}
+
 void PanelWindow::disableBlanking() {
 #ifdef MAEMO
     QDBusConnection::systemBus().call(QDBusMessage::createMethodCall(MCE_SERVICE, MCE_REQUEST_PATH,MCE_REQUEST_IF, MCE_PREVENT_BLANK_REQ));

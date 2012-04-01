@@ -5,6 +5,7 @@
 #include "panelitems/altimeter.h"
 #include "panelitems/button.h"
 #include "panelitems/switch.h"
+#include "panelitems/rotaryknob.h"
 
 PanelItemFactory::PanelItemFactory(ExtPlaneConnection *conn)
 {
@@ -25,6 +26,8 @@ PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject) {
         g = new Button(parentObject, connection);
     } else if(name == Switch::typeNameStatic()) {
         g = new Switch(parentObject, connection);
+    } else if(name == RotaryKnob::typeNameStatic()) {
+        g = new RotaryKnob(parentObject, connection);
     }
     return g;
 }
@@ -32,6 +35,6 @@ PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject) {
 QStringList PanelItemFactory::itemNames() {
     QStringList items;
     items << AirspeedIndicator::typeNameStatic() << Compass::typeNameStatic() << Variometer::typeNameStatic()
-          << Altimeter::typeNameStatic() << Button::typeNameStatic() << Switch::typeNameStatic();
+          << Altimeter::typeNameStatic() << Button::typeNameStatic() << Switch::typeNameStatic() << RotaryKnob::typeNameStatic();
     return items;
 }
