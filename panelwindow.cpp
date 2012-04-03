@@ -28,7 +28,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(),
     blankingTimer.start(30000);
 
     connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
-    tickTimer.setInterval(32);
+    tickTimer.setInterval(64);
     tickTimer.setSingleShot(false);
     tickTimer.start();
     totalTime.start();

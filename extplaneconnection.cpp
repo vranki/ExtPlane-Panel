@@ -13,6 +13,7 @@ void ExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port) {
     close();
     _addr = addr;
     _port = port;
+    abort();
     tryReconnect();
 }
 
