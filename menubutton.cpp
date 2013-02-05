@@ -23,7 +23,7 @@ void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setBrush(Qt::NoBrush);
     painter->setPen(Qt::yellow);
-    painter->drawRect(0,0,side,side);
+    //painter->drawRect(0,0,side,side);
     painter->drawLine(0,side,side,0);
 }
 
@@ -38,6 +38,7 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     msg = new QDialog(parentWidget);
     msg->move(event->screenPos().x(), event->screenPos().y());
     QVBoxLayout *layout = new QVBoxLayout();
+
     QCheckBox *editModeCheck = new QCheckBox("Edit Panel", msg);
     editModeCheck->setChecked(editMode);
     connect(editModeCheck, SIGNAL(clicked(bool)), this, SIGNAL(editModeChanged(bool)));

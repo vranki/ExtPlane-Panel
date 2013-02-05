@@ -6,7 +6,7 @@ ExtPlaneConnection::ExtPlaneConnection(QObject *parent) : QTcpSocket(parent) {
     connect(this, SIGNAL(readyRead()), this, SLOT(readClient()));
     connect(&reconnectTimer, SIGNAL(timeout()), this, SLOT(tryReconnect()));
     server_ok = false;
-    enableSimulatedRefs = false;
+    enableSimulatedRefs = true;
 }
 
 void ExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port) {

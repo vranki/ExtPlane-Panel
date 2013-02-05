@@ -1,11 +1,11 @@
 #include "simulateddataref.h"
 
 SimulatedDataRef::SimulatedDataRef(QObject *parent, double minV, double maxV, QString refName) :
-    QObject(parent), minValue(minV), maxValue(maxV), currentValue(0), change((maxValue - minValue)/10), myClientRef(0, refName, 0)
+    QObject(parent), minValue(minV), maxValue(maxV), currentValue(0), change((maxValue - minValue)/1), myClientRef(0, refName, 0)
 {
     connect(&changeTimer, SIGNAL(timeout()), this, SLOT(changeTimeout()));
     changeTimer.setSingleShot(false);
-    changeTimer.setInterval(500);
+    changeTimer.setInterval(5);
     changeTimer.start();
 }
 
