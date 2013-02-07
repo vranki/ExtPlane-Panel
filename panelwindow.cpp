@@ -200,8 +200,8 @@ void PanelWindow::savePanel() {
     //settingsDialog->saveSettings();
     int panelNumber = 0;
     QString panelName = "Panel";
-    appSettings->group().clear();
     appSettings->beginGroup("panel-" + QString::number(panelNumber));
+    appSettings->group().clear();
     appSettings->setValue("number", panelNumber);
     appSettings->setValue("name", panelName);
     appSettings->setValue("gaugecount", panelItems.size());
