@@ -5,7 +5,6 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(),
     setScene(&scene);
     panelRotation = 0;
     editMode = false;
-    resize(1024, 768);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setSceneRect(0,0,width(), height());
@@ -35,6 +34,11 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(),
     time.start();
 
     connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
+#ifdef MOBILE_DEVICE
+    showFullScreen();
+#else
+    resize(1024, 768);
+#endif
 }
 
 PanelWindow::~PanelWindow() {

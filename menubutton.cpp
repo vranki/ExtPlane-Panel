@@ -1,10 +1,12 @@
 #include "menubutton.h"
 
 MenuButton::MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemFactory *gf) :
-    QObject(parent), panelItems(gaugelist), itemFactory(gf), settings("org.vranki", "extplane-gauges-panels", this)
+    QObject(parent), panelItems(gaugelist), itemFactory(gf), settings("org.vranki", "extplane-gauges-panels", this), side(20)
 {
     parentWidget = parent;
-    side = 20;
+#ifdef MOBILE_DEVICE
+    side = 50;
+#endif
     msg = 0;
     editMode = false;
     settingsDialog = new SettingsDialog(parentWidget);
@@ -121,6 +123,7 @@ void MenuButton::savePanel() {
     settings.setValue("gaugecount", panelItems.size());
     int gn = 0;
     foreach(PanelItem *g, panelItems) {
+        qDebug() << Q_FUNC_INFO << "Saving item " << g->objectName() << " to " << settings.fileName();
         settings.beginGroup("gauge-" + QString::number(gn));
         g->storeSettings(settings);
         settings.endGroup();
@@ -140,6 +143,8 @@ void MenuButton::closeDialog() {
 
 void MenuButton::loadPanel() {
     settingsDialog->loadSettings();
+
+    qDebug() << Q_FUNC_INFO << "Loading panel from" << settings.fileName();
 
     foreach(PanelItem *g, panelItems) {
         g->deleteLater();

@@ -29,7 +29,11 @@ void SettingsDialog::loadSettings() {
     settings.beginGroup("settings");
     qDebug() << Q_FUNC_INFO << settings.value("panelrotation").toInt();
     ui->panelRotationDial->setValue(settings.value("panelrotation").toInt());
+#ifdef MOBILE_DEVICE
+    ui->fullscreenCheckbox->setChecked(settings.value("fullscreen", true).toBool());
+#else
     ui->fullscreenCheckbox->setChecked(settings.value("fullscreen", false).toBool());
+#endif
     emit fullscreenChanged(ui->fullscreenCheckbox->isChecked());
     ui->serverAddressEdit->setText(settings.value("serveraddress", "127.0.0.1:51000").toString());
     emit setServerAddress(ui->serverAddressEdit->text());

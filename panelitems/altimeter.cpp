@@ -16,6 +16,8 @@ Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef("sim/flightmodel/misc/h_ind", 3);
     _client.subscribeDataRef("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot");
+    font.setPixelSize(20); // @todo configurable
+    pressureFont.setPixelSize(15);
 }
 
 void Altimeter::setNumbers(float div) {
@@ -37,6 +39,8 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     QColor needleColor(255, 255, 255);
     QColor needleColor2(200, 200, 200);
 
+    painter->setFont(font);
+
     int side = qMin(width(), height());
     painter->setRenderHint(QPainter::Antialiasing);
     painter->save();
@@ -53,12 +57,15 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     int textwidth = painter->fontMetrics().width("Altitude");
     painter->drawText(-textwidth/2,-130, textwidth, 200, Qt::AlignCenter, "Altitude");
 
+    // Pressure window
     painter->setBrush(Qt::black);
     painter->drawRect(30,-10,60,20);
+    painter->setFont(pressureFont);
     QString pressureText = QString::number(_baroPressure);
     textwidth = painter->fontMetrics().width(pressureText);
     painter->drawText(30,-10, 60, 20, Qt::AlignRight | Qt::AlignVCenter, pressureText);
 
+    painter->setFont(font);
     painter->setBrush(Qt::white);
     if(_thickBars > 0) {
         for (float i = 0 ; i <= _range1; i+=_thickBars) {
