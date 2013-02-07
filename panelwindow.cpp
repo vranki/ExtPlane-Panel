@@ -1,30 +1,68 @@
+#include <QInputDialog>
+
 #include "panelwindow.h"
 
-PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(),
-    connection(new ExtPlaneConnection()), itemFactory(connection) {
-    setScene(&scene);
+PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
+
+    // Init
+    appSettings = NULL;
+    panelSettings = NULL;
+    settingsDialog = NULL;
+    itemFactory = NULL;
     panelRotation = 0;
     editMode = false;
+
+    // Load settings
+    appSettings = new QSettings("org.vranki", "extplane-panel", this);
+
+    // Create connection and item factory
+    appSettings->beginGroup("settings");
+    if(appSettings->value("simulate", false).toBool() == true)  connection = new SimulatedExtPlaneConnection();
+    else                                                        connection = new ExtPlaneConnection();
+    appSettings->endGroup();
+    itemFactory = new PanelItemFactory(connection);
+
+    // Setup window
+    setScene(&scene);
+
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setSceneRect(0,0,width(), height());
-    menuButton = new MenuButton(this, panelItems, &itemFactory);
+    setSceneRect(0, 0, width(), height());
+    setBackgroundBrush(QBrush(Qt::black));
+
+    // Settings dialog
+    settingsDialog = new SettingsDialog(this/*,appSettings*/); // @TODO: Check SettingsDialog constructor!
+    connect(settingsDialog, SIGNAL(rotationChanged(int)), this, SLOT(panelRotationChanged(int)));
+    connect(settingsDialog, SIGNAL(fullscreenChanged(bool)), this, SLOT(fullscreenChanged(bool)));
+    connect(settingsDialog, SIGNAL(setServerAddress(QString)), this, SLOT(setServerAddress(QString)));
+    settingsDialog->setModal(false);
+    settingsDialog->hide();
+
+    // Menu button
+    menuButton = new MenuButton(this);
     connect(menuButton, SIGNAL(panelRotationChanged(int)), this, SLOT(panelRotationChanged(int)));
     connect(menuButton, SIGNAL(fullscreenChanged(bool)), this, SLOT(fullscreenChanged(bool)));
     connect(menuButton, SIGNAL(setServerAddress(QString)), this, SLOT(setServerAddress(QString)));
-    connect(menuButton, SIGNAL(editModeChanged(bool)), this, SLOT(editModeChanged(bool)));
+    //connect(menuButton, SIGNAL(editModeChanged(bool)), this, SLOT(editModeChanged(bool)));
     menuButton->setPos(0,0);
     connect(menuButton, SIGNAL(itemAdded(PanelItem*)), this, SLOT(addItem(PanelItem*)));
     scene.addItem(menuButton);
-    setBackgroundBrush(QBrush(Qt::black));
+
+    // Error message
     connect(connection, SIGNAL(connectionError(QString)), this, SLOT(connectionError(QString)));
     errorMessage.setDefaultTextColor(Qt::red);
     errorMessage.setPos(0,20);
     scene.addItem(&errorMessage);
-    menuButton->loadPanel();
 
+    // Load last-loaded panel
+    this->settingsDialog->loadSettings(); // this will trigger signals to start connection
+    this->loadPanel();
+
+    // Tell maemo os not to blank out
+#ifdef MAEMO
     connect(&blankingTimer, SIGNAL(timeout()), this, SLOT(disableBlanking()));
     blankingTimer.start(30000);
+#endif
 
     connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
     tickTimer.setInterval(64);
@@ -34,6 +72,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(),
     time.start();
 
     connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
+
 #ifdef MOBILE_DEVICE
     showFullScreen();
 #else
@@ -44,10 +83,14 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage(),
 PanelWindow::~PanelWindow() {
     qDeleteAll(panelItems);
     panelItems.clear();
-    delete connection;
+    if(itemFactory) delete itemFactory;
+    if(connection) delete connection;
+    if(appSettings) delete appSettings;
+    if(panelSettings) delete panelSettings;
 }
 
 void PanelWindow::connectionError(QString txt) {
+    qDebug() << Q_FUNC_INFO << txt;
     errorMessage.setPlainText(txt);
 }
 
@@ -86,28 +129,21 @@ void PanelWindow::resizeEvent(QResizeEvent * event) {
 }
 
 void PanelWindow::setServerAddress(QString host) {
+    // Extract address and port
     unsigned int port = 0;
     QStringList hostport = host.split(":");
-    if(hostport.length()==2) {
-        bool ok;
-        port = hostport.value(1).toUInt(&ok);
-    }
-
-    if(port==0)
-        port = 51000;
-    connection->disconnectFromHost();
-    qDebug() << Q_FUNC_INFO << hostport.value(0) << hostport.value(1);
+    if(hostport.length()==2) port = hostport.value(1).toUInt(NULL);
+    if(port==0) port = 51000;
     QHostAddress addr;
     addr.setAddress(hostport.value(0));
+    qDebug() << Q_FUNC_INFO << hostport.value(0) << port;
+
+    // Disconnect and reconnect
+    connection->disconnectFromHost();
     connection->connectTo(QHostAddress(hostport.value(0)), port);
 }
 
-void PanelWindow::editModeChanged(bool em) {
-    qDebug() << Q_FUNC_INFO << em;
-    editMode = em;
-    foreach(PanelItem *it, panelItems)
-        it->setEditMode(em);
-}
+
 
 void PanelWindow::tick() {
     double dt = time.elapsed() / 1000.0f;
@@ -124,4 +160,119 @@ void PanelWindow::disableBlanking() {
     QDBusConnection::systemBus().call(QDBusMessage::createMethodCall(MCE_SERVICE, MCE_REQUEST_PATH,MCE_REQUEST_IF, MCE_PREVENT_BLANK_REQ));
     blankingTimer.start(30000);
 #endif
+}
+
+
+
+
+
+
+
+void PanelWindow::setEditMode(bool em) {
+    qDebug() << Q_FUNC_INFO << em;
+    editMode = em;
+    foreach(PanelItem *it, panelItems)
+        it->setEditMode(em);
+}
+
+QList<PanelItem*> PanelWindow::selectedGauges() {
+    QList<PanelItem*> selection;
+    foreach(PanelItem* g, panelItems) {
+        if(g->isSelected())
+            selection.append(g);
+    }
+    return selection;
+}
+
+void PanelWindow::addItem() {
+    bool ok;
+    QString item = QInputDialog::getItem(this, "Add item", "Choose type:", itemFactory->itemNames(), 0, false, &ok);
+    if(ok) {
+        PanelItem *g=itemFactory->itemForName(item, this);
+        if(g) addItem(g);
+    }
+}
+
+void PanelWindow::deleteItems() {
+    QList<PanelItem*> selection = selectedGauges();
+    foreach(PanelItem* g, selection) {
+        Q_ASSERT(panelItems.removeOne(g));
+        g->deleteLater();
+    }
+}
+
+void PanelWindow::savePanel() {
+    //settingsDialog->saveSettings();
+    int panelNumber = 0;
+    QString panelName = "Panel";
+    appSettings->clear();
+    appSettings->beginGroup("panel-" + QString::number(panelNumber));
+    appSettings->setValue("number", panelNumber);
+    appSettings->setValue("name", panelName);
+    appSettings->setValue("gaugecount", panelItems.size());
+    int gn = 0;
+    foreach(PanelItem *g, panelItems) {
+        appSettings->beginGroup("gauge-" + QString::number(gn));
+        g->storeSettings(*appSettings);
+        appSettings->endGroup();
+        gn++;
+    }
+    appSettings->endGroup();
+    appSettings->sync();
+}
+
+void PanelWindow::loadPanel() {
+    //settingsDialog->loadSettings();
+
+    foreach(PanelItem *g, panelItems) {
+        g->deleteLater();
+    }
+    int panelNumber = 0;
+    while(panelNumber >= 0) {
+        appSettings->beginGroup("panel-" + QString::number(panelNumber));
+        if(appSettings->contains("name")) {
+            int gc = appSettings->value("gaugecount", 0).toInt();
+            QString name = appSettings->value("name").toString();
+            for(int gn=0;gn<gc;gn++) {
+                appSettings->beginGroup("gauge-" + QString::number(gn));
+                PanelItem *g = itemFactory->itemForName(appSettings->value("type").toString(), this);
+                if(g) {
+                    //emit itemAdded(g);
+                    addItem(g);
+                    g->loadSettings(*appSettings);
+                    g->applySettings();
+                } else {
+                    qDebug() << Q_FUNC_INFO << "Can't load item of type " << appSettings->value("type").toString();
+                }
+                appSettings->endGroup();
+            }
+            panelNumber++;
+        } else {
+            panelNumber = -1;
+        }
+        appSettings->endGroup();
+    }
+
+    //closeDialog();
+}
+
+
+void PanelWindow::showSettings() {
+    settingsDialog->show();
+}
+
+
+void PanelWindow::editItem() {
+    if(selectedGauges().isEmpty()) return;
+    //if(editItemDialog)
+    //    delete editItemDialog;
+    EditItemDialog *editItemDialog =  new EditItemDialog(this);
+    editItemDialog->setModal(false);
+    editItemDialog->setPanelItem(selectedGauges().first());
+    editItemDialog->show();
+}
+
+void PanelWindow::quit() {
+    //TODO: ask for save if dirty
+    QCoreApplication::quit();
 }

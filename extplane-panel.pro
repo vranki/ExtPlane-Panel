@@ -15,9 +15,10 @@ meego: {
 }
 
 TARGET = extplane-panel
-
+DESTDIR = bin
+OBJECTS_DIR = build
+MOC_DIR = build
 TEMPLATE = app
-
 SOURCES += main.cpp \
     panelitems/panelitem.cpp \
     extplaneconnection.cpp \
@@ -42,10 +43,9 @@ SOURCES += main.cpp \
     panelitems/switch.cpp \
     simulateddatarefs/simulateddataref.cpp \
     valueinterpolator.cpp \
-    panelitems/rotaryknob.cpp
-
-HEADERS += \
-    panelitems/panelitem.h \
+    panelitems/rotaryknob.cpp \
+    simulatedextplaneconnection.cpp
+HEADERS += panelitems/panelitem.h \
     extplaneconnection.h \
     panelwindow.h \
     extplaneclient.h \
@@ -68,14 +68,14 @@ HEADERS += \
     panelitems/switch.h \
     simulateddatarefs/simulateddataref.h \
     valueinterpolator.h \
-    panelitems/rotaryknob.h
-
-FORMS += \
-    dialogs/settingsdialog.ui \
+    panelitems/rotaryknob.h \
+    simulatedextplaneconnection.h
+FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui
 
-OTHER_FILES += README \
-    android/AndroidManifest.xml \
+
+# Lot of files for Android build, ignore them if not used
+OTHER_FILES += android/AndroidManifest.xml \
     android/res/values-ja/strings.xml \
     android/res/values-pt-rBR/strings.xml \
     android/res/values-de/strings.xml \
@@ -108,3 +108,5 @@ OTHER_FILES += README \
     android/src/org/kde/necessitas/ministro/IMinistro.aidl \
     android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
     android/version.xml
+
+OTHER_FILES += README
