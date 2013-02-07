@@ -3,11 +3,11 @@
 
 #ifdef MAEMO
 #include <QDBusConnection>
-
 #include <QDBusMessage>
 #include "mce/mode-names.h"
 #include "mce/dbus-names.h"
 #endif
+
 #include <QTimer>
 #include <QTime>
 #include <QGraphicsView>
@@ -18,9 +18,13 @@
 #include <QMessageBox>
 #include <QString>
 #include <QStringList>
-#include <extplaneconnection.h>
+#include <QSettings>
+#include <QInputDialog>
+#include "extplaneconnection.h"
+#include "simulatedextplaneconnection.h"
 #include "panelitemfactory.h"
 #include "menubutton.h"
+#include "dialogs/settingsdialog.h"
 
 class PanelWindow : public QGraphicsView {
     Q_OBJECT
@@ -37,21 +41,36 @@ public slots:
     void panelRotationChanged(int r);
     void fullscreenChanged(bool fs);
     void setServerAddress(QString host);
-    void editModeChanged(bool em);
     void disableBlanking();
+public slots:
+    void setEditMode(bool em);
+    void addItem();
+    void deleteItems();
+    void savePanel();
+    void loadPanel();
+    void showSettings();
+    void editItem();
+    void quit();
 private slots:
     void tick();
 protected:
     virtual void resizeEvent(QResizeEvent * event);
 private:
+    QList<PanelItem*> selectedGauges();
+private:
     MenuButton *menuButton;
+    SettingsDialog *settingsDialog;
     QGraphicsScene scene;
-    ExtPlaneConnection *connection;
     QGraphicsTextItem errorMessage;
-    QList<PanelItem *> panelItems;
-    PanelItemFactory itemFactory;
+
     int panelRotation;
     bool editMode;
+    ExtPlaneConnection *connection;
+    QSettings *appSettings;
+    QSettings *panelSettings;
+    QList<PanelItem *> panelItems;
+    PanelItemFactory *itemFactory;
+
     QTimer blankingTimer, tickTimer;
     QTime time, totalTime;
 };

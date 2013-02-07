@@ -6,7 +6,7 @@ ExtPlaneConnection::ExtPlaneConnection(QObject *parent) : QTcpSocket(parent) {
     connect(this, SIGNAL(readyRead()), this, SLOT(readClient()));
     connect(&reconnectTimer, SIGNAL(timeout()), this, SLOT(tryReconnect()));
     server_ok = false;
-    enableSimulatedRefs = true;
+    enableSimulatedRefs = false;
 }
 
 void ExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port) {
@@ -50,8 +50,7 @@ ClientDataRef *ExtPlaneConnection::subscribeDataRef(QString name, double accurac
             // @todo update accuracy
         }
     } else {
-        ref = createSimulatedRef(name);
-        if(!ref) ref = new ClientDataRef(this, name, accuracy);
+        ref = createDataRef(name, accuracy);
 
         dataRefs[ref->name()] = ref;
         ref->setSubscribers(1);
@@ -66,21 +65,8 @@ ClientDataRef *ExtPlaneConnection::subscribeDataRef(QString name, double accurac
 }
 
 
-ClientDataRef *ExtPlaneConnection::createSimulatedRef(QString name) {
-    if(!enableSimulatedRefs) return 0;
-    SimulatedDataRef *simRef = 0;
-    if(name=="sim/cockpit2/gauges/indicators/airspeed_kts_pilot") {
-        simRef = new SimulatedDataRef(this, 0, 200, "sim/cockpit2/gauges/indicators/airspeed_kts_pilot");
-    } else if(name=="sim/flightmodel/position/vh_ind") {
-        simRef = new SimulatedDataRef(this, -5, 5, "sim/flightmodel/position/vh_ind");
-    } else if(name=="sim/cockpit2/gauges/indicators/total_energy_fpm") {
-        simRef = new SimulatedDataRef(this, -500, 500, "sim/cockpit2/gauges/indicators/total_energy_fpm");
-    }
-    if(simRef) {
-        simulatedRefs.append(simRef);
-        return simRef->clientRef();
-    }
-    return 0;
+ClientDataRef *ExtPlaneConnection::createDataRef(QString name, double accuracy) {
+    return new ClientDataRef(this, name, accuracy);
 }
 
 void ExtPlaneConnection::unsubscribeDataRef(ClientDataRef *ref) {

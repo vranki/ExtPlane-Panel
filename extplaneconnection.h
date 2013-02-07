@@ -29,17 +29,17 @@ public slots:
     virtual void buttonRelease(int id);
     virtual void setValue(QString name, QString value);
     virtual void setValue(ClientDataRef *ref);
-    void connectTo(QHostAddress addr, unsigned int port);
+    virtual void connectTo(QHostAddress addr, unsigned int port);
     void tickTime(double dt, int total);
 private slots:
     void socketConnected();
     void socketError(QAbstractSocket::SocketError err);
     void readClient();
     void tryReconnect();
-private:
+protected:
     void subRef(ClientDataRef *ref);
     void writeLine(QString line);
-    ClientDataRef *createSimulatedRef(QString name);
+    virtual ClientDataRef *createDataRef(QString newName, double accuracy=0);
     QList<ExtPlaneClient*> clients;
     QMap<QString, ClientDataRef*> dataRefs;
     bool server_ok;
