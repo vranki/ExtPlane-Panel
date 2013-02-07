@@ -21,7 +21,7 @@ class MenuButton : public QObject, public QGraphicsItem {
     Q_OBJECT
     Q_INTERFACES(QGraphicsItem)
 public:
-    explicit MenuButton(QWidget *parent, QList<PanelItem*> &gaugelist, PanelItemFactory *gf);
+    explicit MenuButton(QWidget *parent);
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 protected:
@@ -31,28 +31,15 @@ signals:
     void panelRotationChanged(int r);
     void fullscreenChanged(bool fs);
     void setServerAddress(QString host);
-    void editModeChanged(bool em);
 public slots:
-    void addItem();
-    void deleteItems();
-    void closeDialog();
-    void savePanel();
-    void loadPanel();
-    void showSettings();
-    void quit();
-    void itemProperties();
     void setEditMode(bool em);
+    void closeCurrentMenu();
 private:
-    QList<PanelItem*> selectedGauges();
     int side;
-    QWidget *parentWidget;
-    QList<PanelItem*> &panelItems;
-    QDialog *msg;
-    PanelItemFactory *itemFactory;
-    QSettings settings;
-    SettingsDialog *settingsDialog;
-    EditItemDialog *editItemDialog;
     bool editMode;
+    QWidget *panelWindow;
+    QDialog *currentMenu;
+    SettingsDialog *settingsDialog;
 };
 
 #endif // MENUBUTTON_H
