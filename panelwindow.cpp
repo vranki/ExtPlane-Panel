@@ -200,7 +200,7 @@ void PanelWindow::savePanel() {
     //settingsDialog->saveSettings();
     int panelNumber = 0;
     QString panelName = "Panel";
-    appSettings->clear();
+    appSettings->group().clear();
     appSettings->beginGroup("panel-" + QString::number(panelNumber));
     appSettings->setValue("number", panelNumber);
     appSettings->setValue("name", panelName);

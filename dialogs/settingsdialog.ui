@@ -83,6 +83,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="simulateCheckbox">
+     <property name="text">
+      <string>Simulate (requires restart)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

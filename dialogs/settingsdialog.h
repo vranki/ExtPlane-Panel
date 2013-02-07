@@ -13,8 +13,9 @@ class SettingsDialog : public QDialog {
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent);
+    explicit SettingsDialog(QWidget *parent, QSettings *appSettings);
     ~SettingsDialog();
+public slots:
     void loadSettings();
     void saveSettings();
 protected:
@@ -22,10 +23,11 @@ protected:
 signals:
     void rotationChanged(int r);
     void fullscreenChanged(bool fs);
+    void simulateChanged(bool simulate);
     void setServerAddress(QString host);
 private:
     Ui::SettingsDialog *ui;
-    QSettings settings;
+    QSettings *appSettings;
 };
 
 #endif // SETTINGSDIALOG_H

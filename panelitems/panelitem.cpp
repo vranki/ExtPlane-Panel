@@ -13,6 +13,12 @@ void PanelItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->drawRect(0,0,width(), height());
         painter->drawRect(width()-SCALE_HANDLE_SIZE, height()-SCALE_HANDLE_SIZE,
                           SCALE_HANDLE_SIZE, SCALE_HANDLE_SIZE);
+    } else if(isEditMode()) {
+	painter->setOpacity(0.1);
+	painter->setPen(Qt::yellow);
+	painter->setBrush(Qt::NoBrush);
+	painter->drawRect(0,0,width(), height());
+	painter->setOpacity(1.0);
     }
 }
 
