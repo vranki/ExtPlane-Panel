@@ -46,14 +46,6 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     connect(addButton, SIGNAL(clicked()), panelWindow, SLOT(addItem()));
     layout->addWidget(addButton);
 
-    QPushButton *deleteButton = new QPushButton("Delete Item(s)", menu);
-    connect(deleteButton, SIGNAL(clicked()), panelWindow, SLOT(deleteItems()));
-    layout->addWidget(deleteButton);
-
-    QPushButton *editButton = new QPushButton("Item Properties", menu);
-    connect(editButton, SIGNAL(clicked()), panelWindow, SLOT(editItem()));
-    layout->addWidget(editButton);
-
     QPushButton *saveButton = new QPushButton("Save panel", menu);
     connect(saveButton, SIGNAL(clicked()), panelWindow, SLOT(savePanel()));
     layout->addWidget(saveButton);

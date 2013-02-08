@@ -21,6 +21,7 @@ protected:
     void changeEvent(QEvent *e);
 private slots:
     void applySettings();
+    void deleteItemClicked();
 private:
     Ui::EditItemDialog *ui;
     PanelItem *currentItem;
