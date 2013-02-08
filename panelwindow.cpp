@@ -48,7 +48,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
     scene.addItem(menuButton);
 
     // Error message
-    connect(connection, SIGNAL(connectionError(QString)), this, SLOT(connectionError(QString)));
+    connect(connection, SIGNAL(connectionMessage(QString)), this, SLOT(connectionMessage(QString)));
     errorMessage.setDefaultTextColor(Qt::red);
     errorMessage.setPos(0,20);
     scene.addItem(&errorMessage);
@@ -88,7 +88,7 @@ PanelWindow::~PanelWindow() {
     if(panelSettings) delete panelSettings;
 }
 
-void PanelWindow::connectionError(QString txt) {
+void PanelWindow::connectionMessage(QString txt) {
     qDebug() << Q_FUNC_INFO << txt;
     errorMessage.setPlainText(txt);
 }
@@ -265,7 +265,7 @@ void PanelWindow::editItem(PanelItem *item) { // Call with item 0 to destroy dia
     editItemDialog = 0;
     if(!item)
         return;
-
+    if(!editMode) return; // Don't open dialog if not in edit mode
     editItemDialog =  new EditItemDialog(this);
     editItemDialog->setModal(false);
     editItemDialog->setPanelItem(item);

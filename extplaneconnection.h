@@ -20,7 +20,7 @@ public:
     explicit ExtPlaneConnection(QObject *parent = 0);
     void registerClient(ExtPlaneClient* client);
 signals:
-    void connectionError(QString text);
+    void connectionMessage(QString text);
 public slots:
     virtual ClientDataRef *subscribeDataRef(QString name, double accuracy=0);
     virtual void unsubscribeDataRef(ClientDataRef *ref);

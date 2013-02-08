@@ -18,21 +18,22 @@ void ExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port) {
 }
 
 void ExtPlaneConnection::tryReconnect() {
-    // qDebug() << Q_FUNC_INFO << _addr.toString() << _port;
+    emit connectionMessage(QString("Connecting to ExtPlane at %1:%2..").arg(_addr.toString()).arg(_port));
+
     reconnectTimer.stop();
     connectToHost(_addr, _port);
 }
 
 void ExtPlaneConnection::socketConnected() {
     qDebug() << Q_FUNC_INFO ;
-    emit connectionError("Connected to ExtPlane, waiting for handshake");
+    emit connectionMessage("Connected to ExtPlane, waiting for handshake");
     reconnectTimer.stop();
 }
 
 void ExtPlaneConnection::socketError(QAbstractSocket::SocketError err) {
-    // qDebug() << Q_FUNC_INFO << err;
+    qDebug() << Q_FUNC_INFO << errorString();
     server_ok = false;
-    emit connectionError(errorString() + " : " + peerName() + ":" + QString::number(peerPort()));
+    emit connectionMessage(errorString() + " : " + peerName() + ":" + QString::number(peerPort()));
     reconnectTimer.setInterval(5000);
     reconnectTimer.start();
 }
@@ -103,7 +104,7 @@ void ExtPlaneConnection::readClient() {
         if(!server_ok) {
             if(line=="EXTPLANE 1") {
                 server_ok = true;
-                emit connectionError("");
+                emit connectionMessage("");
                 // Sub all refs
                 foreach(ClientDataRef *ref, dataRefs)
                     subRef(ref);
