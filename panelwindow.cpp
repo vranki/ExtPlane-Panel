@@ -3,7 +3,6 @@
 #include "panelwindow.h"
 
 PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
-
     // Init
     appSettings = NULL;
     panelSettings = NULL;
@@ -17,8 +16,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
 
     // Create connection and item factory
     appSettings->beginGroup("settings");
-    if(appSettings->value("simulate", false).toBool() == true)  connection = new SimulatedExtPlaneConnection();
-    else                                                        connection = new ExtPlaneConnection();
+    connection = appSettings->value("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
     appSettings->endGroup();
     itemFactory = new PanelItemFactory(connection);
 
@@ -31,7 +29,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
     setBackgroundBrush(QBrush(Qt::black));
 
     // Settings dialog
-    settingsDialog = new SettingsDialog(this/*,appSettings*/); // @TODO: Check SettingsDialog constructor!
+    settingsDialog = new SettingsDialog(this, appSettings);
     connect(settingsDialog, SIGNAL(rotationChanged(int)), this, SLOT(panelRotationChanged(int)));
     connect(settingsDialog, SIGNAL(fullscreenChanged(bool)), this, SLOT(fullscreenChanged(bool)));
     connect(settingsDialog, SIGNAL(setServerAddress(QString)), this, SLOT(setServerAddress(QString)));
@@ -205,8 +203,8 @@ void PanelWindow::savePanel() {
     //settingsDialog->saveSettings();
     int panelNumber = 0;
     QString panelName = "Panel";
-    appSettings->clear();
     appSettings->beginGroup("panel-" + QString::number(panelNumber));
+    appSettings->group().clear();
     appSettings->setValue("number", panelNumber);
     appSettings->setValue("name", panelName);
     appSettings->setValue("gaugecount", panelItems.size());

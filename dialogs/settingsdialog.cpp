@@ -1,13 +1,14 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::SettingsDialog), settings("org.vranki", "extplane-gauges-settings", this) {
+SettingsDialog::SettingsDialog(QWidget *parent, QSettings *appSettings) :
+    QDialog(parent), ui(new Ui::SettingsDialog), appSettings(appSettings) {
     ui->setupUi(this);
     connect(ui->panelRotationDial, SIGNAL(valueChanged(int)), this, SIGNAL(rotationChanged(int)));
     connect(ui->fullscreenCheckbox, SIGNAL(clicked(bool)), this, SIGNAL(fullscreenChanged(bool)));
+    connect(ui->simulateCheckbox, SIGNAL(clicked(bool)), this, SIGNAL(simulateChanged(bool)));
     connect(ui->serverAddressEdit, SIGNAL(textChanged(QString)), this, SIGNAL(setServerAddress(QString)));
+    connect(this, SIGNAL(finished(int)), this, SLOT(saveSettings()));
 }
 
 SettingsDialog::~SettingsDialog() {
@@ -26,24 +27,29 @@ void SettingsDialog::changeEvent(QEvent *e) {
 }
 
 void SettingsDialog::loadSettings() {
-    settings.beginGroup("settings");
-    qDebug() << Q_FUNC_INFO << settings.value("panelrotation").toInt();
-    ui->panelRotationDial->setValue(settings.value("panelrotation").toInt());
+    qDebug() << Q_FUNC_INFO;
+    appSettings->beginGroup("settings");
+    ui->panelRotationDial->setValue(appSettings->value("panelrotation").toInt());
 #ifdef MOBILE_DEVICE
-    ui->fullscreenCheckbox->setChecked(settings.value("fullscreen", true).toBool());
+    ui->fullscreenCheckbox->setChecked(appSettings->value("fullscreen", true).toBool());
 #else
-    ui->fullscreenCheckbox->setChecked(settings.value("fullscreen", false).toBool());
+    ui->fullscreenCheckbox->setChecked(appSettings->value("fullscreen", false).toBool());
 #endif
     emit fullscreenChanged(ui->fullscreenCheckbox->isChecked());
-    ui->serverAddressEdit->setText(settings.value("serveraddress", "127.0.0.1:51000").toString());
+    ui->simulateCheckbox->setChecked(appSettings->value("simulate", false).toBool());
+    emit simulateChanged(ui->simulateCheckbox->isChecked());
+    ui->serverAddressEdit->setText(appSettings->value("serveraddress", "127.0.0.1:51000").toString());
     emit setServerAddress(ui->serverAddressEdit->text());
-    settings.endGroup();
+    appSettings->endGroup();
 }
 
 void SettingsDialog::saveSettings() {
-    settings.beginGroup("settings");
-    settings.setValue("panelrotation", ui->panelRotationDial->value());
-    settings.setValue("fullscreen", ui->fullscreenCheckbox->isChecked());
-    settings.setValue("serveraddress", ui->serverAddressEdit->text());
-    settings.endGroup();
+    qDebug() << Q_FUNC_INFO;
+    appSettings->beginGroup("settings");
+    appSettings->setValue("panelrotation", ui->panelRotationDial->value());
+    appSettings->setValue("fullscreen", ui->fullscreenCheckbox->isChecked());
+    appSettings->setValue("simulate", ui->simulateCheckbox->isChecked());
+    appSettings->setValue("serveraddress", ui->serverAddressEdit->text());
+    appSettings->endGroup();
+    appSettings->sync();
 }
