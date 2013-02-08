@@ -66,6 +66,10 @@ void PanelItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
+void PanelItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+    emit editPanelItem(this);
+}
+
 void PanelItem::setSize(float w, float h) {
     if(w < SCALE_HANDLE_SIZE) w = SCALE_HANDLE_SIZE;
     if(h < SCALE_HANDLE_SIZE) h = SCALE_HANDLE_SIZE;

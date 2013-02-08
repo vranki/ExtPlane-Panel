@@ -8,6 +8,7 @@ EditItemDialog::EditItemDialog(QWidget *parent) :
     ui->setupUi(this);
     currentItem = 0;
     connect(this, SIGNAL(finished(int)), this, SLOT(applySettings()));
+    connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteItemClicked()));
 }
 
 EditItemDialog::~EditItemDialog()
@@ -18,6 +19,13 @@ EditItemDialog::~EditItemDialog()
 void EditItemDialog::applySettings() {
     if(currentItem)
         currentItem->applySettings();
+    deleteLater();
+}
+
+void EditItemDialog::deleteItemClicked() {
+    currentItem->deleteLater();
+    currentItem = 0;
+    // Delete the item, and this dialog should be deleted..
 }
 
 void EditItemDialog::changeEvent(QEvent *e)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>446</width>
+    <height>380</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,41 +24,35 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>380</width>
-        <height>247</height>
+        <width>426</width>
+        <height>325</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QGridLayout" name="itemPropertiesGrid">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Rotation</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="1">
           <widget class="QDial" name="rotationDial">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>100</height>
+            </size>
+           </property>
            <property name="minimum">
-            <number>-180</number>
+            <number>-179</number>
            </property>
            <property name="maximum">
             <number>180</number>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Angle</string>
+           <property name="wrapping">
+            <bool>true</bool>
            </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Z-value (Bottom&lt;-&gt;Top)</string>
+           <property name="notchTarget">
+            <double>5.000000000000000</double>
+           </property>
+           <property name="notchesVisible">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -78,6 +72,30 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Rotation</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Z-value (Bottom&lt;-&gt;Top)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QSpinBox" name="angleSpinBox">
+           <property name="minimum">
+            <number>-179</number>
+           </property>
+           <property name="maximum">
+            <number>179</number>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -85,14 +103,38 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="deleteButton">
+       <property name="text">
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -100,29 +142,13 @@
  <connections>
   <connection>
    <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>EditItemDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>EditItemDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>435</x>
+     <y>369</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -131,18 +157,50 @@
    </hints>
   </connection>
   <connection>
-   <sender>rotationDial</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>label_2</receiver>
-   <slot>setNum(int)</slot>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>EditItemDialog</receiver>
+   <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>335</x>
-     <y>93</y>
+     <x>435</x>
+     <y>369</y>
     </hint>
     <hint type="destinationlabel">
-     <x>287</x>
-     <y>172</y>
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rotationDial</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>angleSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>153</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>angleSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>rotationDial</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>375</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>380</x>
+     <y>195</y>
     </hint>
    </hints>
   </connection>

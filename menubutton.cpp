@@ -1,10 +1,11 @@
 #include "menubutton.h"
 
-MenuButton::MenuButton(QWidget *parent) : QObject(parent)
-{
+MenuButton::MenuButton(QWidget *parent) : QObject(parent), side(20) {
     // Init
     panelWindow = parent;
-    side = 20;
+#ifdef MOBILE_DEVICE
+    side = 50;
+#endif
     editMode = false;
     currentMenu = NULL;
 }
@@ -45,14 +46,6 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     connect(addButton, SIGNAL(clicked()), panelWindow, SLOT(addItem()));
     layout->addWidget(addButton);
 
-    QPushButton *deleteButton = new QPushButton("Delete Item(s)", menu);
-    connect(deleteButton, SIGNAL(clicked()), panelWindow, SLOT(deleteItems()));
-    layout->addWidget(deleteButton);
-
-    QPushButton *editButton = new QPushButton("Item Properties", menu);
-    connect(editButton, SIGNAL(clicked()), panelWindow, SLOT(editItem()));
-    layout->addWidget(editButton);
-
     QPushButton *saveButton = new QPushButton("Save panel", menu);
     connect(saveButton, SIGNAL(clicked()), panelWindow, SLOT(savePanel()));
     layout->addWidget(saveButton);
@@ -80,8 +73,6 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     menu->setModal(false);
     menu->show();
 }
-
-
 
 void MenuButton::setEditMode(bool em) {
     editMode = em;

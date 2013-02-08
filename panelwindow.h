@@ -45,11 +45,10 @@ public slots:
 public slots:
     void setEditMode(bool em);
     void addItem();
-    void deleteItems();
     void savePanel();
     void loadPanel();
     void showSettings();
-    void editItem();
+    void editItem(PanelItem *item=0);
     void quit();
 private slots:
     void tick();
@@ -70,7 +69,7 @@ private:
     QSettings *panelSettings;
     QList<PanelItem *> panelItems;
     PanelItemFactory *itemFactory;
-
+    EditItemDialog *editItemDialog; // Only one open at a time
     QTimer blankingTimer, tickTimer;
     QTime time, totalTime;
 };

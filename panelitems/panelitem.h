@@ -12,7 +12,11 @@
 #include "extplaneclient.h"
 #include "extplaneconnection.h"
 
+#ifdef MOBILE_DEVICE
+#define SCALE_HANDLE_SIZE 50
+#else
 #define SCALE_HANDLE_SIZE 20
+#endif
 #define SNAP_GRID_SIZE 10
 
 class PanelItem : public QObject, public QGraphicsItem {
@@ -37,9 +41,11 @@ protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent *event);
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 signals:
     void panelItemSelected(PanelItem *g, bool sel=true);
+    void editPanelItem(PanelItem *item);
 public slots:
     void setPanelRotation(int angle);
     void setItemRotation(int angle);
@@ -49,7 +55,6 @@ private:
     float _width, _height;
     bool resizing, _editMode;
     int _panelRotation, _itemRotation;
-
 };
 
 #endif // GAUGE_H

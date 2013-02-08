@@ -41,6 +41,7 @@ private:
     float _numbersScale;
     float _baroPressure;
     QString _label;
+    QFont font, pressureFont;
 };
 
 #endif // ALTIMETER_H

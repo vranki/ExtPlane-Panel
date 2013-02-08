@@ -22,6 +22,7 @@ private:
     float _numbers;
     float _value, _zeroangle, _maxAngle, _zeroValue, _maxValue;
     QString _label;
+    QFont numberFont;
 };
 
 #endif // NEEDLEINSTRUMENT_H

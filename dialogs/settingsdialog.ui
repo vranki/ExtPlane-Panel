@@ -6,90 +6,98 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>627</width>
+    <height>303</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Panel rotation</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QDial" name="panelRotationDial">
-       <property name="minimum">
-        <number>-180</number>
-       </property>
-       <property name="maximum">
-        <number>180</number>
-       </property>
-       <property name="singleStep">
-        <number>5</number>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Angle</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>X-Plane ip &amp; port</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="serverAddressEdit">
-       <property name="text">
-        <string>127.0.0.1:51000</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>X-Plane + ExtPlane IP &amp; port</string>
+     </property>
+    </widget>
    </item>
-   <item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="serverAddressEdit">
+     <property name="text">
+      <string>127.0.0.1:51000</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Panel rotation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QDial" name="panelRotationDial">
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="minimum">
+      <number>-179</number>
+     </property>
+     <property name="maximum">
+      <number>180</number>
+     </property>
+     <property name="singleStep">
+      <number>5</number>
+     </property>
+     <property name="wrapping">
+      <bool>true</bool>
+     </property>
+     <property name="notchTarget">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="notchesVisible">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QSpinBox" name="spinBox">
+     <property name="minimum">
+      <number>-179</number>
+     </property>
+     <property name="maximum">
+      <number>180</number>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
     <widget class="QCheckBox" name="fullscreenCheckbox">
      <property name="text">
       <string>Fullscreen</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="5" column="1">
     <widget class="QCheckBox" name="simulateCheckbox">
      <property name="text">
-      <string>Simulate (requires restart)</string>
+      <string>Simulated connection (requires restart)</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Other options</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -138,16 +146,32 @@
   <connection>
    <sender>panelRotationDial</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>label</receiver>
-   <slot>setNum(int)</slot>
+   <receiver>spinBox</receiver>
+   <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>96</y>
+     <x>305</x>
+     <y>95</y>
     </hint>
     <hint type="destinationlabel">
-     <x>155</x>
-     <y>154</y>
+     <x>270</x>
+     <y>166</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>panelRotationDial</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>331</x>
+     <y>162</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>332</x>
+     <y>95</y>
     </hint>
    </hints>
   </connection>

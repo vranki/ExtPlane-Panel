@@ -3,12 +3,12 @@
 #include "panelwindow.h"
 
 PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
-
     // Init
     appSettings = NULL;
     panelSettings = NULL;
     settingsDialog = NULL;
     itemFactory = NULL;
+    editItemDialog = 0;
     panelRotation = 0;
     editMode = false;
 
@@ -17,21 +17,20 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
 
     // Create connection and item factory
     appSettings->beginGroup("settings");
-    if(appSettings->value("simulate", false).toBool() == true)  connection = new SimulatedExtPlaneConnection();
-    else                                                        connection = new ExtPlaneConnection();
+    connection = appSettings->value("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
     appSettings->endGroup();
     itemFactory = new PanelItemFactory(connection);
 
     // Setup window
     setScene(&scene);
-    resize(1024, 768);
+
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setSceneRect(0, 0, width(), height());
     setBackgroundBrush(QBrush(Qt::black));
 
     // Settings dialog
-    settingsDialog = new SettingsDialog(this,appSettings);
+    settingsDialog = new SettingsDialog(this, appSettings);
     connect(settingsDialog, SIGNAL(rotationChanged(int)), this, SLOT(panelRotationChanged(int)));
     connect(settingsDialog, SIGNAL(fullscreenChanged(bool)), this, SLOT(fullscreenChanged(bool)));
     connect(settingsDialog, SIGNAL(setServerAddress(QString)), this, SLOT(setServerAddress(QString)));
@@ -73,6 +72,11 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
 
     connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
 
+#ifdef MOBILE_DEVICE
+    showFullScreen();
+#else
+    resize(1024, 768);
+#endif
 }
 
 PanelWindow::~PanelWindow() {
@@ -90,14 +94,18 @@ void PanelWindow::connectionError(QString txt) {
 }
 
 void PanelWindow::itemDestroyed(QObject *obj) {
-    PanelItem *g = qobject_cast<PanelItem*> (obj);
-    qDebug() << Q_FUNC_INFO << obj << (const void*) g;
-    if(g)
-        panelItems.removeOne(g);
+    // Delete from panelItems
+    foreach(PanelItem *listItem, panelItems) {
+        QObject *listItemQo = static_cast<QObject*>(listItem);
+        if(listItemQo == obj) {
+            panelItems.removeOne(listItem);
+        }
+    }
 }
 
 void PanelWindow::addItem(PanelItem *g) {
     connect(g, SIGNAL(destroyed(QObject*)), this, SLOT(itemDestroyed(QObject*)));
+    connect(g, SIGNAL(editPanelItem(PanelItem*)), this, SLOT(editItem(PanelItem*)));
     g->setPos(width()/2, height()/2);
     g->setPanelRotation(panelRotation);
     g->setEditMode(editMode);
@@ -188,14 +196,6 @@ void PanelWindow::addItem() {
     }
 }
 
-void PanelWindow::deleteItems() {
-    QList<PanelItem*> selection = selectedGauges();
-    foreach(PanelItem* g, selection) {
-        Q_ASSERT(panelItems.removeOne(g));
-        g->deleteLater();
-    }
-}
-
 void PanelWindow::savePanel() {
     //settingsDialog->saveSettings();
     int panelNumber = 0;
@@ -256,18 +256,24 @@ void PanelWindow::showSettings() {
     settingsDialog->show();
 }
 
+// Displays EditItemDialog. Closes old one if open
+void PanelWindow::editItem(PanelItem *item) { // Call with item 0 to destroy dialog
+    if(editItemDialog) {
+        disconnect(editItemDialog, 0, this, 0);
+        editItemDialog->deleteLater();
+    }
+    editItemDialog = 0;
+    if(!item)
+        return;
 
-void PanelWindow::editItem() {
-    if(selectedGauges().isEmpty()) return;
-    //if(editItemDialog)
-    //    delete editItemDialog;
-    EditItemDialog *editItemDialog =  new EditItemDialog(this);
+    editItemDialog =  new EditItemDialog(this);
     editItemDialog->setModal(false);
-    editItemDialog->setPanelItem(selectedGauges().first());
+    editItemDialog->setPanelItem(item);
     editItemDialog->show();
+    connect(editItemDialog, SIGNAL(destroyed()), this, SLOT(editItem())); // Call this slot when dialog closed
 }
 
 void PanelWindow::quit() {
-    //TODO: ask for save if dirty
+    // @TODO: ask for save if dirty
     QCoreApplication::quit();
 }

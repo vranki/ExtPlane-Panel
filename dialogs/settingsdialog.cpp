@@ -30,7 +30,11 @@ void SettingsDialog::loadSettings() {
     qDebug() << Q_FUNC_INFO;
     appSettings->beginGroup("settings");
     ui->panelRotationDial->setValue(appSettings->value("panelrotation").toInt());
+#ifdef MOBILE_DEVICE
+    ui->fullscreenCheckbox->setChecked(appSettings->value("fullscreen", true).toBool());
+#else
     ui->fullscreenCheckbox->setChecked(appSettings->value("fullscreen", false).toBool());
+#endif
     emit fullscreenChanged(ui->fullscreenCheckbox->isChecked());
     ui->simulateCheckbox->setChecked(appSettings->value("simulate", false).toBool());
     emit simulateChanged(ui->simulateCheckbox->isChecked());
