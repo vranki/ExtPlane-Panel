@@ -46,6 +46,7 @@ protected:
 signals:
     void panelItemSelected(PanelItem *g, bool sel=true);
     void editPanelItem(PanelItem *item);
+    void panelItemChanged(PanelItem *item); //TODO: dankrusi: For warning when closing a dirty file without saving, this needs to be called by the panel items when settings are changed. I haven't found a nice way to do this automatically without going in and touching all the panel items...
 public slots:
     void setPanelRotation(int angle);
     void setItemRotation(int angle);

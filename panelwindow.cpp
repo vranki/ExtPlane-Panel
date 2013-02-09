@@ -11,6 +11,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
     editItemDialog = 0;
     panelRotation = 0;
     editMode = false;
+    dirty = false;
 
     // Load settings
     appSettings = new QSettings("org.vranki", "extplane-panel", this);
@@ -54,8 +55,11 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
     scene.addItem(&errorMessage);
 
     // Load last-loaded panel
-    this->settingsDialog->loadSettings(); // this will trigger signals to start connection
-    this->loadPanel();
+    this->loadPanel(appSettings->value("lastloadedpanel","").toString());
+
+    // Start connection to ExtPlane
+    this->settingsDialog->loadSettings(); // This will trigger signals to start connection to ExtPlane
+    //this->loadPanel();
 
     // Tell maemo os not to blank out
 #ifdef MAEMO
@@ -106,6 +110,7 @@ void PanelWindow::itemDestroyed(QObject *obj) {
 void PanelWindow::addItem(PanelItem *g) {
     connect(g, SIGNAL(destroyed(QObject*)), this, SLOT(itemDestroyed(QObject*)));
     connect(g, SIGNAL(editPanelItem(PanelItem*)), this, SLOT(editItem(PanelItem*)));
+    connect(g, SIGNAL(panelItemChanged(PanelItem*)), this, SLOT(panelItemChanged(PanelItem*)));
     g->setPos(width()/2, height()/2);
     g->setPanelRotation(panelRotation);
     g->setEditMode(editMode);
@@ -197,59 +202,102 @@ void PanelWindow::addItem() {
 }
 
 void PanelWindow::savePanel() {
-    //settingsDialog->saveSettings();
+    // New or overwrite?
+    if(panelSettings == NULL) {
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save Panel File"), "", tr("Ini Files (*.ini)"));
+        if(!filename.isEmpty()) {
+            // Create new file and save
+            panelSettings = new QSettings(filename,QSettings::IniFormat,this);
+            savePanel(panelSettings->fileName());
+
+            // Register this file as the last loaded...
+            appSettings->setValue("lastloadedpanel",panelSettings->fileName());
+        }
+    } else {
+        savePanel(panelSettings->fileName());
+    }
+}
+
+
+void PanelWindow::savePanel(QString filename) {
+    qDebug() << Q_FUNC_INFO << "saving panel to " << filename;
     int panelNumber = 0;
     QString panelName = "Panel";
-    appSettings->beginGroup("panel-" + QString::number(panelNumber));
-    appSettings->group().clear();
-    appSettings->setValue("number", panelNumber);
-    appSettings->setValue("name", panelName);
-    appSettings->setValue("gaugecount", panelItems.size());
+    panelSettings->beginGroup("panel-" + QString::number(panelNumber));
+    panelSettings->group().clear();
+    panelSettings->setValue("number", panelNumber);
+    panelSettings->setValue("name", panelName);
+    panelSettings->setValue("gaugecount", panelItems.size());
     int gn = 0;
     foreach(PanelItem *g, panelItems) {
-        appSettings->beginGroup("gauge-" + QString::number(gn));
-        g->storeSettings(*appSettings);
-        appSettings->endGroup();
+        panelSettings->beginGroup("gauge-" + QString::number(gn));
+        g->storeSettings(*panelSettings);
+        panelSettings->endGroup();
         gn++;
     }
-    appSettings->endGroup();
-    appSettings->sync();
+    panelSettings->endGroup();
+    panelSettings->sync();
+    dirty = false;
 }
 
 void PanelWindow::loadPanel() {
-    //settingsDialog->loadSettings();
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open Panel File"), "", tr("Ini Files (*.ini)"));
+    if(!filename.isEmpty()) loadPanel(filename);
+}
 
+void PanelWindow::loadPanel(QString filename) {
+    if(filename.isEmpty()) return;
+
+    //TODO: dankrusi: confirm if the currently loaded panel is dirty...
+
+    // Clear all panel items
     foreach(PanelItem *g, panelItems) {
         g->deleteLater();
     }
+
+    // Load panel settings file
+    qDebug() << Q_FUNC_INFO << "loading panel from " << filename;
+    if(panelSettings) delete panelSettings;
+    panelSettings = NULL;
+    if(!QFile::exists(filename)) {
+        connectionMessage(QString("Panel file %1 does not exist.").arg(filename));
+        return;
+    }
+    panelSettings = new QSettings(filename,QSettings::IniFormat,this);
+
+    // Load from settings files
     int panelNumber = 0;
     while(panelNumber >= 0) {
-        appSettings->beginGroup("panel-" + QString::number(panelNumber));
-        if(appSettings->contains("name")) {
-            int gc = appSettings->value("gaugecount", 0).toInt();
-            QString name = appSettings->value("name").toString();
+        panelSettings->beginGroup("panel-" + QString::number(panelNumber));
+        if(panelSettings->contains("name")) {
+            int gc = panelSettings->value("gaugecount", 0).toInt();
+            QString name = panelSettings->value("name").toString();
             for(int gn=0;gn<gc;gn++) {
-                appSettings->beginGroup("gauge-" + QString::number(gn));
-                PanelItem *g = itemFactory->itemForName(appSettings->value("type").toString(), this);
+                panelSettings->beginGroup("gauge-" + QString::number(gn));
+                PanelItem *g = itemFactory->itemForName(panelSettings->value("type").toString(), this);
                 if(g) {
                     //emit itemAdded(g);
                     addItem(g);
-                    g->loadSettings(*appSettings);
+                    g->loadSettings(*panelSettings);
                     g->applySettings();
                 } else {
-                    qDebug() << Q_FUNC_INFO << "Can't load item of type " << appSettings->value("type").toString();
+                    qDebug() << Q_FUNC_INFO << "Can't load item of type " << panelSettings->value("type").toString();
                 }
-                appSettings->endGroup();
+                panelSettings->endGroup();
             }
             panelNumber++;
         } else {
             panelNumber = -1;
         }
-        appSettings->endGroup();
+        panelSettings->endGroup();
     }
 
-    //closeDialog();
+    // Register this file as the last loaded...
+    appSettings->setValue("lastloadedpanel",filename);
+    dirty = false;
 }
+
+
 
 
 void PanelWindow::showSettings() {
@@ -271,6 +319,13 @@ void PanelWindow::editItem(PanelItem *item) { // Call with item 0 to destroy dia
     editItemDialog->setPanelItem(item);
     editItemDialog->show();
     connect(editItemDialog, SIGNAL(destroyed()), this, SLOT(editItem())); // Call this slot when dialog closed
+}
+
+void PanelWindow::panelItemChanged(PanelItem *item) {
+    if(!dirty) {
+        qDebug() << Q_FUNC_INFO;
+        dirty = true;
+    }
 }
 
 void PanelWindow::quit() {

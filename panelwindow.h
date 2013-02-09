@@ -20,11 +20,13 @@
 #include <QStringList>
 #include <QSettings>
 #include <QInputDialog>
+#include <QFileDialog>
 #include "extplaneconnection.h"
 #include "simulatedextplaneconnection.h"
 #include "panelitemfactory.h"
 #include "menubutton.h"
 #include "dialogs/settingsdialog.h"
+
 
 class PanelWindow : public QGraphicsView {
     Q_OBJECT
@@ -46,9 +48,12 @@ public slots:
     void setEditMode(bool em);
     void addItem();
     void savePanel();
+    void savePanel(QString filename);
     void loadPanel();
+    void loadPanel(QString filename);
     void showSettings();
     void editItem(PanelItem *item=0);
+    void panelItemChanged(PanelItem *item=0); // Should be emitted by panel item when they become dirty
     void quit();
 private slots:
     void tick();
@@ -64,9 +69,10 @@ private:
 
     int panelRotation;
     bool editMode;
+    bool dirty; // True when any panel changes have occured
     ExtPlaneConnection *connection;
-    QSettings *appSettings;
-    QSettings *panelSettings;
+    QSettings *appSettings; // Loaded on app start, contains general settings
+    QSettings *panelSettings; // Contains all PanelItem settings
     QList<PanelItem *> panelItems;
     PanelItemFactory *itemFactory;
     EditItemDialog *editItemDialog; // Only one open at a time
