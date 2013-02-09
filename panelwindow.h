@@ -23,7 +23,6 @@
 #include <QFileDialog>
 #include "extplaneconnection.h"
 #include "simulatedextplaneconnection.h"
-#include "panelitemfactory.h"
 #include "menubutton.h"
 #include "dialogs/settingsdialog.h"
 

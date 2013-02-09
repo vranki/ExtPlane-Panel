@@ -2,6 +2,8 @@
 #include <QLabel>
 #include <QLineEdit>
 
+REGISTER_WITH_PANEL_ITEM_FACTORY(RotaryKnob,"adjustment/rotary");
+
 RotaryKnob::RotaryKnob(QObject *parent, ExtPlaneConnection *conn) :
         PanelItem(parent), _client(this, typeName(), conn) {
     conn->registerClient(&_client);
@@ -30,14 +32,6 @@ void RotaryKnob::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->restore();
 
     PanelItem::paint(painter, option, widget);
-}
-
-QString RotaryKnob::typeName() {
-    return typeNameStatic();
-}
-
-QString RotaryKnob::typeNameStatic() {
-    return "adjustment/rotary";
 }
 
 void RotaryKnob::storeSettings(QSettings &settings) {

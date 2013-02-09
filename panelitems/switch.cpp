@@ -1,5 +1,7 @@
 #include "switch.h"
 
+REGISTER_WITH_PANEL_ITEM_FACTORY(Switch,"switches/generic");
+
 Switch::Switch(QObject *parent, ExtPlaneConnection *conn) :
         PanelItem(parent), _client(this, typeName(), conn) {
     conn->registerClient(&_client);
@@ -40,14 +42,6 @@ void Switch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->setFont(font);
     painter->drawText(QRect(switchWidth,0,width()-switchWidth, height()), Qt::AlignCenter, _label);
     PanelItem::paint(painter, option, widget);
-}
-
-QString Switch::typeName() {
-    return typeNameStatic();
-}
-
-QString Switch::typeNameStatic() {
-    return "switches/generic";
 }
 
 void Switch::storeSettings(QSettings &settings) {

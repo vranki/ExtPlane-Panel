@@ -11,12 +11,11 @@
 class AirspeedIndicator : public NeedleInstrument {
     Q_OBJECT
 public:
-    AirspeedIndicator(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE AirspeedIndicator(QObject *parent, ExtPlaneConnection *conn);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
-    static QString typeNameStatic();
     virtual void createSettings(QGridLayout *layout);
 public slots:
     void speedChanged(QString name, double speed);

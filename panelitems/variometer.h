@@ -13,11 +13,10 @@ class Variometer : public NeedleInstrument
 {
     Q_OBJECT
 public:
-    explicit Variometer(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE Variometer(QObject *parent, ExtPlaneConnection *conn);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual QString typeName();
-    static QString typeNameStatic();
     virtual void createSettings(QGridLayout *layout);
 signals:
 

@@ -1,5 +1,7 @@
 #include "variometer.h"
 
+REGISTER_WITH_PANEL_ITEM_FACTORY(Variometer,"indicator/variometer/round");
+
 Variometer::Variometer(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrument(parent), _client(this, typeName(), conn), interpolator(0, 10) {
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/flightmodel/position/vh_ind", 0.5);
@@ -41,14 +43,6 @@ void Variometer::loadSettings(QSettings &settings) {
     setUnit(unit);
     setMaxValue(settings.value("maxvalue", 300).toFloat());
     setIsTotalEnergy(settings.value("totalenergy", false).toBool());
-}
-
-QString Variometer::typeName() {
-    return typeNameStatic();
-}
-
-QString Variometer::typeNameStatic() {
-    return "indicator/variometer/round";
 }
 
 void Variometer::setMaxValue(float mv) {

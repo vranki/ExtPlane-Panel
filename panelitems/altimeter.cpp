@@ -1,5 +1,7 @@
 #include "altimeter.h"
 
+REGISTER_WITH_PANEL_ITEM_FACTORY(Altimeter,"indicator/altitude/basic");
+
 Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
         PanelItem(parent), _client(this, typeName(), conn)
 {
@@ -159,14 +161,6 @@ float Altimeter::value2Angle1(float value) {
 }
 float Altimeter::value2Angle2(float value) {
     return (value / _range2) * 360.0;
-}
-
-QString Altimeter::typeName() {
-    return typeNameStatic();
-}
-
-QString Altimeter::typeNameStatic() {
-    return "indicator/altitude/basic";
 }
 
 void Altimeter::storeSettings(QSettings &settings) {

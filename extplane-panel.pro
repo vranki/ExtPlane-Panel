@@ -1,19 +1,12 @@
-QT       += gui network
-
-maemo5: {
+QT += gui \
+    network
+maemo5: { 
     QT += dbus
     DEFINES += MAEMO
     DEFINES += MOBILE_DEVICE
 }
-
-android: {
-    DEFINES += MOBILE_DEVICE
-}
-
-meego: {
-    DEFINES += MOBILE_DEVICE
-}
-
+android::DEFINES += MOBILE_DEVICE
+meego::DEFINES += MOBILE_DEVICE
 TARGET = extplane-panel
 DESTDIR = bin
 OBJECTS_DIR = build
@@ -29,7 +22,6 @@ SOURCES += main.cpp \
     panelitems/airspeedindicator.cpp \
     units.cpp \
     menubutton.cpp \
-    panelitemfactory.cpp \
     panelitems/needleinstrument.cpp \
     panelitems/compass.cpp \
     dialogs/settingsdialog.cpp \
@@ -54,7 +46,6 @@ HEADERS += panelitems/panelitem.h \
     panelitems/airspeedindicator.h \
     units.h \
     menubutton.h \
-    panelitemfactory.h \
     panelitems/needleinstrument.h \
     panelitems/compass.h \
     dialogs/settingsdialog.h \
@@ -72,7 +63,6 @@ HEADERS += panelitems/panelitem.h \
     simulatedextplaneconnection.h
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui
-
 
 # Lot of files for Android build, ignore them if not used
 OTHER_FILES += android/AndroidManifest.xml \
@@ -108,5 +98,4 @@ OTHER_FILES += android/AndroidManifest.xml \
     android/src/org/kde/necessitas/ministro/IMinistro.aidl \
     android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
     android/version.xml
-
 OTHER_FILES += README

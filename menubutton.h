@@ -13,7 +13,6 @@
 #include <QCoreApplication>
 #include <QCheckBox>
 #include "panelitems/panelitem.h"
-#include "panelitemfactory.h"
 #include "dialogs/settingsdialog.h"
 #include "dialogs/edititemdialog.h"
 

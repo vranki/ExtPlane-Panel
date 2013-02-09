@@ -1,5 +1,7 @@
 #include "airspeedindicator.h"
 
+REGISTER_WITH_PANEL_ITEM_FACTORY(AirspeedIndicator,"indicator/airspeed/round");
+
 AirspeedIndicator::AirspeedIndicator(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrument(parent),
     _client(this, typeName(), conn), interpolator(0, 10) {
     conn->registerClient(&_client);
@@ -102,13 +104,6 @@ void AirspeedIndicator::loadSettings(QSettings &settings) {
     setMaxValue(settings.value("maxvalue", 300).toFloat());
 }
 
-QString AirspeedIndicator::typeName() {
-    return typeNameStatic();
-}
-
-QString AirspeedIndicator::typeNameStatic() {
-    return "indicator/airspeed/round";
-}
 void AirspeedIndicator::setMaxValue(float mv) {
     maxValue = mv;
     setScale(180, 0, 180+330, maxValue);
