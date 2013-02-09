@@ -9,7 +9,7 @@ class SimulatedDataRef : public QObject
 {
     Q_OBJECT
 public:
-    explicit SimulatedDataRef(QObject *parent, double minV, double maxV, QString refName);
+    explicit SimulatedDataRef(QObject *parent, double minV, double maxV, double changeDivisor, bool round, QString refName);
     ClientDataRef *clientRef();
 signals:
     
@@ -19,6 +19,7 @@ private slots:
     void changeTimeout();
 private:
     double minValue, maxValue, change, currentValue;
+    bool round;
     QTimer changeTimer;
     ClientDataRef myClientRef;
 };

@@ -50,6 +50,7 @@ void EditItemDialog::setPanelItem(PanelItem *it) {
         hide();
         return;
     }
+    this->setWindowTitle(it->typeName());
     connect(currentItem, SIGNAL(destroyed()), this, SLOT(setPanelItem()));
     ui->zSlider->setValue(it->zValue());
     ui->rotationDial->setValue(it->itemRotation());
