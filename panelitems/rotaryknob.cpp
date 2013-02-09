@@ -7,6 +7,8 @@ RotaryKnob::RotaryKnob(QObject *parent, ExtPlaneConnection *conn) :
     conn->registerClient(&_client);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
     _value = 0;
+    _change = 0;
+    _valueStartPoint = 0;
     _ref = 0;
 }
 
@@ -112,9 +114,10 @@ void RotaryKnob::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
         PanelItem::mouseMoveEvent(event);
     } else {
         double changeAmount = (event->pos() - dragStartPoint).x();
-        qDebug() << Q_FUNC_INFO << event->pos() - dragStartPoint;
+        // qDebug() << Q_FUNC_INFO << event->pos() - dragStartPoint;
         _value = _valueStartPoint + changeAmount * _change;
-        _ref->setValue(_value);
+        if(_ref)
+            _ref->setValue(_value);
         update();
     }
 }

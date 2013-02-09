@@ -35,7 +35,7 @@ public:
 signals:
     void tickTime(double dt, int total);
 public slots:
-    void connectionError(QString txt);
+    void connectionMessage(QString txt);
     void itemDestroyed(QObject *obj);
     void addItem(PanelItem *g);
     void panelRotationChanged(int r);

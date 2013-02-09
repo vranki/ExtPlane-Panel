@@ -56,6 +56,7 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
 
     QPushButton *settingsButton = new QPushButton("App Settings", menu);
     connect(settingsButton, SIGNAL(clicked()), panelWindow, SLOT(showSettings()));
+    connect(settingsButton, SIGNAL(clicked()), this, SLOT(closeCurrentMenu()));
     layout->addWidget(settingsButton);
 
     QPushButton *closeButton = new QPushButton("Close", menu);
