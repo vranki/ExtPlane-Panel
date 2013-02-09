@@ -11,7 +11,7 @@ void SimulatedExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port
     _addr = addr;
     _port = port;
     server_ok = true;
-    emit connectionError("Connected to ExtPlane (simulated)");
+    emit connectionMessage("Connected to ExtPlane (simulated)");
 }
 
 ClientDataRef *SimulatedExtPlaneConnection::createDataRef(QString name, double accuracy) {
