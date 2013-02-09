@@ -1,5 +1,7 @@
 #include "button.h"
 
+REGISTER_WITH_PANEL_ITEM_FACTORY(Button,"buttons/generic");
+
 Button::Button(QObject *parent, ExtPlaneConnection *conn) :
         PanelItem(parent), _client(this, typeName(), conn) {
     conn->registerClient(&_client);
@@ -23,14 +25,6 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->setFont(font);
     painter->drawText(QRect(0,0,width(), height()), Qt::AlignCenter, _label);
     PanelItem::paint(painter, option, widget);
-}
-
-QString Button::typeName() {
-    return typeNameStatic();
-}
-
-QString Button::typeNameStatic() {
-    return "buttons/generic";
 }
 
 void Button::storeSettings(QSettings &settings) {

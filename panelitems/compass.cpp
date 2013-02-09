@@ -1,5 +1,7 @@
 #include "compass.h"
 
+REGISTER_WITH_PANEL_ITEM_FACTORY(Compass,"indicator/compass/basic");
+
 Compass::Compass(QObject *parent, ExtPlaneConnection *conn) :
         PanelItem(parent), _client(this, typeName(), conn) {
     conn->registerClient(&_client);
@@ -26,12 +28,4 @@ void Compass::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 void Compass::headingChanged(QString name, double hdg) {
     _heading = hdg;
     update();
-}
-
-QString Compass::typeName() {
-    return typeNameStatic();
-}
-
-QString Compass::typeNameStatic() {
-    return "indicator/compass/basic";
 }

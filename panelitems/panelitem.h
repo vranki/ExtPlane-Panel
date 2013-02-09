@@ -58,4 +58,56 @@ private:
     int _panelRotation, _itemRotation;
 };
 
-#endif // GAUGE_H
+
+
+
+
+class PanelItemFactory
+{
+    typedef QMap<QString,const QMetaObject*> BaseFactoryMapType;
+
+public:
+    PanelItemFactory() { connection = NULL; };
+    PanelItemFactory(ExtPlaneConnection *conn) { connection = conn; };
+
+    PanelItem *itemForName(QString name, QObject *parentObject) {
+	if(classMapping()->contains(name)) {
+	    const QMetaObject *meta = classMapping()->find(name).value();
+	    return (PanelItem*) (meta->newInstance(Q_ARG(QObject*,parentObject),Q_ARG(ExtPlaneConnection*,connection)));
+	} else {
+	    qWarning() << Q_FUNC_INFO << "the panel item " << name << "is not recognized";
+	    return NULL;
+	}
+    };
+
+    QStringList itemNames() {
+	QStringList items;
+	foreach(QString k,classMapping()->keys()) items << k;
+	return items;
+    };
+
+private:
+    ExtPlaneConnection *connection;
+
+protected:
+    static BaseFactoryMapType *classMapping() {
+	static BaseFactoryMapType *_classMapping; // Statically allocated, lives for the entire period of the executable
+	if(!_classMapping) { _classMapping = new BaseFactoryMapType; }
+	return _classMapping;
+    };
+};
+
+
+// Helper class which forces derived PanelItems which instante this to register with the PanelFactory
+template<typename T>
+struct RegisterWithPanelItemFactory : PanelItemFactory {
+    RegisterWithPanelItemFactory(QString s) {
+	classMapping()->insert(s, &T::staticMetaObject);
+    }
+};
+
+// Helper macro used by derived classes of PanelItem to automatically register their name with the PanelFactory
+#define REGISTER_WITH_PANEL_ITEM_FACTORY(CLASS,NAME) QString CLASS::typeName() {return NAME;} RegisterWithPanelItemFactory<CLASS> registerWithFactory_##CLASS(NAME);
+
+
+#endif // PANELITEM_H

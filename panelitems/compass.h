@@ -8,10 +8,9 @@ class Compass : public PanelItem
 {
     Q_OBJECT
 public:
-    explicit Compass(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE Compass(QObject *parent, ExtPlaneConnection *conn);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
-    static QString typeNameStatic();
 signals:
 
 public slots:

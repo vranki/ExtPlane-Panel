@@ -8,10 +8,9 @@ class RotaryKnob : public PanelItem
 {
     Q_OBJECT
 public:
-    RotaryKnob(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE RotaryKnob(QObject *parent, ExtPlaneConnection *conn);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
-    static QString typeNameStatic();
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void createSettings(QGridLayout *layout);
