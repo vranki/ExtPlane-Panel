@@ -50,6 +50,7 @@ public slots:
     void savePanel(QString filename);
     void loadPanel();
     void loadPanel(QString filename);
+    void newPanel();
     void showSettings();
     void editItem(PanelItem *item=0);
     void panelItemChanged(PanelItem *item=0); // Should be emitted by panel item when they become dirty

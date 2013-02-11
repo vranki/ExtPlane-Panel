@@ -46,13 +46,17 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     connect(addButton, SIGNAL(clicked()), panelWindow, SLOT(addItem()));
     layout->addWidget(addButton);
 
-    QPushButton *saveButton = new QPushButton("Save panel", menu);
+    QPushButton *saveButton = new QPushButton("Save Panel", menu);
     connect(saveButton, SIGNAL(clicked()), panelWindow, SLOT(savePanel()));
     layout->addWidget(saveButton);
 
-    QPushButton *loadButton = new QPushButton("Load panel", menu);
+    QPushButton *loadButton = new QPushButton("Load Panel", menu);
     connect(loadButton, SIGNAL(clicked()), panelWindow, SLOT(loadPanel()));
     layout->addWidget(loadButton);
+
+    QPushButton *newButton = new QPushButton("New Panel", menu);
+    connect(newButton, SIGNAL(clicked()), panelWindow, SLOT(newPanel()));
+    layout->addWidget(newButton);
 
     QPushButton *settingsButton = new QPushButton("App Settings", menu);
     connect(settingsButton, SIGNAL(clicked()), panelWindow, SLOT(showSettings()));

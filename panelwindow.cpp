@@ -251,14 +251,10 @@ void PanelWindow::loadPanel(QString filename) {
     //TODO: dankrusi: confirm if the currently loaded panel is dirty...
 
     // Clear all panel items
-    foreach(PanelItem *g, panelItems) {
-        g->deleteLater();
-    }
+    newPanel();
 
     // Load panel settings file
     qDebug() << Q_FUNC_INFO << "loading panel from " << filename;
-    if(panelSettings) delete panelSettings;
-    panelSettings = NULL;
     if(!QFile::exists(filename)) {
         connectionMessage(QString("Panel file %1 does not exist.").arg(filename));
         return;
@@ -297,6 +293,20 @@ void PanelWindow::loadPanel(QString filename) {
     dirty = false;
 }
 
+void PanelWindow::newPanel() {
+    qDebug() << Q_FUNC_INFO << "new panel";
+
+    // Clear all panel items
+    foreach(PanelItem *g, panelItems) {
+	g->deleteLater();
+    }
+
+    // Load panel settings file
+    if(panelSettings) delete panelSettings;
+    panelSettings = NULL;
+
+    dirty = true;
+}
 
 
 
