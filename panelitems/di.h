@@ -17,6 +17,10 @@
 #include "../units.h"
 #include "widgets/numberinputlineedit.h"
 
+#define DIRECTION_INDICATOR_PLANE_SCALE 0.88
+#define DIRECTION_INDICATOR_HEADING_SCALE 0.90
+#define DIRECTION_INDICATOR_FIXED_HEADING_SCALE 0.96
+
 class DirectionIndicator : public PanelItem
 {
     Q_OBJECT
@@ -25,6 +29,7 @@ public:
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void updateForNewSize(float w, float h);
     virtual QString typeName();
     virtual void createSettings(QGridLayout *layout);
     void setLabel(QString text);
@@ -38,7 +43,7 @@ public:
     void setThinBars(float v);
     void setNumbersScale(float v);
     void setNumbers(float div);
-    void createCard(void);
+    void createCard(float w, float h);
     
 private:
     float value2Angle1(float value);
@@ -52,8 +57,7 @@ private:
     float _baroPressure;
     QString _label;
     QString _dataRef;
-    QPixmap _card;
-    QPixmap _bezel;
+    QPixmap _card; // A cached bitmap of the background rotating card
     
 };
 

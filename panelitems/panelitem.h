@@ -30,9 +30,10 @@ public:
     float width() const;
     float height() const;
     void setSize(float w, float h);
+    virtual void updateForNewSize(float w, float h) {}; // This is called whenever the panel item has changed size (including when first added to the scene). Panel items which cache resources be pre-rendering compilcated stuff should use this method for doing so.
     void setEditMode(bool em);
     bool isEditMode();
-    virtual QString typeName() = 0;
+    virtual QString typeName() = 0; // Automatically implemented by panel items when using the REGISTER_WITH_PANEL_ITEM_FACTORY macro. This method defines the display name for the type of guage and is used by the panel item factory.
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     int itemRotation();

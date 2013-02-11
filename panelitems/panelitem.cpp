@@ -85,6 +85,7 @@ void PanelItem::setSize(float w, float h) {
     nw *= SNAP_GRID_SIZE;
     nh /= SNAP_GRID_SIZE;
     nh *= SNAP_GRID_SIZE;
+    updateForNewSize(nw,nh); // Allow panel item to update any resources it needs for the new size...
     _width = nw;
     _height = nh;
     setTransformOriginPoint(width()/2, height()/2);

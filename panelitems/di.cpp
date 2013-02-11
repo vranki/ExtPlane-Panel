@@ -24,11 +24,7 @@ PanelItem(parent), _client(this, typeName(), conn)
     setNumbersScale(0.1);
     units = DISTANCE_M;
     baroUnits = PRESSURE_HPA;
-    
-    _bezel = QPixmap::fromImage(QImage(QString("../images/bezel_square_.png")), Qt::AutoColor);
-    
-    createCard(); 
-    
+
     _dataRef = QString("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot");
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef(_dataRef,0.1);
@@ -39,29 +35,38 @@ void DirectionIndicator::setNumbers(float div) {
     update();
 }
 
-void DirectionIndicator::createCard(void){
-    QImage _cardImage = QImage(QSize(600,600), QImage::Format_ARGB32);
+void DirectionIndicator::createCard(float w, float h){
+
+
+    // Create a new image for working with
+    int side = qMin(w, h);
+    QImage _cardImage = QImage(QSize(side,side), QImage::Format_ARGB32);
     _cardImage.fill(0x00ff0000);
-    //_cardImage.moveTo(10,10);
-    
+
+    // Init dimensions
     uint midx, midy, width, height;
     width = _cardImage.width();
     midx = width/2;
     height = _cardImage.height();
     midy = height/2;
     
-    
+    // Create painter
     QPainter p;
-    p.setRenderHint(QPainter::Antialiasing, true);
     p.begin(&_cardImage);
+    p.setRenderHint(QPainter::Antialiasing, true);
 
+    // The original code is based on a fixed 600px image. We need to transform scale for any
+    // incomming size...
     p.translate(midx, midy);
-    p.setPen(Qt::black);
-    
-    p.setBrush(Qt::black);
-    p.drawChord(-midx,-midy,width,height,0,360*16);
-    
-    
+    p.scale((double)side/600.0, (double)side/600.0);
+    p.scale(DIRECTION_INDICATOR_HEADING_SCALE, DIRECTION_INDICATOR_HEADING_SCALE);
+
+    //TODO: dankrusi: I've disabled this. Black on black is invisible...
+    //p.setPen(Qt::blue);
+    //p.setBrush(Qt::red);
+    //p.drawChord(-midx,-midy,width,height,0,360*16);
+
+    // Draw the bars
     p.setPen(Qt::white);
     p.setBrush(Qt::white);
     if(_thickBars > 0) {
@@ -80,9 +85,10 @@ void DirectionIndicator::createCard(void){
             p.restore();
         }
     }
+
+    // Draw the numbers and NESW labels
     p.setPen(QColor(200,200,200));
-    p.setFont(QFont(QString("Helvetica"), 48, QFont::Bold, false));
-    
+    p.setFont(QFont(QString("Helvetica"), 48, QFont::Bold, false)); //TODO: should we reference such fonts?
     if(_numbers != 0) {
         for (float i = 0 ; i < _range1; i+=_numbers) {
             p.save();
@@ -114,10 +120,9 @@ void DirectionIndicator::createCard(void){
             p.restore();
         }
     }
-    
-    
-    
-    p.end();    
+
+    // Export painter work as pixmap
+    p.end();
     _card = QPixmap::fromImage(_cardImage, Qt::AutoColor);
         
 }
@@ -130,7 +135,7 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
         QPoint(5, -103)
     };
     
-    static const QPoint Plane[] = {
+    static const QPoint plane[] = {
         QPoint(0, 70),
         QPoint(5, 60),
         QPoint(5, 30),
@@ -157,68 +162,59 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
         
     }; 
     
-    
+    // Init
     QColor needleColor(255, 255, 255);
-    
     int side = qMin(width(), height());
-    painter->setRenderHint(QPainter::Antialiasing);
-    painter->save();
-    painter->scale(side / 200.0, side / 200.0);
-    painter->save();
-    painter->translate(100, 100);
 
-    painter->save();
-    painter->scale(0.91,0.91);
+    painter->save(); {
 
-    
-    painter->save();
-    painter->rotate(- _value);
+	// Setup render hints for this gauge. SmoothPixmapTransform is important.
+	painter->setRenderHint(QPainter::Antialiasing,true);
+	painter->setRenderHints(QPainter::SmoothPixmapTransform,true);
 
-    
-    painter->drawPixmap(-100, -100, 200, 200, _card);
+	// Draw the cached card with heading on it, we do this without any scale transformation to speed
+	// things up on mobile devices...
+	painter->save(); {
+	    painter->translate(_card.width()/2, _card.height()/2);
+	    painter->rotate(-_value);
+	    painter->drawPixmap(-_card.width()/2,-_card.height()/2,_card);
+	} painter->restore();
 
+	// Scale and translate for all drawing of the guage
+	painter->scale(side / 200.0, side / 200.0);
+	painter->translate(100, 100);
 
+	// Draw fixed heading pins
+	painter->save(); {
+	    painter->scale(DIRECTION_INDICATOR_FIXED_HEADING_SCALE,DIRECTION_INDICATOR_FIXED_HEADING_SCALE);
+	    painter->setPen(Qt::NoPen);
+	    painter->setBrush(needleColor);
+	    for(int i=0; i<360;i+=45){
+		painter->rotate(45);
+		painter->drawConvexPolygon(needle, 3);
+	    }
+	} painter->restore();
 
+	// Draw the plane polygon
+	QPen planePen(QColor(200,200,200));
+	planePen.setWidth(3);
+	painter->setPen(planePen);
+	painter->setBrush(Qt::NoBrush);
+	painter->save(); {
+	    painter->rotate(180);
+	    painter->scale(DIRECTION_INDICATOR_PLANE_SCALE,DIRECTION_INDICATOR_PLANE_SCALE);
+	    painter->drawConvexPolygon(plane, sizeof(plane)/sizeof(plane[0]));
+	} painter->restore();
 
+    } painter->restore();
 
-    
-    
-    painter->setPen(Qt::NoPen);
-
-    painter->setBrush(needleColor);
-    for(int i=0; i<360;i+=45){
-        painter->save();
-        painter->rotate(value2Angle1(_value)+i);
-        painter->drawConvexPolygon(needle, 3);
-        painter->restore();
-    }
-
-    QPen planePen(QColor(200,200,200));
-    planePen.setWidth(3);
-    painter->setPen(planePen);
-    painter->setBrush(Qt::NoBrush);
-    painter->save();
-    painter->rotate(value2Angle1(_value)+180);
-    painter->scale(0.9,0.9);
-    painter->drawConvexPolygon(Plane, sizeof(Plane)/sizeof(Plane[0]));
-    painter->restore();
-    
-    painter->restore();
-    painter->setBrush(Qt::white);
-    
-    painter->restore();
-    painter->drawPixmap(-100,-100,200,200, _bezel);
-    
-    painter->restore();
-    
-    painter->restore();
-    
-    
-    
-    
     PanelItem::paint(painter, option, widget);
 }
 
+void DirectionIndicator::updateForNewSize(float w, float h) {
+    // The guage has changed size: redraw the cached card.
+    createCard(w, h);
+};
 
 void DirectionIndicator::setLabel(QString text) {
     _label = text;
