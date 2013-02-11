@@ -2,6 +2,86 @@
 
 An external, networked cockpit panel for X-Plane flight simulator. 
 
-Requires ExtPlane plugin installed on X-Plane. 
+Requires ExtPlane plugin installed on X-Plane:
+https://github.com/vranki/ExtPlane forked from:
+
 
 License: GNU GPLv3
+
+Readme date: 24 July 2011
+
+Works with the ExtPlane plugin on XPlane. It is then possible to run this 
+panel on the same computer, or another computer on the network, to display
+cockpit instruments remote from X-Plane.
+
+The instruments are all drawn from scratch using Qt's graphic tools, with
+a couple of graphics imported to add some realism. It would look better with
+many more graphics, and forms a nice framework to do this, but I prefer 
+programming to art.
+
+The app is written using Qt, and is developed here on a Mac. It is likely 
+that it can be made to run under Windows and Linux with a little effort. You
+need to be able to follow the process of compiling and making the plugin. If
+you follow the same steps with this, you'll be able to build and make this 
+application. 
+
+From the ExtPlane-plugin app on github:
+---------------------------------------
+* Common build requirements *
+
+Copy X-Plane SDK to home directory, so that the headers can be found
+at ~/SDK/CHeaders/XPLM (or edit the .pro file).
+
+You'll need Qt development libraries installed.
+
+* To build on Linux *
+
+$ qmake
+$ make
+copy libextplane-plugin.so.1.0.0 to X-Plane/Resources/plugins/extplane.xpl
+
+* To build on Mac *
+
+$ qmake
+$ make
+copy libextplane-plugin.1.0.0.dylib to X-Plane/Resources/plugins/extplane.xpl
+
+
+The ExtPlane-Panel
+------------------
+
+There are currently 8 instruments:
+- A basic compass
+- A direction indicator with the compass rose
+- An airspeed indicator
+- An altimeter
+- An attitude indicator
+- A variometer
+- and an RPM gauge.
+
+The appearances are largely from the Cessna 172 in X-Plane. 
+
+The interface is clumsy, but works: click inside the yellow square at top
+left to start changing things: 
+
+"Edit Panel", followed by "Close" (to close the menu) makes 
+the instruments become selectable with a click. It is then possible to move
+the instruments around, and when an instrument is selected, its properties
+are now available on the "Item properties" menu button, and it can also 
+be deleted ("Delete Items").
+
+"Add Item" allows new instruments to be added, from the 8
+mentioned above, and hopefully more to be added. 
+
+"Save panel" saves all the panel settings to a file called "extplane_gauges.ini"
+in the same directory as the executable (~/git_code/ExtPlane-Panel/build/Debug 
+on my machine). This ini file is editable, and can be used to change sizes,
+positions and settings of instruments. 
+
+"Load panel" loads the current contents of the ini file, so can be used to
+recover from accidents, like deleting an instrument. 
+
+"App settings" currently allows the IP address of the X-Plane machine to be
+entered, and can allow changes to fullscreen and screen rotation. Future 
+options will include setting the screen size and background color. 
+

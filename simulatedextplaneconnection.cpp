@@ -31,11 +31,21 @@ ClientDataRef *SimulatedExtPlaneConnection::createDataRef(QString name, double a
     } else if(name=="sim/flightmodel/misc/h_ind") {
         simRef = new SimulatedDataRef(this, 0, 5000, 10.0, false, name);
     } else if(name=="sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot") {
-        simRef = new SimulatedDataRef(this, 0, 1, 100.0, false, name);
+	simRef = new SimulatedDataRef(this, 0, 1, 100.0, false, name);
+    } else if(name=="sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot") {
+	simRef = new SimulatedDataRef(this, 0, 360, 100.0, false, name);
+    } else if(name=="sim/cockpit2/gauges/indicators/pitch_vacuum_deg_pilot") {
+	simRef = new SimulatedDataRef(this, -90, 90, 5.0, false, name);
+    } else if(name=="sim/cockpit2/gauges/indicators/roll_vacuum_deg_pilot") {
+	simRef = new SimulatedDataRef(this, -90, 90, 10.0, false, name);
+    } else if(name=="sim/cockpit2/gauges/indicators/roll_electric_deg_pilot") {
+	simRef = new SimulatedDataRef(this, -30, 30, 10.0, false, name);
+    } else if(name=="sim/cockpit2/gauges/indicators/slip_deg") {
+	simRef = new SimulatedDataRef(this, -10, 10, 10.0, false, name);
     } else {
         // Fallback
         qWarning() << Q_FUNC_INFO << "the dataref " << name << "is not supported by simulation";
-        simRef = new SimulatedDataRef(this, 0, 0, 0, false, name);
+	simRef = new SimulatedDataRef(this, 0, 0, 1, false, name);
     }
     if(simRef) {
 	simulatedRefs.append(simRef);

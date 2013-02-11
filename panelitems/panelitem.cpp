@@ -6,6 +6,12 @@ PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem() {
     _panelRotation = _itemRotation = 0;
 }
 
+PanelItem::~PanelItem()
+{
+    qDebug() << Q_FUNC_INFO << "deleting inside panelitem "; 
+   
+}
+
 void PanelItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     if(isSelected()) {
         painter->setPen(Qt::yellow);

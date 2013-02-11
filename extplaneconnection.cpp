@@ -112,15 +112,26 @@ void ExtPlaneConnection::readClient() {
             return;
         } else {
             QStringList cmd = line.split(" ", QString::SkipEmptyParts);
-            if(cmd.size()==3) {
-                if(cmd.value(0)=="uf") {
+            if (cmd.value(0)=="ufa"){
+                qDebug() << Q_FUNC_INFO << "Found float array: " << cmd;
+                ClientDataRef *ref = dataRefs.value(cmd.value(1));
+                if(ref) {
+                    ref->updateValue(cmd.join(" "));
+                } else {
+                    qDebug() << Q_FUNC_INFO << "ref not subscribed " << cmd.value(2);
+                }
+                
+                
+                
+            } else if(cmd.size()==3) {
+                if ((cmd.value(0)=="uf")||(cmd.value(0)=="ui")) {
                     ClientDataRef *ref = dataRefs.value(cmd.value(1));
                     if(ref) {
                         ref->updateValue(cmd.value(2));
                     } else {
                         qDebug() << Q_FUNC_INFO << "ref not subscribed " << cmd.value(2);
                     }
-                }
+                }  
             }
         }
     }

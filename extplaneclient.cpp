@@ -27,7 +27,16 @@ void ExtPlaneClient::refDestroyed(QObject* refqo) {
 }
 
 void ExtPlaneClient::cdrChanged(ClientDataRef *ref) {
-    emit refChanged(ref->name(), ref->valueString().toDouble());
+    double value;
+    bool ok;
+    
+    value = ref->valueString().toDouble(&ok);
+    if (ok){
+        emit refChanged(ref->name(), value);
+    } else {
+        qDebug() << Q_FUNC_INFO << "unable to convert to double " << ref->valueString();
+        emit refChanged(ref->name(), ref->valueString());
+    }
 }
 
 void ExtPlaneClient::unsubscribeDataRef(QString name) {

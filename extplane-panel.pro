@@ -7,6 +7,7 @@ maemo5: {
 }
 android::DEFINES += MOBILE_DEVICE
 meego::DEFINES += MOBILE_DEVICE
+ICON = extplane-panel.icns
 TARGET = extplane-panel
 DESTDIR = bin
 OBJECTS_DIR = build
@@ -30,6 +31,11 @@ SOURCES += main.cpp \
     widgets/numberinputlineedit.cpp \
     panelitems/variometer.cpp \
     panelitems/altimeter.cpp \
+    panelitems/di.cpp \
+    panelitems/attitudeindicator.cpp \
+    panelitems/turnbank.cpp \
+    panelitems/hsi_ks55.cpp \
+    panelitems/engine_rpm.cpp \
     widgets/distanceunitcombobox.cpp \
     panelitems/button.cpp \
     panelitems/switch.cpp \
@@ -54,6 +60,11 @@ HEADERS += panelitems/panelitem.h \
     widgets/numberinputlineedit.h \
     panelitems/variometer.h \
     panelitems/altimeter.h \
+    panelitems/di.h \
+    panelitems/attitudeindicator.h \
+    panelitems/turnbank.h \
+    panelitems/engine_rpm.h \
+    panelitems/hsi_ks55.h \
     widgets/distanceunitcombobox.h \
     panelitems/button.h \
     panelitems/switch.h \

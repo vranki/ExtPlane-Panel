@@ -1,5 +1,14 @@
-#ifndef VARIOMETER_H
-#define VARIOMETER_H
+/*
+ *  engine_rpm.h
+ *  extplane-panel
+ *
+ *  Created by bobgates on 2011/07/23.
+ *  Copyright 2011 DaffeySoft. All rights reserved.
+ *
+ */
+
+#ifndef ENGINERPM_H
+#define ENGINERPM_H
 
 #include <QLabel>
 #include <QCheckBox>
@@ -7,32 +16,31 @@
 #include "../units.h"
 #include "widgets/velocityunitcombobox.h"
 #include "widgets/numberinputlineedit.h"
-#include "../valueinterpolator.h"
 
-class Variometer : public NeedleInstrument
+class EngineRPM : public NeedleInstrument
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE Variometer(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE EngineRPM(QObject *parent, ExtPlaneConnection *conn);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual QString typeName();
     virtual void createSettings(QGridLayout *layout);
 signals:
-
-public slots:
-    void velocityChanged(QString name, double speed);
+    
+    public slots:
+    void rpmChanged(QString name, QString valueString);
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
-    void setIsTotalEnergy(bool te);
-    virtual void tickTime(double dt, int total);
+    void setNumberScale(float ns);
+
 private:
     ExtPlaneClient _client;
     VelocityUnit units;
     float maxValue;
-    float numberScale;
+    //float numberScale;
     bool isTotalEnergy;
-    ValueInterpolator interpolator;
 };
 
-#endif // VARIOMETER_H
+#endif // ENGINERPM_H
+

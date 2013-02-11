@@ -20,6 +20,7 @@ public:
     void buttonRelease(int id);
 signals:
     void refChanged(QString name, double value);
+    void refChanged(QString name, QString valueString);
 public slots:
 private slots:
     void cdrChanged(ClientDataRef *ref);

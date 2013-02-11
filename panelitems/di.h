@@ -1,5 +1,14 @@
-#ifndef ALTIMETER_H
-#define ALTIMETER_H
+/*
+ *  di.h
+ *  extplane-panel
+ *
+ *  Created by Bob Gates on 2011/07/08.
+ *  Copyright 2011 DaffeySoft. All rights reserved.
+ *
+ */
+
+#ifndef DI_H
+#define DI_H
 
 #include <QLabel>
 #include "../widgets/distanceunitcombobox.h"
@@ -8,11 +17,11 @@
 #include "../units.h"
 #include "widgets/numberinputlineedit.h"
 
-class Altimeter : public PanelItem
+class DirectionIndicator : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE Altimeter(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE DirectionIndicator(QObject *parent, ExtPlaneConnection *conn);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -20,7 +29,7 @@ public:
     virtual void createSettings(QGridLayout *layout);
     void setLabel(QString text);
     void setBars(float thick, float thin);
-public slots:
+    public slots:
     void refChanged(QString name, double alt);
     void setUnit(DistanceUnit un);
     void setRange1(float v);
@@ -29,6 +38,8 @@ public slots:
     void setThinBars(float v);
     void setNumbersScale(float v);
     void setNumbers(float div);
+    void createCard(void);
+    
 private:
     float value2Angle1(float value);
     float value2Angle2(float value);
@@ -40,7 +51,10 @@ private:
     float _numbersScale;
     float _baroPressure;
     QString _label;
-    QFont font, pressureFont;
+    QString _dataRef;
+    QPixmap _card;
+    QPixmap _bezel;
+    
 };
 
-#endif // ALTIMETER_H
+#endif // DI_H
