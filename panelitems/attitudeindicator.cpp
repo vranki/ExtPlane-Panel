@@ -3,7 +3,7 @@
  */
 
 #include "attitudeindicator.h"
-#include "math.h"
+#include <cmath>
 #include "../widgets/distanceunitcombobox.h"
 #include "../extplaneclient.h"
 #include "widgets/numberinputlineedit.h"
@@ -172,15 +172,15 @@ void AttitudeIndicator::createFrame(void){
     
     p.setPen(QPen(Qt::white, 5, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
     for(int i=70; i<=110; i+=10){
-        p.drawLine(240.*cos(float(i)/180.*3.1415926),-240.*sin(float(i)/180.*3.1415926),
-                   300.*cos(float(i)/180.*3.1415926),-300.*sin(float(i)/180.*3.1415926));
+        p.drawLine(240.*cos(float(i)/180.*M_PI),-240.*sin(float(i)/180.*M_PI),
+                   300.*cos(float(i)/180.*M_PI),-300.*sin(float(i)/180.*M_PI));
     }
 
     p.setPen(QPen(Qt::white, 10, Qt::SolidLine,
                   Qt::FlatCap, Qt::MiterJoin));
     for(int i=0; i<=180; i+=30){
-        p.drawLine(240.*cos(float(i)/180.*3.1415926),-240.*sin(float(i)/180.*3.1415926),
-                   300.*cos(float(i)/180.*3.1415926),-300.*sin(float(i)/180.*3.1415926));
+        p.drawLine(240.*cos(float(i)/180.*M_PI),-240.*sin(float(i)/180.*M_PI),
+                   300.*cos(float(i)/180.*M_PI),-300.*sin(float(i)/180.*M_PI));
     }
     
     p.end();    
@@ -266,17 +266,14 @@ void AttitudeIndicator::createGlass(void){
     
     // Little vacuum text line
     p.setPen(QColor(200,200,200));
-    p.setFont(QFont(QString("Helvetica"), 24, QFont::Bold, false));
-    int width = p.fontMetrics().width(QString("VACUUM"));
-    int height =p.fontMetrics().height();
-    p.drawText(250-width/2,385,width, height, Qt::AlignCenter,  "VACUUM");
+    p.setFont(defaultFont);
+    int width = p.fontMetrics().width("VACUUM");
+    int height = p.fontMetrics().height();
+    p.drawText(250-width/2, 385, width, height, Qt::AlignCenter, "VACUUM");
 
-    
-    
     p.end();    
     
     _glass = QPixmap::fromImage(_glassImage, Qt::AutoColor);
-
 }    
 
 void AttitudeIndicator::createBackground(void){

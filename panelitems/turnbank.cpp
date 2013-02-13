@@ -95,7 +95,6 @@ void TurnAndBank::createCard(void){
 }
 
 void TurnAndBank::createFrame(void){
-    
     QImage _frameImage = QImage(QSize(600,600), QImage::Format_ARGB32);
     _frameImage.fill(0x00ff0000);
     
@@ -122,8 +121,7 @@ void TurnAndBank::createFrame(void){
 
     //Ring outside of intstrument with white line:
     if (0){
-        p.setPen(QPen(QColor(225,225,225), 2, Qt::SolidLine,
-                      Qt::FlatCap, Qt::MiterJoin));
+        p.setPen(QPen(QColor(225,225,225), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
         p.setBrush(Qt::NoBrush);
         p.drawChord(-outerR, -outerR, 2*outerR, 2*outerR, 0, 360*16);
     }
@@ -142,54 +140,60 @@ void TurnAndBank::createFrame(void){
     
     outerR = outerR-20;
 
-    p.drawLine(innerR*cos(angle/180*3.1415926), innerR*sin(angle/180*3.1415926),
-               outerR*cos(angle/180*3.1415926), outerR*sin(angle/180*3.1415926));
-    p.drawLine(-innerR*cos(angle/180*3.1415926), innerR*sin(angle/180*3.1415926),
-               -outerR*cos(angle/180*3.1415926), outerR*sin(angle/180*3.1415926));
+    p.drawLine(innerR*cos(angle/180*M_PI), innerR*sin(angle/180*M_PI),
+               outerR*cos(angle/180*M_PI), outerR*sin(angle/180*M_PI));
+    p.drawLine(-innerR*cos(angle/180*M_PI), innerR*sin(angle/180*M_PI),
+               -outerR*cos(angle/180*M_PI), outerR*sin(angle/180*M_PI));
 
     p.drawLine(innerR, 0, outerR, 0);
     p.drawLine(-innerR, 0, -outerR, 0);
     
     // Little vacuum text line
     p.setPen(QColor(200,200,200));
-    
-    QString legend = QString("NO PITCH");
-    p.setFont(QFont(QString("Helvetica"), 20, QFont::Bold, false));
+
+    QFont topLabelFont = defaultFont;
+    topLabelFont.setBold(true);
+    p.setFont(topLabelFont);
+
+    QString legend = "NO PITCH";
     int width = p.fontMetrics().width(legend);
-    int height =p.fontMetrics().height();
+    int height = p.fontMetrics().height();
     p.drawText(0-width/2,245,width, height, Qt::AlignCenter, legend);
-    legend = QString("INFORMATION");
+
+    legend = "INFORMATION";
     width = p.fontMetrics().width(legend);
     p.drawText(0-width/2,267,width, height, Qt::AlignCenter, legend);
 
-    p.setFont(QFont(QString("Helvetica"), 32, QFont::Bold, false));
-    legend = QString("D. C. ELEC.");
+    legend = "D. C. ELEC.";
     width = p.fontMetrics().width(legend);
     height =p.fontMetrics().height();
     p.drawText(0-width/2,-275,width, height, Qt::AlignCenter, legend);
     
-    legend = QString("2 MIN");
+    legend = "2 MIN";
     width = p.fontMetrics().width(legend);
     height =p.fontMetrics().height();
     p.drawText(0-width/2,205,width, height, Qt::AlignCenter, legend);
     
-    p.setFont(QFont(QString("Helvetica"), 24, QFont::Bold, false));
-    legend = QString("TURN COORDINATOR");
+    legend = "TURN COORDINATOR";
     width = p.fontMetrics().width(legend);
     height =p.fontMetrics().height();
     p.drawText(0-width/2,-150,width, height, Qt::AlignCenter, legend);
     
-    p.setFont(QFont(QString("Helvetica"), 48, QFont::Bold, false));
-    legend = QString("L");
+    QFont lrFont = defaultFont;
+    lrFont.setPointSizeF(defaultFont.pointSizeF() * 2);
+    lrFont.setBold(true);
+    p.setFont(lrFont);
+
+    legend = "L";
     width = p.fontMetrics().width(legend);
-    height =p.fontMetrics().height();
-    p.drawText(-265*cos(18./180.*3.1415926)-width/2+5, 265*sin(18./180.*3.1415926),
+    height = p.fontMetrics().height();
+    p.drawText(-265*cos(18./180.*M_PI)-width/2+5, 265*sin(18./180.*M_PI),
                width, height, Qt::AlignCenter, legend);
     
-    legend = QString("R");
+    legend = "R";
     width = p.fontMetrics().width(legend);
-    height =p.fontMetrics().height();
-    p.drawText(265*cos(18./180.*3.1415926)-width/2-5, 265*sin(18./180.*3.1415926),
+    height = p.fontMetrics().height();
+    p.drawText(265*cos(18./180.*M_PI)-width/2-5, 265*sin(18./180.*M_PI),
                width, height, Qt::AlignCenter, legend);
     
     p.end();

@@ -44,7 +44,7 @@ void Switch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
     painter->restore();
     painter->setPen(Qt::white);
-    QFont font = painter->font();
+    QFont font = defaultFont;
     font.setPixelSize(height()*0.75);
     painter->setFont(font);
     painter->drawText(QRect(switchWidth,0,width()-switchWidth, height()), Qt::AlignCenter, _label);

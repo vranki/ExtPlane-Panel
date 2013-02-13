@@ -164,7 +164,9 @@ void HSI::createCard(void){
         }
     }
     p.setPen(QColor(200,200,200));
-    p.setFont(QFont(QString("Helvetica"), 48, QFont::Bold, false));
+    QFont font = defaultFont;
+    font.setPointSizeF(defaultFont.pointSizeF()*2);
+    p.setFont(font);
     
     if(1) {
         for (float i = 0 ; i < 360; i+=_numbers) {
@@ -174,16 +176,16 @@ void HSI::createCard(void){
             QString lineNumber;
             switch (int(i)) {
                 case 0:
-                    lineNumber = QString("N");
+                    lineNumber = "N";
                     break;
                 case 90:
-                    lineNumber = QString("E");
+                    lineNumber = "E";
                     break;
                 case 180:
-                    lineNumber = QString("S");
+                    lineNumber = "S";
                     break;
                 case 270:
-                    lineNumber = QString("W");
+                    lineNumber = "W";
                     break;
                 default:
                     lineNumber = QString::number(i/10);

@@ -16,7 +16,7 @@ void Compass::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->setBrush(Qt::NoBrush);
     painter->setPen(Qt::white);
     painter->drawRect(0,0,width(),height());
-    QFont font = painter->font();
+    QFont font = defaultFont;
     font.setPixelSize(height()*0.75);
     painter->setFont(font);
     QString hdgString = QString::number(_heading);

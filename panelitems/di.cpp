@@ -88,7 +88,7 @@ void DirectionIndicator::createCard(float w, float h){
 
     // Draw the numbers and NESW labels
     p.setPen(QColor(200,200,200));
-    p.setFont(QFont(QString("Helvetica"), 48, QFont::Bold, false)); //TODO: should we reference such fonts?
+    p.setFont(QFont(QString("Helvetica"), defaultFont.pointSize(), QFont::Bold, false)); //TODO: should we reference such fonts?
     if(_numbers != 0) {
         for (float i = 0 ; i < _range1; i+=_numbers) {
             p.save();

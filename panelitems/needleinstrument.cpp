@@ -49,11 +49,6 @@ void Arc::setColor(QString colorString){
 
 
 
-
-
-
-
-
 NeedleInstrument::NeedleInstrument(QObject *parent) :
     PanelItem(parent)
 {
@@ -64,7 +59,6 @@ NeedleInstrument::NeedleInstrument(QObject *parent) :
     _thickBars = _thinBars = 0;
     _numbers = 0;
     _numberScale = 1;
-    numberFont.setPixelSize(20); // @todo configurable
 }
 
 void NeedleInstrument::setNumbers(float div) {
@@ -81,6 +75,8 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         QPoint(-6, 8),
         QPoint(0, -95)
     };
+    QFont numberFont = defaultFont;
+    numberFont.setPointSizeF(defaultFont.pointSizeF() * 1.5);
     painter->setFont(numberFont);
     QColor needleColor(255, 255, 255);
 

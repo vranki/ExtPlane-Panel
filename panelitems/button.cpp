@@ -28,7 +28,7 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     }
     painter->setPen(Qt::white);
     painter->drawRoundedRect(0,0,width(),height(), 5, 5);
-    QFont font = painter->font();
+    QFont font = defaultFont;
     font.setPixelSize(height()*0.75);
     painter->setFont(font);
     painter->drawText(QRect(0,0,width(), height()), Qt::AlignCenter, _label);

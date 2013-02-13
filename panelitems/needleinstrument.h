@@ -68,8 +68,6 @@ protected:
     float _numberScale;
     float _value, _zeroangle, _maxAngle, _zeroValue, _maxValue;
     QString _label;
-    QFont numberFont;
-
     QList<Arc*> _arcs;
 };
 
