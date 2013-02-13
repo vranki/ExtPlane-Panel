@@ -4,6 +4,8 @@
 #include "panelitem.h"
 #include "../units.h"
 
+class Needle;
+
 class Altimeter : public PanelItem
 {
     Q_OBJECT
@@ -36,6 +38,7 @@ private:
     float _numbersScale;
     float _baroPressure;
     QString _label;
+    Needle *longNeedle, *shortNeedle;
 };
 
 #endif // ALTIMETER_H

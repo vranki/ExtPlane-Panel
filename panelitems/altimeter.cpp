@@ -3,6 +3,7 @@
 #include "../widgets/distanceunitcombobox.h"
 #include "../extplaneclient.h"
 #include "widgets/numberinputlineedit.h"
+#include "../needles/triangleneedle.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Altimeter,"indicator/altitude/basic");
 
@@ -22,6 +23,9 @@ Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef("sim/flightmodel/misc/h_ind", 3);
     _client.subscribeDataRef("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot");
+    shortNeedle = new TriangleNeedle(this);
+    longNeedle = new TriangleNeedle(this);
+    shortNeedle->setColor(Qt::gray);
 }
 
 void Altimeter::setNumbers(float div) {
@@ -30,20 +34,6 @@ void Altimeter::setNumbers(float div) {
 }
 
 void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    static const QPoint needle[3] = {
-        QPoint(4, 8),
-        QPoint(-4, 8),
-        QPoint(0, -95)
-    };
-    static const QPoint needle2[3] = {
-        QPoint(8, 8),
-        QPoint(-8, 8),
-        QPoint(0, -70)
-    };
-    QColor needleColor(255, 255, 255);
-    QColor needleColor2(200, 200, 200);
-
-
     painter->setFont(defaultFont);
 
     int side = qMin(width(), height());
@@ -107,18 +97,19 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
             painter->restore();
         }
     }
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(needleColor2);
+
+    // Draw needles
     painter->save();
     painter->rotate(value2Angle2(_value));
-    painter->drawConvexPolygon(needle2, 3);
+    painter->scale(side*0.3, side*0.3);
+    shortNeedle->paint(painter);
     painter->restore();
-    painter->setBrush(needleColor);
     painter->save();
     painter->rotate(value2Angle1(_value));
-    painter->drawConvexPolygon(needle, 3);
+    painter->scale(side/2, side/2);
+    longNeedle->paint(painter);
     painter->restore();
-    painter->setBrush(Qt::white);
+
 
     painter->restore();
 

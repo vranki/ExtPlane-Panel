@@ -3,6 +3,7 @@
 
 #include "panelitem.h"
 #include <QFont>
+#include "../needles/needle.h"
 
 /**
  * Represents an arc with different properties used in
@@ -69,6 +70,7 @@ protected:
     float _value, _zeroangle, _maxAngle, _zeroValue, _maxValue;
     QString _label;
     QList<Arc*> _arcs;
+    Needle *needle;
 };
 
 #endif // NEEDLEINSTRUMENT_H

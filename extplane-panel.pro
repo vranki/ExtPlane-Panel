@@ -44,7 +44,9 @@ SOURCES += main.cpp \
     valueinterpolator.cpp \
     panelitems/rotaryknob.cpp \
     simulatedextplaneconnection.cpp \
-    panelitemfactory.cpp
+    panelitemfactory.cpp \
+    needles/needle.cpp \
+    needles/triangleneedle.cpp
 
 HEADERS += panelitems/panelitem.h \
     extplaneconnection.h \
@@ -75,7 +77,9 @@ HEADERS += panelitems/panelitem.h \
     valueinterpolator.h \
     panelitems/rotaryknob.h \
     simulatedextplaneconnection.h \
-    panelitemfactory.h
+    panelitemfactory.h \
+    needles/needle.h \
+    needles/triangleneedle.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui
