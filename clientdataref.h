@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+/**
+ * @brief The ClientDataRef class represents a single dataref in client side
+ */
 class ClientDataRef : public QObject {
     Q_OBJECT
 public:

@@ -4,16 +4,19 @@
 #include <QTcpSocket>
 #include <QHostAddress>
 #include <QAbstractSocket>
-#include <QDebug>
 #include <QList>
 #include <QMap>
 #include <QTimer>
 #include <QStringList>
-#include "extplaneclient.h"
-#include "clientdataref.h"
 #include "clientdatarefprovicer.h"
-#include "simulateddatarefs/simulateddataref.h"
 
+class SimulatedDataRef;
+class ExtPlaneClient;
+
+/**
+ * A TCP-based connector class which connects to ExtPlane
+ * running in X-Plane.
+ */
 class ExtPlaneConnection : public QTcpSocket, public ClientDataRefProvicer {
     Q_OBJECT
 public:

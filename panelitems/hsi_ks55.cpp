@@ -1,17 +1,13 @@
-/*
- *  HSI_KS55.cpp
- *  extplane-panel
- *
- *  Created by bobgates on 2011/08/01.
- *  Copyright 2011 DaffeySoft. All rights reserved.
- *
- */
-
 #include "hsi_ks55.h"
 
+#include <QLabel>
+#include "../widgets/distanceunitcombobox.h"
+#include "../extplaneclient.h"
+
+#include "widgets/numberinputlineedit.h"
+#include <QHash>
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(HSI,"indicator/heading/hsi_ks5");
-
 
 HSI::HSI(QObject *parent, ExtPlaneConnection *conn) :
 PanelItem(parent), _client(this, typeName(), conn)

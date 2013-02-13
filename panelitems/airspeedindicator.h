@@ -2,11 +2,6 @@
 #define AIRSPEEDINDICATOR_H
 
 #include "needleinstrument.h"
-#include "units.h"
-#include <QLabel>
-#include "widgets/velocityunitcombobox.h"
-#include "widgets/numberinputlineedit.h"
-#include "../valueinterpolator.h"
 
 class AirspeedIndicator : public NeedleInstrument {
     Q_OBJECT

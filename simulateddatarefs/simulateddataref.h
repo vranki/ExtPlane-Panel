@@ -5,10 +5,26 @@
 #include <QTimer>
 #include "../clientdataref.h"
 
+/**
+ * Generic simulated dataref that can be configured to alter value.
+ *
+ * @see SimulatedExtPlaneConnection
+ */
 class SimulatedDataRef : public QObject
 {
     Q_OBJECT
 public:
+    /**
+     * @todo Document these
+     *
+     * @brief SimulatedDataRef
+     * @param parent
+     * @param minV
+     * @param maxV
+     * @param changeDivisor
+     * @param round
+     * @param refName
+     */
     explicit SimulatedDataRef(QObject *parent, double minV, double maxV, double changeDivisor, bool round, QString refName);
     ClientDataRef *clientRef();
 signals:

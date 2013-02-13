@@ -1,4 +1,5 @@
 #include "compass.h"
+#include "extplaneclient.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Compass,"indicator/compass/basic");
 

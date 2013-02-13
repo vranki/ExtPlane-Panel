@@ -1,23 +1,12 @@
 /*
- *  HSI_KS55.h
- *  extplane-panel
- *
  *  Created by bobgates on 2011/08/01.
- *  Copyright 2011 DaffeySoft. All rights reserved.
- *
  */
 
 #ifndef HSI_H
 #define HSI_H
 
-#include <QLabel>
-#include "../widgets/distanceunitcombobox.h"
-#include "../extplaneclient.h"
 #include "panelitem.h"
 #include "../units.h"
-#include "widgets/numberinputlineedit.h"
-#include <QHash>
-
 
 enum DataRefType {
     drFloat, drInt, drChar

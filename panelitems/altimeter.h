@@ -1,12 +1,8 @@
 #ifndef ALTIMETER_H
 #define ALTIMETER_H
 
-#include <QLabel>
-#include "../widgets/distanceunitcombobox.h"
-#include "../extplaneclient.h"
 #include "panelitem.h"
 #include "../units.h"
-#include "widgets/numberinputlineedit.h"
 
 class Altimeter : public PanelItem
 {

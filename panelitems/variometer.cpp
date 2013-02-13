@@ -1,4 +1,10 @@
 #include "variometer.h"
+#include <QLabel>
+#include <QCheckBox>
+#include "../units.h"
+#include "widgets/velocityunitcombobox.h"
+#include "widgets/numberinputlineedit.h"
+#include "../valueinterpolator.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Variometer,"indicator/variometer/round");
 

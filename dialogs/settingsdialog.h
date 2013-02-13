@@ -3,12 +3,14 @@
 
 #include <QDialog>
 #include <QSettings>
-#include <QDebug>
 
 namespace Ui {
     class SettingsDialog;
 }
 
+/**
+ * Main settings for the whole application
+ */
 class SettingsDialog : public QDialog {
     Q_OBJECT
 

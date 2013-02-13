@@ -1,14 +1,13 @@
 /*
- *  attitudeindicator.cpp
- *  extplane-panel
- *
  *  Created by bobgates on 2011/07/08.
- *  Copyright 2011 DaffeySoft. All rights reserved.
- *
  */
 
 #include "attitudeindicator.h"
 #include "math.h"
+#include "../widgets/distanceunitcombobox.h"
+#include "../extplaneclient.h"
+#include "widgets/numberinputlineedit.h"
+#include <QLabel>
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(AttitudeIndicator,"indicator/attitude/basic");
 

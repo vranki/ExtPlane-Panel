@@ -1,7 +1,6 @@
 #ifndef COMPASS_H
 #define COMPASS_H
 
-#include "extplaneclient.h"
 #include "panelitem.h"
 
 class Compass : public PanelItem

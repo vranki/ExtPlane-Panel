@@ -4,12 +4,14 @@
 #include <QComboBox>
 #include "units.h"
 
+/**
+ * Allows user to pick one velocity unit
+ */
 class VelocityUnitComboBox : public QComboBox
 {
     Q_OBJECT
 public:
     explicit VelocityUnitComboBox(QWidget *parent, VelocityUnit un);
-
 signals:
     void unitSelected(VelocityUnit unit);
 public slots:

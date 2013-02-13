@@ -1,4 +1,8 @@
 #include "altimeter.h"
+#include <QLabel>
+#include "../widgets/distanceunitcombobox.h"
+#include "../extplaneclient.h"
+#include "widgets/numberinputlineedit.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Altimeter,"indicator/altitude/basic");
 

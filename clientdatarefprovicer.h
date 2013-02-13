@@ -3,6 +3,12 @@
 
 #include "clientdataref.h"
 
+/**
+ * Interface common for a dataref provider classes
+ *
+ * @see ExtPlaneConnection
+ * @see SimulatedExtPlaneConnection
+ */
 class ClientDataRefProvicer
 {
 public:

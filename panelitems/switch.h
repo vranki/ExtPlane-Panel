@@ -1,12 +1,6 @@
 #ifndef SWITCH_H
 #define SWITCH_H
 
-#include <QString>
-#include <QLabel>
-#include <QLineEdit>
-#include <QCheckBox>
-#include "widgets/numberinputlineedit.h"
-#include "extplaneclient.h"
 #include "panelitem.h"
 
 class Switch : public PanelItem {

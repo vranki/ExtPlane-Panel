@@ -1,14 +1,14 @@
 /*
-*  di.cpp
-*  extplane-panel
-*
 *  Created by Bob Gates on 2011/07/08.
-*  Copyright 2011 DaffeySoft. All rights reserved.
-*
 */
 
 
 #include "di.h"
+#include <QLabel>
+#include "../widgets/distanceunitcombobox.h"
+#include "../extplaneclient.h"
+
+#include "widgets/numberinputlineedit.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(DirectionIndicator,"indicator/heading/basic");
 

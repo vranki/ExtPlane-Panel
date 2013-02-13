@@ -1,5 +1,20 @@
 #include "menubutton.h"
 
+#include <QPainter>
+#include <QGraphicsSceneMouseEvent>
+#include <QMessageBox>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QInputDialog>
+#include <QSettings>
+#include <QDebug>
+#include <QCoreApplication>
+#include <QCheckBox>
+#include "panelitems/panelitem.h"
+#include "dialogs/settingsdialog.h"
+#include "dialogs/edititemdialog.h"
+
+
 MenuButton::MenuButton(QWidget *parent) : QObject(parent), side(20) {
     // Init
     panelWindow = parent;

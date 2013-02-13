@@ -23,6 +23,12 @@ enum PressureUnit {
     PRESSURE_INCHES_HG
 };
 
+/**
+ * Unit conversions of various physical units
+ *
+ * ExtPlane-panel always uses standard units as base and converts
+ * units from X-Plane's units to SI units internally.
+ */
 class Units {
 public:
     Units();

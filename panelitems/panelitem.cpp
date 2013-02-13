@@ -1,4 +1,10 @@
 #include "panelitem.h"
+#include <QPainter>
+#include <QObject>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
+#include <QVariant>
+#include <QGridLayout>
 
 PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem() {
     _width = _height = 200;
@@ -9,7 +15,6 @@ PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem() {
 PanelItem::~PanelItem()
 {
     qDebug() << Q_FUNC_INFO << "deleting inside panelitem "; 
-   
 }
 
 void PanelItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

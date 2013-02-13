@@ -1,4 +1,8 @@
+#include <QDebug>
 #include "extplaneconnection.h"
+#include "clientdataref.h"
+#include "simulateddatarefs/simulateddataref.h"
+#include "extplaneclient.h"
 
 ExtPlaneConnection::ExtPlaneConnection(QObject *parent) : QTcpSocket(parent) {
     connect(this, SIGNAL(connected()), this, SLOT(socketConnected()));

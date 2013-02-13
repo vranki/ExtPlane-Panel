@@ -8,6 +8,9 @@
 #include "clientdataref.h"
 #include "clientdatarefprovicer.h"
 
+/**
+ * Represents a single ExtPlane client
+ */
 class ExtPlaneClient : public QObject {
     Q_OBJECT
 public:
@@ -21,7 +24,6 @@ public:
 signals:
     void refChanged(QString name, double value);
     void refChanged(QString name, QString valueString);
-public slots:
 private slots:
     void cdrChanged(ClientDataRef *ref);
     void valueSet(ClientDataRef *ref);
@@ -31,7 +33,8 @@ private:
     QString _name;
     QList<ClientDataRef*> _dataRefs;
     QSet<int> _heldButtons;
-    ClientDataRefProvicer *_connection;
+
+    ClientDataRefProvicer *_connection; // The actual connection class
 };
 
 #endif // EXTPLANECLIENT_H

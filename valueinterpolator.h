@@ -3,6 +3,10 @@
 
 #include <QObject>
 
+/**
+ * A helper class that can be used to interpolate double values
+ * to make transitions look smoother.
+ */
 class ValueInterpolator : public QObject
 {
     Q_OBJECT
@@ -16,7 +20,7 @@ public slots:
     void valueChanged(QString name, double val);
     void tickTime(double dt, int total);
 private:
-    double targetValue, currentValue;
+    double currentValue, targetValue;
     double speed;
     QString refName;
 };

@@ -1,21 +1,11 @@
 /*
- *  turnbank.h
- *  extplane-panel
- *
  *  Created by bobgates on 2011/07/10.
- *  Copyright 2011 DaffeySoft. All rights reserved.
- *
  */
 
-#ifndef TURNBANK_H
-#define TURNBANK_H
+#ifndef TURNANDBANK_H
+#define TURNANDBANK_H
 
-#include <QLabel>
-#include "../widgets/distanceunitcombobox.h"
-#include "../extplaneclient.h"
 #include "panelitem.h"
-#include "../units.h"
-#include "widgets/numberinputlineedit.h"
 
 class TurnAndBank : public PanelItem
 {
@@ -29,7 +19,7 @@ public:
     virtual void createSettings(QGridLayout *layout);
     void setLabel(QString text);
     void setBars(float thick, float thin);
-    public slots:
+public slots:
     void refChanged(QString name, double alt);
     void setUnit(DistanceUnit un);
     void setRange1(float v);
@@ -70,4 +60,4 @@ private:
     
 };
 
-#endif // TURNBANK_H
+#endif // TURNANDBANK_H

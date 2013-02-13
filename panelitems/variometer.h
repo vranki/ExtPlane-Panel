@@ -1,13 +1,7 @@
 #ifndef VARIOMETER_H
 #define VARIOMETER_H
 
-#include <QLabel>
-#include <QCheckBox>
 #include "needleinstrument.h"
-#include "../units.h"
-#include "widgets/velocityunitcombobox.h"
-#include "widgets/numberinputlineedit.h"
-#include "../valueinterpolator.h"
 
 class Variometer : public NeedleInstrument
 {
@@ -18,8 +12,6 @@ public:
     virtual void loadSettings(QSettings &settings);
     virtual QString typeName();
     virtual void createSettings(QGridLayout *layout);
-signals:
-
 public slots:
     void velocityChanged(QString name, double speed);
     void setUnit(VelocityUnit un);

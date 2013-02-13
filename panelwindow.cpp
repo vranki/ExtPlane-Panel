@@ -1,8 +1,29 @@
-#include <QInputDialog>
-
 #include "panelwindow.h"
+#ifdef MAEMO
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include "mce/mode-names.h"
+#include "mce/dbus-names.h"
+#endif
 
-PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsItemGroup>
+#include <QMessageBox>
+#include <QString>
+#include <QStringList>
+#include <QInputDialog>
+#include <QFileDialog>
+#include <QCoreApplication>
+#include "extplaneconnection.h"
+#include "simulatedextplaneconnection.h"
+#include "menubutton.h"
+#include "dialogs/settingsdialog.h"
+#include "dialogs/edititemdialog.h"
+#include "panelitemfactory.h"
+#include "panelitems/panelitem.h"
+
+PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     // Init
     appSettings = NULL;
     panelSettings = NULL;
@@ -50,9 +71,9 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), errorMessage() {
 
     // Error message
     connect(connection, SIGNAL(connectionMessage(QString)), this, SLOT(connectionMessage(QString)));
-    errorMessage.setDefaultTextColor(Qt::red);
-    errorMessage.setPos(0,20);
-    scene.addItem(&errorMessage);
+    statusMessage.setDefaultTextColor(Qt::red);
+    statusMessage.setPos(0,20);
+    scene.addItem(&statusMessage);
 
     // Load last-loaded panel
     this->loadPanel(appSettings->value("lastloadedpanel","").toString());
@@ -94,7 +115,7 @@ PanelWindow::~PanelWindow() {
 
 void PanelWindow::connectionMessage(QString txt) {
     qDebug() << Q_FUNC_INFO << txt;
-    errorMessage.setPlainText(txt);
+    statusMessage.setPlainText(txt);
 }
 
 void PanelWindow::itemDestroyed(QObject *obj) {

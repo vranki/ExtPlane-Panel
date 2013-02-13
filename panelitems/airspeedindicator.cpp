@@ -1,4 +1,7 @@
 #include "airspeedindicator.h"
+#include <QLabel>
+#include "widgets/velocityunitcombobox.h"
+#include "widgets/numberinputlineedit.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(AirspeedIndicator,"indicator/airspeed/round");
 

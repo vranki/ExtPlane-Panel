@@ -4,6 +4,9 @@
 #include "panelitem.h"
 #include <QPoint>
 
+/**
+ * A generic rotary encoder type knob that can set values
+ */
 class RotaryKnob : public PanelItem
 {
     Q_OBJECT

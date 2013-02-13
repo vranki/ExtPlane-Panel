@@ -1,4 +1,11 @@
 #include "switch.h"
+#include <QString>
+#include <QLabel>
+#include <QLineEdit>
+#include <QCheckBox>
+#include "widgets/numberinputlineedit.h"
+#include "extplaneclient.h"
+#include <QGraphicsSceneMouseEvent>
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Switch,"switches/generic");
 
