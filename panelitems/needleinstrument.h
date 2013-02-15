@@ -62,7 +62,7 @@ public:
 
 public slots:
     void setValue(float value);
-
+    void setNeedle(Needle * newNeedle);
 protected:
     float _thickBars, _thinBars;
     float _numbers;

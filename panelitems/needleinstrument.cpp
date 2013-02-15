@@ -159,6 +159,13 @@ void NeedleInstrument::setValue(float value) {
     update();
 }
 
+void NeedleInstrument::setNeedle(Needle *newNeedle) {
+    Q_ASSERT(newNeedle);
+    if(needle)
+        needle->deleteLater();
+    needle = newNeedle;
+}
+
 void NeedleInstrument::setBars(float thick, float thin) {
     _thinBars = thin;
     _thickBars = thick;

@@ -3,13 +3,12 @@
 #include "../widgets/distanceunitcombobox.h"
 #include "../extplaneclient.h"
 #include "widgets/numberinputlineedit.h"
-#include "../needles/triangleneedle.h"
+#include "../needles/gabalancedneedle.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Altimeter,"indicator/altitude/basic");
 
 Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
-        PanelItem(parent), _client(this, typeName(), conn)
-{
+        PanelItem(parent), _client(this, typeName(), conn) {
     _value = 0;
     setThickBars(50);
     setThinBars(10);
@@ -23,9 +22,10 @@ Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef("sim/flightmodel/misc/h_ind", 3);
     _client.subscribeDataRef("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot");
-    shortNeedle = new TriangleNeedle(this);
-    longNeedle = new TriangleNeedle(this);
-    shortNeedle->setColor(Qt::gray);
+    GABalancedNeedle *sn = new GABalancedNeedle(this);
+    sn->setNeedleLength(0.6);
+    shortNeedle = sn;
+    longNeedle = new GABalancedNeedle(this);
 }
 
 void Altimeter::setNumbers(float div) {
@@ -101,7 +101,7 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     // Draw needles
     painter->save();
     painter->rotate(value2Angle2(_value));
-    painter->scale(side*0.3, side*0.3);
+    painter->scale(side/2, side/2);
     shortNeedle->paint(painter);
     painter->restore();
     painter->save();

@@ -46,7 +46,8 @@ SOURCES += main.cpp \
     simulatedextplaneconnection.cpp \
     panelitemfactory.cpp \
     needles/needle.cpp \
-    needles/triangleneedle.cpp
+    needles/triangleneedle.cpp \
+    needles/gabalancedneedle.cpp
 
 HEADERS += panelitems/panelitem.h \
     extplaneconnection.h \
@@ -79,7 +80,8 @@ HEADERS += panelitems/panelitem.h \
     simulatedextplaneconnection.h \
     panelitemfactory.h \
     needles/needle.h \
-    needles/triangleneedle.h
+    needles/triangleneedle.h \
+    needles/gabalancedneedle.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui
