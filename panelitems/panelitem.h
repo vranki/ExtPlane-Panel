@@ -57,6 +57,9 @@ protected:
     virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent *event);
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     QFont defaultFont;
+
+    // Use for mechanical instrument
+    QColor darkGrayColor;
 signals:
     void panelItemSelected(PanelItem *g, bool sel=true);
     void editPanelItem(PanelItem *item);

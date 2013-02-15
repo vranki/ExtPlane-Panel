@@ -56,7 +56,7 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setBrush(Qt::black);
     painter->drawRect(30,-10,60,20);
     QFont pressureFont = defaultFont;
-    pressureFont.setPointSizeF(defaultFont.pointSizeF()/2);
+    pressureFont.setPointSizeF(defaultFont.pointSizeF()/1.5f);
     painter->setFont(pressureFont);
     QString pressureText = QString::number(_baroPressure);
     textwidth = painter->fontMetrics().width(pressureText);

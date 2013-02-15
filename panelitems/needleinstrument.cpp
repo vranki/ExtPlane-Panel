@@ -175,12 +175,6 @@ float NeedleInstrument::value2Angle(float value) {
     return _zeroangle +  ((value - _zeroValue) / (_maxValue - _zeroValue)) * (_maxAngle - _zeroangle);
 }
 
-
-
-
-
-
-
 int NeedleInstrument::numberOfArcs(void) {
     return _arcs.count();
 }

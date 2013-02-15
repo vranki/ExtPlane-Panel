@@ -14,7 +14,7 @@ void GABalancedNeedle::paint(QPainter *painter) {
     painter->setBrush(needleColor);
     painter->drawPolygon(whiteArm);
     painter->setPen(Qt::NoPen);
-    painter->setBrush(QColor(42,42,42));
+    painter->setBrush(QColor(30,30,30));
     painter->drawPolygon(blackArm);
     painter->drawEllipse(QPointF(0,0), BALANCE_SIZE, BALANCE_SIZE);
     painter->drawEllipse(QPointF(0,BLACK_ARM_LENGTH), BALANCE_SIZE, BALANCE_SIZE);

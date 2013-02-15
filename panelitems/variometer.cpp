@@ -5,6 +5,7 @@
 #include "widgets/velocityunitcombobox.h"
 #include "widgets/numberinputlineedit.h"
 #include "../valueinterpolator.h"
+#include "../needles/gabalancedneedle.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Variometer,"indicator/variometer/round");
 
@@ -19,6 +20,7 @@ Variometer::Variometer(QObject *parent, ExtPlaneConnection *conn) : NeedleInstru
     setMaxValue(5);
     isTotalEnergy = false;
     setIsTotalEnergy(false);
+    setNeedle(new GABalancedNeedle(this));
 }
 
 void Variometer::velocityChanged(QString name, double speed) {
@@ -31,7 +33,6 @@ void Variometer::velocityChanged(QString name, double speed) {
 
 void Variometer::setUnit(VelocityUnit unit) {
     units = unit;
-    setLabel(Units::unitName(units));
 }
 
 void Variometer::storeSettings(QSettings &settings) {
@@ -74,6 +75,37 @@ void Variometer::createSettings(QGridLayout *layout) {
     connect(totalCheckbox, SIGNAL(clicked(bool)), this, SLOT(setIsTotalEnergy(bool)));
 }
 
+void Variometer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    NeedleInstrument::paint(painter, option, widget);
+
+    painter->save();
+    double side = qMin(width(), height());
+    // Round center
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(darkGrayColor);
+    painter->drawEllipse(QPoint(side/2, side/2), side/5, side/5);
+    painter->setPen(Qt::white);
+
+    // Unit text
+    QTextOption textOption(Qt::AlignCenter);
+    QFont unitFont = defaultFont;
+    unitFont.setPointSizeF(side/20);
+    painter->setFont(unitFont);
+
+    painter->drawText(QRect(side/2 + side/5, 0, side/2 - side/5, side), Units::unitName(units), textOption);
+
+    // Up and down arrows
+    QFont arrowFont = defaultFont;
+    arrowFont.setPointSizeF(side/10);
+    painter->setFont(arrowFont);
+    int textstartX = side/2 - side/5;
+    int textWidth = side/2.5f;
+    int textHeight = side/5.f;
+    painter->drawText(QRect(textstartX, textstartX, textWidth, textHeight), QString::fromUtf8("↑"), textOption);
+    painter->drawText(QRect(textstartX, textstartX + textHeight, textWidth, textHeight), QString::fromUtf8("↓"), textOption);
+    painter->restore();
+}
+
 void Variometer::setIsTotalEnergy(bool te) {
     if(te == isTotalEnergy) return;
     isTotalEnergy = te;
@@ -85,6 +117,7 @@ void Variometer::setIsTotalEnergy(bool te) {
         _client.subscribeDataRef("sim/flightmodel/position/vh_ind", 0.5);
     }
 }
+
 void Variometer::tickTime(double dt, int total) {
     interpolator.tickTime(dt, total);
 }

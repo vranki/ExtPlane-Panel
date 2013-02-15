@@ -7,14 +7,15 @@
 #include <QGridLayout>
 #include <QApplication>
 
-PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem() {
+PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem(), darkGrayColor(30,30,30) {
     _width = _height = 200;
     setEditMode(false);
     _panelRotation = _itemRotation = 0;
     defaultFont = QApplication::font();
 
-    defaultFont.setPointSizeF(15);
-    // Withot this font size on android & meego is too large - not sure why!
+    // @todo make configurable
+    defaultFont.setPointSizeF(10);
+    // Without this font size on android & meego is too large - not sure why!
     // Shouldn't point size be device independent??
 #ifdef MOBILE_DEVICE
     defaultFont.setPointSizeF(5);
