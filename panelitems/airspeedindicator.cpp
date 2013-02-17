@@ -1,4 +1,8 @@
 #include "airspeedindicator.h"
+#include <QLabel>
+#include "../needles/gabalancedneedle.h"
+#include "widgets/velocityunitcombobox.h"
+#include "widgets/numberinputlineedit.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(AirspeedIndicator,"indicator/airspeed/round");
 
@@ -21,6 +25,7 @@ AirspeedIndicator::AirspeedIndicator(QObject *parent, ExtPlaneConnection *conn) 
     waStart = 10.0;
     waEnd = yaStart;
     yellowTriangle = gaStart;
+    setNeedle(new GABalancedNeedle(this));
 }
 
 void AirspeedIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){

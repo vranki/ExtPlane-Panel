@@ -1,14 +1,14 @@
 #ifndef VARIOMETER_H
 #define VARIOMETER_H
 
-#include <QLabel>
-#include <QCheckBox>
 #include "needleinstrument.h"
-#include "../units.h"
-#include "widgets/velocityunitcombobox.h"
-#include "widgets/numberinputlineedit.h"
-#include "../valueinterpolator.h"
-
+/**
+ * GA mechanical variometer (aka VVI)
+ *
+ * Something like this
+ *
+ * http://www.wingsandwheels.com/images/5stv_5stvm.jpg
+ */
 class Variometer : public NeedleInstrument
 {
     Q_OBJECT
@@ -18,8 +18,7 @@ public:
     virtual void loadSettings(QSettings &settings);
     virtual QString typeName();
     virtual void createSettings(QGridLayout *layout);
-signals:
-
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 public slots:
     void velocityChanged(QString name, double speed);
     void setUnit(VelocityUnit un);

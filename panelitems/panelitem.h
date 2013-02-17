@@ -2,15 +2,18 @@
 #define PANELITEM_H
 
 #include <QGraphicsItem>
-#include <QPainter>
-#include <QObject>
-#include <QGraphicsSceneMouseEvent>
-#include <QGraphicsScene>
-#include <QVariant>
 #include <QSettings>
+
+// Not directly used by PanelItem, but included here to reduce
+// code amount in all subclasses
+#include <QPainter>
 #include <QGridLayout>
-#include "extplaneclient.h"
-#include "extplaneconnection.h"
+#include "units.h"
+#include "../valueinterpolator.h"
+#include "../extplaneconnection.h"
+#include "../extplaneclient.h"
+#include "panelitemfactory.h"
+
 
 #ifdef MOBILE_DEVICE
 #define SCALE_HANDLE_SIZE 50
@@ -30,10 +33,18 @@ public:
     float width() const;
     float height() const;
     void setSize(float w, float h);
-    virtual void updateForNewSize(float w, float h) {}; // This is called whenever the panel item has changed size (including when first added to the scene). Panel items which cache resources be pre-rendering compilcated stuff should use this method for doing so.
+    /**
+     * This is called whenever the panel item has changed size (including when first added to the scene).
+     * Panel items which cache resources be pre-rendering complicated stuff should use this method for doing so.
+     */
+    virtual void updateForNewSize(float w, float h) {};
     void setEditMode(bool em);
     bool isEditMode();
-    virtual QString typeName() = 0; // Automatically implemented by panel items when using the REGISTER_WITH_PANEL_ITEM_FACTORY macro. This method defines the display name for the type of guage and is used by the panel item factory.
+    /**
+     * Automatically implemented by panel items when using the REGISTER_WITH_PANEL_ITEM_FACTORY macro.
+     * This method defines the display name for the type of gauge and is used by the panel item factory.
+     */
+    virtual QString typeName() = 0;
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     int itemRotation();
@@ -45,10 +56,19 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent *event);
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    QFont defaultFont;
+
+    // Use for mechanical instrument
+    QColor darkGrayColor;
 signals:
     void panelItemSelected(PanelItem *g, bool sel=true);
     void editPanelItem(PanelItem *item);
-    void panelItemChanged(PanelItem *item); //TODO: dankrusi: For warning when closing a dirty file without saving, this needs to be called by the panel items when settings are changed. I haven't found a nice way to do this automatically without going in and touching all the panel items...
+    /**
+     * @TODO: dankrusi: For warning when closing a dirty file without saving, this needs to be called by
+     * the panel items when settings are changed. I haven't found a nice way to do this automatically without
+     * going in and touching all the panel items...
+     */
+    void panelItemChanged(PanelItem *item);
 public slots:
     void setPanelRotation(int angle);
     void setItemRotation(int angle);
@@ -59,57 +79,5 @@ private:
     bool resizing, _editMode;
     int _panelRotation, _itemRotation;
 };
-
-
-
-
-
-class PanelItemFactory
-{
-    typedef QMap<QString,const QMetaObject*> BaseFactoryMapType;
-
-public:
-    PanelItemFactory() { connection = NULL; };
-    PanelItemFactory(ExtPlaneConnection *conn) { connection = conn; };
-
-    PanelItem *itemForName(QString name, QObject *parentObject) {
-	if(classMapping()->contains(name)) {
-	    const QMetaObject *meta = classMapping()->find(name).value();
-	    return (PanelItem*) (meta->newInstance(Q_ARG(QObject*,parentObject),Q_ARG(ExtPlaneConnection*,connection)));
-	} else {
-	    qWarning() << Q_FUNC_INFO << "the panel item " << name << "is not recognized";
-	    return NULL;
-	}
-    };
-
-    QStringList itemNames() {
-	QStringList items;
-	foreach(QString k,classMapping()->keys()) items << k;
-	return items;
-    };
-
-private:
-    ExtPlaneConnection *connection;
-
-protected:
-    static BaseFactoryMapType *classMapping() {
-	static BaseFactoryMapType *_classMapping; // Statically allocated, lives for the entire period of the executable
-	if(!_classMapping) { _classMapping = new BaseFactoryMapType; }
-	return _classMapping;
-    };
-};
-
-
-// Helper class which forces derived PanelItems which instante this to register with the PanelFactory
-template<typename T>
-struct RegisterWithPanelItemFactory : PanelItemFactory {
-    RegisterWithPanelItemFactory(QString s) {
-	classMapping()->insert(s, &T::staticMetaObject);
-    }
-};
-
-// Helper macro used by derived classes of PanelItem to automatically register their name with the PanelFactory
-#define REGISTER_WITH_PANEL_ITEM_FACTORY(CLASS,NAME) QString CLASS::typeName() {return NAME;} RegisterWithPanelItemFactory<CLASS> registerWithFactory_##CLASS(NAME);
-
 
 #endif // PANELITEM_H

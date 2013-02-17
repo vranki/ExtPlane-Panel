@@ -1,10 +1,14 @@
 #include "altimeter.h"
+#include <QLabel>
+#include "../widgets/distanceunitcombobox.h"
+#include "../extplaneclient.h"
+#include "widgets/numberinputlineedit.h"
+#include "../needles/gabalancedneedle.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Altimeter,"indicator/altitude/basic");
 
 Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
-        PanelItem(parent), _client(this, typeName(), conn)
-{
+        PanelItem(parent), _client(this, typeName(), conn) {
     _value = 0;
     setThickBars(50);
     setThinBars(10);
@@ -18,8 +22,10 @@ Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef("sim/flightmodel/misc/h_ind", 3);
     _client.subscribeDataRef("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot");
-    font.setPixelSize(20); // @todo configurable
-    pressureFont.setPixelSize(15);
+    GABalancedNeedle *sn = new GABalancedNeedle(this);
+    sn->setNeedleLength(0.6);
+    shortNeedle = sn;
+    longNeedle = new GABalancedNeedle(this);
 }
 
 void Altimeter::setNumbers(float div) {
@@ -28,20 +34,7 @@ void Altimeter::setNumbers(float div) {
 }
 
 void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    static const QPoint needle[3] = {
-        QPoint(4, 8),
-        QPoint(-4, 8),
-        QPoint(0, -95)
-    };
-    static const QPoint needle2[3] = {
-        QPoint(8, 8),
-        QPoint(-8, 8),
-        QPoint(0, -70)
-    };
-    QColor needleColor(255, 255, 255);
-    QColor needleColor2(200, 200, 200);
-
-    painter->setFont(font);
+    painter->setFont(defaultFont);
 
     int side = qMin(width(), height());
     painter->setRenderHint(QPainter::Antialiasing);
@@ -62,12 +55,14 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     // Pressure window
     painter->setBrush(Qt::black);
     painter->drawRect(30,-10,60,20);
+    QFont pressureFont = defaultFont;
+    pressureFont.setPointSizeF(defaultFont.pointSizeF()/1.5f);
     painter->setFont(pressureFont);
     QString pressureText = QString::number(_baroPressure);
     textwidth = painter->fontMetrics().width(pressureText);
     painter->drawText(30,-10, 60, 20, Qt::AlignRight | Qt::AlignVCenter, pressureText);
 
-    painter->setFont(font);
+    painter->setFont(defaultFont);
     painter->setBrush(Qt::white);
     if(_thickBars > 0) {
         for (float i = 0 ; i <= _range1; i+=_thickBars) {
@@ -102,18 +97,19 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
             painter->restore();
         }
     }
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(needleColor2);
+
+    // Draw needles
     painter->save();
     painter->rotate(value2Angle2(_value));
-    painter->drawConvexPolygon(needle2, 3);
+    painter->scale(side/2, side/2);
+    shortNeedle->paint(painter);
     painter->restore();
-    painter->setBrush(needleColor);
     painter->save();
     painter->rotate(value2Angle1(_value));
-    painter->drawConvexPolygon(needle, 3);
+    painter->scale(side/2, side/2);
+    longNeedle->paint(painter);
     painter->restore();
-    painter->setBrush(Qt::white);
+
 
     painter->restore();
 

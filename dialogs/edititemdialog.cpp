@@ -1,5 +1,6 @@
 #include "edititemdialog.h"
 #include "ui_edititemdialog.h"
+#include "panelitems/panelitem.h"
 
 EditItemDialog::EditItemDialog(QWidget *parent) :
     QDialog(parent),

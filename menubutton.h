@@ -2,20 +2,12 @@
 #define MENUBUTTON_H
 
 #include <QGraphicsItem>
-#include <QPainter>
-#include <QGraphicsSceneMouseEvent>
-#include <QMessageBox>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QInputDialog>
-#include <QSettings>
-#include <QDebug>
-#include <QCoreApplication>
-#include <QCheckBox>
-#include "panelitems/panelitem.h"
-#include "dialogs/settingsdialog.h"
-#include "dialogs/edititemdialog.h"
+class PanelItem;
+class SettingsDialog;
 
+/**
+ * The main menu button that can be accessed by clicking on this item.
+ */
 class MenuButton : public QObject, public QGraphicsItem {
     Q_OBJECT
     Q_INTERFACES(QGraphicsItem)

@@ -1,15 +1,28 @@
 #include "panelitem.h"
+#include <QPainter>
+#include <QObject>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
+#include <QVariant>
+#include <QGridLayout>
+#include <QApplication>
 
-PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem() {
+PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem(), darkGrayColor(30,30,30) {
     _width = _height = 200;
     setEditMode(false);
     _panelRotation = _itemRotation = 0;
+    defaultFont = QApplication::font();
+
+    // @todo make configurable
+    defaultFont.setPointSizeF(10);
+    // Without this font size on android & meego is too large - not sure why!
+    // Shouldn't point size be device independent??
+#ifdef MOBILE_DEVICE
+    defaultFont.setPointSizeF(5);
+#endif
 }
 
-PanelItem::~PanelItem()
-{
-    qDebug() << Q_FUNC_INFO << "deleting inside panelitem "; 
-   
+PanelItem::~PanelItem() {
 }
 
 void PanelItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -144,9 +157,7 @@ void PanelItem::setZValue(int z) {
     QGraphicsItem::setZValue(z);
 }
 
-void PanelItem::createSettings(QGridLayout *layout) {
-
-}
+void PanelItem::createSettings(QGridLayout *layout) {}
 
 void PanelItem::setEditMode(bool em) {
     _editMode = em;

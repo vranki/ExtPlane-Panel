@@ -3,8 +3,13 @@
 
 #include "extplaneconnection.h"
 
-
-
+/**
+ * @brief The SimulatedExtPlaneConnection class presents some
+ * fake datarefs that can be used for testing if real
+ * ExtPlane connection is not available.
+ *
+ * @see ExtPlaneConnection
+ */
 class SimulatedExtPlaneConnection : public ExtPlaneConnection {
     Q_OBJECT
 public:

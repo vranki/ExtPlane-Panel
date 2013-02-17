@@ -1,6 +1,6 @@
 #include "needleinstrument.h"
-
-
+#include "../needles/triangleneedle.h"
+#include <QGraphicsScene>
 
 
 
@@ -49,14 +49,7 @@ void Arc::setColor(QString colorString){
 
 
 
-
-
-
-
-
-NeedleInstrument::NeedleInstrument(QObject *parent) :
-    PanelItem(parent)
-{
+NeedleInstrument::NeedleInstrument(QObject *parent) : PanelItem(parent) {
     _value = _zeroangle = 0;
     _zeroValue = 0;
     _maxValue = 1;
@@ -64,7 +57,7 @@ NeedleInstrument::NeedleInstrument(QObject *parent) :
     _thickBars = _thinBars = 0;
     _numbers = 0;
     _numberScale = 1;
-    numberFont.setPixelSize(20); // @todo configurable
+    needle = new TriangleNeedle(this);
 }
 
 void NeedleInstrument::setNumbers(float div) {
@@ -76,29 +69,20 @@ void NeedleInstrument::setNumberScale(float ns) {
 }
 
 void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    static const QPoint needle[3] = {
-        QPoint(6, 8),
-        QPoint(-6, 8),
-        QPoint(0, -95)
-    };
+    QFont numberFont = defaultFont;
+    numberFont.setPointSizeF(defaultFont.pointSizeF() * 1.5);
     painter->setFont(numberFont);
-    QColor needleColor(255, 255, 255);
 
     int side = qMin(width(), height());
     painter->setRenderHint(QPainter::Antialiasing);
     painter->save();
     painter->scale(side / 200.0, side / 200.0);
     painter->save();
+
     painter->translate(100, 100);
     painter->setPen(Qt::NoPen);
-    painter->setBrush(needleColor);
+    painter->setBrush(Qt::white);
 
-    painter->save();
-    float needleValue = qMax(qMin(_value, _maxValue), _zeroValue);
-
-    painter->rotate(value2Angle(needleValue));
-    painter->drawConvexPolygon(needle, 3);
-    painter->restore();
 
     painter->setPen(Qt::white);
     if(!_label.isEmpty()) {
@@ -137,7 +121,18 @@ void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             painter->restore();
         }
     }
+
+    // Paint needle
+    painter->save();
+    float needleValue = qMax(qMin(_value, _maxValue), _zeroValue);
+    painter->rotate(value2Angle(needleValue));
+    painter->scale(100,100);
+    needle->paint(painter);
     painter->restore();
+    // END paint needle
+
+    painter->restore();
+
 
     painter->restore();
     PanelItem::paint(painter, option, widget);
@@ -164,6 +159,13 @@ void NeedleInstrument::setValue(float value) {
     update();
 }
 
+void NeedleInstrument::setNeedle(Needle *newNeedle) {
+    Q_ASSERT(newNeedle);
+    if(needle)
+        needle->deleteLater();
+    needle = newNeedle;
+}
+
 void NeedleInstrument::setBars(float thick, float thin) {
     _thinBars = thin;
     _thickBars = thick;
@@ -172,12 +174,6 @@ void NeedleInstrument::setBars(float thick, float thin) {
 float NeedleInstrument::value2Angle(float value) {
     return _zeroangle +  ((value - _zeroValue) / (_maxValue - _zeroValue)) * (_maxAngle - _zeroangle);
 }
-
-
-
-
-
-
 
 int NeedleInstrument::numberOfArcs(void) {
     return _arcs.count();

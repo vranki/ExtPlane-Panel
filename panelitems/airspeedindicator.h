@@ -2,12 +2,12 @@
 #define AIRSPEEDINDICATOR_H
 
 #include "needleinstrument.h"
-#include "units.h"
-#include <QLabel>
-#include "widgets/velocityunitcombobox.h"
-#include "widgets/numberinputlineedit.h"
-#include "../valueinterpolator.h"
 
+/**
+ * GA airspeed indicator
+ *
+ * Something like this http://www.transair.co.uk/products/images/large/winter_ASI_mph.jpg
+ */
 class AirspeedIndicator : public NeedleInstrument {
     Q_OBJECT
 public:

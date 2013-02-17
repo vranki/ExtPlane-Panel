@@ -1,32 +1,30 @@
 #ifndef PANELWINDOW_H
 #define PANELWINDOW_H
 
-#ifdef MAEMO
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include "mce/mode-names.h"
-#include "mce/dbus-names.h"
-#endif
-
+#include <QObject>
+#include <QGraphicsView>
+#include <QGraphicsTextItem>
+#include <QSettings>
 #include <QTimer>
 #include <QTime>
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QGraphicsTextItem>
-#include <QGraphicsItemGroup>
-#include <QObject>
-#include <QMessageBox>
-#include <QString>
-#include <QStringList>
-#include <QSettings>
-#include <QInputDialog>
-#include <QFileDialog>
-#include "extplaneconnection.h"
-#include "simulatedextplaneconnection.h"
-#include "menubutton.h"
-#include "dialogs/settingsdialog.h"
 
+class PanelItem;
+class MenuButton;
+class SettingsDialog;
+class ExtPlaneConnection;
+class PanelItemFactory;
+class EditItemDialog;
 
+/**
+ * @brief The PanelWindow class
+ *
+ * The QGraphicsView widget which acts as the main window containing
+ * panel items and menu button in a  QGraphicsScene. Also contains
+ * some main logic of the application (could be moved to separate class
+ * if needed).
+ *
+ * @see PanelItem
+ */
 class PanelWindow : public QGraphicsView {
     Q_OBJECT
 
@@ -65,10 +63,9 @@ private:
     MenuButton *menuButton;
     SettingsDialog *settingsDialog;
     QGraphicsScene scene;
-    QGraphicsTextItem errorMessage;
-
-    int panelRotation;
-    bool editMode;
+    QGraphicsTextItem statusMessage; // Displayed in panel
+    int panelRotation; // Master rotation of the panel
+    bool editMode; // True if in edit mode
     bool dirty; // True when any panel changes have occured
     ExtPlaneConnection *connection;
     QSettings *appSettings; // Loaded on app start, contains general settings
@@ -76,8 +73,13 @@ private:
     QList<PanelItem *> panelItems;
     PanelItemFactory *itemFactory;
     EditItemDialog *editItemDialog; // Only one open at a time
-    QTimer blankingTimer, tickTimer;
+    QTimer tickTimer; // Timer to update items synchronously
     QTime time, totalTime;
+
+    // Disables blanking on Maemo
+#ifdef MAEMO
+    QTimer blankingTimer;
+#endif
 };
 
 #endif // PANELWINDOW_H

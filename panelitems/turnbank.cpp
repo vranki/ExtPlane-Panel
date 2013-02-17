@@ -1,14 +1,11 @@
-/*
- *  turnbank.cpp
- *  extplane-panel
- *
- *  Created by bobgates on 2011/07/10.
- *  Copyright 2011 DaffeySoft. All rights reserved.
- *
- */
-
 #include "turnbank.h"
-#include "math.h"
+#include <cmath>
+
+#include <QLabel>
+#include "../widgets/distanceunitcombobox.h"
+#include "../extplaneclient.h"
+#include "../units.h"
+#include "widgets/numberinputlineedit.h"
 
 #define GROUNDBROWN QColor(191,163,94)
 #define LIGHTGROUNDBROWN QColor(231,203,134)
@@ -21,7 +18,7 @@
 REGISTER_WITH_PANEL_ITEM_FACTORY(TurnAndBank,"indicator/turnbank/basic");
 
 TurnAndBank::TurnAndBank(QObject *parent, ExtPlaneConnection *conn) :
-PanelItem(parent), _client(this, typeName(), conn)
+    PanelItem(parent), _client(this, typeName(), conn)
 {
     _rollValue = 10;
     _slipValue = -20;
@@ -92,13 +89,12 @@ void TurnAndBank::createCard(void){
     
     
     
-    p.end();    
+    p.end();
     _card = QPixmap::fromImage(_cardImage, Qt::AutoColor);
     
 }
 
 void TurnAndBank::createFrame(void){
-    
     QImage _frameImage = QImage(QSize(600,600), QImage::Format_ARGB32);
     _frameImage.fill(0x00ff0000);
     
@@ -120,14 +116,13 @@ void TurnAndBank::createFrame(void){
     gradient.setSpread(QGradient::ReflectSpread);
     gradient.setColorAt(0, Qt::white);
     gradient.setColorAt(1, Qt::black);
-    QBrush gbrush(gradient); 
-    p.setBrush(gbrush);           
+    QBrush gbrush(gradient);
+    p.setBrush(gbrush);
     p.drawChord(-outerR, -outerR, 2*outerR, 2*outerR, 0, 360*16);
 
     //Ring outside of intstrument with white line:
     if (0){
-        p.setPen(QPen(QColor(225,225,225), 2, Qt::SolidLine,
-                      Qt::FlatCap, Qt::MiterJoin));
+        p.setPen(QPen(QColor(225,225,225), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
         p.setBrush(Qt::NoBrush);
         p.drawChord(-outerR, -outerR, 2*outerR, 2*outerR, 0, 360*16);
     }
@@ -145,57 +140,64 @@ void TurnAndBank::createFrame(void){
     const float angle = 15.;
     
     outerR = outerR-20;
-    p.drawLine(innerR*cos(angle/180*3.1415926), innerR*sin(angle/180*3.1415926), 
-               outerR*cos(angle/180*3.1415926), outerR*sin(angle/180*3.1415926));
-    p.drawLine(-innerR*cos(angle/180*3.1415926), innerR*sin(angle/180*3.1415926), 
-               -outerR*cos(angle/180*3.1415926), outerR*sin(angle/180*3.1415926));
-               
+
+    p.drawLine(innerR*cos(angle/180*M_PI), innerR*sin(angle/180*M_PI),
+               outerR*cos(angle/180*M_PI), outerR*sin(angle/180*M_PI));
+    p.drawLine(-innerR*cos(angle/180*M_PI), innerR*sin(angle/180*M_PI),
+               -outerR*cos(angle/180*M_PI), outerR*sin(angle/180*M_PI));
+
     p.drawLine(innerR, 0, outerR, 0);
     p.drawLine(-innerR, 0, -outerR, 0);
     
     // Little vacuum text line
     p.setPen(QColor(200,200,200));
-    
-    QString legend = QString("NO PITCH");
-    p.setFont(QFont(QString("Helvetica"), 20, QFont::Bold, false));
+
+    QFont topLabelFont = defaultFont;
+    topLabelFont.setBold(true);
+    p.setFont(topLabelFont);
+
+    QString legend = "NO PITCH";
     int width = p.fontMetrics().width(legend);
-    int height =p.fontMetrics().height();
+    int height = p.fontMetrics().height();
     p.drawText(0-width/2,245,width, height, Qt::AlignCenter, legend);
-    legend = QString("INFORMATION");
+
+    legend = "INFORMATION";
     width = p.fontMetrics().width(legend);
     p.drawText(0-width/2,267,width, height, Qt::AlignCenter, legend);
 
-    p.setFont(QFont(QString("Helvetica"), 32, QFont::Bold, false));
-    legend = QString("D. C. ELEC.");
+    legend = "D. C. ELEC.";
     width = p.fontMetrics().width(legend);
     height =p.fontMetrics().height();
     p.drawText(0-width/2,-275,width, height, Qt::AlignCenter, legend);
     
-    legend = QString("2 MIN");
+    legend = "2 MIN";
     width = p.fontMetrics().width(legend);
     height =p.fontMetrics().height();
     p.drawText(0-width/2,205,width, height, Qt::AlignCenter, legend);
     
-    p.setFont(QFont(QString("Helvetica"), 24, QFont::Bold, false));
-    legend = QString("TURN COORDINATOR");
+    legend = "TURN COORDINATOR";
     width = p.fontMetrics().width(legend);
     height =p.fontMetrics().height();
     p.drawText(0-width/2,-150,width, height, Qt::AlignCenter, legend);
     
-    p.setFont(QFont(QString("Helvetica"), 48, QFont::Bold, false));
-    legend = QString("L");
+    QFont lrFont = defaultFont;
+    lrFont.setPointSizeF(defaultFont.pointSizeF() * 2);
+    lrFont.setBold(true);
+    p.setFont(lrFont);
+
+    legend = "L";
     width = p.fontMetrics().width(legend);
-    height =p.fontMetrics().height();
-    p.drawText(-265*cos(18./180.*3.1415926)-width/2+5, 265*sin(18./180.*3.1415926),
+    height = p.fontMetrics().height();
+    p.drawText(-265*cos(18./180.*M_PI)-width/2+5, 265*sin(18./180.*M_PI),
                width, height, Qt::AlignCenter, legend);
     
-    legend = QString("R");
+    legend = "R";
     width = p.fontMetrics().width(legend);
-    height =p.fontMetrics().height();
-    p.drawText(265*cos(18./180.*3.1415926)-width/2-5, 265*sin(18./180.*3.1415926),
+    height = p.fontMetrics().height();
+    p.drawText(265*cos(18./180.*M_PI)-width/2-5, 265*sin(18./180.*M_PI),
                width, height, Qt::AlignCenter, legend);
     
-    p.end();    
+    p.end();
     
     _frame = QPixmap::fromImage(_frameImage, Qt::AutoColor);
     
@@ -285,7 +287,7 @@ void TurnAndBank::createGlass(void){
     
     
     
-    p.end();    
+    p.end();
     
     _glass = QPixmap::fromImage(_glassImage, Qt::AutoColor);
     
@@ -304,13 +306,13 @@ void TurnAndBank::createBall(void){
     // QLinearGradient gradient(0,101,0,199);
     // gradient.setColorAt(0, SKYBLUE);
     // gradient.setColorAt(1, GROUNDBROWN);
-   
+
     QRadialGradient gradient(0,-4500, 4750, 0, 30000);
     gradient.setColorAt(0, Qt::white);
     gradient.setColorAt(1, Qt::green);
     gradient.setSpread(QGradient::ReflectSpread);
     
-    QBrush gbrush(gradient); 
+    QBrush gbrush(gradient);
     p.setBrush(gbrush);
     //    p.drawRect(-350, 120, 700, 150);
     
@@ -339,11 +341,11 @@ void TurnAndBank::createBall(void){
     
     
     p.setPen(QPen(Qt::black, 4, Qt::SolidLine,
-                  Qt::FlatCap, Qt::MiterJoin));    
+                  Qt::FlatCap, Qt::MiterJoin));
     p.drawLine(-50,170, -50, 300);
     p.drawLine(50,170, 50, 300);
     
-    p.end();    
+    p.end();
     
     _ball = QPixmap::fromImage(_glassImage, Qt::AutoColor);
     
@@ -375,14 +377,14 @@ void TurnAndBank::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     
     painter->setBrush(Qt::NoBrush);
     
-    painter->drawPixmap(-_frame.width()/6., 
-                        -_frame.height()/6., 
-                        _frame.width()/3., 
-                        _frame.height()/3., 
+    painter->drawPixmap(-_frame.width()/6.,
+                        -_frame.height()/6.,
+                        _frame.width()/3.,
+                        _frame.height()/3.,
                         _frame);
     
-    painter->drawPixmap(-80, -(_ball.height()*160./_ball.width())/2., 
-                        160, _ball.height()*160./_ball.width(), 
+    painter->drawPixmap(-80, -(_ball.height()*160./_ball.width())/2.,
+                        160, _ball.height()*160./_ball.width(),
                         _ball);
     
     float x=0., y=0;
@@ -410,8 +412,8 @@ void TurnAndBank::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     
     painter->rotate(roll);
     
-    painter->drawPixmap(-80, -(_card.height()*160./_card.width())/2., 
-                        160, _card.height()*160./_card.width(), 
+    painter->drawPixmap(-80, -(_card.height()*160./_card.width())/2.,
+                        160, _card.height()*160./_card.width(),
                         _card);
     
     painter->restore();     //Unroll

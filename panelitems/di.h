@@ -1,21 +1,12 @@
 /*
- *  di.h
- *  extplane-panel
- *
  *  Created by Bob Gates on 2011/07/08.
- *  Copyright 2011 DaffeySoft. All rights reserved.
- *
  */
 
-#ifndef DI_H
-#define DI_H
+#ifndef DIRECTIONINDICATOR_H
+#define DIRECTIONINDICATOR_H
 
-#include <QLabel>
-#include "../widgets/distanceunitcombobox.h"
-#include "../extplaneclient.h"
 #include "panelitem.h"
 #include "../units.h"
-#include "widgets/numberinputlineedit.h"
 
 #define DIRECTION_INDICATOR_PLANE_SCALE 0.88
 #define DIRECTION_INDICATOR_HEADING_SCALE 0.90
@@ -58,7 +49,6 @@ private:
     QString _label;
     QString _dataRef;
     QPixmap _card; // A cached bitmap of the background rotating card
-    
 };
 
-#endif // DI_H
+#endif // DIRECTIONINDICATOR_H

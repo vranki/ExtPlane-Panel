@@ -2,7 +2,15 @@
 #define NEEDLEINSTRUMENT_H
 
 #include "panelitem.h"
+#include <QFont>
+#include "../needles/needle.h"
 
+/**
+ * Represents an arc with different properties used in
+ * round instruments.
+ *
+ * @todo move to own class file(s)
+ */
 class Arc : public QObject {
     Q_OBJECT
 public:
@@ -29,8 +37,9 @@ private:
     PanelItem *_panel;
 };
 
-
-
+/**
+ * Base class for round instruments with one (or more) needles.
+ */
 class NeedleInstrument : public PanelItem {
     Q_OBJECT
 public:
@@ -53,6 +62,7 @@ public:
 
 public slots:
     void setValue(float value);
+    void setNeedle(Needle * newNeedle);
 
 protected:
     float _thickBars, _thinBars;
@@ -60,9 +70,8 @@ protected:
     float _numberScale;
     float _value, _zeroangle, _maxAngle, _zeroValue, _maxValue;
     QString _label;
-    QFont numberFont;
-
     QList<Arc*> _arcs;
+    Needle *needle;
 };
 
 #endif // NEEDLEINSTRUMENT_H

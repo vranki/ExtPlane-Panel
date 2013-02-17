@@ -7,6 +7,7 @@ maemo5: {
 }
 android::DEFINES += MOBILE_DEVICE
 meego::DEFINES += MOBILE_DEVICE
+
 ICON = extplane-panel.icns
 TARGET = extplane-panel
 DESTDIR = bin
@@ -42,7 +43,12 @@ SOURCES += main.cpp \
     simulateddatarefs/simulateddataref.cpp \
     valueinterpolator.cpp \
     panelitems/rotaryknob.cpp \
-    simulatedextplaneconnection.cpp
+    simulatedextplaneconnection.cpp \
+    panelitemfactory.cpp \
+    needles/needle.cpp \
+    needles/triangleneedle.cpp \
+    needles/gabalancedneedle.cpp
+
 HEADERS += panelitems/panelitem.h \
     extplaneconnection.h \
     panelwindow.h \
@@ -71,7 +77,12 @@ HEADERS += panelitems/panelitem.h \
     simulateddatarefs/simulateddataref.h \
     valueinterpolator.h \
     panelitems/rotaryknob.h \
-    simulatedextplaneconnection.h
+    simulatedextplaneconnection.h \
+    panelitemfactory.h \
+    needles/needle.h \
+    needles/triangleneedle.h \
+    needles/gabalancedneedle.h
+
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui
 

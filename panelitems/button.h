@@ -1,12 +1,6 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include <QString>
-#include <QLabel>
-#include <QLineEdit>
-#include <QCheckBox>
-#include "widgets/numberinputlineedit.h"
-#include "extplaneclient.h"
 #include "panelitem.h"
 
 class Button : public PanelItem {

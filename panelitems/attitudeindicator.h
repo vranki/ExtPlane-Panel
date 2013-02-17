@@ -1,23 +1,8 @@
-/*
- *  attitudeindicator.h
- *  extplane-panel
- *
- *  Created by bobgates on 2011/07/08.
- *  Copyright 2011 DaffeySoft. All rights reserved.
- *
- */
+#ifndef ATTITUDEINDICATOR_H
+#define ATTITUDEINDICATOR_H
 
-
-#ifndef AI_H
-#define AI_H
-
-#include <QLabel>
-#include "../widgets/distanceunitcombobox.h"
-#include "../extplaneclient.h"
 #include "panelitem.h"
 #include "../units.h"
-#include "widgets/numberinputlineedit.h"
-
 
 #define GROUNDBROWN QColor(191,163,94)
 #define LIGHTGROUNDBROWN QColor(231,203,134)
@@ -78,7 +63,6 @@ private:
     QPixmap _glass;
     QPixmap _background;
     QPixmap _bezel;
-    
 };
 
-#endif // AI_H
+#endif // ATTITUDEINDICATOR_H

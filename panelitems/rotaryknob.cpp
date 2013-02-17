@@ -1,6 +1,7 @@
 #include "rotaryknob.h"
 #include <QLabel>
 #include <QLineEdit>
+#include <QGraphicsSceneMouseEvent>
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(RotaryKnob,"adjustment/rotary");
 

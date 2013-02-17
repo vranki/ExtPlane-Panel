@@ -1,13 +1,10 @@
-/*
- *  engine_rpm.cpp
- *  extplane-panel
- *
- *  Created by bobgates on 2011/07/23.
- *  Copyright 2011 DaffeySoft. All rights reserved.
- *
- */
-
 #include "engine_rpm.h"
+
+#include <QLabel>
+#include <QCheckBox>
+
+#include "widgets/velocityunitcombobox.h"
+#include "widgets/numberinputlineedit.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(EngineRPM,"indicator/enginerpm/round");
 

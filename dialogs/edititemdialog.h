@@ -2,12 +2,20 @@
 #define EDITITEMDIALOG_H
 
 #include <QDialog>
-#include "panelitems/panelitem.h"
 
 namespace Ui {
     class EditItemDialog;
 }
 
+class PanelItem;
+
+
+/**
+ * Dialog for editing PanelItems. Has some common settings and
+ * requests items to present their custom settings to the UI.
+ *
+ * @see PanelItem
+ */
 class EditItemDialog : public QDialog
 {
     Q_OBJECT

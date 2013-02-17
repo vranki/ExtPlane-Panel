@@ -1,12 +1,10 @@
 #ifndef ALTIMETER_H
 #define ALTIMETER_H
 
-#include <QLabel>
-#include "../widgets/distanceunitcombobox.h"
-#include "../extplaneclient.h"
 #include "panelitem.h"
 #include "../units.h"
-#include "widgets/numberinputlineedit.h"
+
+class Needle;
 
 class Altimeter : public PanelItem
 {
@@ -40,7 +38,7 @@ private:
     float _numbersScale;
     float _baroPressure;
     QString _label;
-    QFont font, pressureFont;
+    Needle *longNeedle, *shortNeedle;
 };
 
 #endif // ALTIMETER_H
