@@ -34,10 +34,10 @@ PanelItem(parent), _client(this, typeName(), conn)
     //    _card = QPixmap(QString("junk"));//../images/engine_FUELP.png"));
 
     createCard();
-    createGlass();
+    //createGlass();
     createFrame();
     createBall();
-    _bezel = QPixmap::fromImage(QImage(QString("../images/bezel_square_.png")), Qt::AutoColor);
+    //_bezel = QPixmap::fromImage(QImage(QString("../images/bezel_square_.png")), Qt::AutoColor);
     
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef(_slipRef,0.02);
@@ -108,6 +108,7 @@ void TurnAndBank::createFrame(void){
     
     QPainter p;
     p.setRenderHint(QPainter::Antialiasing, true);
+    p.setRenderHint(QPainter::SmoothPixmapTransform, true);
     p.begin(&_frameImage);
     p.translate(300, 300);
 
@@ -358,6 +359,7 @@ void TurnAndBank::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
     int side = qMin(width(), height());
     painter->setRenderHint(QPainter::Antialiasing);
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
     painter->save();
     painter->scale(side / 200.0, side / 200.0);
     painter->save();
