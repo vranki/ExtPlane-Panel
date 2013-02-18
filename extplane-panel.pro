@@ -1,5 +1,9 @@
 QT += gui \
     network
+
+CONFIG += mobility
+MOBILITY += systeminfo
+
 maemo5: { 
     QT += dbus
     DEFINES += MAEMO

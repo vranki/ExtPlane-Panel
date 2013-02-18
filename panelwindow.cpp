@@ -15,6 +15,8 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QCoreApplication>
+#include <QSystemScreenSaver>
+
 #include "extplaneconnection.h"
 #include "simulatedextplaneconnection.h"
 #include "menubutton.h"
@@ -82,11 +84,16 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     this->settingsDialog->loadSettings(); // This will trigger signals to start connection to ExtPlane
     //this->loadPanel();
 
-    // Tell maemo os not to blank out
+    // Disable screensaver (@todo check if this is enough in Maemo also)
+    QtMobility::QSystemScreenSaver *sss=new QtMobility::QSystemScreenSaver ( this );
+    sss->setScreenSaverInhibit();
+
+    // Disable screensaver on Maemo
 #ifdef MAEMO
     connect(&blankingTimer, SIGNAL(timeout()), this, SLOT(disableBlanking()));
     blankingTimer.start(30000);
 #endif
+
 
     connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
     tickTimer.setInterval(64);
