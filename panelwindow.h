@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QTimer>
 #include <QTime>
+#include <QKeyEvent>
 
 class PanelItem;
 class MenuButton;
@@ -31,6 +32,7 @@ class PanelWindow : public QGraphicsView {
 public:
     explicit PanelWindow();
     ~PanelWindow();
+    virtual void keyPressEvent( QKeyEvent * event );
 signals:
     void tickTime(double dt, int total);
 public slots:

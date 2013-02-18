@@ -113,6 +113,17 @@ PanelWindow::~PanelWindow() {
     if(panelSettings) delete panelSettings;
 }
 
+void PanelWindow::keyPressEvent(QKeyEvent *event) {
+    QGraphicsView::keyPressEvent(event);
+    if(event->key()==Qt::Key_Space) {
+        setEditMode(!editMode); // @todo set the ui checkbox also
+    } else if(event->key()==Qt::Key_F) {
+        fullscreenChanged(!isFullScreen());
+    } else if(event->key()==Qt::Key_Delete) {
+        qDeleteAll(selectedGauges());
+    }
+}
+
 void PanelWindow::connectionMessage(QString txt) {
     qDebug() << Q_FUNC_INFO << txt;
     statusMessage.setPlainText(txt);

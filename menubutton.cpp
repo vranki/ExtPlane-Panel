@@ -95,7 +95,7 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
 }
 
 void MenuButton::setEditMode(bool em) {
-    editMode = em;
+    editMode = em; // @todo Set the checkbox in UI
 }
 
 void MenuButton::closeCurrentMenu() {

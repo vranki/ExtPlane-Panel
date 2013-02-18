@@ -101,12 +101,12 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     // Draw needles
     painter->save();
     painter->rotate(value2Angle2(_value));
-    painter->scale(side/2, side/2);
+    painter->scale(100,100);
     shortNeedle->paint(painter);
     painter->restore();
     painter->save();
     painter->rotate(value2Angle1(_value));
-    painter->scale(side/2, side/2);
+    painter->scale(100, 100);
     longNeedle->paint(painter);
     painter->restore();
 
