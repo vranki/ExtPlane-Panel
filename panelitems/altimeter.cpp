@@ -174,12 +174,12 @@ void Altimeter::loadSettings(QSettings &settings) {
     QString unitname = settings.value("unit").toString();
     DistanceUnit unit = Units::distanceUnitForName(unitname);
     setUnit(unit);
-    setRange1(settings.value("range1", 500).toFloat());
-    setRange2(settings.value("range2", 5000).toFloat());
-    setThinBars(settings.value("thinbars", 10).toFloat());
-    setThickBars(settings.value("thickbars", 50).toFloat());
-    setNumbers(settings.value("numbers", 100).toFloat());
-    setNumbersScale(settings.value("numbersscale", 0.01).toFloat());
+    setRange1(settings.value("range1", 500).toDouble());
+    setRange2(settings.value("range2", 5000).toDouble());
+    setThinBars(settings.value("thinbars", 10).toDouble());
+    setThickBars(settings.value("thickbars", 50).toDouble());
+    setNumbers(settings.value("numbers", 100).toDouble());
+    setNumbersScale(settings.value("numbersscale", 0.01).toDouble());
 }
 
 void Altimeter::createSettings(QGridLayout *layout) {

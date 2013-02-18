@@ -101,7 +101,10 @@ void PanelItem::setSize(float w, float h) {
     updateForNewSize(nw,nh); // Allow panel item to update any resources it needs for the new size...
     _width = nw;
     _height = nh;
+// Supported from >=4.6
+#if QT_VERSION >= 0x040600
     setTransformOriginPoint(width()/2, height()/2);
+#endif
     update();
     if(scene())
         scene()->update();
@@ -142,12 +145,17 @@ void PanelItem::loadSettings(QSettings &settings) {
 
 void PanelItem::setPanelRotation(int angle) {
     _panelRotation = angle;
+// Supported from >=4.6
+#if QT_VERSION >= 0x040600
     setRotation(_panelRotation + _itemRotation);
+#endif
 }
 
 void PanelItem::setItemRotation(int angle) {
     _itemRotation = angle;
+#if QT_VERSION >= 0x040600
     setRotation(_panelRotation + _itemRotation);
+#endif
 }
 
 int PanelItem::itemRotation() {

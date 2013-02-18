@@ -106,7 +106,7 @@ void AirspeedIndicator::loadSettings(QSettings &settings) {
     QString unitname = settings.value("unit").toString();
     VelocityUnit unit = Units::velocityUnitForName(unitname);
     setUnit(unit);
-    setMaxValue(settings.value("maxvalue", 300).toFloat());
+    setMaxValue(settings.value("maxvalue", 300).toDouble());
 }
 
 void AirspeedIndicator::setMaxValue(float mv) {

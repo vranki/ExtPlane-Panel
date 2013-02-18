@@ -10,7 +10,9 @@ class SettingsDialog;
  */
 class MenuButton : public QObject, public QGraphicsItem {
     Q_OBJECT
+#if QT_VERSION >= 0x040600 // Doesn't work o 4.5
     Q_INTERFACES(QGraphicsItem)
+#endif 
 public:
     explicit MenuButton(QWidget *parent);
     QRectF boundingRect() const;

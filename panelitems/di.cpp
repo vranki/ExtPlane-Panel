@@ -257,12 +257,12 @@ void DirectionIndicator::loadSettings(QSettings &settings) {
     QString unitname = settings.value("unit").toString();
     DistanceUnit unit = Units::distanceUnitForName(unitname);
     setUnit(unit);
-    setRange1(settings.value("range1", 360).toFloat());
-    setRange2(settings.value("range2", 360).toFloat());
-    setThinBars(settings.value("thinbars", 10).toFloat());
-    setThickBars(settings.value("thickbars", 30).toFloat());
-    setNumbers(settings.value("numbers", 30).toFloat());
-    setNumbersScale(settings.value("numbersscale", 0.1).toFloat());
+    setRange1(settings.value("range1", 360).toDouble());
+    setRange2(settings.value("range2", 360).toDouble());
+    setThinBars(settings.value("thinbars", 10).toDouble());
+    setThickBars(settings.value("thickbars", 30).toDouble());
+    setNumbers(settings.value("numbers", 30).toDouble());
+    setNumbersScale(settings.value("numbersscale", 0.1).toDouble());
 }
 
 void DirectionIndicator::createSettings(QGridLayout *layout) {

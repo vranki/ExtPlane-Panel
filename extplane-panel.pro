@@ -9,6 +9,11 @@ maemo5: {
     DEFINES += MAEMO
     DEFINES += MOBILE_DEVICE
 }
+exists(/etc/maemo_version) { 
+    QT += dbus
+    DEFINES += MAEMO
+    DEFINES += MOBILE_DEVICE
+}
 android::DEFINES += MOBILE_DEVICE
 meego::DEFINES += MOBILE_DEVICE
 
