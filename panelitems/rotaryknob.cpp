@@ -13,6 +13,7 @@ RotaryKnob::RotaryKnob(QObject *parent, ExtPlaneConnection *conn) :
     _change = 0;
     _valueStartPoint = 0;
     _ref = 0;
+    setSize(30,30);
 }
 
 void RotaryKnob::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

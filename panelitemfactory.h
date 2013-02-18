@@ -21,22 +21,19 @@ class PanelItemFactory
 {
 public:
     PanelItemFactory();
-    PanelItemFactory(ExtPlaneConnection *conn);
     /**
      * @brief itemForName creates a new PanelItem
      * @param name Name of the item
      * @param parentObject Parent QObject of the created item
+     * @param conn A ExtPlaneConnection object to use for this item
      * @return a new PanelItem
      */
-    PanelItem *itemForName(QString name, QObject *parentObject);
+    PanelItem *itemForName(QString name, QObject *parentObject, ExtPlaneConnection *conn);
     /**
      * @brief itemNames lists names of all available items
      * @return list of all available items
      */
     QStringList itemNames();
-
-private:
-    ExtPlaneConnection *connection;
 
 protected:
     static BaseFactoryMapType *classMapping();

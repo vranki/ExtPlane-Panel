@@ -103,7 +103,8 @@ void PanelItem::setSize(float w, float h) {
     _height = nh;
     setTransformOriginPoint(width()/2, height()/2);
     update();
-    scene()->update();
+    if(scene())
+        scene()->update();
 }
 
 QVariant PanelItem::itemChange(GraphicsItemChange change, const QVariant &value) {

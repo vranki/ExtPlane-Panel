@@ -16,6 +16,7 @@ Switch::Switch(QObject *parent, ExtPlaneConnection *conn) :
     _value = false;
     _label = "Switch";
     _ref = 0;
+    setSize(100,30);
 }
 
 void Switch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

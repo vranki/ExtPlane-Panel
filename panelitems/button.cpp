@@ -17,6 +17,7 @@ Button::Button(QObject *parent, ExtPlaneConnection *conn) :
     _label = "Button";
     _isKey = false;
     _isHeld = false;
+    setSize(100,40);
 }
 
 void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

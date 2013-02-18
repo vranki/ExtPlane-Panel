@@ -9,6 +9,7 @@ Compass::Compass(QObject *parent, ExtPlaneConnection *conn) :
     _client.subscribeDataRef("sim/cockpit/misc/compass_indicated", 1);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(headingChanged(QString,double)));
     _heading = 0;
+    setSize(50,30);
 }
 
 void Compass::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

@@ -3,17 +3,12 @@
 #include <QDebug>
 
 PanelItemFactory::PanelItemFactory() {
-    connection = NULL;
 }
 
-PanelItemFactory::PanelItemFactory(ExtPlaneConnection *conn) {
-    connection = conn;
-}
-
-PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject) {
+PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject, ExtPlaneConnection *conn) {
     if(classMapping()->contains(name)) {
         const QMetaObject *meta = classMapping()->find(name).value();
-        return (PanelItem*) (meta->newInstance(Q_ARG(QObject*,parentObject),Q_ARG(ExtPlaneConnection*,connection)));
+        return (PanelItem*) (meta->newInstance(Q_ARG(QObject*,parentObject),Q_ARG(ExtPlaneConnection*,conn)));
     } else {
         qWarning() << Q_FUNC_INFO << "the panel item " << name << "is not recognized";
         return NULL;

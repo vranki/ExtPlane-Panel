@@ -9,11 +9,12 @@
 #include <QTime>
 #include <QKeyEvent>
 
+#include "panelitemfactory.h"
+
 class PanelItem;
 class MenuButton;
 class SettingsDialog;
 class ExtPlaneConnection;
-class PanelItemFactory;
 class EditItemDialog;
 
 /**
@@ -73,7 +74,7 @@ private:
     QSettings *appSettings; // Loaded on app start, contains general settings
     QSettings *panelSettings; // Contains all PanelItem settings
     QList<PanelItem *> panelItems;
-    PanelItemFactory *itemFactory;
+    PanelItemFactory itemFactory;
     EditItemDialog *editItemDialog; // Only one open at a time
     QTimer tickTimer; // Timer to update items synchronously
     QTime time, totalTime;

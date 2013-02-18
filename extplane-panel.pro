@@ -51,7 +51,8 @@ SOURCES += main.cpp \
     panelitemfactory.cpp \
     needles/needle.cpp \
     needles/triangleneedle.cpp \
-    needles/gabalancedneedle.cpp
+    needles/gabalancedneedle.cpp \
+    dialogs/panelitemselectiondialog.cpp
 
 HEADERS += panelitems/panelitem.h \
     extplaneconnection.h \
@@ -85,10 +86,12 @@ HEADERS += panelitems/panelitem.h \
     panelitemfactory.h \
     needles/needle.h \
     needles/triangleneedle.h \
-    needles/gabalancedneedle.h
+    needles/gabalancedneedle.h \
+    dialogs/panelitemselectiondialog.h
 
 FORMS += dialogs/settingsdialog.ui \
-    dialogs/edititemdialog.ui
+    dialogs/edititemdialog.ui \
+    dialogs/panelitemselectiondialog.ui
 
 # Lot of files for Android build, ignore them if not used
 OTHER_FILES += android/AndroidManifest.xml \

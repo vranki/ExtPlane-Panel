@@ -22,6 +22,7 @@
 #include "menubutton.h"
 #include "dialogs/settingsdialog.h"
 #include "dialogs/edititemdialog.h"
+#include "dialogs/panelitemselectiondialog.h"
 #include "panelitemfactory.h"
 #include "panelitems/panelitem.h"
 
@@ -30,7 +31,6 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     appSettings = NULL;
     panelSettings = NULL;
     settingsDialog = NULL;
-    itemFactory = NULL;
     editItemDialog = 0;
     panelRotation = 0;
     editMode = false;
@@ -43,7 +43,6 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     appSettings->beginGroup("settings");
     connection = appSettings->value("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
     appSettings->endGroup();
-    itemFactory = new PanelItemFactory(connection);
 
     // Setup window
     setScene(&scene);
@@ -112,9 +111,8 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
 }
 
 PanelWindow::~PanelWindow() {
-    qDeleteAll(panelItems);
-    panelItems.clear();
-    if(itemFactory) delete itemFactory;
+    while(!panelItems.isEmpty())
+        delete panelItems.first(); // Calls itemDeleted() and removes itself from list
     if(connection) delete connection;
     if(appSettings) delete appSettings;
     if(panelSettings) delete panelSettings;
@@ -146,16 +144,17 @@ void PanelWindow::itemDestroyed(QObject *obj) {
     }
 }
 
-void PanelWindow::addItem(PanelItem *g) {
-    connect(g, SIGNAL(destroyed(QObject*)), this, SLOT(itemDestroyed(QObject*)));
-    connect(g, SIGNAL(editPanelItem(PanelItem*)), this, SLOT(editItem(PanelItem*)));
-    connect(g, SIGNAL(panelItemChanged(PanelItem*)), this, SLOT(panelItemChanged(PanelItem*)));
-    g->setPos(width()/2, height()/2);
-    g->setPanelRotation(panelRotation);
-    g->setEditMode(editMode);
-    scene.addItem(g);
-    panelItems.append(g);
-    connect(this, SIGNAL(tickTime(double,int)), g, SLOT(tickTime(double,int)));
+void PanelWindow::addItem(PanelItem *newItem) {
+    Q_ASSERT(newItem->parent() == this); // Item's parent should always be this
+    connect(newItem, SIGNAL(destroyed(QObject*)), this, SLOT(itemDestroyed(QObject*)));
+    connect(newItem, SIGNAL(editPanelItem(PanelItem*)), this, SLOT(editItem(PanelItem*)));
+    connect(newItem, SIGNAL(panelItemChanged(PanelItem*)), this, SLOT(panelItemChanged(PanelItem*)));
+    newItem->setPos(width()/2, height()/2);
+    newItem->setPanelRotation(panelRotation);
+    newItem->setEditMode(editMode);
+    scene.addItem(newItem);
+    panelItems.append(newItem);
+    connect(this, SIGNAL(tickTime(double,int)), newItem, SLOT(tickTime(double,int)));
 }
 
 void PanelWindow::panelRotationChanged(int r) {
@@ -209,12 +208,6 @@ void PanelWindow::disableBlanking() {
 #endif
 }
 
-
-
-
-
-
-
 void PanelWindow::setEditMode(bool em) {
     qDebug() << Q_FUNC_INFO << em;
     editMode = em;
@@ -232,12 +225,17 @@ QList<PanelItem*> PanelWindow::selectedGauges() {
 }
 
 void PanelWindow::addItem() {
+    PanelItemSelectionDialog *pisd = new PanelItemSelectionDialog(this, connection);
+    connect(pisd, SIGNAL(addItem(PanelItem*)), this, SLOT(addItem(PanelItem*)));
+    pisd->exec();
+    /*
     bool ok;
     QString item = QInputDialog::getItem(this, "Add item", "Choose type:", itemFactory->itemNames(), 0, false, &ok);
     if(ok) {
         PanelItem *g=itemFactory->itemForName(item, this);
         if(g) addItem(g);
     }
+    */
 }
 
 void PanelWindow::savePanel() {
@@ -309,9 +307,8 @@ void PanelWindow::loadPanel(QString filename) {
             QString name = panelSettings->value("name").toString();
             for(int gn=0;gn<gc;gn++) {
                 panelSettings->beginGroup("gauge-" + QString::number(gn));
-                PanelItem *g = itemFactory->itemForName(panelSettings->value("type").toString(), this);
+                PanelItem *g = itemFactory.itemForName(panelSettings->value("type").toString(), this, connection);
                 if(g) {
-                    //emit itemAdded(g);
                     addItem(g);
                     g->loadSettings(*panelSettings);
                     g->applySettings();
