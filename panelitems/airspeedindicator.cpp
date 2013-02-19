@@ -7,9 +7,9 @@
 REGISTER_WITH_PANEL_ITEM_FACTORY(AirspeedIndicator,"indicator/airspeed/round");
 
 AirspeedIndicator::AirspeedIndicator(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrument(parent),
-    _client(this, typeName(), conn), interpolator(0, 10) {
+    _client(this, typeName(), conn), interpolator(0, 5) {
     conn->registerClient(&_client);
-    _client.subscribeDataRef("sim/cockpit2/gauges/indicators/airspeed_kts_pilot", 1);
+    _client.subscribeDataRef("sim/cockpit2/gauges/indicators/airspeed_kts_pilot", 0.3);
     // _client.subscribeDataRef("simulated", 1);
     connect(&_client, SIGNAL(refChanged(QString,double)), &interpolator, SLOT(valueChanged(QString,double)));
     connect(&interpolator, SIGNAL(interpolatedValueChanged(QString,double)), this, SLOT(speedChanged(QString,double)));

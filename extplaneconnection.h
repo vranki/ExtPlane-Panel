@@ -33,6 +33,7 @@ public slots:
     virtual void setValue(QString name, QString value);
     virtual void setValue(ClientDataRef *ref);
     virtual void connectTo(QHostAddress addr, unsigned int port);
+    void setUpdateInterval(double newInterval);
     void tickTime(double dt, int total);
 private slots:
     void socketConnected();
@@ -51,6 +52,8 @@ protected:
     unsigned int _port;
     QList<SimulatedDataRef*> simulatedRefs;
     bool enableSimulatedRefs;
+private:
+    double updateInterval;
 };
 
 #endif // EXTPLANECONNECTION_H

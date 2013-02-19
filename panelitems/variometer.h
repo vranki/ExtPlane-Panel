@@ -9,6 +9,9 @@
  *
  * http://www.wingsandwheels.com/images/5stv_5stvm.jpg
  */
+#define VARIOMETER_ACCURACY 0.05
+#define VARIOMETER_ACCURACY_TE 20
+
 class Variometer : public NeedleInstrument
 {
     Q_OBJECT

@@ -21,6 +21,9 @@ public:
     void keyPress(int id);
     void buttonPress(int id);
     void buttonRelease(int id);
+public slots:
+    void setUpdateInterval(double newInterval);
+
 signals:
     void refChanged(QString name, double value);
     void refChanged(QString name, QString valueString);

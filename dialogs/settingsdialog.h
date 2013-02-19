@@ -27,6 +27,7 @@ signals:
     void fullscreenChanged(bool fs);
     void simulateChanged(bool simulate);
     void setServerAddress(QString host);
+    void setUpdateInterval(double newInterval);
 private:
     Ui::SettingsDialog *ui;
     QSettings *appSettings;

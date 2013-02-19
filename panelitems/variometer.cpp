@@ -9,9 +9,10 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Variometer,"indicator/variometer/round");
 
-Variometer::Variometer(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrument(parent), _client(this, typeName(), conn), interpolator(0, 10) {
+Variometer::Variometer(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrument(parent),
+    _client(this, typeName(), conn), interpolator(0, 3) {
     conn->registerClient(&_client);
-    _client.subscribeDataRef("sim/flightmodel/position/vh_ind", 0.5);
+    _client.subscribeDataRef("sim/flightmodel/position/vh_ind", VARIOMETER_ACCURACY);
     connect(&_client, SIGNAL(refChanged(QString,double)), &interpolator, SLOT(valueChanged(QString,double)));
     connect(&interpolator, SIGNAL(interpolatedValueChanged(QString,double)), this, SLOT(velocityChanged(QString,double)));
     setBars(1, 0.5);
@@ -111,10 +112,10 @@ void Variometer::setIsTotalEnergy(bool te) {
     isTotalEnergy = te;
     if(isTotalEnergy) {
         _client.unsubscribeDataRef("sim/flightmodel/position/vh_ind");
-        _client.subscribeDataRef("sim/cockpit2/gauges/indicators/total_energy_fpm", 100);
+        _client.subscribeDataRef("sim/cockpit2/gauges/indicators/total_energy_fpm", VARIOMETER_ACCURACY_TE);
     } else {
         _client.unsubscribeDataRef("sim/cockpit2/gauges/indicators/total_energy_fpm");
-        _client.subscribeDataRef("sim/flightmodel/position/vh_ind", 0.5);
+        _client.subscribeDataRef("sim/flightmodel/position/vh_ind", VARIOMETER_ACCURACY);
     }
 }
 

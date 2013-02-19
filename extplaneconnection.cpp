@@ -4,7 +4,7 @@
 #include "simulateddatarefs/simulateddataref.h"
 #include "extplaneclient.h"
 
-ExtPlaneConnection::ExtPlaneConnection(QObject *parent) : QTcpSocket(parent) {
+ExtPlaneConnection::ExtPlaneConnection(QObject *parent) : QTcpSocket(parent), updateInterval(0.333) {
     connect(this, SIGNAL(connected()), this, SLOT(socketConnected()));
     connect(this, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketError(QAbstractSocket::SocketError)));
     connect(this, SIGNAL(readyRead()), this, SLOT(readClient()));
@@ -21,6 +21,15 @@ void ExtPlaneConnection::connectTo(QHostAddress addr, unsigned int port) {
     tryReconnect();
 }
 
+void ExtPlaneConnection::setUpdateInterval(double newInterval) {
+    Q_ASSERT(newInterval > 0);
+    updateInterval = newInterval;
+    if(server_ok) {
+        QString line = "extplane-set update_interval " + QString::number(newInterval);
+        writeLine(line);
+    }
+}
+
 void ExtPlaneConnection::tryReconnect() {
     emit connectionMessage(QString("Connecting to ExtPlane at %1:%2..").arg(_addr.toString()).arg(_port));
 
@@ -29,7 +38,6 @@ void ExtPlaneConnection::tryReconnect() {
 }
 
 void ExtPlaneConnection::socketConnected() {
-    qDebug() << Q_FUNC_INFO ;
     emit connectionMessage("Connected to ExtPlane, waiting for handshake");
     reconnectTimer.stop();
 }
@@ -51,8 +59,9 @@ ClientDataRef *ExtPlaneConnection::subscribeDataRef(QString name, double accurac
     if(ref){
         qDebug() << Q_FUNC_INFO << "Ref already subscribed";
         ref->setSubscribers(ref->subscribers()+1);
-        if(accuracy > ref->accuracy()) {
-            // @todo update accuracy
+        if(accuracy < ref->accuracy()) {
+            if(server_ok)
+                subRef(ref); // Re-subscribe with higher accuracy
         }
     } else {
         ref = createDataRef(name, accuracy);
@@ -109,6 +118,7 @@ void ExtPlaneConnection::readClient() {
             if(line=="EXTPLANE 1") {
                 server_ok = true;
                 emit connectionMessage("");
+                setUpdateInterval(updateInterval);
                 // Sub all refs
                 foreach(ClientDataRef *ref, dataRefs)
                     subRef(ref);
@@ -135,7 +145,7 @@ void ExtPlaneConnection::readClient() {
                     } else {
                         qDebug() << Q_FUNC_INFO << "ref not subscribed " << cmd.value(2);
                     }
-                }  
+                }
             }
         }
     }

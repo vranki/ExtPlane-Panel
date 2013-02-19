@@ -58,6 +58,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(settingsDialog, SIGNAL(rotationChanged(int)), this, SLOT(panelRotationChanged(int)));
     connect(settingsDialog, SIGNAL(fullscreenChanged(bool)), this, SLOT(fullscreenChanged(bool)));
     connect(settingsDialog, SIGNAL(setServerAddress(QString)), this, SLOT(setServerAddress(QString)));
+    connect(settingsDialog, SIGNAL(setUpdateInterval(double)), connection, SLOT(setUpdateInterval(double)));
     settingsDialog->setModal(false);
     settingsDialog->hide();
 

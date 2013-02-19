@@ -67,6 +67,10 @@ void ExtPlaneClient::buttonRelease(int id) {
     _connection->buttonRelease(id);
 }
 
+void ExtPlaneClient::setUpdateInterval(double newInterval)
+{
+}
+
 void ExtPlaneClient::valueSet(ClientDataRef *ref) {
     _connection->setValue(ref->name(), ref->valueString());
 }

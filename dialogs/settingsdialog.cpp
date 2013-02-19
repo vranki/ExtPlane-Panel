@@ -9,6 +9,7 @@ SettingsDialog::SettingsDialog(QWidget *parent, QSettings *appSettings) :
     connect(ui->fullscreenCheckbox, SIGNAL(clicked(bool)), this, SIGNAL(fullscreenChanged(bool)));
     connect(ui->simulateCheckbox, SIGNAL(clicked(bool)), this, SIGNAL(simulateChanged(bool)));
     connect(ui->serverAddressEdit, SIGNAL(textChanged(QString)), this, SIGNAL(setServerAddress(QString)));
+    connect(ui->updateIntervalSpinBox, SIGNAL(valueChanged(double)), this, SIGNAL(setUpdateInterval(double)));
     connect(this, SIGNAL(finished(int)), this, SLOT(saveSettings()));
 }
 
@@ -41,16 +42,18 @@ void SettingsDialog::loadSettings() {
     emit simulateChanged(ui->simulateCheckbox->isChecked());
     ui->serverAddressEdit->setText(appSettings->value("serveraddress", "127.0.0.1:51000").toString());
     emit setServerAddress(ui->serverAddressEdit->text());
+    ui->updateIntervalSpinBox->setValue(appSettings->value("updateinterval", 0.333).toDouble());
+    emit setUpdateInterval(ui->updateIntervalSpinBox->value());
     appSettings->endGroup();
 }
 
 void SettingsDialog::saveSettings() {
-    qDebug() << Q_FUNC_INFO;
     appSettings->beginGroup("settings");
     appSettings->setValue("panelrotation", ui->panelRotationDial->value());
     appSettings->setValue("fullscreen", ui->fullscreenCheckbox->isChecked());
     appSettings->setValue("simulate", ui->simulateCheckbox->isChecked());
     appSettings->setValue("serveraddress", ui->serverAddressEdit->text());
+    appSettings->setValue("updateinterval", ui->updateIntervalSpinBox->value());
     appSettings->endGroup();
     appSettings->sync();
 }

@@ -20,7 +20,7 @@ Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
     units = DISTANCE_M;
     baroUnits = PRESSURE_HPA;
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    _client.subscribeDataRef("sim/flightmodel/misc/h_ind", 3);
+    _client.subscribeDataRef("sim/flightmodel/misc/h_ind", 1);
     _client.subscribeDataRef("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot");
     GABalancedNeedle *sn = new GABalancedNeedle(this);
     sn->setNeedleLength(0.6);
