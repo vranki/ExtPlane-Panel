@@ -12,6 +12,7 @@ PanelItemSelectionDialog::PanelItemSelectionDialog(QWidget *parent, ExtPlaneConn
     ui->itemList->addItems(factory.itemNames());
     connect(ui->itemList, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(itemChanged(QListWidgetItem*)));
     connect(this, SIGNAL(accepted()), this, SLOT(itemAccepted()));
+    connect(this, SIGNAL(finished(int)), this, SLOT(deleteLater()));
     // Set sensible size to splitter
     QList<int> sizes;
     sizes << 50 << 50;
@@ -25,6 +26,12 @@ PanelItemSelectionDialog::~PanelItemSelectionDialog() {
 
 void PanelItemSelectionDialog::itemAccepted() {
     emit addItem(factory.itemForName(ui->itemList->currentItem()->text(), parent(), realConnection)); // Set parent of this dialog as parent
+}
+
+void PanelItemSelectionDialog::tickTime(double dt, int total) {
+    simulatedConnection.tickTime(dt, total);
+    if(selectedPanelItem)
+        selectedPanelItem->tickTime(dt, total);
 }
 
 void PanelItemSelectionDialog::itemChanged(QListWidgetItem *newItem) {

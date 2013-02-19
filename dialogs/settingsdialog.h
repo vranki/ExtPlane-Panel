@@ -28,6 +28,9 @@ signals:
     void simulateChanged(bool simulate);
     void setServerAddress(QString host);
     void setUpdateInterval(double newInterval);
+    void setPanelUpdateInterval(double newInterval);
+    void setInterpolationEnabled(bool ie);
+    void setDefaultFontSize(int newSize);
 private:
     Ui::SettingsDialog *ui;
     QSettings *appSettings;

@@ -58,7 +58,7 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
 
     layout->addWidget(editModeCheck);
     QPushButton *addButton = new QPushButton("Add Item", menu);
-    connect(addButton, SIGNAL(clicked()), panelWindow, SLOT(addItem()));
+    connect(addButton, SIGNAL(clicked()), panelWindow, SLOT(showAddItemDialog()));
     layout->addWidget(addButton);
 
     QPushButton *saveButton = new QPushButton("Save Panel", menu);

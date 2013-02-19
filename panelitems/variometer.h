@@ -28,6 +28,7 @@ public slots:
     void setMaxValue(float mv);
     void setIsTotalEnergy(bool te);
     virtual void tickTime(double dt, int total);
+    virtual void setInterpolationEnabled(bool ie);
 private:
     ExtPlaneClient _client;
     VelocityUnit units;

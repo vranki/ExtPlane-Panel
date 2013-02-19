@@ -60,7 +60,7 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     QFont defaultFont;
 
-    // Use for mechanical instrument
+    // Use for mechanical instruments
     QColor darkGrayColor;
 signals:
     void panelItemSelected(PanelItem *g, bool sel=true);
@@ -76,6 +76,8 @@ public slots:
     void setItemRotation(int angle);
     void setZValue(int z);
     virtual void tickTime(double dt, int total);
+    virtual void setInterpolationEnabled(bool ie);
+    virtual void setDefaultFontSize(int dfs);
 private:
     float _width, _height;
     bool resizing, _editMode;

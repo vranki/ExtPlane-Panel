@@ -34,6 +34,8 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     settingsDialog = NULL;
     editItemDialog = 0;
     panelRotation = 0;
+    interpolationEnabled = false;
+    defaultFontSize = 15;
     editMode = false;
     dirty = false;
 
@@ -59,6 +61,9 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(settingsDialog, SIGNAL(fullscreenChanged(bool)), this, SLOT(fullscreenChanged(bool)));
     connect(settingsDialog, SIGNAL(setServerAddress(QString)), this, SLOT(setServerAddress(QString)));
     connect(settingsDialog, SIGNAL(setUpdateInterval(double)), connection, SLOT(setUpdateInterval(double)));
+    connect(settingsDialog, SIGNAL(setPanelUpdateInterval(double)), this, SLOT(setPanelUpdateInterval(double)));
+    connect(settingsDialog, SIGNAL(setInterpolationEnabled(bool)), this, SLOT(setInterpolationEnabled(bool)));
+    connect(settingsDialog, SIGNAL(setDefaultFontSize(int)), this, SLOT(setDefaultFontSize(int)));
     settingsDialog->setModal(false);
     settingsDialog->hide();
 
@@ -78,6 +83,13 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     statusMessage.setPos(0,20);
     scene.addItem(&statusMessage);
 
+    // Setup tick timer
+    connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
+    tickTimer.setInterval(64);
+    tickTimer.setSingleShot(false);
+
+    connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
+
     // Load last-loaded panel
     this->loadPanel(appSettings->value("lastloadedpanel","").toString());
 
@@ -96,20 +108,15 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     sss->setScreenSaverInhibit();
 #endif
 
-    connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
-    tickTimer.setInterval(64);
-    tickTimer.setSingleShot(false);
-    tickTimer.start();
-    totalTime.start();
-    time.start();
-
-    connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
-
 #ifdef MOBILE_DEVICE
     showFullScreen();
 #else
     resize(1024, 768);
 #endif
+    // Start timers
+    totalTime.start();
+    time.start();
+    tickTimer.start();
 }
 
 PanelWindow::~PanelWindow() {
@@ -151,9 +158,13 @@ void PanelWindow::addItem(PanelItem *newItem) {
     connect(newItem, SIGNAL(destroyed(QObject*)), this, SLOT(itemDestroyed(QObject*)));
     connect(newItem, SIGNAL(editPanelItem(PanelItem*)), this, SLOT(editItem(PanelItem*)));
     connect(newItem, SIGNAL(panelItemChanged(PanelItem*)), this, SLOT(panelItemChanged(PanelItem*)));
+    connect(settingsDialog, SIGNAL(setInterpolationEnabled(bool)), newItem, SLOT(setInterpolationEnabled(bool)));
+    connect(settingsDialog, SIGNAL(setDefaultFontSize(int)), newItem, SLOT(setDefaultFontSize(int)));
     newItem->setPos(width()/2, height()/2);
     newItem->setPanelRotation(panelRotation);
     newItem->setEditMode(editMode);
+    newItem->setInterpolationEnabled(interpolationEnabled);
+    newItem->setDefaultFontSize(defaultFontSize);
     scene.addItem(newItem);
     panelItems.append(newItem);
     connect(this, SIGNAL(tickTime(double,int)), newItem, SLOT(tickTime(double,int)));
@@ -191,16 +202,26 @@ void PanelWindow::setServerAddress(QString host) {
     connection->connectTo(QHostAddress(hostport.value(0)), port);
 }
 
-
-
 void PanelWindow::tick() {
-    double dt = time.elapsed() / 1000.0f;
+    double dt = time.elapsed() / 1000.0d;
     time.start();
-    if(dt > 0.2) {
+    if(dt > 0.2d) {
         qDebug() << "Skipping frame, dt: " << dt;
         dt = 0;
     }
     emit tickTime(dt, totalTime.elapsed());
+}
+
+void PanelWindow::setInterpolationEnabled(bool ie) {
+    interpolationEnabled = ie;
+}
+
+void PanelWindow::setPanelUpdateInterval(double newInterval) {
+    tickTimer.setInterval(newInterval * 1000.d);
+}
+
+void PanelWindow::setDefaultFontSize(int newFs) {
+    defaultFontSize = newFs;
 }
 
 void PanelWindow::disableBlanking() {
@@ -211,7 +232,6 @@ void PanelWindow::disableBlanking() {
 }
 
 void PanelWindow::setEditMode(bool em) {
-    qDebug() << Q_FUNC_INFO << em;
     editMode = em;
     foreach(PanelItem *it, panelItems)
         it->setEditMode(em);
@@ -226,18 +246,11 @@ QList<PanelItem*> PanelWindow::selectedGauges() {
     return selection;
 }
 
-void PanelWindow::addItem() {
+void PanelWindow::showAddItemDialog() {
     PanelItemSelectionDialog *pisd = new PanelItemSelectionDialog(this, connection);
     connect(pisd, SIGNAL(addItem(PanelItem*)), this, SLOT(addItem(PanelItem*)));
+    connect(this, SIGNAL(tickTime(double,int)), pisd, SLOT(tickTime(double,int)));
     pisd->exec();
-    /*
-    bool ok;
-    QString item = QInputDialog::getItem(this, "Add item", "Choose type:", itemFactory->itemNames(), 0, false, &ok);
-    if(ok) {
-        PanelItem *g=itemFactory->itemForName(item, this);
-        if(g) addItem(g);
-    }
-    */
 }
 
 void PanelWindow::savePanel() {

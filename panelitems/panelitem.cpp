@@ -12,14 +12,6 @@ PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem(), darkGr
     setEditMode(false);
     _panelRotation = _itemRotation = 0;
     defaultFont = QApplication::font();
-
-    // @todo make configurable
-    defaultFont.setPointSizeF(10);
-    // Without this font size on android & meego is too large - not sure why!
-    // Shouldn't point size be device independent??
-#ifdef MOBILE_DEVICE
-    defaultFont.setPointSizeF(5);
-#endif
 }
 
 PanelItem::~PanelItem() {
@@ -181,4 +173,11 @@ bool PanelItem::isEditMode() {
 void PanelItem::applySettings() {
 }
 
+void PanelItem::setDefaultFontSize(int dfs) {
+    defaultFont.setPointSizeF(dfs);
+    update();
+}
+
 void PanelItem::tickTime(double dt, int total) {}
+
+void PanelItem::setInterpolationEnabled(bool ie) {}

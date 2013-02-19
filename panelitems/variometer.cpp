@@ -122,3 +122,6 @@ void Variometer::setIsTotalEnergy(bool te) {
 void Variometer::tickTime(double dt, int total) {
     interpolator.tickTime(dt, total);
 }
+void Variometer::setInterpolationEnabled(bool ie) {
+    interpolator.setEnabled(ie);
+}

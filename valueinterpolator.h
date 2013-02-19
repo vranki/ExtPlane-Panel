@@ -6,6 +6,9 @@
 /**
  * A helper class that can be used to interpolate double values
  * to make transitions look smoother.
+ *
+ * Note: Interpolator is off by default. Enable it only if user
+ * has enabled it in settings.
  */
 class ValueInterpolator : public QObject
 {
@@ -19,10 +22,12 @@ signals:
 public slots:
     void valueChanged(QString name, double val);
     void tickTime(double dt, int total);
+    void setEnabled(bool ie);
 private:
     double currentValue, targetValue;
     double speed;
     QString refName;
+    bool enabled;
 };
 
 #endif // VALUEINTERPOLATOR_H

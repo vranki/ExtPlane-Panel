@@ -22,6 +22,7 @@ public slots:
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
     virtual void tickTime(double dt, int total);
+    virtual void setInterpolationEnabled(bool ie);
 private:
     void paintArc(QPainter *painter,QColor color, double start, double end);
     ExtPlaneClient _client;

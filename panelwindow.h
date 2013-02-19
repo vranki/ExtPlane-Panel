@@ -46,7 +46,7 @@ public slots:
     void disableBlanking();
 public slots:
     void setEditMode(bool em);
-    void addItem();
+    void showAddItemDialog();
     void savePanel();
     void savePanel(QString filename);
     void loadPanel();
@@ -58,6 +58,9 @@ public slots:
     void quit();
 private slots:
     void tick();
+    void setInterpolationEnabled(bool ie);
+    void setPanelUpdateInterval(double newInterval);
+    void setDefaultFontSize(int newFs);
 protected:
     virtual void resizeEvent(QResizeEvent * event);
 private:
@@ -78,7 +81,8 @@ private:
     EditItemDialog *editItemDialog; // Only one open at a time
     QTimer tickTimer; // Timer to update items synchronously
     QTime time, totalTime;
-
+    bool interpolationEnabled;
+    int defaultFontSize;
     // Disables blanking on Maemo
 #ifdef MAEMO
     QTimer blankingTimer;

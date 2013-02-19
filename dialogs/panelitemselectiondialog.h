@@ -22,6 +22,8 @@ class PanelItemSelectionDialog : public QDialog
 public:
     explicit PanelItemSelectionDialog(QWidget *parent, ExtPlaneConnection *rConnection);
     ~PanelItemSelectionDialog();
+public slots:
+    void tickTime(double dt, int total);
 signals:
     void addItem(PanelItem * item);
 private slots:

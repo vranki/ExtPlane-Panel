@@ -13,6 +13,7 @@ AirspeedIndicator::AirspeedIndicator(QObject *parent, ExtPlaneConnection *conn) 
     // _client.subscribeDataRef("simulated", 1);
     connect(&_client, SIGNAL(refChanged(QString,double)), &interpolator, SLOT(valueChanged(QString,double)));
     connect(&interpolator, SIGNAL(interpolatedValueChanged(QString,double)), this, SLOT(speedChanged(QString,double)));
+    connect(this, SLOT(setInterpolationEnabled(bool)), &interpolator, SLOT(setEnabled(bool)));
     setBars(20, 10);
     setNumbers(50);
     setUnit(VELOCITY_KTS);
@@ -130,4 +131,8 @@ void AirspeedIndicator::createSettings(QGridLayout *layout) {
 
 void AirspeedIndicator::tickTime(double dt, int total) {
     interpolator.tickTime(dt, total);
+}
+
+void AirspeedIndicator::setInterpolationEnabled(bool ie) {
+    interpolator.setEnabled(ie);
 }

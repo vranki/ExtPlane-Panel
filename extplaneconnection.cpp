@@ -168,7 +168,7 @@ void ExtPlaneConnection::writeLine(QString line) {
     }
     line +="\n";
     write(line.toUtf8());
-    qDebug() << Q_FUNC_INFO << line;
+    // qDebug() << Q_FUNC_INFO << line.trimmed();
 }
 
 void ExtPlaneConnection::keyPress(int id) {

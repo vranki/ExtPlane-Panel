@@ -1,20 +1,28 @@
 #include "valueinterpolator.h"
 
 ValueInterpolator::ValueInterpolator(QObject *parent, double spd) :
-    QObject(parent), speed(spd), currentValue(0), targetValue(0)
-{
+    QObject(parent), speed(spd), currentValue(0), targetValue(0), enabled(false) {
 }
 
 void ValueInterpolator::valueChanged(QString name, double val) {
-    if(refName.isNull()) {
+    if(refName.isNull()) { // First update
         refName = name;
+        currentValue = val;
+        targetValue = val;
+        emit interpolatedValueChanged(refName, currentValue);
+    }
+
+    if(enabled) {
+        targetValue = val;
+    } else {
         currentValue = val;
         emit interpolatedValueChanged(refName, currentValue);
     }
-    targetValue = val;
 }
 
 void ValueInterpolator::tickTime(double dt, int total) {
+    if(!enabled) return;
+
     double diff = qAbs(currentValue - targetValue);
     if(currentValue < targetValue)
         currentValue += diff * speed * dt;
@@ -23,4 +31,8 @@ void ValueInterpolator::tickTime(double dt, int total) {
         currentValue -= diff * speed * dt;
 
     emit interpolatedValueChanged(refName, currentValue);
+}
+
+void ValueInterpolator::setEnabled(bool ie) {
+    enabled = ie;
 }

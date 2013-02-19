@@ -10,6 +10,9 @@ SettingsDialog::SettingsDialog(QWidget *parent, QSettings *appSettings) :
     connect(ui->simulateCheckbox, SIGNAL(clicked(bool)), this, SIGNAL(simulateChanged(bool)));
     connect(ui->serverAddressEdit, SIGNAL(textChanged(QString)), this, SIGNAL(setServerAddress(QString)));
     connect(ui->updateIntervalSpinBox, SIGNAL(valueChanged(double)), this, SIGNAL(setUpdateInterval(double)));
+    connect(ui->interpolateCheckbox, SIGNAL(toggled(bool)), this, SIGNAL(setInterpolationEnabled(bool)));
+    connect(ui->panelUpdateSpinBox, SIGNAL(valueChanged(double)), this, SIGNAL(setPanelUpdateInterval(double)));
+    connect(ui->fontSizeSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(setDefaultFontSize(int)));
     connect(this, SIGNAL(finished(int)), this, SLOT(saveSettings()));
 }
 
@@ -29,10 +32,9 @@ void SettingsDialog::changeEvent(QEvent *e) {
 }
 
 void SettingsDialog::loadSettings() {
-    qDebug() << Q_FUNC_INFO;
     appSettings->beginGroup("settings");
     ui->panelRotationDial->setValue(appSettings->value("panelrotation").toInt());
-#ifdef MOBILE_DEVICE
+#ifdef MOBILE_DEVICE // Default to fullscreen on mobile devices
     ui->fullscreenCheckbox->setChecked(appSettings->value("fullscreen", true).toBool());
 #else
     ui->fullscreenCheckbox->setChecked(appSettings->value("fullscreen", false).toBool());
@@ -42,8 +44,14 @@ void SettingsDialog::loadSettings() {
     emit simulateChanged(ui->simulateCheckbox->isChecked());
     ui->serverAddressEdit->setText(appSettings->value("serveraddress", "127.0.0.1:51000").toString());
     emit setServerAddress(ui->serverAddressEdit->text());
-    ui->updateIntervalSpinBox->setValue(appSettings->value("updateinterval", 0.333).toDouble());
+    ui->updateIntervalSpinBox->setValue(appSettings->value("updateinterval", 0.033).toDouble());
     emit setUpdateInterval(ui->updateIntervalSpinBox->value());
+    ui->interpolateCheckbox->setChecked(appSettings->value("interpolate", true).toBool());
+    emit setInterpolationEnabled(ui->interpolateCheckbox->isChecked());
+    ui->panelUpdateSpinBox->setValue(appSettings->value("panelupdateinterval", 0.016).toDouble());
+    emit setPanelUpdateInterval(ui->panelUpdateSpinBox->value());
+    ui->fontSizeSpinBox->setValue(appSettings->value("fontsize", 10).toInt());
+    emit setDefaultFontSize(ui->fontSizeSpinBox->value());
     appSettings->endGroup();
 }
 
@@ -54,6 +62,9 @@ void SettingsDialog::saveSettings() {
     appSettings->setValue("simulate", ui->simulateCheckbox->isChecked());
     appSettings->setValue("serveraddress", ui->serverAddressEdit->text());
     appSettings->setValue("updateinterval", ui->updateIntervalSpinBox->value());
+    appSettings->setValue("interpolate", ui->interpolateCheckbox->isChecked());
+    appSettings->setValue("panelupdateinterval", ui->panelUpdateSpinBox->value());
+    appSettings->setValue("fontsize", ui->fontSizeSpinBox->value());
     appSettings->endGroup();
     appSettings->sync();
 }
