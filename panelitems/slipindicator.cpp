@@ -17,7 +17,7 @@ void SlipIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(Qt::NoPen);
 
-    int tubeHeight = width()*0.25d;
+    int tubeHeight = width()*0.25f;
 
     QRect tubeRect(0,0,width(),tubeHeight);
 

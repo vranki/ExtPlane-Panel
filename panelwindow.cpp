@@ -203,9 +203,9 @@ void PanelWindow::setServerAddress(QString host) {
 }
 
 void PanelWindow::tick() {
-    double dt = time.elapsed() / 1000.0d;
+    double dt = time.elapsed() / 1000.0f;
     time.start();
-    if(dt > 0.2d) {
+    if(dt > 0.2f) {
         qDebug() << "Skipping frame, dt: " << dt;
         dt = 0;
     }
@@ -217,7 +217,7 @@ void PanelWindow::setInterpolationEnabled(bool ie) {
 }
 
 void PanelWindow::setPanelUpdateInterval(double newInterval) {
-    tickTimer.setInterval(newInterval * 1000.d);
+    tickTimer.setInterval(newInterval * 1000.f);
 }
 
 void PanelWindow::setDefaultFontSize(int newFs) {
