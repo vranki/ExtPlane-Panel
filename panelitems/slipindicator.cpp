@@ -7,7 +7,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(SlipIndicator,"indicator/slip/basic");
 SlipIndicator::SlipIndicator(QObject *parent, ExtPlaneConnection *conn) :
         PanelItem(parent), _client(this, typeName(), conn) {
     conn->registerClient(&_client);
-    _client.subscribeDataRef("sim/cockpit2/gauges/indicators/slip_deg", 1);
+    _client.subscribeDataRef("sim/cockpit2/gauges/indicators/slip_deg", 0.1);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(slipChanged(QString,double)));
     _slip = 0;
     setSize(100,50);
@@ -31,7 +31,7 @@ void SlipIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     painter->setBrush(Qt::black);
 
     int ballWidth = tubeHeight/4;
-    float slipAmount = (_slip / SLIP_RANGE_DEG) * width()/2; // Offset in pixels
+    float slipAmount = -(_slip / SLIP_RANGE_DEG) * width()/2; // Offset in pixels
 
     slipAmount = qMin(slipAmount, width()/2);
     slipAmount = qMax(slipAmount, -width()/2);
