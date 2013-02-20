@@ -21,7 +21,6 @@ public:
     virtual void loadSettings(QSettings &settings);
     virtual QString typeName();
     virtual void createSettings(QGridLayout *layout);
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 public slots:
     void velocityChanged(QString name, double speed);
     void setUnit(VelocityUnit un);
@@ -29,6 +28,8 @@ public slots:
     void setIsTotalEnergy(bool te);
     virtual void tickTime(double dt, int total);
     virtual void setInterpolationEnabled(bool ie);
+protected:
+    virtual void paintTopPixmap();
 private:
     ExtPlaneClient _client;
     VelocityUnit units;

@@ -62,85 +62,37 @@ NeedleInstrument::NeedleInstrument(QObject *parent) : PanelItem(parent) {
 
 void NeedleInstrument::setNumbers(float div) {
     _numbers = div;
+    repaintPixmaps();
 }
 
 void NeedleInstrument::setNumberScale(float ns) {
     _numberScale = ns;
+    repaintPixmaps();
 }
 
 void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    QFont numberFont = defaultFont;
-    numberFont.setPointSizeF(defaultFont.pointSizeF() * 1.5);
-    painter->setFont(numberFont);
-
+    painter->drawPixmap(0,0, bottomPixmap);
     int side = qMin(width(), height());
-    painter->setRenderHint(QPainter::Antialiasing);
-    painter->save();
-    painter->scale(side / 200.0, side / 200.0);
-    painter->save();
-
-    painter->translate(100, 100);
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::white);
-
-
-    painter->setPen(Qt::white);
-    if(!_label.isEmpty()) {
-        int textwidth = painter->fontMetrics().width(_label);
-        painter->drawText(-textwidth/2,-70, textwidth, 200, Qt::AlignCenter, _label);
-    }
-    if(_thickBars != 0) {
-        for (float i = _zeroValue ; i <= _maxValue; i+=_thickBars) {
-            painter->save();
-            painter->rotate(value2Angle(i));
-            painter->drawRect(-1, -100, 2, 14);
-            painter->restore();
-        }
-    }
-    if(_thinBars != 0) {
-        for (float i = _zeroValue ; i <= _maxValue; i+=_thinBars) {
-            painter->save();
-            painter->rotate(value2Angle(i));
-            painter->drawRect(-0.3, -100, 0.6, 8);
-            painter->restore();
-        }
-    }
-    painter->setPen(QColor(200,200,200));
-    if(_numbers != 0) {
-        for (float i = _zeroValue ; i <= _maxValue; i+=_numbers) {
-            painter->save();
-            painter->rotate(value2Angle(i));
-            painter->save();
-	    QString lineNumber = QString::number(i * _numberScale);
-            painter->translate(0,-70);
-            painter->rotate(-value2Angle(i));
-            int width = painter->fontMetrics().width(lineNumber);
-            int height = painter->fontMetrics().height();
-            painter->drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
-            painter->restore();
-            painter->restore();
-        }
-    }
 
     // Paint needle
     painter->save();
+    painter->translate(side/2,side/2);
     float needleValue = qMax(qMin(_value, _maxValue), _zeroValue);
     painter->rotate(value2Angle(needleValue));
-    painter->scale(100,100);
+    painter->scale(side/2,side/2);
     needle->paint(painter);
     painter->restore();
     // END paint needle
 
-    painter->restore();
-
-
-    painter->restore();
     PanelItem::paint(painter, option, widget);
+
+    painter->drawPixmap(0,0, topPixmap);
 }
 
 
 void NeedleInstrument::setLabel(QString text) {
     _label = text;
+    repaintPixmaps();
 }
 
 void NeedleInstrument::setScale(float zeroAngle, float zeroValue, float maxAngle, float maxValue) {
@@ -149,7 +101,7 @@ void NeedleInstrument::setScale(float zeroAngle, float zeroValue, float maxAngle
     _zeroValue = zeroValue;
     _maxAngle = maxAngle;
     _maxValue = maxValue;
-    update();
+    repaintPixmaps();
 }
 
 
@@ -166,9 +118,77 @@ void NeedleInstrument::setNeedle(Needle *newNeedle) {
     needle = newNeedle;
 }
 
+void NeedleInstrument::repaintPixmaps() {
+
+    // Paint bottom pixmap
+    bottomPixmap = QPixmap(width(),height());
+    bottomPixmap.fill(Qt::transparent);
+
+    QPainter painter(&bottomPixmap);
+
+    QFont numberFont = defaultFont;
+    numberFont.setPointSizeF(defaultFont.pointSizeF() * 1.5);
+    painter.setFont(numberFont);
+
+    int side = qMin(width(), height());
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.save();
+    painter.scale(side / 200.0, side / 200.0);
+    painter.save();
+
+    painter.translate(100, 100);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(Qt::white);
+
+    painter.setPen(Qt::white);
+    if(!_label.isEmpty()) {
+        int textwidth = painter.fontMetrics().width(_label);
+        painter.drawText(-textwidth/2,-70, textwidth, 200, Qt::AlignCenter, _label);
+    }
+    if(_thickBars != 0) {
+        for (float i = _zeroValue ; i <= _maxValue; i+=_thickBars) {
+            painter.save();
+            painter.rotate(value2Angle(i));
+            painter.drawRect(-1, -100, 2, 14);
+            painter.restore();
+        }
+    }
+    if(_thinBars != 0) {
+        for (float i = _zeroValue ; i <= _maxValue; i+=_thinBars) {
+            painter.save();
+            painter.rotate(value2Angle(i));
+            painter.drawRect(-0.3, -100, 0.6, 8);
+            painter.restore();
+        }
+    }
+    painter.setPen(QColor(200,200,200));
+    if(_numbers != 0) {
+        for (float i = _zeroValue ; i <= _maxValue; i+=_numbers) {
+            painter.save();
+            painter.rotate(value2Angle(i));
+            painter.save();
+            QString lineNumber = QString::number(i * _numberScale);
+            painter.translate(0,-70);
+            painter.rotate(-value2Angle(i));
+            int width = painter.fontMetrics().width(lineNumber);
+            int height = painter.fontMetrics().height();
+            painter.drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
+            painter.restore();
+            painter.restore();
+        }
+    }
+    painter.restore();
+    painter.restore();
+
+    paintTopPixmap();
+
+    update();
+}
+
 void NeedleInstrument::setBars(float thick, float thin) {
     _thinBars = thin;
     _thickBars = thick;
+    repaintPixmaps();
 }
 
 float NeedleInstrument::value2Angle(float value) {
@@ -198,5 +218,9 @@ void NeedleInstrument::addArc(Arc *arc) {
 void NeedleInstrument::setArcMin(int arcNumber, float value) {
     if (_arcs[arcNumber]->_minValue==value) return;
     _arcs[arcNumber]->_minValue=value;
-    update();
+    repaintPixmaps();
+}
+
+void NeedleInstrument::itemSizeChanged(float w, float h) {
+    repaintPixmaps();
 }

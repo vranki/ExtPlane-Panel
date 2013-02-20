@@ -211,7 +211,7 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
     PanelItem::paint(painter, option, widget);
 }
 
-void DirectionIndicator::updateForNewSize(float w, float h) {
+void DirectionIndicator::itemSizeChanged(float w, float h) {
     // The guage has changed size: redraw the cached card.
     createCard(w, h);
 };

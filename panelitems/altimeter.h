@@ -18,6 +18,7 @@ public:
     virtual void createSettings(QGridLayout *layout);
     void setLabel(QString text);
     void setBars(float thick, float thin);
+    virtual void itemSizeChanged(float w, float h);
 public slots:
     void refChanged(QString name, double alt);
     void setUnit(DistanceUnit un);
@@ -28,6 +29,7 @@ public slots:
     void setNumbersScale(float v);
     void setNumbers(float div);
 private:
+    void repaintPixmap();
     float value2Angle1(float value);
     float value2Angle2(float value);
     ExtPlaneClient _client;
@@ -39,6 +41,8 @@ private:
     float _baroPressure;
     QString _label;
     Needle *longNeedle, *shortNeedle;
+    QPixmap bottomPixmap;
+    QRectF pressureWindow;
 };
 
 #endif // ALTIMETER_H

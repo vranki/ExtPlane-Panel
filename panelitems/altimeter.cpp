@@ -10,12 +10,12 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(Altimeter,"indicator/altitude/basic");
 Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
         PanelItem(parent), _client(this, typeName(), conn) {
     _value = 0;
-    setThickBars(50);
-    setThinBars(10);
-    setRange1(500);
-    setRange2(5000);
-    setNumbers(50);
-    setNumbersScale(0.01);
+    _thickBars = 50;
+    _thinBars = 10;
+    _range1 = 500;
+    _range2 = 5000;
+    _numbers = 50;
+    _numbersScale = 0.01;
     _baroPressure = 1013.25;
     units = DISTANCE_M;
     baroUnits = PRESSURE_HPA;
@@ -26,93 +26,120 @@ Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
     sn->setNeedleLength(0.6);
     shortNeedle = sn;
     longNeedle = new GABalancedNeedle(this);
+    repaintPixmap();
 }
 
 void Altimeter::setNumbers(float div) {
     _numbers = div;
-    update();
+    repaintPixmap();
 }
 
-void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    painter->setFont(defaultFont);
+void Altimeter::repaintPixmap() {
+    // Paint bottom pixmap
+    bottomPixmap = QPixmap(width(),height());
+    bottomPixmap.fill(Qt::transparent);
 
-    int side = qMin(width(), height());
-    painter->setRenderHint(QPainter::Antialiasing);
-    painter->save();
-    painter->scale(side / 200.0, side / 200.0);
-    painter->save();
-    painter->translate(100, 100);
+    QPainter painter(&bottomPixmap);
 
+    painter.setFont(defaultFont);
 
-    painter->setPen(Qt::white);
-    if(!_label.isEmpty()) {
-        int textwidth = painter->fontMetrics().width(_label);
-        painter->drawText(-textwidth/2,-70, textwidth, 200, Qt::AlignCenter, _label);
-    }
-    int textwidth = painter->fontMetrics().width("Altitude");
-    painter->drawText(-textwidth/2,-130, textwidth, 200, Qt::AlignCenter, "Altitude");
+    double side = qMin(width(), height());
+
+    pressureWindow = QRect(side * 0.7, side * 0.45, side*0.2, side*0.1);
+
+    painter.setRenderHint(QPainter::Antialiasing);
 
     // Pressure window
-    painter->setBrush(Qt::black);
-    painter->drawRect(30,-10,60,20);
-    QFont pressureFont = defaultFont;
-    pressureFont.setPointSizeF(defaultFont.pointSizeF()/1.5f);
-    painter->setFont(pressureFont);
-    QString pressureText = QString::number(_baroPressure);
-    textwidth = painter->fontMetrics().width(pressureText);
-    painter->drawText(30,-10, 60, 20, Qt::AlignRight | Qt::AlignVCenter, pressureText);
+    painter.setPen(Qt::white);
+    painter.setBrush(Qt::black);
+    painter.drawRect(pressureWindow);
 
-    painter->setFont(defaultFont);
-    painter->setBrush(Qt::white);
+    painter.save();
+    painter.scale(side / 200.0, side / 200.0);
+    painter.save();
+    painter.translate(100, 100);
+
+    if(!_label.isEmpty()) {
+        int textwidth = painter.fontMetrics().width(_label);
+        painter.drawText(-textwidth/2,-70, textwidth, 200, Qt::AlignCenter, _label);
+    }
+    int textwidth = painter.fontMetrics().width("Altitude");
+    painter.drawText(-textwidth/2,-130, textwidth, 200, Qt::AlignCenter, "Altitude");
+
+
+    painter.setFont(defaultFont);
+    painter.setBrush(Qt::white);
     if(_thickBars > 0) {
         for (float i = 0 ; i <= _range1; i+=_thickBars) {
-            painter->save();
-            painter->rotate(value2Angle1(i));
-            painter->drawRect(-1, -100, 2, 14);
-            painter->restore();
+            painter.save();
+            painter.rotate(value2Angle1(i));
+            painter.drawRect(-1, -100, 2, 14);
+            painter.restore();
         }
     }
     if(_thinBars > 0) {
         for (float i = 0 ; i <= _range2; i+=_thinBars) {
-            painter->save();
-            painter->rotate(value2Angle1(i));
-            painter->drawRect(-0.3, -100, 0.6, 8);
-            painter->restore();
+            painter.save();
+            painter.rotate(value2Angle1(i));
+            painter.drawRect(-0.3, -100, 0.6, 8);
+            painter.restore();
         }
     }
-    painter->setPen(QColor(200,200,200));
+    painter.setPen(QColor(200,200,200));
 
     if(_numbers != 0) {
         for (float i = 0 ; i < _range1; i+=_numbers) {
-            painter->save();
-            painter->rotate(value2Angle1(i));
-            painter->save();
+            painter.save();
+            painter.rotate(value2Angle1(i));
+            painter.save();
             QString lineNumber = QString::number(i*_numbersScale);
-            painter->translate(0,-70);
-            painter->rotate(-value2Angle1(i));
-            int width = painter->fontMetrics().width(lineNumber);
-            int height =painter->fontMetrics().height();
-            painter->drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
-            painter->restore();
-            painter->restore();
+            painter.translate(0,-70);
+            painter.rotate(-value2Angle1(i));
+            int width = painter.fontMetrics().width(lineNumber);
+            int height =painter.fontMetrics().height();
+            painter.drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
+            painter.restore();
+            painter.restore();
         }
     }
 
+    painter.restore();
+
+    painter.restore();
+    update();
+}
+
+void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    painter->drawPixmap(0,0, bottomPixmap);
+
+    double side = qMin(width(), height());
+
+    painter->save();
+    painter->setBrush(Qt::white);
+    painter->setPen(Qt::white);
+
+    // Pressure text
+    QFont pressureFont = defaultFont;
+    pressureFont.setPointSizeF(defaultFont.pointSizeF() * side/200.f);
+    painter->setFont(pressureFont);
+    QString pressureText = QString::number(_baroPressure);
+
+    painter->drawText(pressureWindow, Qt::AlignRight | Qt::AlignVCenter, pressureText);
+
+    painter->restore();
+
     // Draw needles
     painter->save();
+    painter->translate(side/2,side/2);
+    painter->scale(side/2,side/2);
+    painter->save();
     painter->rotate(value2Angle2(_value));
-    painter->scale(100,100);
     shortNeedle->paint(painter);
     painter->restore();
     painter->save();
     painter->rotate(value2Angle1(_value));
-    painter->scale(100, 100);
     longNeedle->paint(painter);
     painter->restore();
-
-
-    painter->restore();
-
     painter->restore();
 
     PanelItem::paint(painter, option, widget);
@@ -121,22 +148,23 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 void Altimeter::setLabel(QString text) {
     _label = text;
+    repaintPixmap();
 }
 
 void Altimeter::setRange1(float r1) {
     _range1 = qMax(r1, 1.0f);
-    update();
+    repaintPixmap();
 }
 
 void Altimeter::setRange2(float r2) {
     _range2 = qMax(r2, 1.0f);
-    update();
+    repaintPixmap();
 }
 
 void Altimeter::setUnit(DistanceUnit unit) {
     units = unit;
     setLabel(Units::unitName(units));
-    update();
+    repaintPixmap();
 }
 
 void Altimeter::refChanged(QString name, double alt) {
@@ -155,6 +183,7 @@ void Altimeter::refChanged(QString name, double alt) {
 float Altimeter::value2Angle1(float value) {
     return (value / _range1) * 360.0;
 }
+
 float Altimeter::value2Angle2(float value) {
     return (value / _range2) * 360.0;
 }
@@ -169,6 +198,7 @@ void Altimeter::storeSettings(QSettings &settings) {
     settings.setValue("numbers", _numbers);
     settings.setValue("numbersscale", _numbersScale);
 }
+
 void Altimeter::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
     QString unitname = settings.value("unit").toString();
@@ -231,15 +261,19 @@ void Altimeter::createSettings(QGridLayout *layout) {
 
 void Altimeter::setThickBars(float v){
     _thickBars = v;
-    update();
+    repaintPixmap();
 }
 
 void Altimeter::setThinBars(float v) {
     _thinBars = v;
-    update();
+    repaintPixmap();
 }
 
 void Altimeter::setNumbersScale(float v) {
     _numbersScale = v;
-    update();
+    repaintPixmap();
+}
+
+void Altimeter::itemSizeChanged(float w, float h) {
+    repaintPixmap();
 }

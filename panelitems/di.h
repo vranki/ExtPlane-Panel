@@ -20,7 +20,7 @@ public:
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    virtual void updateForNewSize(float w, float h);
+    virtual void itemSizeChanged(float w, float h);
     virtual QString typeName();
     virtual void createSettings(QGridLayout *layout);
     void setLabel(QString text);

@@ -82,17 +82,17 @@ void PanelItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void PanelItem::setSize(float w, float h) {
-    if(w < SCALE_HANDLE_SIZE) w = SCALE_HANDLE_SIZE;
-    if(h < SCALE_HANDLE_SIZE) h = SCALE_HANDLE_SIZE;
+    w = qMax(w, (float) SCALE_HANDLE_SIZE);
+    h = qMax(h, (float) SCALE_HANDLE_SIZE);
     int nw = w;
     int nh = h;
     nw /= SNAP_GRID_SIZE;
     nw *= SNAP_GRID_SIZE;
     nh /= SNAP_GRID_SIZE;
     nh *= SNAP_GRID_SIZE;
-    updateForNewSize(nw,nh); // Allow panel item to update any resources it needs for the new size...
     _width = nw;
     _height = nh;
+    itemSizeChanged(nw,nh); // Allow panel item to update any resources it needs for the new size...
 // Supported from >=4.6
 #if QT_VERSION >= 0x040600
     setTransformOriginPoint(width()/2, height()/2);

@@ -24,7 +24,7 @@
 
 class PanelItem : public QObject, public QGraphicsItem {
     Q_OBJECT
-#if QT_VERSION >= 0x040600 // Doesn't work o 4.5
+#if QT_VERSION >= 0x040600 // Doesn't work on 4.5
     Q_INTERFACES(QGraphicsItem)
 #endif 
 public:
@@ -39,7 +39,7 @@ public:
      * This is called whenever the panel item has changed size (including when first added to the scene).
      * Panel items which cache resources be pre-rendering complicated stuff should use this method for doing so.
      */
-    virtual void updateForNewSize(float w, float h) {};
+    virtual void itemSizeChanged(float w, float h) {};
     void setEditMode(bool em);
     bool isEditMode();
     /**

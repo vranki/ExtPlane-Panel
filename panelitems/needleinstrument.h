@@ -39,6 +39,9 @@ private:
 
 /**
  * Base class for round instruments with one (or more) needles.
+ *
+ * Prepaints bottom layer (instrument markings) and top layer
+ * (anything drawn on top of needle) in QPixmaps for performance.
  */
 class NeedleInstrument : public PanelItem {
     Q_OBJECT
@@ -59,12 +62,15 @@ public:
     int numberOfArcs();
     Arc *getArc(int arcNo);
     void setArcMin(int arcNumber, float value);
+    virtual void itemSizeChanged(float w, float h);
 
 public slots:
     void setValue(float value);
     void setNeedle(Needle * newNeedle);
 
 protected:
+    virtual void repaintPixmaps(); // Repaint bottom pixmap
+    virtual void paintTopPixmap() {}; // Repaint top pixmap (if needed)
     float _thickBars, _thinBars;
     float _numbers;
     float _numberScale;
@@ -72,6 +78,8 @@ protected:
     QString _label;
     QList<Arc*> _arcs;
     Needle *needle;
+    // For prerendering stuff under and above needle
+    QPixmap bottomPixmap, topPixmap;
 };
 
 #endif // NEEDLEINSTRUMENT_H
