@@ -57,7 +57,8 @@ SOURCES += main.cpp \
     needles/needle.cpp \
     needles/triangleneedle.cpp \
     needles/gabalancedneedle.cpp \
-    dialogs/panelitemselectiondialog.cpp
+    dialogs/panelitemselectiondialog.cpp \
+    panelitems/slipindicator.cpp
 
 HEADERS += panelitems/panelitem.h \
     extplaneconnection.h \
@@ -92,7 +93,8 @@ HEADERS += panelitems/panelitem.h \
     needles/needle.h \
     needles/triangleneedle.h \
     needles/gabalancedneedle.h \
-    dialogs/panelitemselectiondialog.h
+    dialogs/panelitemselectiondialog.h \
+    panelitems/slipindicator.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
