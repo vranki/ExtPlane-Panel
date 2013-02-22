@@ -11,6 +11,8 @@ PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem(), darkGr
     _width = _height = 200;
     setEditMode(false);
     _panelRotation = _itemRotation = 0;
+    _itemFontSize = 0;
+    _defaultFontSize = 10;
     defaultFont = QApplication::font();
 }
 
@@ -114,6 +116,12 @@ QVariant PanelItem::itemChange(GraphicsItemChange change, const QVariant &value)
     return QGraphicsItem::itemChange(change, value);
 }
 
+void PanelItem::setupPainter(QPainter *painter) {
+    static QPainter::RenderHints aaRenderhints = QPainter::Antialiasing | QPainter::TextAntialiasing;
+    static QPainter::RenderHints noaaRenderhints = 0;
+    painter->setRenderHints(_aaEnabled ? aaRenderhints : noaaRenderhints);
+}
+
 void PanelItem::storeSettings(QSettings &settings) {
     settings.setValue("type", typeName());
     settings.setValue("pos_x", pos().x());
@@ -122,6 +130,7 @@ void PanelItem::storeSettings(QSettings &settings) {
     settings.setValue("height", (int) height());
     settings.setValue("rotation", _itemRotation);
     settings.setValue("zvalue", zValue());
+    settings.setValue("item_font_size", itemFontSize());
 }
 
 void PanelItem::loadSettings(QSettings &settings) {
@@ -133,6 +142,7 @@ void PanelItem::loadSettings(QSettings &settings) {
     setSize(w, h);
     setItemRotation(settings.value("rotation", 0).toInt());
     setZValue(settings.value("zvalue", 0).toInt());
+    setItemFontSize(settings.value("item_font_size", 0).toDouble());
 }
 
 void PanelItem::setPanelRotation(int angle) {
@@ -154,6 +164,10 @@ int PanelItem::itemRotation() {
     return _itemRotation;
 }
 
+float PanelItem::itemFontSize() {
+    return _itemFontSize;
+}
+
 void PanelItem::setZValue(int z) {
     QGraphicsItem::setZValue(z);
 }
@@ -170,14 +184,26 @@ void PanelItem::setEditMode(bool em) {
 bool PanelItem::isEditMode() {
     return _editMode;
 }
+
 void PanelItem::applySettings() {
 }
 
-void PanelItem::setDefaultFontSize(int dfs) {
-    defaultFont.setPointSizeF(dfs);
-    update();
+void PanelItem::setDefaultFontSize(double dfs) {
+    _defaultFontSize = dfs;
+    defaultFont.setPointSizeF(qMax(_defaultFontSize + _itemFontSize, 5.f)); // Limit font size to 5
+    itemSizeChanged(width(), height()); // Force repaint of pixmaps
+}
+
+void PanelItem::setItemFontSize(double ifs) {
+    _itemFontSize = ifs;
+    setDefaultFontSize(_defaultFontSize);
 }
 
 void PanelItem::tickTime(double dt, int total) {}
 
 void PanelItem::setInterpolationEnabled(bool ie) {}
+
+void PanelItem::setAntialiasEnabled(bool ie) {
+    _aaEnabled = ie;
+    itemSizeChanged(width(), height()); // Force repaint of pixmaps
+}

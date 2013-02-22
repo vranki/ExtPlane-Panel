@@ -20,7 +20,7 @@ Switch::Switch(QObject *parent, ExtPlaneConnection *conn) :
 }
 
 void Switch::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    painter->setRenderHint(QPainter::Antialiasing);
+    setupPainter(painter);
     painter->setBrush(Qt::gray);
     painter->setPen(Qt::gray);
 

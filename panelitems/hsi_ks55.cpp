@@ -9,8 +9,7 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(HSI,"indicator/heading/hsi_ks5");
 
-HSI::HSI(QObject *parent, ExtPlaneConnection *conn) :
-PanelItem(parent), _client(this, typeName(), conn)
+HSI::HSI(QObject *parent, ExtPlaneConnection *conn) : PanelItem(parent), _client(this, typeName(), conn)
 {
     
     _bezel = QPixmap::fromImage(QImage(QString("../../images/KCS_55_bezel.png")), Qt::AutoColor);
@@ -261,7 +260,7 @@ void HSI::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
     QColor needleColor(255, 255, 255);
     
     int side = qMin(width(), height());
-    painter->setRenderHint(QPainter::Antialiasing);
+    setupPainter(painter);
     painter->save();
     painter->scale(side / 200.0, side / 200.0);
     painter->save();

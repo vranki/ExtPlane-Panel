@@ -14,7 +14,7 @@ SlipIndicator::SlipIndicator(QObject *parent, ExtPlaneConnection *conn) :
 }
 
 void SlipIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    painter->setRenderHint(QPainter::Antialiasing);
+    setupPainter(painter);
     painter->setPen(Qt::NoPen);
 
     int tubeHeight = width()*0.25f;

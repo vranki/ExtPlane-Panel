@@ -9,10 +9,11 @@ SettingsDialog::SettingsDialog(QWidget *parent, QSettings *appSettings) :
     connect(ui->fullscreenCheckbox, SIGNAL(clicked(bool)), this, SIGNAL(fullscreenChanged(bool)));
     connect(ui->simulateCheckbox, SIGNAL(clicked(bool)), this, SIGNAL(simulateChanged(bool)));
     connect(ui->serverAddressEdit, SIGNAL(textChanged(QString)), this, SIGNAL(setServerAddress(QString)));
-    connect(ui->updateIntervalSpinBox, SIGNAL(valueChanged(double)), this, SIGNAL(setUpdateInterval(double)));
+    connect(ui->updateIntervalComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateIntervalChanged()));
     connect(ui->interpolateCheckbox, SIGNAL(toggled(bool)), this, SIGNAL(setInterpolationEnabled(bool)));
-    connect(ui->panelUpdateSpinBox, SIGNAL(valueChanged(double)), this, SIGNAL(setPanelUpdateInterval(double)));
-    connect(ui->fontSizeSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(setDefaultFontSize(int)));
+    connect(ui->panelUpdateComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(panelUpdateIntervalChanged()));
+    connect(ui->fontSizeSpinBox, SIGNAL(valueChanged(double)), this, SIGNAL(setDefaultFontSize(double)));
+    connect(ui->antialiasCheckbox, SIGNAL(toggled(bool)), this, SIGNAL(setAntialiasEnabled(bool)));
     connect(this, SIGNAL(finished(int)), this, SLOT(saveSettings()));
 }
 
@@ -44,13 +45,18 @@ void SettingsDialog::loadSettings() {
     emit simulateChanged(ui->simulateCheckbox->isChecked());
     ui->serverAddressEdit->setText(appSettings->value("serveraddress", "127.0.0.1:51000").toString());
     emit setServerAddress(ui->serverAddressEdit->text());
-    ui->updateIntervalSpinBox->setValue(appSettings->value("updateinterval", 0.033).toDouble());
-    emit setUpdateInterval(ui->updateIntervalSpinBox->value());
+
+    ui->updateIntervalComboBox->setCurrentIndex(appSettings->value("updateinterval", 0).toInt());
+    updateIntervalChanged();
+
     ui->interpolateCheckbox->setChecked(appSettings->value("interpolate", true).toBool());
     emit setInterpolationEnabled(ui->interpolateCheckbox->isChecked());
-    ui->panelUpdateSpinBox->setValue(appSettings->value("panelupdateinterval", 0.016).toDouble());
-    emit setPanelUpdateInterval(ui->panelUpdateSpinBox->value());
-    ui->fontSizeSpinBox->setValue(appSettings->value("fontsize", 10).toInt());
+    ui->antialiasCheckbox->setChecked(appSettings->value("antialias", true).toBool());
+    emit setAntialiasEnabled(ui->antialiasCheckbox->isChecked());
+
+    ui->panelUpdateComboBox->setCurrentIndex(appSettings->value("panelupdateinterval", 4).toInt());
+
+    ui->fontSizeSpinBox->setValue(appSettings->value("fontsize", 10).toDouble());
     emit setDefaultFontSize(ui->fontSizeSpinBox->value());
     appSettings->endGroup();
 }
@@ -61,10 +67,34 @@ void SettingsDialog::saveSettings() {
     appSettings->setValue("fullscreen", ui->fullscreenCheckbox->isChecked());
     appSettings->setValue("simulate", ui->simulateCheckbox->isChecked());
     appSettings->setValue("serveraddress", ui->serverAddressEdit->text());
-    appSettings->setValue("updateinterval", ui->updateIntervalSpinBox->value());
+    appSettings->setValue("updateinterval", ui->updateIntervalComboBox->currentIndex());
     appSettings->setValue("interpolate", ui->interpolateCheckbox->isChecked());
-    appSettings->setValue("panelupdateinterval", ui->panelUpdateSpinBox->value());
+    appSettings->setValue("antialias", ui->antialiasCheckbox->isChecked());
+    appSettings->setValue("panelupdateinterval", ui->panelUpdateComboBox->currentIndex());
     appSettings->setValue("fontsize", ui->fontSizeSpinBox->value());
     appSettings->endGroup();
     appSettings->sync();
+}
+
+void SettingsDialog::updateIntervalChanged() {
+    bool ok;
+    float newInterval = ui->updateIntervalComboBox->currentText().toFloat(&ok);
+    if(!ok) {
+        newInterval = 0;
+    } else {
+        newInterval = 1.f / newInterval; // Convert Hz to delay in s
+    }
+
+    emit setUpdateInterval(newInterval);
+}
+
+void SettingsDialog::panelUpdateIntervalChanged() {
+    bool ok;
+    float newInterval = ui->panelUpdateComboBox->currentText().toFloat(&ok);
+    if(!ok) {
+        newInterval = 0;
+    } else {
+        newInterval = 1.f / newInterval; // Convert Hz to delay in s
+    }
+    emit setPanelUpdateInterval(newInterval);
 }

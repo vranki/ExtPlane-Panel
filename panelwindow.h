@@ -59,8 +59,9 @@ public slots:
 private slots:
     void tick();
     void setInterpolationEnabled(bool ie);
+    void setAntialiasEnabled(bool ie);
     void setPanelUpdateInterval(double newInterval);
-    void setDefaultFontSize(int newFs);
+    void setDefaultFontSize(double newFs);
 protected:
     virtual void resizeEvent(QResizeEvent * event);
 private:
@@ -81,8 +82,8 @@ private:
     EditItemDialog *editItemDialog; // Only one open at a time
     QTimer tickTimer; // Timer to update items synchronously
     QTime time, totalTime;
-    bool interpolationEnabled;
-    int defaultFontSize;
+    bool interpolationEnabled, aaEnabled;
+    double defaultFontSize;
     // Disables blanking on Maemo
 #ifdef MAEMO
     QTimer blankingTimer;

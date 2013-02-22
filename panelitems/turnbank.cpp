@@ -360,7 +360,7 @@ void TurnAndBank::setNumbers(float div) {
 void TurnAndBank::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 
     int side = qMin(width(), height());
-    painter->setRenderHint(QPainter::Antialiasing);
+    setupPainter(painter);
     painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
     painter->save();
     painter->scale(side / 200.0, side / 200.0);

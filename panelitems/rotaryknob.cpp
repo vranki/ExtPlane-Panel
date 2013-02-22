@@ -17,7 +17,7 @@ RotaryKnob::RotaryKnob(QObject *parent, ExtPlaneConnection *conn) :
 }
 
 void RotaryKnob::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    painter->setRenderHint(QPainter::Antialiasing);
+    setupPainter(painter);
     painter->setBrush(Qt::gray);
     painter->setPen(Qt::gray);
     double circleSize = height();

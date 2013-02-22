@@ -55,8 +55,9 @@ void EditItemDialog::setPanelItem(PanelItem *it) {
     connect(currentItem, SIGNAL(destroyed()), this, SLOT(setPanelItem()));
     ui->zSlider->setValue(it->zValue());
     ui->rotationDial->setValue(it->itemRotation());
+    ui->itemFontsizeSpinBox->setValue(it->itemFontSize());
     connect(ui->zSlider, SIGNAL(valueChanged(int)), it, SLOT(setZValue(int)));
     connect(ui->rotationDial, SIGNAL(valueChanged(int)), it, SLOT(setItemRotation(int)));
-
+    connect(ui->itemFontsizeSpinBox, SIGNAL(valueChanged(double)), it, SLOT(setItemFontSize(double)));
     it->createSettings(ui->itemPropertiesGrid);
 }

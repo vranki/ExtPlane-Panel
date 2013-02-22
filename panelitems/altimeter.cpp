@@ -40,7 +40,6 @@ void Altimeter::repaintPixmap() {
     bottomPixmap.fill(Qt::transparent);
 
     QPainter painter(&bottomPixmap);
-
     painter.setFont(defaultFont);
 
     double side = qMin(width(), height());
@@ -110,6 +109,7 @@ void Altimeter::repaintPixmap() {
 }
 
 void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    setupPainter(painter);
     painter->drawPixmap(0,0, bottomPixmap);
 
     double side = qMin(width(), height());
@@ -120,7 +120,7 @@ void Altimeter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     // Pressure text
     QFont pressureFont = defaultFont;
-    pressureFont.setPointSizeF(defaultFont.pointSizeF() * side/200.f);
+    pressureFont.setPointSizeF(defaultFont.pointSizeF() * side/300.f);
     painter->setFont(pressureFont);
     QString pressureText = QString::number(_baroPressure);
 

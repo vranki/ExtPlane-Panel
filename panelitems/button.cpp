@@ -21,7 +21,8 @@ Button::Button(QObject *parent, ExtPlaneConnection *conn) :
 }
 
 void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    painter->setRenderHint(QPainter::Antialiasing);
+    setupPainter(painter);
+
     if(_isHeld) {
         painter->setBrush(Qt::gray);
     } else {

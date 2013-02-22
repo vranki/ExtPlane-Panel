@@ -20,6 +20,8 @@ public:
 public slots:
     void loadSettings();
     void saveSettings();
+    void updateIntervalChanged();
+    void panelUpdateIntervalChanged();
 protected:
     void changeEvent(QEvent *e);
 signals:
@@ -30,7 +32,8 @@ signals:
     void setUpdateInterval(double newInterval);
     void setPanelUpdateInterval(double newInterval);
     void setInterpolationEnabled(bool ie);
-    void setDefaultFontSize(int newSize);
+    void setAntialiasEnabled(bool ie);
+    void setDefaultFontSize(double newSize);
 private:
     Ui::SettingsDialog *ui;
     QSettings *appSettings;

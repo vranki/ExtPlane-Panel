@@ -13,7 +13,8 @@ Compass::Compass(QObject *parent, ExtPlaneConnection *conn) :
 }
 
 void Compass::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    painter->setRenderHint(QPainter::Antialiasing);
+    setupPainter(painter);
+
     painter->setBrush(Qt::NoBrush);
     painter->setPen(Qt::white);
     painter->drawRect(0,0,width(),height());

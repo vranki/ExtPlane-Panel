@@ -9,9 +9,8 @@ https://github.com/vranki/ExtPlane
 
 License: GNU GPLv3
 
-Works with the ExtPlane plugin on XPlane. It is then possible to run this 
-panel on the same computer or another computer on the network to display
-cockpit instruments from remote X-Plane.
+It is possible to run this panel on the same computer or another computer 
+on the network to display cockpit instruments from remote X-Plane.
 
 Almost all instruments are drawn using scalable vector graphics for
 perfect scaling and high resolutions.
@@ -19,7 +18,6 @@ perfect scaling and high resolutions.
 The app is written using Qt and is platform independent - it runs on
 different Linux variants, Mac and Windows. X-Plane SDK is NOT required
 to build ExtPlane-Panel.
-
 
 Target hardware is: Desktop PC's, Android, Nokia Maemo 4 & 5 devices,
 MeeGo, Raspberry Pi. Minimum Qt version required is Qt 4.5 (limited by Maemo 4).
@@ -81,6 +79,28 @@ recover from accidents, like deleting an instrument.
  - ExtPlane update interval - time (in seconds) how often X-Plane should send updates at maximum
  - Panel update interval - time (in seconds) how often the panel should be redrawn
  - Default font size - affects all instruments
+
+
+Adding new panel items
+----------------------
+
+Adding items is really easy if you know some C++ programming. Subclass
+PanelItem class and implement painting and subscription to datarefs as needed.
+See Button class for a really simple example. 
+If your instrument is round gauge with a needle, you might want to subclass
+NeedleInstrument class. See Airspeed or Variometer classes for example.
+
+Code should be reasonably well documented. If something is not clear, please
+report it.
+
+GPL licence does not *require* you to release any changes you do to this
+application if you only use them yourself. Despite this we *ask* you to 
+release any new instruments you create or any other improvements you make
+into the application.
+
+Preferred way is to create a fork in github and send a pull request when
+you are finished. If you don't want to do this, we're happy with any
+other way to deliver the changes.
 
 
 Contact/Feedback

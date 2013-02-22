@@ -71,6 +71,8 @@ void NeedleInstrument::setNumberScale(float ns) {
 }
 
 void NeedleInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    setupPainter(painter);
+
     painter->drawPixmap(0,0, bottomPixmap);
     int side = qMin(width(), height());
 
@@ -131,7 +133,9 @@ void NeedleInstrument::repaintPixmaps() {
     painter.setFont(numberFont);
 
     int side = qMin(width(), height());
+
     painter.setRenderHint(QPainter::Antialiasing);
+
     painter.save();
     painter.scale(side / 200.0, side / 200.0);
     painter.save();

@@ -35,6 +35,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     editItemDialog = 0;
     panelRotation = 0;
     interpolationEnabled = false;
+    aaEnabled = false;
     defaultFontSize = 15;
     editMode = false;
     dirty = false;
@@ -63,7 +64,8 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(settingsDialog, SIGNAL(setUpdateInterval(double)), connection, SLOT(setUpdateInterval(double)));
     connect(settingsDialog, SIGNAL(setPanelUpdateInterval(double)), this, SLOT(setPanelUpdateInterval(double)));
     connect(settingsDialog, SIGNAL(setInterpolationEnabled(bool)), this, SLOT(setInterpolationEnabled(bool)));
-    connect(settingsDialog, SIGNAL(setDefaultFontSize(int)), this, SLOT(setDefaultFontSize(int)));
+    connect(settingsDialog, SIGNAL(setAntialiasEnabled(bool)), this, SLOT(setAntialiasEnabled(bool)));
+    connect(settingsDialog, SIGNAL(setDefaultFontSize(double)), this, SLOT(setDefaultFontSize(double)));
     settingsDialog->setModal(false);
     settingsDialog->hide();
 
@@ -159,11 +161,13 @@ void PanelWindow::addItem(PanelItem *newItem) {
     connect(newItem, SIGNAL(editPanelItem(PanelItem*)), this, SLOT(editItem(PanelItem*)));
     connect(newItem, SIGNAL(panelItemChanged(PanelItem*)), this, SLOT(panelItemChanged(PanelItem*)));
     connect(settingsDialog, SIGNAL(setInterpolationEnabled(bool)), newItem, SLOT(setInterpolationEnabled(bool)));
-    connect(settingsDialog, SIGNAL(setDefaultFontSize(int)), newItem, SLOT(setDefaultFontSize(int)));
+    connect(settingsDialog, SIGNAL(setAntialiasEnabled(bool)), newItem, SLOT(setAntialiasEnabled(bool)));
+    connect(settingsDialog, SIGNAL(setDefaultFontSize(double)), newItem, SLOT(setDefaultFontSize(double)));
     newItem->setPos(width()/2, height()/2);
     newItem->setPanelRotation(panelRotation);
     newItem->setEditMode(editMode);
     newItem->setInterpolationEnabled(interpolationEnabled);
+    newItem->setAntialiasEnabled(aaEnabled);
     newItem->setDefaultFontSize(defaultFontSize);
     scene.addItem(newItem);
     panelItems.append(newItem);
@@ -216,11 +220,20 @@ void PanelWindow::setInterpolationEnabled(bool ie) {
     interpolationEnabled = ie;
 }
 
-void PanelWindow::setPanelUpdateInterval(double newInterval) {
-    tickTimer.setInterval(newInterval * 1000.f);
+void PanelWindow::setAntialiasEnabled(bool ie) {
+    aaEnabled = ie;
 }
 
-void PanelWindow::setDefaultFontSize(int newFs) {
+void PanelWindow::setPanelUpdateInterval(double newInterval) {
+    if(newInterval > 0) {
+        tickTimer.setInterval(newInterval * 1000.f);
+        tickTimer.start();
+    } else {
+        tickTimer.stop();
+    }
+}
+
+void PanelWindow::setDefaultFontSize(double newFs) {
     defaultFontSize = newFs;
 }
 

@@ -13,7 +13,7 @@
 REGISTER_WITH_PANEL_ITEM_FACTORY(DirectionIndicator,"indicator/heading/basic");
 
 DirectionIndicator::DirectionIndicator(QObject *parent, ExtPlaneConnection *conn) :
-PanelItem(parent), _client(this, typeName(), conn)
+    PanelItem(parent), _client(this, typeName(), conn)
 {
     _value = 0;
     setThickBars(10);
@@ -96,21 +96,21 @@ void DirectionIndicator::createCard(float w, float h){
             p.save();
             QString lineNumber;
             switch (int(i*_numbersScale)) {
-                case 0:
-                    lineNumber = QString("N");
-                    break;
-                case 9:
-                    lineNumber = QString("E");
-                    break;
-                case 18:
-                    lineNumber = QString("S");
-                    break;
-                case 27:
-                    lineNumber = QString("W");
-                    break;
-                default:
-                    lineNumber = QString::number(i*_numbersScale);
-                    break;
+            case 0:
+                lineNumber = QString("N");
+                break;
+            case 9:
+                lineNumber = QString("E");
+                break;
+            case 18:
+                lineNumber = QString("S");
+                break;
+            case 27:
+                lineNumber = QString("W");
+                break;
+            default:
+                lineNumber = QString::number(i*_numbersScale);
+                break;
             }
             p.translate(0,-234);
             int width = p.fontMetrics().width(lineNumber);
@@ -124,7 +124,7 @@ void DirectionIndicator::createCard(float w, float h){
     // Export painter work as pixmap
     p.end();
     _card = QPixmap::fromImage(_cardImage, Qt::AutoColor);
-        
+
 }
 
 
@@ -147,7 +147,7 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
         QPoint(25,-55),
         QPoint(25,-65),
         QPoint(2,-60),
-        QPoint(0,-65), 
+        QPoint(0,-65),
         
         QPoint(-2,-60),
         QPoint(-25,-65),
@@ -160,7 +160,7 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
         QPoint(-5, 30),
         QPoint(-5, 60),
         
-    }; 
+    };
     
     // Init
     QColor needleColor(255, 255, 255);
@@ -168,43 +168,43 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     painter->save(); {
 
-	// Setup render hints for this gauge. SmoothPixmapTransform is important.
-	painter->setRenderHint(QPainter::Antialiasing,true);
-	painter->setRenderHints(QPainter::SmoothPixmapTransform,true);
+        // Setup render hints for this gauge. SmoothPixmapTransform is important.
+        setupPainter(painter);
+        painter->setRenderHints(QPainter::SmoothPixmapTransform,true);
 
-	// Draw the cached card with heading on it, we do this without any scale transformation to speed
-	// things up on mobile devices...
-	painter->save(); {
-	    painter->translate(_card.width()/2, _card.height()/2);
-	    painter->rotate(-_value);
-	    painter->drawPixmap(-_card.width()/2,-_card.height()/2,_card);
-	} painter->restore();
+        // Draw the cached card with heading on it, we do this without any scale transformation to speed
+        // things up on mobile devices...
+        painter->save(); {
+            painter->translate(_card.width()/2, _card.height()/2);
+            painter->rotate(-_value);
+            painter->drawPixmap(-_card.width()/2,-_card.height()/2,_card);
+        } painter->restore();
 
-	// Scale and translate for all drawing of the guage
-	painter->scale(side / 200.0, side / 200.0);
-	painter->translate(100, 100);
+        // Scale and translate for all drawing of the guage
+        painter->scale(side / 200.0, side / 200.0);
+        painter->translate(100, 100);
 
-	// Draw fixed heading pins
-	painter->save(); {
-	    painter->scale(DIRECTION_INDICATOR_FIXED_HEADING_SCALE,DIRECTION_INDICATOR_FIXED_HEADING_SCALE);
-	    painter->setPen(Qt::NoPen);
-	    painter->setBrush(needleColor);
-	    for(int i=0; i<360;i+=45){
-		painter->rotate(45);
-		painter->drawConvexPolygon(needle, 3);
-	    }
-	} painter->restore();
+        // Draw fixed heading pins
+        painter->save(); {
+            painter->scale(DIRECTION_INDICATOR_FIXED_HEADING_SCALE,DIRECTION_INDICATOR_FIXED_HEADING_SCALE);
+            painter->setPen(Qt::NoPen);
+            painter->setBrush(needleColor);
+            for(int i=0; i<360;i+=45){
+                painter->rotate(45);
+                painter->drawConvexPolygon(needle, 3);
+            }
+        } painter->restore();
 
-	// Draw the plane polygon
-	QPen planePen(QColor(200,200,200));
-	planePen.setWidth(3);
-	painter->setPen(planePen);
-	painter->setBrush(Qt::NoBrush);
-	painter->save(); {
-	    painter->rotate(180);
-	    painter->scale(DIRECTION_INDICATOR_PLANE_SCALE,DIRECTION_INDICATOR_PLANE_SCALE);
-	    painter->drawConvexPolygon(plane, sizeof(plane)/sizeof(plane[0]));
-	} painter->restore();
+        // Draw the plane polygon
+        QPen planePen(QColor(200,200,200));
+        planePen.setWidth(3);
+        painter->setPen(planePen);
+        painter->setBrush(Qt::NoBrush);
+        painter->save(); {
+            painter->rotate(180);
+            painter->scale(DIRECTION_INDICATOR_PLANE_SCALE,DIRECTION_INDICATOR_PLANE_SCALE);
+            painter->drawConvexPolygon(plane, sizeof(plane)/sizeof(plane[0]));
+        } painter->restore();
 
     } painter->restore();
 

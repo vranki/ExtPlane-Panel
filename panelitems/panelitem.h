@@ -31,13 +31,19 @@ public:
     explicit PanelItem(QObject *parent);
     ~PanelItem();
     virtual QRectF boundingRect() const;
+    /**
+     * The paint method which repaints the item. Try to optimize it if implementing
+     * complex instruments. Call setupPainter() to set correct rendering hints.
+     */
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void setSize(float w, float h);
     float width() const;
     float height() const;
-    void setSize(float w, float h);
+    int itemRotation();
+    float itemFontSize();
     /**
      * This is called whenever the panel item has changed size (including when first added to the scene).
-     * Panel items which cache resources be pre-rendering complicated stuff should use this method for doing so.
+     * Panel items which cache resources or pre-render complicated stuff should use this method for doing so.
      */
     virtual void itemSizeChanged(float w, float h) {};
     void setEditMode(bool em);
@@ -49,7 +55,6 @@ public:
     virtual QString typeName() = 0;
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
-    int itemRotation();
     virtual void createSettings(QGridLayout *layout);
     virtual void applySettings();
 protected:
@@ -58,6 +63,12 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent *event);
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    /**
+     * Sets correct antialias and other rendering settings configured by user.
+     *
+     * Call before painting stuff in paint().
+     */
+    void setupPainter(QPainter *painter); //
     QFont defaultFont;
 
     // Use for mechanical instruments
@@ -77,11 +88,14 @@ public slots:
     void setZValue(int z);
     virtual void tickTime(double dt, int total);
     virtual void setInterpolationEnabled(bool ie);
-    virtual void setDefaultFontSize(int dfs);
+    virtual void setAntialiasEnabled(bool ie);
+    virtual void setDefaultFontSize(double dfs);
+    virtual void setItemFontSize(double ifs);
 private:
     float _width, _height;
-    bool resizing, _editMode;
+    bool resizing, _editMode, _aaEnabled;
     int _panelRotation, _itemRotation;
+    float _itemFontSize, _defaultFontSize;
 };
 
 #endif // PANELITEM_H
