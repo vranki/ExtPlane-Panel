@@ -110,11 +110,8 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     sss->setScreenSaverInhibit();
 #endif
 
-#ifdef MOBILE_DEVICE
-    showFullScreen();
-#else
     resize(1024, 768);
-#endif
+
     // Start timers
     totalTime.start();
     time.start();
