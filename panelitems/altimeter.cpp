@@ -1,7 +1,7 @@
 #include "altimeter.h"
 #include <QLabel>
 #include "../widgets/distanceunitcombobox.h"
-#include "../extplaneclient.h"
+#include "extplaneclient.h"
 #include "widgets/numberinputlineedit.h"
 #include "../needles/gabalancedneedle.h"
 

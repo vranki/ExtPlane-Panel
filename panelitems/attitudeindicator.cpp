@@ -5,7 +5,7 @@
 #include "attitudeindicator.h"
 #include <cmath>
 #include "../widgets/distanceunitcombobox.h"
-#include "../extplaneclient.h"
+#include "extplaneclient.h"
 #include "widgets/numberinputlineedit.h"
 #include <QLabel>
 

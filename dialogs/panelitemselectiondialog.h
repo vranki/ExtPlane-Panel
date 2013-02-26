@@ -6,8 +6,8 @@
 #include <QListWidgetItem>
 #include <QGraphicsScene>
 #include "../panelitemfactory.h"
-#include "../simulatedextplaneconnection.h"
-#include "../extplaneconnection.h"
+#include "simulatedextplaneconnection.h"
+#include "extplaneconnection.h"
 
 namespace Ui {
 class PanelItemSelectionDialog;

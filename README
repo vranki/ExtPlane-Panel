@@ -30,6 +30,10 @@ the application it's easiest to use the official Qt SDK from Digia.
 
 On Ubuntu/Debian, install packages libqt4-dev and qtmobility-dev.
 
+You'll also need to check out ExtPlane plugin sources to directory
+next to ExtPlane-Panel directory. Plugin contains client code
+required by panel
+
 * To build on Mac or Linux from command line*
 
 $ qmake

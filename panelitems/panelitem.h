@@ -10,8 +10,8 @@
 #include <QGridLayout>
 #include "units.h"
 #include "../valueinterpolator.h"
-#include "../extplaneconnection.h"
-#include "../extplaneclient.h"
+#include "extplaneconnection.h"
+#include "extplaneclient.h"
 #include "panelitemfactory.h"
 
 

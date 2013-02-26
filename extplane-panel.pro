@@ -4,6 +4,18 @@ QT += gui \
 CONFIG += mobility
 MOBILITY += systeminfo
 
+# Place ExtPlane plugin to a directory next to build directory, or
+# define the directory here:
+
+EXTPLANE_PLUGIN_PATH=../ExtPlane
+
+!exists($$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt) {
+     error(You don't have ExtPlane checked out in directory next to this. Place it there or build will fail.)
+}
+
+EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt
+INCLUDEPATH += $$EXTPLANE_CLIENT_PATH
+
 maemo5: { 
     QT += dbus
     DEFINES += MAEMO
@@ -14,6 +26,7 @@ exists(/etc/maemo_version) {
     DEFINES += MAEMO
     DEFINES += MOBILE_DEVICE
 }
+
 android::DEFINES += MOBILE_DEVICE
 meego::DEFINES += MOBILE_DEVICE
 
@@ -23,13 +36,17 @@ DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
 TEMPLATE = app
-SOURCES += main.cpp \
+
+SOURCES += \
+    $$EXTPLANE_CLIENT_PATH/extplaneconnection.cpp \
+    $$EXTPLANE_CLIENT_PATH/extplaneclient.cpp \
+    $$EXTPLANE_CLIENT_PATH/clientdataref.cpp \
+    $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.cpp \
+    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.cpp \
+    $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.cpp \
+    main.cpp \
     panelitems/panelitem.cpp \
-    extplaneconnection.cpp \
     panelwindow.cpp \
-    extplaneclient.cpp \
-    clientdataref.cpp \
-    clientdatarefprovicer.cpp \
     panelitems/airspeedindicator.cpp \
     units.cpp \
     menubutton.cpp \
@@ -49,10 +66,8 @@ SOURCES += main.cpp \
     widgets/distanceunitcombobox.cpp \
     panelitems/button.cpp \
     panelitems/switch.cpp \
-    simulateddatarefs/simulateddataref.cpp \
     valueinterpolator.cpp \
     panelitems/rotaryknob.cpp \
-    simulatedextplaneconnection.cpp \
     panelitemfactory.cpp \
     needles/needle.cpp \
     needles/triangleneedle.cpp \
@@ -60,12 +75,15 @@ SOURCES += main.cpp \
     dialogs/panelitemselectiondialog.cpp \
     panelitems/slipindicator.cpp
 
-HEADERS += panelitems/panelitem.h \
-    extplaneconnection.h \
+HEADERS += \
+    $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
+    $$EXTPLANE_CLIENT_PATH/extplaneclient.h \
+    $$EXTPLANE_CLIENT_PATH/clientdataref.h \
+    $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.h \
+    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.h \
+    $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.h \
+    panelitems/panelitem.h \
     panelwindow.h \
-    extplaneclient.h \
-    clientdataref.h \
-    clientdatarefprovicer.h \
     panelitems/airspeedindicator.h \
     units.h \
     menubutton.h \
@@ -85,10 +103,8 @@ HEADERS += panelitems/panelitem.h \
     widgets/distanceunitcombobox.h \
     panelitems/button.h \
     panelitems/switch.h \
-    simulateddatarefs/simulateddataref.h \
     valueinterpolator.h \
     panelitems/rotaryknob.h \
-    simulatedextplaneconnection.h \
     panelitemfactory.h \
     needles/needle.h \
     needles/triangleneedle.h \
