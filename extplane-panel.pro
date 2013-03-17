@@ -10,7 +10,7 @@ MOBILITY += systeminfo
 EXTPLANE_PLUGIN_PATH=../ExtPlane
 
 !exists($$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt) {
-     error(You don't have ExtPlane checked out in directory next to this. Place it there or build will fail.)
+     error(You don\'t have ExtPlane checked out in directory next to this. Place it there or build will fail.)
 }
 
 EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt
@@ -73,7 +73,10 @@ SOURCES += \
     needles/triangleneedle.cpp \
     needles/gabalancedneedle.cpp \
     dialogs/panelitemselectiondialog.cpp \
-    panelitems/slipindicator.cpp
+    panelitems/slipindicator.cpp \
+    dialogs/hardwaredialog.cpp \
+    hardwarebinding.cpp \
+    hardwaremanager.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -110,11 +113,15 @@ HEADERS += \
     needles/triangleneedle.h \
     needles/gabalancedneedle.h \
     dialogs/panelitemselectiondialog.h \
-    panelitems/slipindicator.h
+    panelitems/slipindicator.h \
+    dialogs/hardwaredialog.h \
+    hardwarebinding.h \
+    hardwaremanager.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
-    dialogs/panelitemselectiondialog.ui
+    dialogs/panelitemselectiondialog.ui \
+    dialogs/hardwaredialog.ui
 
 # Lot of files for Android build, ignore them if not used
 OTHER_FILES += android/AndroidManifest.xml \

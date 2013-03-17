@@ -14,7 +14,6 @@
 #include "dialogs/settingsdialog.h"
 #include "dialogs/edititemdialog.h"
 
-
 MenuButton::MenuButton(QWidget *parent) : QObject(parent), side(20) {
     // Init
     panelWindow = parent;
@@ -72,6 +71,10 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     QPushButton *newButton = new QPushButton("New Panel", menu);
     connect(newButton, SIGNAL(clicked()), panelWindow, SLOT(newPanel()));
     layout->addWidget(newButton);
+
+    QPushButton *hardwareButton = new QPushButton("Hardware", menu);
+    connect(hardwareButton, SIGNAL(clicked()), panelWindow, SLOT(showHardware()));
+    layout->addWidget(hardwareButton);
 
     QPushButton *settingsButton = new QPushButton("App Settings", menu);
     connect(settingsButton, SIGNAL(clicked()), panelWindow, SLOT(showSettings()));

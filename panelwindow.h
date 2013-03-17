@@ -10,12 +10,14 @@
 #include <QKeyEvent>
 
 #include "panelitemfactory.h"
+#include "hardwaremanager.h"
 
 class PanelItem;
 class MenuButton;
 class SettingsDialog;
 class ExtPlaneConnection;
 class EditItemDialog;
+class HardwareDialog;
 
 /**
  * @brief The PanelWindow class
@@ -52,6 +54,7 @@ public slots:
     void loadPanel();
     void loadPanel(QString filename);
     void newPanel();
+    void showHardware();
     void showSettings();
     void editItem(PanelItem *item=0);
     void panelItemChanged(PanelItem *item=0); // Should be emitted by panel item when they become dirty
@@ -67,8 +70,10 @@ protected:
 private:
     QList<PanelItem*> selectedGauges();
 private:
+    HardwareManager hwManager;
     MenuButton *menuButton;
     SettingsDialog *settingsDialog;
+    HardwareDialog *hardwareDialog;
     QGraphicsScene scene;
     QGraphicsTextItem statusMessage; // Displayed in panel
     int panelRotation; // Master rotation of the panel

@@ -21,19 +21,21 @@
 #include "extplaneconnection.h"
 #include "simulatedextplaneconnection.h"
 #include "menubutton.h"
+#include "panelitemfactory.h"
+#include "panelitems/panelitem.h"
 #include "dialogs/settingsdialog.h"
 #include "dialogs/edititemdialog.h"
 #include "dialogs/panelitemselectiondialog.h"
-#include "panelitemfactory.h"
-#include "panelitems/panelitem.h"
+#include "dialogs/hardwaredialog.h"
 
-PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
+PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage(), hwManager(this) {
     // Init
     appSettings = NULL;
     panelSettings = NULL;
     settingsDialog = NULL;
     editItemDialog = 0;
     panelRotation = 0;
+    hardwareDialog = 0;
     interpolationEnabled = false;
     aaEnabled = false;
     defaultFontSize = 15;
@@ -273,7 +275,7 @@ void PanelWindow::savePanel() {
             savePanel(panelSettings->fileName());
 
             // Register this file as the last loaded...
-            appSettings->setValue("lastloadedpanel",panelSettings->fileName());
+            appSettings->setValue("lastloadedpanel", panelSettings->fileName());
         }
     } else {
         savePanel(panelSettings->fileName());
@@ -285,18 +287,21 @@ void PanelWindow::savePanel(QString filename) {
     qDebug() << Q_FUNC_INFO << "saving panel to " << filename;
     int panelNumber = 0;
     QString panelName = "Panel";
-    panelSettings->beginGroup("panel-" + QString::number(panelNumber));
-    panelSettings->group().clear();
-    panelSettings->setValue("number", panelNumber);
-    panelSettings->setValue("name", panelName);
-    panelSettings->setValue("gaugecount", panelItems.size());
-    int gn = 0;
-    foreach(PanelItem *g, panelItems) {
-        panelSettings->beginGroup("gauge-" + QString::number(gn));
-        g->storeSettings(*panelSettings);
-        panelSettings->endGroup();
-        gn++;
-    }
+    panelSettings->beginGroup("panel-" + QString::number(panelNumber)); {
+        panelSettings->group().clear();
+        panelSettings->setValue("number", panelNumber);
+        panelSettings->setValue("name", panelName);
+        panelSettings->setValue("gaugecount", panelItems.size());
+        int gn = 0;
+        foreach(PanelItem *g, panelItems) {
+            panelSettings->beginGroup("gauge-" + QString::number(gn)); {
+                g->storeSettings(*panelSettings);
+                panelSettings->endGroup(); }
+            gn++;
+        }
+        panelSettings->endGroup(); }
+    panelSettings->beginGroup("hardware");
+    hwManager.saveSettings(panelSettings);
     panelSettings->endGroup();
     panelSettings->sync();
     dirty = false;
@@ -348,6 +353,9 @@ void PanelWindow::loadPanel(QString filename) {
         }
         panelSettings->endGroup();
     }
+    panelSettings->beginGroup("hardware");
+    hwManager.loadSettings(panelSettings);
+    panelSettings->endGroup();
 
     // Register this file as the last loaded...
     appSettings->setValue("lastloadedpanel",filename);
@@ -355,8 +363,6 @@ void PanelWindow::loadPanel(QString filename) {
 }
 
 void PanelWindow::newPanel() {
-    qDebug() << Q_FUNC_INFO << "new panel";
-
     // Clear all panel items
     foreach(PanelItem *g, panelItems) {
 	g->deleteLater();
@@ -369,7 +375,12 @@ void PanelWindow::newPanel() {
     dirty = true;
 }
 
-
+void PanelWindow::showHardware() {
+    if(!hardwareDialog) {
+        hardwareDialog = new HardwareDialog(this, &hwManager);
+    }
+    hardwareDialog->show();
+}
 
 void PanelWindow::showSettings() {
     settingsDialog->show();
