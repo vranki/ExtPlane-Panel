@@ -9,6 +9,7 @@ HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
 {
     ui->setupUi(this);
     connect(ui->newBindingButton, SIGNAL(clicked()), this, SLOT(newBinding()));
+    connect(ui->deleteBindingButton, SIGNAL(clicked()), this, SLOT(deleteBinding()));
     connect(ui->saveChangesButton, SIGNAL(clicked()), this, SLOT(saveChanges()));
     connect(ui->bindingListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(currentRowChanged(int)));
     updateUi();
@@ -32,17 +33,34 @@ void HardwareDialog::changeEvent(QEvent *e)
 }
 
 void HardwareDialog::newBinding() {
-    currentBinding = new HardwareBinding(hwManager);
+    currentBinding = new HardwareBinding(hwManager, hwManager->connection());
     int num = ui->bindingListWidget->count();
     currentBinding->setName(QString("Binding %0").arg(num));
     hwManager->addBinding(currentBinding);
     updateUi();
 }
 
+void HardwareDialog::deleteBinding()
+{
+    int num = ui->bindingListWidget->row(ui->bindingListWidget->selectedItems().first());
+    if(num >= 0) {
+        HardwareBinding *binding = bindingRows.value(num);
+        if(currentBinding == binding)
+            currentBinding = 0;
+        hwManager->deleteBinding(binding);
+    }
+    updateUi();
+}
+
 void HardwareDialog::saveChanges() {
     if(!currentBinding) return;
     currentBinding->setName(ui->bindingNameLineEdit->text());
+    currentBinding->setRefName(ui->bindingRefNameEdit->text());
+    currentBinding->setAccuracy(ui->refAccuracySpinBox->value());
+    currentBinding->setInputValues(ui->inputMinSpinbox->value(), ui->inputMaxSpinbox->value());
+    currentBinding->setOutputValues(ui->outputMinSpinbox->value(), ui->outputMaxSpinbox->value());
     updateUi();
+    currentBinding->activate();
 }
 
 void HardwareDialog::currentRowChanged(int row) {
@@ -54,6 +72,12 @@ void HardwareDialog::currentRowChanged(int row) {
 void HardwareDialog::updateUi() {
     if(currentBinding) {
         ui->bindingNameLineEdit->setText(currentBinding->name());
+        ui->bindingRefNameEdit->setText(currentBinding->refName());
+        ui->refAccuracySpinBox->setValue(currentBinding->accuracy());
+        ui->inputMinSpinbox->setValue(currentBinding->inputMin());
+        ui->inputMaxSpinbox->setValue(currentBinding->inputMax());
+        ui->outputMinSpinbox->setValue(currentBinding->outputMin());
+        ui->outputMaxSpinbox->setValue(currentBinding->outputMax());
     } else {
         ui->bindingNameLineEdit->setText("");
     }

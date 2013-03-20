@@ -88,10 +88,24 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QDoubleSpinBox" name="inputMinSpinbox"/>
+       <widget class="QDoubleSpinBox" name="inputMinSpinbox">
+        <property name="minimum">
+         <double>-99999.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>99999.990000000005239</double>
+        </property>
+       </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QDoubleSpinBox" name="inputMaxSpinbox"/>
+       <widget class="QDoubleSpinBox" name="inputMaxSpinbox">
+        <property name="minimum">
+         <double>-99999.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>99999.000000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="6" column="0">
        <widget class="QLabel" name="label_4">
@@ -111,7 +125,14 @@
        </widget>
       </item>
       <item row="7" column="1">
-       <widget class="QDoubleSpinBox" name="outputMinSpinbox"/>
+       <widget class="QDoubleSpinBox" name="outputMinSpinbox">
+        <property name="minimum">
+         <double>-99999.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>99999.000000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="8" column="0">
        <widget class="QLabel" name="label_6">

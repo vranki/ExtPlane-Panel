@@ -28,7 +28,7 @@
 #include "dialogs/panelitemselectiondialog.h"
 #include "dialogs/hardwaredialog.h"
 
-PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage(), hwManager(this) {
+PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     // Init
     appSettings = NULL;
     panelSettings = NULL;
@@ -49,7 +49,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage(), hwManage
     appSettings->beginGroup("settings");
     connection = appSettings->value("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
     appSettings->endGroup();
-
+    hwManager = new HardwareManager(this, connection);
     // Setup window
     setScene(&scene);
 
@@ -301,7 +301,7 @@ void PanelWindow::savePanel(QString filename) {
         }
         panelSettings->endGroup(); }
     panelSettings->beginGroup("hardware");
-    hwManager.saveSettings(panelSettings);
+    hwManager->saveSettings(panelSettings);
     panelSettings->endGroup();
     panelSettings->sync();
     dirty = false;
@@ -354,7 +354,7 @@ void PanelWindow::loadPanel(QString filename) {
         panelSettings->endGroup();
     }
     panelSettings->beginGroup("hardware");
-    hwManager.loadSettings(panelSettings);
+    hwManager->loadSettings(panelSettings);
     panelSettings->endGroup();
 
     // Register this file as the last loaded...
@@ -377,7 +377,7 @@ void PanelWindow::newPanel() {
 
 void PanelWindow::showHardware() {
     if(!hardwareDialog) {
-        hardwareDialog = new HardwareDialog(this, &hwManager);
+        hardwareDialog = new HardwareDialog(this, hwManager);
     }
     hardwareDialog->show();
 }

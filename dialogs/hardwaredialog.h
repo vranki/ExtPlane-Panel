@@ -6,6 +6,7 @@
 
 class HardwareManager;
 class HardwareBinding;
+class ExtPlaneConnection;
 
 namespace Ui {
 class HardwareDialog;
@@ -22,6 +23,7 @@ protected:
     void changeEvent(QEvent *e);
 private slots:
     void newBinding();
+    void deleteBinding();
     void saveChanges();
     void currentRowChanged(int row);
 private:

@@ -70,7 +70,7 @@ protected:
 private:
     QList<PanelItem*> selectedGauges();
 private:
-    HardwareManager hwManager;
+    HardwareManager *hwManager;
     MenuButton *menuButton;
     SettingsDialog *settingsDialog;
     HardwareDialog *hardwareDialog;

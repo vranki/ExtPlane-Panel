@@ -1,16 +1,27 @@
 #include "hardwaremanager.h"
 #include "hardwarebinding.h"
 
-HardwareManager::HardwareManager(QObject *parent) : QObject(parent) {
+HardwareManager::HardwareManager(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection_(conn) {
 }
 
 QList<HardwareBinding *> &HardwareManager::bindings() {
     return hwBindings;
 }
 
+ExtPlaneConnection *HardwareManager::connection()
+{
+    return connection_;
+}
+
 void HardwareManager::addBinding(HardwareBinding *binding) {
     Q_ASSERT(binding->parent()==this);
     hwBindings.append(binding);
+}
+
+void HardwareManager::deleteBinding(HardwareBinding *binding)
+{
+    hwBindings.removeOne(binding);
+    binding->deleteLater();
 }
 
 void HardwareManager::saveSettings(QSettings *panelSettings) {
@@ -29,9 +40,10 @@ void HardwareManager::loadSettings(QSettings *panelSettings) {
     int bn = panelSettings->value("bindingCount").toInt();
     for(int i=0;i<bn;i++) {
         panelSettings->beginGroup("binding-" + QString::number(i));
-        HardwareBinding *binding = new HardwareBinding(this);
+        HardwareBinding *binding = new HardwareBinding(this, connection());
         binding->loadSettings(panelSettings);
         panelSettings->endGroup();
         hwBindings.append(binding);
+        binding->activate();
     }
 }
