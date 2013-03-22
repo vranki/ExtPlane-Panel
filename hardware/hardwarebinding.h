@@ -29,8 +29,13 @@ public:
     void setOutputValues(double min, double max);
     double outputMin();
     double outputMax();
+    void setDevice(int dev);
+    int device();
+    void setOutput(int output);
+    int output();
 signals:
-    
+    void outputValue(double value, int output);
+
 public slots:
 private slots:
     void refChanged(ClientDataRef *ref);

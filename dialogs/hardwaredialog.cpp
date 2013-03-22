@@ -1,7 +1,7 @@
 #include "hardwaredialog.h"
 #include "ui_hardwaredialog.h"
-#include "hardwaremanager.h"
-#include "hardwarebinding.h"
+#include "../hardware/hardwaremanager.h"
+#include "../hardware/hardwarebinding.h"
 
 HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
     QDialog(parent),

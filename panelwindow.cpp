@@ -23,6 +23,7 @@
 #include "menubutton.h"
 #include "panelitemfactory.h"
 #include "panelitems/panelitem.h"
+#include "hardware/hardwaremanager.h"
 #include "dialogs/settingsdialog.h"
 #include "dialogs/edititemdialog.h"
 #include "dialogs/panelitemselectiondialog.h"

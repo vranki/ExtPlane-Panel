@@ -85,6 +85,27 @@ double HardwareBinding::outputMax()
 {
     return outputMax_;
 }
+
+void HardwareBinding::setDevice(int dev)
+{
+    device_ = dev;
+}
+
+int HardwareBinding::device()
+{
+    return device_;
+}
+
+void HardwareBinding::setOutput(int output)
+{
+    output_ = output;
+}
+
+int HardwareBinding::output()
+{
+    return output_;
+}
+
 void HardwareBinding::refChanged(ClientDataRef *ref) {
     bool ok;
     double refValue = ref->valueString().toDouble(&ok);
@@ -92,10 +113,19 @@ void HardwareBinding::refChanged(ClientDataRef *ref) {
         qDebug() << Q_FUNC_INFO << "Can't convert value " << ref->valueString() << " to double.";
         return;
     }
+    // Limit value to input limits
     refValue = qMin(refValue, inputMax_);
     refValue = qMax(refValue, inputMin_);
 
-    // @todo continue here..
+    double valueScaled = (refValue - inputMin_) / (inputMax_ - inputMin_); // [0-1]
+
+    double valueOut = outputMin_ + (outputMax_ - outputMin_) * valueScaled;
+
+    // Out value should be within limits
+    valueOut = qMax(valueOut, outputMin_);
+    valueOut = qMin(valueOut, outputMax_);
+
+    emit outputValue(valueOut, output_);
 }
 
 void HardwareBinding::refDeleted() {

@@ -10,7 +10,7 @@
 #include <QKeyEvent>
 
 #include "panelitemfactory.h"
-#include "hardwaremanager.h"
+
 
 class PanelItem;
 class MenuButton;
@@ -18,6 +18,7 @@ class SettingsDialog;
 class ExtPlaneConnection;
 class EditItemDialog;
 class HardwareDialog;
+class HardwareManager;
 
 /**
  * @brief The PanelWindow class
