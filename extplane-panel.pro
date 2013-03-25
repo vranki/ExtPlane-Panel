@@ -77,7 +77,8 @@ SOURCES += \
     panelitems/slipindicator.cpp \
     dialogs/hardwaredialog.cpp \
     hardware/hardwarebinding.cpp \
-    hardware/hardwaremanager.cpp
+    hardware/hardwaremanager.cpp \
+    settings.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -117,7 +118,8 @@ HEADERS += \
     panelitems/slipindicator.h \
     dialogs/hardwaredialog.h \
     hardware/hardwarebinding.h \
-    hardware/hardwaremanager.h
+    hardware/hardwaremanager.h \
+    settings.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \

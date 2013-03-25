@@ -10,6 +10,7 @@
 #include <QKeyEvent>
 
 #include "panelitemfactory.h"
+#include "settings.h"
 
 
 class PanelItem;
@@ -82,7 +83,7 @@ private:
     bool editMode; // True if in edit mode
     bool dirty; // True when any panel changes have occured
     ExtPlaneConnection *connection;
-    QSettings *appSettings; // Loaded on app start, contains general settings, passed on to settings dialog
+    Settings *appSettings; // Loaded on app start, contains general settings, passed on to settings dialog. Use valueFromSettingsOrCommandLine to extract settings from both the file and command line.
     QSettings *panelSettings; // Contains all PanelItem settings
     QList<PanelItem *> panelItems;
     PanelItemFactory itemFactory;

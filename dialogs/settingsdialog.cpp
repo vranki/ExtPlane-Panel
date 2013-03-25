@@ -2,7 +2,7 @@
 #include "ui_settingsdialog.h"
 #include <QDebug>
 
-SettingsDialog::SettingsDialog(QWidget *parent, QSettings *appSettings) :
+SettingsDialog::SettingsDialog(QWidget *parent, Settings *appSettings) :
     QDialog(parent), ui(new Ui::SettingsDialog), appSettings(appSettings) {
     ui->setupUi(this);
     connect(ui->panelRotationDial, SIGNAL(valueChanged(int)), this, SIGNAL(rotationChanged(int)));
@@ -34,29 +34,29 @@ void SettingsDialog::changeEvent(QEvent *e) {
 
 void SettingsDialog::loadSettings() {
     appSettings->beginGroup("settings");
-    ui->panelRotationDial->setValue(appSettings->value("panelrotation").toInt());
+    ui->panelRotationDial->setValue(appSettings->valueFromSettingsOrCommandLine("panelrotation").toInt());
 #ifdef MOBILE_DEVICE // Default to fullscreen on mobile devices
-    ui->fullscreenCheckbox->setChecked(appSettings->value("fullscreen", true).toBool());
+    ui->fullscreenCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("fullscreen", true).toBool());
 #else
-    ui->fullscreenCheckbox->setChecked(appSettings->value("fullscreen", false).toBool());
+    ui->fullscreenCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("fullscreen", false).toBool());
 #endif
     emit fullscreenChanged(ui->fullscreenCheckbox->isChecked());
-    ui->simulateCheckbox->setChecked(appSettings->value("simulate", false).toBool());
+    ui->simulateCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("simulate", false).toBool());
     emit simulateChanged(ui->simulateCheckbox->isChecked());
-    ui->serverAddressEdit->setText(appSettings->value("serveraddress", "127.0.0.1:51000").toString());
+    ui->serverAddressEdit->setText(appSettings->valueFromSettingsOrCommandLine("serveraddress", "127.0.0.1:51000").toString());
     emit setServerAddress(ui->serverAddressEdit->text());
 
-    ui->updateIntervalComboBox->setCurrentIndex(appSettings->value("updateinterval", 0).toInt());
+    ui->updateIntervalComboBox->setCurrentIndex(appSettings->valueFromSettingsOrCommandLine("updateinterval", 0).toInt());
     updateIntervalChanged();
 
-    ui->interpolateCheckbox->setChecked(appSettings->value("interpolate", true).toBool());
+    ui->interpolateCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("interpolate", true).toBool());
     emit setInterpolationEnabled(ui->interpolateCheckbox->isChecked());
-    ui->antialiasCheckbox->setChecked(appSettings->value("antialias", true).toBool());
+    ui->antialiasCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("antialias", true).toBool());
     emit setAntialiasEnabled(ui->antialiasCheckbox->isChecked());
 
-    ui->panelUpdateComboBox->setCurrentIndex(appSettings->value("panelupdateinterval", 4).toInt());
+    ui->panelUpdateComboBox->setCurrentIndex(appSettings->valueFromSettingsOrCommandLine("panelupdateinterval", 4).toInt());
 
-    ui->fontSizeSpinBox->setValue(appSettings->value("fontsize", 10).toDouble());
+    ui->fontSizeSpinBox->setValue(appSettings->valueFromSettingsOrCommandLine("fontsize", 10).toDouble());
     emit setDefaultFontSize(ui->fontSizeSpinBox->value());
     appSettings->endGroup();
 }

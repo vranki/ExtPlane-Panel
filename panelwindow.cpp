@@ -46,11 +46,11 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     dirty = false;
 
     // Load settings
-    appSettings = new QSettings("org.vranki", "extplane-panel", this);
+    appSettings = new Settings("org.vranki", "extplane-panel", this);
 
     // Create connection and item factory
     appSettings->beginGroup("settings");
-    connection = appSettings->value("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
+    connection = appSettings->valueFromSettingsOrCommandLine("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
     appSettings->endGroup();
     hwManager = new HardwareManager(this, connection);
 
@@ -98,14 +98,17 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
 
     // Load the last loaded panel. If there is no last loaded panel, we will create a new default one.
-    QString lastLoadedPanel = appSettings->value("lastloadedpanel","").toString();
-    if(lastLoadedPanel.isEmpty()) {
-        // This must the first launch - in this case we will load a default panel for saving to in the user's documents folder
-        lastLoadedPanel = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "ExtPlane-Panel-Default.ini";
-        panelSettings = new QSettings(lastLoadedPanel,QSettings::IniFormat,this);
+    // Furthermore, if the command line specifies a filename flag (--filename x.ini), we will load that one instead
+    QString panelToLoad = appSettings->valueFromSettingsOrCommandLine("lastloadedpanel","").toString();
+    if(panelToLoad.isEmpty()) {
+        // This must the first launch - in this case we will create and load a default panel for saving to in the user's documents folder
+        panelToLoad = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "ExtPlane-Panel-Default.ini";
+        panelSettings = new QSettings(panelToLoad,QSettings::IniFormat,this);
         savePanel();
     }
-    this->loadPanel(lastLoadedPanel);
+    if(!appSettings->valueFromSettingsOrCommandLine("filename","").toString().isEmpty())
+        panelToLoad = appSettings->valueFromSettingsOrCommandLine("filename").toString();
+    this->loadPanel(panelToLoad);
 
     // Start connection to ExtPlane
     this->settingsDialog->loadSettings(); // This will trigger signals to start connection to ExtPlane

@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QSettings>
 
+#include "settings.h"
+
 namespace Ui {
     class SettingsDialog;
 }
@@ -15,7 +17,7 @@ class SettingsDialog : public QDialog {
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent, QSettings *appSettings);
+    explicit SettingsDialog(QWidget *parent, Settings *appSettings);
     ~SettingsDialog();
 public slots:
     void loadSettings();
@@ -36,7 +38,7 @@ signals:
     void setDefaultFontSize(double newSize);
 private:
     Ui::SettingsDialog *ui;
-    QSettings *appSettings; // General settings, passed from PanelWindow
+    Settings *appSettings; // General settings, passed from PanelWindow
 };
 
 #endif // SETTINGSDIALOG_H
