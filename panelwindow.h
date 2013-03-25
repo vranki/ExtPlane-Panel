@@ -52,6 +52,7 @@ public slots:
     void showAddItemDialog();
     void savePanel();
     void savePanel(QString filename);
+    void savePanelAs();
     void loadPanel();
     void loadPanel(QString filename);
     void newPanel();

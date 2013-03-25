@@ -18,6 +18,7 @@
 #include <QFileDialog>
 #include <QCoreApplication>
 #include <QDesktopWidget>
+#include <QDesktopServices>
 
 #include "extplaneconnection.h"
 #include "simulatedextplaneconnection.h"
@@ -52,9 +53,9 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connection = appSettings->value("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
     appSettings->endGroup();
     hwManager = new HardwareManager(this, connection);
+
     // Setup window
     setScene(&scene);
-
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setSceneRect(0, 0, width(), height());
@@ -94,16 +95,20 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
     tickTimer.setInterval(64);
     tickTimer.setSingleShot(false);
-
     connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
 
-    // Load last-loaded panel
-    this->loadPanel(appSettings->value("lastloadedpanel","").toString());
+    // Load the last loaded panel. If there is no last loaded panel, we will create a new default one.
+    QString lastLoadedPanel = appSettings->value("lastloadedpanel","").toString();
+    if(lastLoadedPanel.isEmpty()) {
+        // This must the first launch - in this case we will load a default panel for saving to in the user's documents folder
+        lastLoadedPanel = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "ExtPlane-Panel-Default.ini";
+        panelSettings = new QSettings(lastLoadedPanel,QSettings::IniFormat,this);
+        savePanel();
+    }
+    this->loadPanel(lastLoadedPanel);
 
     // Start connection to ExtPlane
     this->settingsDialog->loadSettings(); // This will trigger signals to start connection to ExtPlane
-    //this->loadPanel();
-
 
     // Disable screensaver on Maemo
 #ifdef MAEMO
@@ -111,7 +116,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     blankingTimer.start(30000);
 #else
     // Disable screensaver (no qt mobility on Diablo)
-    QtMobility::QSystemScreenSaver *sss=new QtMobility::QSystemScreenSaver ( this );
+    QtMobility::QSystemScreenSaver *sss = new QtMobility::QSystemScreenSaver(this);
     sss->setScreenSaverInhibit();
 #endif
 
@@ -190,7 +195,6 @@ void PanelWindow::panelRotationChanged(int r) {
 
 void PanelWindow::fullscreenChanged(bool fs) {
     if(fs) {
-
         showFullScreen();
     } else {
         showNormal();
@@ -293,6 +297,19 @@ void PanelWindow::savePanel() {
     }
 }
 
+void PanelWindow::savePanelAs() {
+
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save Panel File"), panelSettings->fileName(), tr("Ini Files (*.ini)"));
+    if(!filename.isEmpty()) {
+        // Create new file and save
+        panelSettings = new QSettings(filename,QSettings::IniFormat,this);
+        savePanel(panelSettings->fileName());
+
+        // Register this file as the last loaded...
+        appSettings->setValue("lastloadedpanel", panelSettings->fileName());
+    }
+}
+
 
 void PanelWindow::savePanel(QString filename) {
     qDebug() << Q_FUNC_INFO << "saving panel to " << filename;
@@ -376,7 +393,7 @@ void PanelWindow::loadPanel(QString filename) {
 void PanelWindow::newPanel() {
     // Clear all panel items
     foreach(PanelItem *g, panelItems) {
-	g->deleteLater();
+        g->deleteLater();
     }
 
     // Load panel settings file

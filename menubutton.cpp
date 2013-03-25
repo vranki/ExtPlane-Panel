@@ -64,6 +64,10 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     connect(saveButton, SIGNAL(clicked()), panelWindow, SLOT(savePanel()));
     layout->addWidget(saveButton);
 
+    QPushButton *saveAsButton = new QPushButton("Save Panel As...", menu);
+    connect(saveAsButton, SIGNAL(clicked()), panelWindow, SLOT(savePanelAs()));
+    layout->addWidget(saveAsButton);
+
     QPushButton *loadButton = new QPushButton("Load Panel", menu);
     connect(loadButton, SIGNAL(clicked()), panelWindow, SLOT(loadPanel()));
     layout->addWidget(loadButton);
