@@ -106,8 +106,8 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
         panelSettings = new QSettings(panelToLoad,QSettings::IniFormat,this);
         savePanel();
     }
-    if(!appSettings->valueFromSettingsOrCommandLine("filename","").toString().isEmpty())
-        panelToLoad = appSettings->valueFromSettingsOrCommandLine("filename").toString();
+    if(!appSettings->valueFromSettingsOrCommandLine("panelfile","").toString().isEmpty())
+        panelToLoad = appSettings->valueFromSettingsOrCommandLine("panelfile").toString();
     this->loadPanel(panelToLoad);
 
     // Start connection to ExtPlane
