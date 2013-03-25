@@ -1,5 +1,6 @@
 QT += gui \
-    network
+    network \
+    widgets
 
 CONFIG += mobility
 MOBILITY += systeminfo
@@ -10,7 +11,7 @@ MOBILITY += systeminfo
 EXTPLANE_PLUGIN_PATH=../ExtPlane
 
 !exists($$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt) {
-     error(You don\'t have ExtPlane checked out in directory next to this. Place it there or build will fail.)
+     error("You don't have ExtPlane checked out in directory next to this. Place it there or build will fail.")
 }
 
 EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt

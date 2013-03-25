@@ -81,7 +81,7 @@ private:
     bool editMode; // True if in edit mode
     bool dirty; // True when any panel changes have occured
     ExtPlaneConnection *connection;
-    QSettings *appSettings; // Loaded on app start, contains general settings
+    QSettings *appSettings; // Loaded on app start, contains general settings, passed on to settings dialog
     QSettings *panelSettings; // Contains all PanelItem settings
     QList<PanelItem *> panelItems;
     PanelItemFactory itemFactory;

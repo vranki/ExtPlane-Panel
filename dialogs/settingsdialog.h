@@ -36,7 +36,7 @@ signals:
     void setDefaultFontSize(double newSize);
 private:
     Ui::SettingsDialog *ui;
-    QSettings *appSettings;
+    QSettings *appSettings; // General settings, passed from PanelWindow
 };
 
 #endif // SETTINGSDIALOG_H

@@ -17,6 +17,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QCoreApplication>
+#include <QDesktopWidget>
 
 #include "extplaneconnection.h"
 #include "simulatedextplaneconnection.h"
@@ -58,6 +59,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setSceneRect(0, 0, width(), height());
     setBackgroundBrush(QBrush(Qt::black));
+    setFrameShape(QFrame::NoFrame);
 
     // Settings dialog
     settingsDialog = new SettingsDialog(this, appSettings);
@@ -113,7 +115,13 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     sss->setScreenSaverInhibit();
 #endif
 
+    // Window size
     resize(1024, 768);
+
+    // Force specific screen
+    //TODO: read from settings / command line
+    //QDesktopWidget desktop;
+    //this->setGeometry(desktop.screenGeometry(1));
 
     // Start timers
     totalTime.start();
@@ -181,10 +189,12 @@ void PanelWindow::panelRotationChanged(int r) {
 }
 
 void PanelWindow::fullscreenChanged(bool fs) {
-    if(fs)
+    if(fs) {
+
         showFullScreen();
-    else
+    } else {
         showNormal();
+    }
 }
 void PanelWindow::resizeEvent(QResizeEvent * event) {
     QWidget::resizeEvent(event);
