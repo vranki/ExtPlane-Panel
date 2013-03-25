@@ -123,13 +123,15 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     sss->setScreenSaverInhibit();
 #endif
 
-    // Window size
-    resize(1024, 768);
-
-    // Force specific screen
-    //TODO: read from settings / command line
-    //QDesktopWidget desktop;
-    //this->setGeometry(desktop.screenGeometry(1));
+    // Force specific screen? (for multiple monitors)
+    if(!appSettings->valueFromSettingsOrCommandLine("screen","").toString().isEmpty()) {
+        // Set the window geometry to a specific screen number (starts logically at 0).
+        QDesktopWidget desktop;
+        this->setGeometry(desktop.screenGeometry(appSettings->valueFromSettingsOrCommandLine("screen").toInt()));
+    } else {
+        // Default window size
+        resize(1024, 768);
+    }
 
     // Start timers
     totalTime.start();
