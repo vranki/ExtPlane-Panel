@@ -1,5 +1,3 @@
-# Readme
-
 # ExtPlane-Panel #
 
 ![Screenshot](http://s23.postimg.org/8qox8ol97/Ext_Plane_Panel_Screenshot.png)
@@ -27,6 +25,7 @@ Target hardware is:
 * anything that will run Qt!
 
 
+
 ## Building ##
 
 ExtPlane-Panel uses the Qt Framework for graphics and cross-platform compatibility. Before building you'll need to setup Qt 4.5 or greater and Qt Mobility to compile. You'll also need to check out the ExtPlane plugin sources (https://github.com/vranki/ExtPlane) to the directory next to the ExtPlane-Panel directory.
@@ -50,6 +49,7 @@ cd ExtPlane-Panel
 qmake
 make
 ```
+
 
 
 ## Instruments ##
@@ -77,7 +77,6 @@ Command line arguments override application settings. This can be useful when yo
 * **--fullscreen** forces the app to launch in fullscreen mode
 * **--screen [number]** sets the panel to a specific monitor/screen
 * **--panelfile [filepath]** loads the panel file specified by filepath
-
 
 ### User Interface ###
 
@@ -109,6 +108,7 @@ recover from accidents, like deleting an instrument.
  - ExtPlane update interval - time (in seconds) how often X-Plane should send updates at maximum
  - Panel update interval - time (in seconds) how often the panel should be redrawn
  - Default font size - affects all instruments
+
 
 
 ## Creating new panel items ##
