@@ -15,17 +15,21 @@ class HardwareManager : public QObject
 public:
     explicit HardwareManager(QObject *parent, ExtPlaneConnection *conn);
     QList<HardwareBinding*>& bindings();
+    QMap<int, OutputDevice*>& devices();
     ExtPlaneConnection *connection();
     void addBinding(HardwareBinding *binding);
     void deleteBinding(HardwareBinding *binding);
     void saveSettings(QSettings *panelSettings);
     void loadSettings(QSettings *panelSettings);
 signals:
-    
+    void deviceAvailable(int dev, bool avail);
 public slots:
+private slots:
+    void deviceChanged(HardwareBinding *binding, int device);
+    void deviceEnabled(int dev, bool enable);
 private:
     QList<HardwareBinding*> hwBindings;
-    OutputDevice *outputDevice; // @todo list when we have more than one
+    QMap<int, OutputDevice*> outputDevices;
     ExtPlaneConnection *connection_;
 };
 

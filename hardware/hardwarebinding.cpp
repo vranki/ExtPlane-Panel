@@ -89,6 +89,7 @@ double HardwareBinding::outputMax()
 void HardwareBinding::setDevice(int dev)
 {
     device_ = dev;
+    emit deviceChanged(this, device_);
 }
 
 int HardwareBinding::device()

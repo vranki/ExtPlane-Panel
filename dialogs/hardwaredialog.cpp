@@ -2,6 +2,9 @@
 #include "ui_hardwaredialog.h"
 #include "../hardware/hardwaremanager.h"
 #include "../hardware/hardwarebinding.h"
+#include "../hardware/outputdevice.h"
+#include "../hardware/servoblasteroutputdevice.h"
+
 
 HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
     QDialog(parent),
@@ -12,12 +15,20 @@ HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
     connect(ui->deleteBindingButton, SIGNAL(clicked()), this, SLOT(deleteBinding()));
     connect(ui->saveChangesButton, SIGNAL(clicked()), this, SLOT(saveChanges()));
     connect(ui->bindingListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(currentRowChanged(int)));
+    connect(ui->enableSB, SIGNAL(clicked(bool)), this, SLOT(enableSB(bool)));
+    connect(ui->enablePololu, SIGNAL(clicked(bool)), this, SLOT(enablePololu(bool)));
+    connect(manager, SIGNAL(deviceAvailable(int,bool)), this, SLOT(deviceAvailable(int,bool)));
     updateUi();
 }
 
 HardwareDialog::~HardwareDialog()
 {
     delete ui;
+}
+
+void HardwareDialog::deviceAvailable(int dev, bool avail)
+{
+    updateUi();
 }
 
 void HardwareDialog::changeEvent(QEvent *e)
@@ -59,6 +70,7 @@ void HardwareDialog::saveChanges() {
     currentBinding->setAccuracy(ui->refAccuracySpinBox->value());
     currentBinding->setInputValues(ui->inputMinSpinbox->value(), ui->inputMaxSpinbox->value());
     currentBinding->setOutputValues(ui->outputMinSpinbox->value(), ui->outputMaxSpinbox->value());
+    currentBinding->setDevice(ui->outputDeviceComboBox->currentIndex());
     updateUi();
     currentBinding->activate();
 }
@@ -67,6 +79,16 @@ void HardwareDialog::currentRowChanged(int row) {
     if(row == -1) return;
     currentBinding = bindingRows.value(row);
     updateUi();
+}
+
+void HardwareDialog::enableSB(bool enable)
+{
+    emit deviceEnabled(0, enable);
+}
+
+void HardwareDialog::enablePololu(bool enable)
+{
+    emit deviceEnabled(1, enable);
 }
 
 void HardwareDialog::updateUi() {
@@ -89,5 +111,12 @@ void HardwareDialog::updateUi() {
     foreach(HardwareBinding *binding, hwManager->bindings()) {
         bindingRows.insert(ui->bindingListWidget->count(), binding);
         ui->bindingListWidget->addItem(binding->name());
+    }
+    foreach(OutputDevice *device, hwManager->devices().values()) {
+        if(device->id()==SERVOBLASTER_ID) {
+            ui->enableSB->setChecked(device->isEnabled());
+            ui->enableSB->setEnabled(device->isAvailable());
+            ui->sbWorkingLabel->setText(device->statusString());
+        }
     }
 }

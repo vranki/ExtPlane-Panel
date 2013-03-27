@@ -35,7 +35,7 @@ public:
     int output();
 signals:
     void outputValue(double value, int output);
-
+    void deviceChanged(HardwareBinding *binding, int device);
 public slots:
 private slots:
     void refChanged(ClientDataRef *ref);
