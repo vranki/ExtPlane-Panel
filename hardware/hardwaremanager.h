@@ -7,6 +7,7 @@
 
 class HardwareBinding;
 class ExtPlaneConnection;
+class OutputDevice;
 
 class HardwareManager : public QObject
 {
@@ -24,6 +25,7 @@ signals:
 public slots:
 private:
     QList<HardwareBinding*> hwBindings;
+    OutputDevice *outputDevice; // @todo list when we have more than one
     ExtPlaneConnection *connection_;
 };
 

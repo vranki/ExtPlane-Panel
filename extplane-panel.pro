@@ -78,7 +78,9 @@ SOURCES += \
     dialogs/hardwaredialog.cpp \
     hardware/hardwarebinding.cpp \
     hardware/hardwaremanager.cpp \
-    settings.cpp
+    settings.cpp \
+    hardware/outputdevice.cpp \
+    hardware/servoblasteroutputdevice.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -119,7 +121,9 @@ HEADERS += \
     dialogs/hardwaredialog.h \
     hardware/hardwarebinding.h \
     hardware/hardwaremanager.h \
-    settings.h
+    settings.h \
+    hardware/outputdevice.h \
+    hardware/servoblasteroutputdevice.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
