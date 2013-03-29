@@ -80,7 +80,8 @@ SOURCES += \
     hardware/hardwaremanager.cpp \
     settings.cpp \
     hardware/outputdevice.cpp \
-    hardware/servoblasteroutputdevice.cpp
+    hardware/servoblasteroutputdevice.cpp \
+    hardware/pololuoutputdevice.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -123,7 +124,8 @@ HEADERS += \
     hardware/hardwaremanager.h \
     settings.h \
     hardware/outputdevice.h \
-    hardware/servoblasteroutputdevice.h
+    hardware/servoblasteroutputdevice.h \
+    hardware/pololuoutputdevice.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \

@@ -114,10 +114,15 @@ void HardwareBinding::refChanged(ClientDataRef *ref) {
         qDebug() << Q_FUNC_INFO << "Can't convert value " << ref->valueString() << " to double.";
         return;
     }
+    bool invert = inputMax_ < inputMin_;
     // Limit value to input limits
-    refValue = qMin(refValue, inputMax_);
-    refValue = qMax(refValue, inputMin_);
-
+    if(!invert) {
+        refValue = qMin(refValue, inputMax_);
+        refValue = qMax(refValue, inputMin_);
+    } else {
+        refValue = qMin(refValue, inputMin_);
+        refValue = qMax(refValue, inputMax_);
+    }
     double valueScaled = (refValue - inputMin_) / (inputMax_ - inputMin_); // [0-1]
 
     double valueOut = outputMin_ + (outputMax_ - outputMin_) * valueScaled;
@@ -141,6 +146,8 @@ void HardwareBinding::storeSettings(QSettings *panelSettings) {
     panelSettings->setValue("inputmax", inputMax());
     panelSettings->setValue("outputmin", outputMin());
     panelSettings->setValue("outputmax", outputMax());
+    panelSettings->setValue("device", device());
+    panelSettings->setValue("output", output());
 }
 
 void HardwareBinding::loadSettings(QSettings *panelSettings) {
@@ -149,4 +156,6 @@ void HardwareBinding::loadSettings(QSettings *panelSettings) {
     setAccuracy(panelSettings->value("accuracy").toDouble());
     setInputValues(panelSettings->value("inputmin").toDouble(), panelSettings->value("inputmax").toDouble());
     setOutputValues(panelSettings->value("outputmin").toDouble(), panelSettings->value("outputmax").toDouble());
+    setDevice(panelSettings->value("device").toInt());
+    setOutput(panelSettings->value("output").toInt());
 }

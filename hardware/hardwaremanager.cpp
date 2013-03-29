@@ -1,10 +1,14 @@
 #include "hardwaremanager.h"
+#include <QDebug>
 #include "hardwarebinding.h"
 #include "servoblasteroutputdevice.h"
+#include "pololuoutputdevice.h"
 
 HardwareManager::HardwareManager(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection_(conn) {
     ServoBlasterOutputDevice *sbo = new ServoBlasterOutputDevice(this);
     outputDevices.insert(sbo->id(), sbo);
+    PololuOutputDevice *pod = new PololuOutputDevice(this);
+    outputDevices.insert(pod->id(), pod);
 }
 
 QList<HardwareBinding *> &HardwareManager::bindings() {
@@ -24,6 +28,7 @@ ExtPlaneConnection *HardwareManager::connection()
 void HardwareManager::addBinding(HardwareBinding *binding) {
     Q_ASSERT(binding->parent()==this);
     hwBindings.append(binding);
+    connect(binding, SIGNAL(deviceChanged(HardwareBinding*,int)), this, SLOT(deviceChanged(HardwareBinding*,int)));
     deviceChanged(binding, binding->device());
 }
 
@@ -48,7 +53,8 @@ void HardwareManager::saveSettings(QSettings *panelSettings) {
 
 void HardwareManager::loadSettings(QSettings *panelSettings) {
     // @todo load settings for devices
-    emit deviceAvailable(0, outputDevices.value(0)->init());
+    foreach(OutputDevice *device, outputDevices)
+        emit deviceAvailable(device->id(), device->init());
 
     int bn = panelSettings->value("bindingCount").toInt();
     for(int i=0;i<bn;i++) {
@@ -56,14 +62,17 @@ void HardwareManager::loadSettings(QSettings *panelSettings) {
         HardwareBinding *binding = new HardwareBinding(this, connection());
         binding->loadSettings(panelSettings);
         panelSettings->endGroup();
-        hwBindings.append(binding);
+        addBinding(binding);
+//        hwBindings.append(binding);
         binding->activate();
     }
 }
 
 void HardwareManager::deviceChanged(HardwareBinding *binding, int device)
 {
+    Q_ASSERT(outputDevices.contains(binding->device()));
     connect(binding, SIGNAL(outputValue(double,int)), outputDevices.value(binding->device()), SLOT(outputValue(double,int)));
+    qDebug() << Q_FUNC_INFO << "connected output of binding" << binding->name() << "to device " << outputDevices.value(binding->device())->id();
 }
 
 void HardwareManager::deviceEnabled(int dev, bool enable)

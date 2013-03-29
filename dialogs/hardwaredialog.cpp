@@ -4,6 +4,7 @@
 #include "../hardware/hardwarebinding.h"
 #include "../hardware/outputdevice.h"
 #include "../hardware/servoblasteroutputdevice.h"
+#include "../hardware/pololuoutputdevice.h"
 
 
 HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
@@ -18,6 +19,7 @@ HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
     connect(ui->enableSB, SIGNAL(clicked(bool)), this, SLOT(enableSB(bool)));
     connect(ui->enablePololu, SIGNAL(clicked(bool)), this, SLOT(enablePololu(bool)));
     connect(manager, SIGNAL(deviceAvailable(int,bool)), this, SLOT(deviceAvailable(int,bool)));
+    connect(this, SIGNAL(deviceEnabled(int,bool)), manager, SLOT(deviceEnabled(int,bool)));
     updateUi();
 }
 
@@ -83,12 +85,12 @@ void HardwareDialog::currentRowChanged(int row) {
 
 void HardwareDialog::enableSB(bool enable)
 {
-    emit deviceEnabled(0, enable);
+    emit deviceEnabled(SERVOBLASTER_ID, enable);
 }
 
 void HardwareDialog::enablePololu(bool enable)
 {
-    emit deviceEnabled(1, enable);
+    emit deviceEnabled(POLOLU_ID, enable);
 }
 
 void HardwareDialog::updateUi() {
@@ -100,6 +102,7 @@ void HardwareDialog::updateUi() {
         ui->inputMaxSpinbox->setValue(currentBinding->inputMax());
         ui->outputMinSpinbox->setValue(currentBinding->outputMin());
         ui->outputMaxSpinbox->setValue(currentBinding->outputMax());
+        ui->outputDeviceComboBox->setCurrentIndex(currentBinding->device());
     } else {
         ui->bindingNameLineEdit->setText("");
     }
@@ -117,6 +120,11 @@ void HardwareDialog::updateUi() {
             ui->enableSB->setChecked(device->isEnabled());
             ui->enableSB->setEnabled(device->isAvailable());
             ui->sbWorkingLabel->setText(device->statusString());
+        }
+        if(device->id()==POLOLU_ID) {
+            ui->enablePololu->setChecked(device->isEnabled());
+            ui->enablePololu->setEnabled(device->isAvailable());
+            ui->pololuWorkingLabel->setText(device->statusString());
         }
     }
 }

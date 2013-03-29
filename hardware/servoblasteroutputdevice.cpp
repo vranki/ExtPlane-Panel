@@ -27,6 +27,7 @@ bool ServoBlasterOutputDevice::init()
     minValue = min;
     maxValue = max;
     status = "Ok";
+    available = true;
     return true;
 }
 
