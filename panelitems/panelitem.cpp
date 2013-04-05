@@ -117,7 +117,7 @@ QVariant PanelItem::itemChange(GraphicsItemChange change, const QVariant &value)
 }
 
 void PanelItem::setupPainter(QPainter *painter) {
-    static QPainter::RenderHints aaRenderhints = QPainter::Antialiasing | QPainter::TextAntialiasing;
+    static QPainter::RenderHints aaRenderhints = QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform;
     static QPainter::RenderHints noaaRenderhints = 0;
     painter->setRenderHints(_aaEnabled ? aaRenderhints : noaaRenderhints);
 }

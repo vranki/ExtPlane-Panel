@@ -1,28 +1,26 @@
 #include "hsi_ks55.h"
 
 #include <QLabel>
-#include "../widgets/distanceunitcombobox.h"
-#include "extplaneclient.h"
-
-#include "widgets/numberinputlineedit.h"
+#include <QCheckBox>
 #include <QHash>
+
+#include "extplaneclient.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(HSI,"indicator/heading/hsi_ks5");
 
 HSI::HSI(QObject *parent, ExtPlaneConnection *conn) : PanelItem(parent), _client(this, typeName(), conn)
 {
     
-    _bezel = QPixmap::fromImage(QImage(QString("../../images/KCS_55_bezel.png")), Qt::AutoColor);
-    
-    _thickBars=10;
-    _thinBars=5;
-    _numbers=30;
-    
-    createCard(); 
-   
-    _heading=45;
+    // Init
+    _thickBars = 10;
+    _thinBars = 5;
+    _numbers = 30;
+    _heading = 45;
+    _showDegrees = true;
     
     /*
+     Data-Refs used:
+
      hsi_bearing_deg_mag_pilot          float	930+	no	degrees_magnetic	Indicated relative bearing to the pilot's HSI-selected navaid
      hsi_relative_bearing_deg_pilot     float	930+	no	degrees             Indicated relative bearing to the pilot's HSI-selected navaid
      hsi_flag_from_to_pilot             int     930+	no	enum                Nav-To-From indication, nav1, pilot, 0 is flag, 1 is to, 2 is from.
@@ -37,19 +35,7 @@ HSI::HSI(QObject *parent, ExtPlaneConnection *conn) : PanelItem(parent), _client
      hsi_display_vertical_pilot         int     940+	no	boolean             Is there some kind of vertical signal on pilot side HSI
      */
     
-    /*  {
-     QString         name;
-     float           tolerance;
-     DataRefType     dataType;
-     void *          value;
-     }; */  
-
-    //QList<DataRefStruct *> _dataRefs;
-/*    
-    bool    _hasDME;
-    int     _toFrom;  // 0 = Flag, 1=To, 2=From
-*/    
-    
+    // DataRef container
     const static DataRefStruct dataRefs[] = {
         {"sim/cockpit2/gauges/indicators/heading_AHARS_deg_mag_pilot", 0.2, 
             drFloat, &_heading},
@@ -77,9 +63,9 @@ HSI::HSI(QObject *parent, ExtPlaneConnection *conn) : PanelItem(parent), _client
             drFloat, &_bug}
     };
 
+    // Connect and subscribe
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     int nDataRefs = 12;
-    
     for (int i=0;i<nDataRefs;i++){
         _dataRefLookup.insert(dataRefs[i].name, dataRefs[i]);//.value);
         _client.subscribeDataRef(dataRefs[i].name, dataRefs[i].tolerance);
@@ -87,160 +73,108 @@ HSI::HSI(QObject *parent, ExtPlaneConnection *conn) : PanelItem(parent), _client
 }
 
 void HSI::refChanged(QString name, double value) {
-    
-    
     DataRefStruct   ref = _dataRefLookup[name];
-
-    qDebug() << Q_FUNC_INFO << "lookup name is: " << name << 
-                                " ref name is: " << ref.name <<
-                                " new value is: " << value;
-
     if (*(float *)ref.value == value) return;
-    
     *(float *)ref.value = value;
-    
     update();
-
-
 }
 
+void HSI::createCard(float w, float h){
 
-void HSI::dataRefsChanged(QString name, QString valueString) {
-/*    
-    qDebug() << Q_FUNC_INFO << "valueString " << valueString;
+    // Create a new image for working with
+    int side = qMin(w, h);
+    QImage cardImage = QImage(QSize(side,side), QImage::Format_ARGB32);
+    cardImage.fill(0x00ff0000);
     
-    
-    QStringList cmd = valueString.split(" ", QString::SkipEmptyParts);
-    QString rpmStr = cmd.value(3);
-    rpmStr.chop(1);
-    
-    qDebug() << Q_FUNC_INFO << "rpmStr " << rpmStr;
-*/    
-    
-    //    setValue(rpmStr.toDouble());
-}
-
-
-void HSI::createCard(void){
-    QImage _cardImage = QImage(QSize(600,600), QImage::Format_ARGB32);
-    _cardImage.fill(0x00ff0000);
-    //_cardImage.moveTo(10,10);
-    
+    // Init dimensions
     uint midx, midy, width, height;
-    width = _cardImage.width();
+    width = cardImage.width();
     midx = width/2;
-    height = _cardImage.height();
+    height = cardImage.height();
     midy = height/2;
-    
-    
+
+    // Create and setup painter
     QPainter p;
-    p.setRenderHint(QPainter::Antialiasing, true);
-    p.begin(&_cardImage);
-    
+    p.begin(&cardImage);
+    setupPainter(&p);
+
+    // The original code is based on a fixed 600px image. We need to transform scale for any
+    // incomming size...
     p.translate(midx, midy);
-    p.setPen(Qt::black);
+    p.scale((double)side/600.0, (double)side/600.0);
+
+    // Draw back black
+    //p.setPen(Qt::black);
+    //p.setBrush(Qt::black);
+    //p.drawChord(-midx,-midy,width,height,0,360*16);
     
-    p.setBrush(Qt::black);
-    p.drawChord(-midx,-midy,width,height,0,360*16);
-    
-    
+    // Draw bars
     p.setPen(Qt::white);
     p.setBrush(Qt::white);
     if(_thickBars > 0) {
         for (float i = 0 ; i <= 360; i+=_thickBars) {
-            p.save();
-            p.rotate(value2Angle(i));
-            p.drawRect(-2.5, -300, 5.0, 30);
-            p.restore();
+            p.save(); {
+                p.rotate(value2Angle(i));
+                p.drawRect(-2.5, -300, 5.0, 30);
+            } p.restore();
         }
     }
     if(_thinBars > 0) {
         for (float i = 0 ; i <= 360; i+=_thinBars) {
-            p.save();
-            p.rotate(value2Angle(i));
-            p.drawRect(-1.0, -300, 2.0, 20);
-            p.restore();
+            p.save(); {
+                p.rotate(value2Angle(i));
+                p.drawRect(-1.0, -300, 2.0, 20);
+            } p.restore();
         }
     }
-    p.setPen(QColor(200,200,200));
-    QFont font = defaultFont;
-    font.setPointSizeF(defaultFont.pointSizeF()*2);
-    p.setFont(font);
     
-    if(1) {
+    // Draw degree labels
+    if(_showDegrees) {
+        // Setup pen
+        p.setPen(QColor(200,200,200));
+        QFont font = defaultFont;
+        font.setPointSizeF(defaultFont.pointSizeF()*4.0);
+        p.setFont(font);
+        // Loop through numbers
         for (float i = 0 ; i < 360; i+=_numbers) {
-            p.save();
-            p.rotate(value2Angle(i));
-            p.save();
-            QString lineNumber;
-            switch (int(i)) {
-                case 0:
-                    lineNumber = "N";
-                    break;
-                case 90:
-                    lineNumber = "E";
-                    break;
-                case 180:
-                    lineNumber = "S";
-                    break;
-                case 270:
-                    lineNumber = "W";
-                    break;
-                default:
-                    lineNumber = QString::number(i/10);
-                    break;
-            }
-            p.translate(0,-234);
-            int width = p.fontMetrics().width(lineNumber);
-            int height = p.fontMetrics().height();
-            p.drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
-            p.restore();
-            p.restore();
+            p.save(); {
+                p.rotate(value2Angle(i));
+                QString lineNumber;
+                switch (int(i)) {
+                    case 0:
+                        lineNumber = "N";
+                        break;
+                    case 90:
+                        lineNumber = "E";
+                        break;
+                    case 180:
+                        lineNumber = "S";
+                        break;
+                    case 270:
+                        lineNumber = "W";
+                        break;
+                    default:
+                        lineNumber = QString::number(i/10);
+                        break;
+                }
+                p.translate(0,-234);
+                int width = p.fontMetrics().width(lineNumber);
+                int height = p.fontMetrics().height();
+                p.drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
+            } p.restore();
         }
     }
     
-    
-    
+    // Save to bitmap
     p.end();    
-    _card = QPixmap::fromImage(_cardImage, Qt::AutoColor);
+    _card = QPixmap::fromImage(cardImage, Qt::AutoColor);
     
 }
 
 
 void HSI::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    static const QPoint needle[3] = {
-        QPoint(0, -90),
-        QPoint(-5, -103),
-        QPoint(5, -103)
-    };
-    
-    static const QPoint Plane[] = {
-        QPoint(0, 70),
-        QPoint(5, 60),
-        QPoint(5, 30),
-        QPoint(60,-10),
-        QPoint(60,-20),
-        QPoint(5,-10),
-        QPoint(5,-30),
-        QPoint(4,-40),
-        QPoint(25,-55),
-        QPoint(25,-65),
-        QPoint(2,-60),
-        QPoint(0,-65), 
-        
-        QPoint(-2,-60),
-        QPoint(-25,-65),
-        QPoint(-25,-55),
-        QPoint(-4,-40),
-        QPoint(-5,-30),
-        QPoint(-5,-10),
-        QPoint(-60,-20),
-        QPoint(-60,-10),
-        QPoint(-5, 30),
-        QPoint(-5, 60),
-        
-    }; 
-    
+
+    // Shapes
     static const QPoint arrowHead[] = {
         QPoint(-4, -52),
         QPoint(4, -52),
@@ -252,126 +186,110 @@ void HSI::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
         QPoint(-5, -23)
     };
     
-    
-    const int centreY = 9;          // In a 200x200 grid centred on zero 
-    const int centreX = 0;
-    
-    
-    QColor needleColor(255, 255, 255);
-    
+    // Init
     int side = qMin(width(), height());
-    setupPainter(painter);
-    painter->save();
-    painter->scale(side / 200.0, side / 200.0);
-    painter->save();
-    painter->translate(100, 100);
-    
-    painter->save();
-    //painter->scale(0.91,0.91);
-    
-    painter->save();
-    
-    // Draw compass card at heading angle:
-    painter->save();
-    painter->translate(0, centreY);
-    painter->rotate(- _heading);
-    painter->drawPixmap(-67, -67, 134, 134, _card);
-    painter->restore();
-    
-    painter->setPen(Qt::NoPen);
-    
-   
-    QPen planePen(QColor(255,209,0)); // Nice orangy yellow
-    planePen.setWidth(2);
-    painter->setPen(planePen);
-    painter->setBrush(QColor(255,209,0));
-    
-    // Draw dots, etc on rotating centre of compass card:
-    painter->save();
-        painter->translate(0, centreY);
-        painter->rotate(value2Angle(_course-_heading));
-        painter->drawLine(0,66, 0,36);
-        painter->drawLine(0,-36, 0,-52);
-        painter->drawConvexPolygon(arrowHead, 3);
 
-        planePen.setColor(QColor(200,200,200));
-        painter->setBrush(QColor(200,200,200));
-        planePen.setWidthF(1.5);
-        painter->setPen(Qt::white);
-        
-        float radius=1.5;
-        float deflection =_hdots;
-        if (deflection>2.5) deflection=2.5;
-        if (deflection<-2.5) deflection=-2.5;
-    
-        for(int i=-5;i<=5;i++){
-            painter->drawLine(QPointF(7*i,-5), QPointF(7*i,5));
-            painter->drawChord(QRectF(7*i-radius, -radius, 2.*radius, 2.0*radius), 0, 360*16);
-               
-        }
-        planePen.setColor(QColor(255,209,0)); // Nice orangy yellow
+    painter->save(); {
+
+        // Setup render hints for this gauge
+        setupPainter(painter);
+
+        // Draw the cached card with heading on it, we do this without any scale transformation to speed
+        // things up on mobile devices...
+        painter->save(); {
+            painter->translate(_card.width()/2, _card.height()/2);
+            painter->rotate(-_heading);
+            painter->drawPixmap(-_card.width()/2,-_card.height()/2,_card);
+        } painter->restore();
+
+        // Scale and translate for all drawing of the rest of the guage
+        painter->scale(side / 200.0, side / 200.0);
+        painter->translate(100, 100);
+        painter->scale(1.5, 1.5); // adjustment for fixed logical card size
+
+        // Pen for plane
+        QPen planePen(QColor(255,209,0)); // Nice orangy yellow
         planePen.setWidth(2);
         painter->setPen(planePen);
-        painter->drawLine(QPointF(deflection*7*2., -33), QPointF(deflection*7*2., 33));
-        
-        painter->setPen(Qt::white);
-        painter->setBrush(Qt::white);
-        painter->drawConvexPolygon(triangle, 3);
-    
-    painter->restore();
+        painter->setBrush(QColor(255,209,0));
 
-    // Draw bug rotating centre of compass card:
-    planePen.setColor(QColor(255,132,16)); // Orange for bug
-    planePen.setWidth(1);
-    painter->setPen(planePen);
-    painter->save();
-        painter->translate(0, centreY);
-        painter->rotate(value2Angle(_bug-_heading));
-    
-        painter->drawLine(-6,-67,  6,-67);
-        painter->drawLine(-6,-67, -6,-63);
-        painter->drawLine( 6,-67,  6,-63);
-        painter->drawLine( 6,-63,  4,-63);
-        painter->drawLine(-6,-64, -4,-63);
-        painter->drawLine(-4,-63, 0,-59);
-        painter->drawLine( 4,-63, 0,-59);
-    
-    painter->restore();
+        // Draw dots, etc on rotating centre of compass card:
+        painter->save(); {
+            painter->rotate(value2Angle(_course-_heading));
+            painter->drawLine(0,66, 0,36);
+            painter->drawLine(0,-36, 0,-52);
+            painter->drawConvexPolygon(arrowHead, 3);
 
-    
-    // Orange plane in centre of dial:
-    planePen.setColor(QColor(255,150,0)); // Orange for bug
-    planePen.setWidthF(2.);
-    painter->setPen(planePen);
-    
-    painter->drawLine(-13, centreY-3, 13, centreY-3);
-    painter->drawLine( 0, centreY-10, 0, centreY+20);
-    painter->drawLine(-3, centreY+17, 3, centreY+17);
-    
-    
-    painter->setPen(Qt::white);
-  //painter->drawText(-40,-30, 100, 20, Qt::AlignRight | Qt::AlignVCenter, "hdg "+ QString::number(_heading));
-  //painter->drawText(-40,-15, 100, 20, Qt::AlignRight | Qt::AlignVCenter, "crs "+ QString::number(_course));
-  //painter->drawText(-40,0, 100, 20, Qt::AlignRight | Qt::AlignVCenter, "bug "+QString::number(_bug));
-  //painter->drawText(-40,15, 100, 20, Qt::AlignRight | Qt::AlignVCenter, "hdt "+QString::number(_hdots));
-  //    painter->drawText(-40,30, 100, 20, Qt::AlignRight | Qt::AlignVCenter, "gs "+QString::number(_glideslopeFlag));
-    
-    
-    painter->restore();
-    painter->setBrush(Qt::white);
-    
-    painter->restore();
-    painter->drawPixmap(-100,-100,200,200, _bezel);
-    
-    painter->restore();
-    
-    painter->restore();
+            planePen.setColor(QColor(200,200,200));
+            painter->setBrush(QColor(200,200,200));
+            planePen.setWidthF(1.5);
+            painter->setPen(Qt::white);
+
+            float radius=1.5;
+            float deflection =_hdots;
+            if (deflection>2.5) deflection=2.5;
+            if (deflection<-2.5) deflection=-2.5;
+
+            for(int i=-5;i<=5;i++){
+                painter->drawLine(QPointF(7*i,-5), QPointF(7*i,5));
+                painter->drawChord(QRectF(7*i-radius, -radius, 2.*radius, 2.0*radius), 0, 360*16);
+
+            }
+            planePen.setColor(QColor(255,209,0)); // Nice orangy yellow
+            planePen.setWidth(2);
+            painter->setPen(planePen);
+            painter->drawLine(QPointF(deflection*7*2., -33), QPointF(deflection*7*2., 33));
+
+            painter->setPen(Qt::white);
+            painter->setBrush(Qt::white);
+            painter->drawConvexPolygon(triangle, 3);
+
+        } painter->restore();
+
+        // Draw bug rotating centre of compass card:
+        planePen.setColor(QColor(255,132,16)); // Orange for bug
+        planePen.setWidth(1);
+        painter->setPen(planePen);
+        painter->save(); {
+            painter->rotate(value2Angle(_bug-_heading));
+            painter->drawLine(-6,-67,  6,-67);
+            painter->drawLine(-6,-67, -6,-63);
+            painter->drawLine( 6,-67,  6,-63);
+            painter->drawLine( 6,-63,  4,-63);
+            painter->drawLine(-6,-64, -4,-63);
+            painter->drawLine(-4,-63, 0,-59);
+            painter->drawLine( 4,-63, 0,-59);
+        } painter->restore();
+
+        // Orange plane in centre of dial:
+        if(_showPlane) {
+            planePen.setColor(QColor(255,150,0)); // Orange for bug
+            planePen.setWidthF(2.);
+            painter->setPen(planePen);
+            painter->drawLine(-13, -3, 13, -3);
+            painter->drawLine( 0, -10, 0, +20);
+            painter->drawLine(-3, +17, 3, +17);
+        }
+
+    } painter->restore();
 
     PanelItem::paint(painter, option, widget);
 }
 
-void HSI::setLabel(QString text) {
-    _label = text;
+void HSI::itemSizeChanged(float w, float h) {
+    // The guage has changed size: redraw the cached card.
+    createCard(w,h);
+}
+
+void HSI::setShowDegrees(int state) {
+    _showDegrees = state == Qt::Checked;
+    createCard(this->width(),this->height());
+    update();
+}
+
+void HSI::setShowPlane(int state) {
+    _showPlane = state == Qt::Checked;
+    update();
 }
 
 float HSI::value2Angle(float value) {
@@ -380,15 +298,26 @@ float HSI::value2Angle(float value) {
 
 void HSI::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
-    
+    settings.setValue("showdegrees", _showDegrees);
+    settings.setValue("showplane", _showPlane);
 }
 void HSI::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
-    QString unitname = settings.value("unit").toString();
-    DistanceUnit unit = Units::distanceUnitForName(unitname);
+    _showDegrees = settings.value("showdegrees",true).toBool();
+    _showPlane = settings.value("showplane",true).toBool();
 }
 
 void HSI::createSettings(QGridLayout *layout) {
-    
+    layout->addWidget(new QLabel("Degrees", layout->parentWidget()));
+    QCheckBox *showDegreesCheckbox = new QCheckBox(layout->parentWidget());
+    showDegreesCheckbox->setChecked(_showDegrees);
+    layout->addWidget(showDegreesCheckbox);
+    connect(showDegreesCheckbox, SIGNAL(stateChanged(int)), this, SLOT(setShowDegrees(int)));
+
+    layout->addWidget(new QLabel("Plane", layout->parentWidget()));
+    QCheckBox *showPlaneCheckbox = new QCheckBox(layout->parentWidget());
+    showPlaneCheckbox->setChecked(_showPlane);
+    layout->addWidget(showPlaneCheckbox);
+    connect(showPlaneCheckbox, SIGNAL(stateChanged(int)), this, SLOT(setShowPlane(int)));
 }
 

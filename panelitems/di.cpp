@@ -37,23 +37,22 @@ void DirectionIndicator::setNumbers(float div) {
 
 void DirectionIndicator::createCard(float w, float h){
 
-
     // Create a new image for working with
     int side = qMin(w, h);
-    QImage _cardImage = QImage(QSize(side,side), QImage::Format_ARGB32);
-    _cardImage.fill(0x00ff0000);
+    QImage cardImage = QImage(QSize(side,side), QImage::Format_ARGB32);
+    cardImage.fill(0x00ff0000);
 
     // Init dimensions
     uint midx, midy, width, height;
-    width = _cardImage.width();
+    width = cardImage.width();
     midx = width/2;
-    height = _cardImage.height();
+    height = cardImage.height();
     midy = height/2;
     
-    // Create painter
+    // Create and setup painter
     QPainter p;
-    p.begin(&_cardImage);
-    p.setRenderHint(QPainter::Antialiasing, true);
+    p.begin(&cardImage);
+    setupPainter(&p);
 
     // The original code is based on a fixed 600px image. We need to transform scale for any
     // incomming size...
@@ -123,7 +122,7 @@ void DirectionIndicator::createCard(float w, float h){
 
     // Export painter work as pixmap
     p.end();
-    _card = QPixmap::fromImage(_cardImage, Qt::AutoColor);
+    _card = QPixmap::fromImage(cardImage, Qt::AutoColor);
 
 }
 
@@ -168,9 +167,8 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     painter->save(); {
 
-        // Setup render hints for this gauge. SmoothPixmapTransform is important.
+        // Setup render hints for this gauge
         setupPainter(painter);
-        painter->setRenderHints(QPainter::SmoothPixmapTransform,true);
 
         // Draw the cached card with heading on it, we do this without any scale transformation to speed
         // things up on mobile devices...
@@ -214,7 +212,7 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
 void DirectionIndicator::itemSizeChanged(float w, float h) {
     // The guage has changed size: redraw the cached card.
     createCard(w, h);
-};
+}
 
 void DirectionIndicator::setLabel(QString text) {
     _label = text;
