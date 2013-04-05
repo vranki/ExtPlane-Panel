@@ -1,11 +1,11 @@
 #include "panelwindow.h"
 #ifdef MAEMO
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include "mce/mode-names.h"
-#include "mce/dbus-names.h"
-#else
-#include <QSystemScreenSaver>
+    #include <QDBusConnection>
+    #include <QDBusMessage>
+    #include "mce/mode-names.h"
+    #include "mce/dbus-names.h"
+#elif QTMOBILITY
+    #include <QSystemScreenSaver>
 #endif
 
 #include <QGraphicsView>
@@ -102,7 +102,11 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     QString panelToLoad = appSettings->valueFromSettingsOrCommandLine("lastloadedpanel","").toString();
     if(panelToLoad.isEmpty()) {
         // This must the first launch - in this case we will create and load a default panel for saving to in the user's documents folder
-        panelToLoad = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "ExtPlane-Panel-Default.ini";
+        #if QT_VERSION >= 0x050000
+            panelToLoad = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first() + QDir::separator() + "ExtPlane-Panel-Default.ini";
+        #else
+            panelToLoad = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "ExtPlane-Panel-Default.ini";
+        #endif
         panelSettings = new QSettings(panelToLoad,QSettings::IniFormat,this);
         savePanel();
     }
@@ -114,14 +118,14 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     this->settingsDialog->loadSettings(); // This will trigger signals to start connection to ExtPlane
 
     // Disable screensaver on Maemo
-#ifdef MAEMO
-    connect(&blankingTimer, SIGNAL(timeout()), this, SLOT(disableBlanking()));
-    blankingTimer.start(30000);
-#else
-    // Disable screensaver (no qt mobility on Diablo)
-    QtMobility::QSystemScreenSaver *sss = new QtMobility::QSystemScreenSaver(this);
-    sss->setScreenSaverInhibit();
-#endif
+    #ifdef MAEMO
+        connect(&blankingTimer, SIGNAL(timeout()), this, SLOT(disableBlanking()));
+        blankingTimer.start(30000);
+    #elif QTMOBILITY
+        // Disable screensaver (no qt mobility on Diablo)
+        QtMobility::QSystemScreenSaver *sss = new QtMobility::QSystemScreenSaver(this);
+        sss->setScreenSaverInhibit();
+    #endif
 
     // Force specific screen? (for multiple monitors)
     if(!appSettings->valueFromSettingsOrCommandLine("screen","").toString().isEmpty()) {

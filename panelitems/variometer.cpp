@@ -106,7 +106,7 @@ void Variometer::paintTopPixmap() {
     // Round center
     painter.setPen(Qt::NoPen);
     painter.setBrush(darkGrayColor);
-    painter.drawEllipse(QPoint(side/2, side/2), side/5, side/5);
+    painter.drawEllipse(QPointF(side/2, side/2), side/5, side/5);
     painter.setPen(Qt::white);
 
     // Unit text

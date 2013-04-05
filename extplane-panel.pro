@@ -1,15 +1,19 @@
-QT += gui \
-    network \
-    widgets
+# Qt Modules
+QT += gui network
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += widgets
 
+# Qt Mobility
 CONFIG += mobility
 MOBILITY += systeminfo
+load(mobilityconfig)
+contains(MOBILITY_VERSION, 1.1.1) {
+    DEFINES += QTMOBILITY
+}
 
 # Place ExtPlane plugin to a directory next to build directory, or
 # define the directory here:
-
 EXTPLANE_PLUGIN_PATH=../ExtPlane
-
 !exists($$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt) {
      error("You don't have ExtPlane checked out in directory next to this. Place it there or build will fail.")
 }
