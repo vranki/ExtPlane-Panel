@@ -32,7 +32,7 @@ ExtPlane-Panel uses the Qt Framework for graphics and cross-platform compatibili
 
 The requirements for ExtPlane-Panel are as follows:
 * C++ Toolchain
-* Qt Framework 4.5+ / Qt Mobility
+* Qt Framework 4.5+
 * ExtPlane
 
 ### Debian Linux ###
@@ -76,28 +76,24 @@ Command line arguments override application settings. This can be useful when yo
 
 * **--fullscreen** forces the app to launch in fullscreen mode
 * **--screen [number]** sets the panel to a specific monitor/screen
-* **--panelfile [filepath]** loads the panel file specified by filepath
+* **--profile [filepath]** loads the panel profile specified by filepath
 
 ### User Interface ###
 
 * Click inside the **yellow tab** at top left to open the main menu.
 
-* **Edit Panel** makes
-the instruments become selectable with a click. It is then possible to move
-the instruments around. Double-click on an instrument to see or modify its properties
-or delete it.
-Edit mode can be also toggled with space key.
+* **Edit Panel** makes the instruments become selectable with a click.
+It is then possible to move the instruments around. Double-click on an
+instrument to see or modify its properties or delete it. Edit mode can
+be also toggled with space key.
 
 * **Add Item** allows new instruments to be added.
 
-* **Save Panel** saves all the panel settings to a file. First time the file name is
-asked. This ini file is editable, and can be used to change sizes, positions and
-settings of instruments.
+* **Save Profile** saves all the panel profile settings to a file.
 
-* **Save Panel As...** allows you to save a panel to a different file or location.
+* **Save Profile As...** saves a panel profile to a different file or location.
 
-* **Load Panel** loads the current contents of the ini file, so can be used to
-recover from accidents, like deleting an instrument.
+* **Load Profile** loads any given panel profile from disk.
 
 * **App Settings** has various settings for the application:
  - IP address of the X-Plane machine
@@ -111,7 +107,7 @@ recover from accidents, like deleting an instrument.
 
 
 
-## Creating new panel items ##
+## Creating new Panel Items ##
 
 Adding items is really easy if you know some C++ programming. Subclass
 PanelItem class and implement painting and subscription to datarefs as needed.
@@ -133,7 +129,7 @@ other way to deliver the changes.
 
 
 
-## Contact/Feedback ##
+## Contact / Feedback ##
 
 Original Author:
 - Ville Ranki <ville.ranki@iki.fi>

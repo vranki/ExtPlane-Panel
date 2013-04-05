@@ -99,7 +99,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
 
     // Load the last loaded panel. If there is no last loaded panel, we will create a new default one.
     // Furthermore, if the command line specifies a filename flag (--filename x.ini), we will load that one instead
-    QString panelToLoad = appSettings->valueFromSettingsOrCommandLine("lastloadedpanel","").toString();
+    QString panelToLoad = appSettings->valueFromSettingsOrCommandLine("lastloadedprofile","").toString();
     if(panelToLoad.isEmpty()) {
         // This must the first launch - in this case we will create and load a default panel for saving to in the user's documents folder
         #if QT_VERSION >= 0x050000
@@ -108,11 +108,11 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
             panelToLoad = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "ExtPlane-Panel-Default.ini";
         #endif
         panelSettings = new QSettings(panelToLoad,QSettings::IniFormat,this);
-        savePanel();
+        saveProfile();
     }
-    if(!appSettings->valueFromSettingsOrCommandLine("panelfile","").toString().isEmpty())
-        panelToLoad = appSettings->valueFromSettingsOrCommandLine("panelfile").toString();
-    this->loadPanel(panelToLoad);
+    if(!appSettings->valueFromSettingsOrCommandLine("profile","").toString().isEmpty())
+        panelToLoad = appSettings->valueFromSettingsOrCommandLine("profile").toString();
+    this->loadProfile(panelToLoad);
 
     // Start connection to ExtPlane
     this->settingsDialog->loadSettings(); // This will trigger signals to start connection to ExtPlane
@@ -122,7 +122,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
         connect(&blankingTimer, SIGNAL(timeout()), this, SLOT(disableBlanking()));
         blankingTimer.start(30000);
     #elif QTMOBILITY
-        // Disable screensaver (no qt mobility on Diablo)
+        // Disable screensaver via Qt Mobility
         QtMobility::QSystemScreenSaver *sss = new QtMobility::QSystemScreenSaver(this);
         sss->setScreenSaverInhibit();
     #endif
@@ -289,39 +289,39 @@ void PanelWindow::showAddItemDialog() {
     pisd->exec();
 }
 
-void PanelWindow::savePanel() {
+void PanelWindow::saveProfile() {
     // New or overwrite?
     if(panelSettings == NULL) {
-        QString filename = QFileDialog::getSaveFileName(this, tr("Save Panel File"), "", tr("Ini Files (*.ini)"));
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), "", tr("Ini Files (*.ini)"));
         if(!filename.isEmpty()) {
             // Create new file and save
             panelSettings = new QSettings(filename,QSettings::IniFormat,this);
-            savePanel(panelSettings->fileName());
+            saveProfile(panelSettings->fileName());
 
             // Register this file as the last loaded...
-            appSettings->setValue("lastloadedpanel", panelSettings->fileName());
+            appSettings->setValue("lastloadedprofile", panelSettings->fileName());
         }
     } else {
-        savePanel(panelSettings->fileName());
+        saveProfile(panelSettings->fileName());
     }
 }
 
-void PanelWindow::savePanelAs() {
+void PanelWindow::saveProfileAs() {
 
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save Panel File"), panelSettings->fileName(), tr("Ini Files (*.ini)"));
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), panelSettings->fileName(), tr("Ini Files (*.ini)"));
     if(!filename.isEmpty()) {
         // Create new file and save
         panelSettings = new QSettings(filename,QSettings::IniFormat,this);
-        savePanel(panelSettings->fileName());
+        saveProfile(panelSettings->fileName());
 
         // Register this file as the last loaded...
-        appSettings->setValue("lastloadedpanel", panelSettings->fileName());
+        appSettings->setValue("lastloadedprofile", panelSettings->fileName());
     }
 }
 
 
-void PanelWindow::savePanel(QString filename) {
-    qDebug() << Q_FUNC_INFO << "saving panel to " << filename;
+void PanelWindow::saveProfile(QString filename) {
+    qDebug() << Q_FUNC_INFO << "saving profile to " << filename;
     int panelNumber = 0;
     QString panelName = "Panel";
     panelSettings->beginGroup("panel-" + QString::number(panelNumber)); {
@@ -344,18 +344,18 @@ void PanelWindow::savePanel(QString filename) {
     dirty = false;
 }
 
-void PanelWindow::loadPanel() {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open Panel File"), "", tr("Ini Files (*.ini)"));
-    if(!filename.isEmpty()) loadPanel(filename);
+void PanelWindow::loadProfile() {
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open Profile"), "", tr("Ini Files (*.ini)"));
+    if(!filename.isEmpty()) loadProfile(filename);
 }
 
-void PanelWindow::loadPanel(QString filename) {
+void PanelWindow::loadProfile(QString filename) {
     if(filename.isEmpty()) return;
 
     //TODO: dankrusi: confirm if the currently loaded panel is dirty...
 
     // Clear all panel items
-    newPanel();
+    newProfile();
 
     // Load panel settings file
     qDebug() << Q_FUNC_INFO << "loading panel from " << filename;
@@ -395,11 +395,11 @@ void PanelWindow::loadPanel(QString filename) {
     panelSettings->endGroup();
 
     // Register this file as the last loaded...
-    appSettings->setValue("lastloadedpanel",filename);
+    appSettings->setValue("lastloadedprofile",filename);
     dirty = false;
 }
 
-void PanelWindow::newPanel() {
+void PanelWindow::newProfile() {
     // Clear all panel items
     foreach(PanelItem *g, panelItems) {
         g->deleteLater();

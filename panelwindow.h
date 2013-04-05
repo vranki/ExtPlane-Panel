@@ -51,12 +51,12 @@ public slots:
 public slots:
     void setEditMode(bool em);
     void showAddItemDialog();
-    void savePanel();
-    void savePanel(QString filename);
-    void savePanelAs();
-    void loadPanel();
-    void loadPanel(QString filename);
-    void newPanel();
+    void saveProfile();
+    void saveProfile(QString filename);
+    void saveProfileAs();
+    void loadProfile();
+    void loadProfile(QString filename);
+    void newProfile();
     void showHardware();
     void showSettings();
     void editItem(PanelItem *item=0);
@@ -92,10 +92,9 @@ private:
     QTime time, totalTime;
     bool interpolationEnabled, aaEnabled;
     double defaultFontSize;
-    // Disables blanking on Maemo
-#ifdef MAEMO
-    QTimer blankingTimer;
-#endif
+    #ifdef MAEMO
+        QTimer blankingTimer; // Disables blanking on Maemo
+    #endif
 };
 
 #endif // PANELWINDOW_H

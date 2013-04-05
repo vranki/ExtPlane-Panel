@@ -17,9 +17,9 @@
 MenuButton::MenuButton(QWidget *parent) : QObject(parent), side(20) {
     // Init
     panelWindow = parent;
-#ifdef MOBILE_DEVICE
-    side = 50;
-#endif
+    #ifdef MOBILE_DEVICE
+        side = 50;
+    #endif
     editMode = false;
     currentMenu = NULL;
 }
@@ -60,20 +60,20 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     connect(addButton, SIGNAL(clicked()), panelWindow, SLOT(showAddItemDialog()));
     layout->addWidget(addButton);
 
-    QPushButton *saveButton = new QPushButton("Save Panel", menu);
-    connect(saveButton, SIGNAL(clicked()), panelWindow, SLOT(savePanel()));
+    QPushButton *saveButton = new QPushButton("Save Profile", menu);
+    connect(saveButton, SIGNAL(clicked()), panelWindow, SLOT(saveProfile()));
     layout->addWidget(saveButton);
 
-    QPushButton *saveAsButton = new QPushButton("Save Panel As...", menu);
-    connect(saveAsButton, SIGNAL(clicked()), panelWindow, SLOT(savePanelAs()));
+    QPushButton *saveAsButton = new QPushButton("Save Profile As...", menu);
+    connect(saveAsButton, SIGNAL(clicked()), panelWindow, SLOT(saveProfileAs()));
     layout->addWidget(saveAsButton);
 
-    QPushButton *loadButton = new QPushButton("Load Panel", menu);
-    connect(loadButton, SIGNAL(clicked()), panelWindow, SLOT(loadPanel()));
+    QPushButton *loadButton = new QPushButton("Load Profile", menu);
+    connect(loadButton, SIGNAL(clicked()), panelWindow, SLOT(loadProfile()));
     layout->addWidget(loadButton);
 
-    QPushButton *newButton = new QPushButton("New Panel", menu);
-    connect(newButton, SIGNAL(clicked()), panelWindow, SLOT(newPanel()));
+    QPushButton *newButton = new QPushButton("New Profile", menu);
+    connect(newButton, SIGNAL(clicked()), panelWindow, SLOT(newProfile()));
     layout->addWidget(newButton);
 
     QPushButton *hardwareButton = new QPushButton("Hardware", menu);
