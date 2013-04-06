@@ -17,6 +17,7 @@ struct DataRefStruct {
     float           tolerance;
     DataRefType     dataType;
     void *          value;
+    bool            enabled;
 };
 
 class HSI : public PanelItem

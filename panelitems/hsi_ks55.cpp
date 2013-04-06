@@ -38,37 +38,39 @@ HSI::HSI(QObject *parent, ExtPlaneConnection *conn) : PanelItem(parent), _client
     // DataRef container
     const static DataRefStruct dataRefs[] = {
         {"sim/cockpit2/gauges/indicators/heading_AHARS_deg_mag_pilot", 0.2, 
-            drFloat, &_heading},
+            drFloat, &_heading, true},
         {"sim/cockpit2/radios/actuators/hsi_obs_deg_mag_pilot", 0.2,    // direction of yellow line
-            drFloat, &_course},
+            drFloat, &_course, true},
         {"sim/cockpit2/radios/indicators/hsi_hdef_dots_pilot",0.01,       
-            drFloat, &_hdots},
+            drFloat, &_hdots, true},
         {"sim/cockpit2/radios/indicators/hsi_vdef_dots_pilot",0.05,
-            drFloat, &_vdots},
+            drFloat, &_vdots, false}, // Note: unused
         {"sim/cockpit2/radios/indicators/hsi_dme_distance_nm_pilot",0.1,           //
-            drFloat, &_dme},
+            drFloat, &_dme, false}, // Note: unused
         {"sim/cockpit2/radios/indicators/hsi_flag_glideslope_pilot",0.1,           //
-            drFloat, &_glideslopeFlag},
+            drFloat, &_glideslopeFlag, false}, // Note: unused
         {"sim/cockpit2/radios/indicators/hsi_display_horizontal_pilot",0.2,
-            drFloat, &_hasHorizontal},
+            drFloat, &_hasHorizontal, false}, // Note: unused
         {"sim/cockpit2/radios/indicators/hsi_display_vertical_pilot",0.2,      
-            drFloat, &_hasVertical},
+            drFloat, &_hasVertical, false}, // Note: unused
         {"sim/cockpit2/radios/indicators/hsi_has_dme_pilot",0.2,          
-            drFloat, &_hasDME},
+            drFloat, &_hasDME, false}, // Note: unused
         {"sim/cockpit2/radios/indicators/hsi_dme_time_min_pilot",0.2,           
-            drFloat, &_dmeTime},
+            drFloat, &_dmeTime, false}, // Note: unused
         {"sim/cockpit2/radios/indicators/hsi_flag_from_to_pilot",0.2,           
-            drFloat, &_toFrom},
+            drFloat, &_toFrom, false}, // Note: unused
         {"sim/cockpit2/autopilot/heading_dial_deg_mag_pilot",0.2,           // Orange bug
-            drFloat, &_bug}
+            drFloat, &_bug, true}
     };
 
     // Connect and subscribe
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     int nDataRefs = 12;
     for (int i=0;i<nDataRefs;i++){
-        _dataRefLookup.insert(dataRefs[i].name, dataRefs[i]);//.value);
-        _client.subscribeDataRef(dataRefs[i].name, dataRefs[i].tolerance);
+        if(dataRefs[i].enabled) {
+            _dataRefLookup.insert(dataRefs[i].name, dataRefs[i]);//.value);
+            _client.subscribeDataRef(dataRefs[i].name, dataRefs[i].tolerance);
+        }
     }
 }
 
