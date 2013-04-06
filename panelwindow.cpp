@@ -220,13 +220,11 @@ void PanelWindow::setServerAddress(QString host) {
     QStringList hostport = host.split(":");
     if(hostport.length()==2) port = hostport.value(1).toUInt(NULL);
     if(port==0) port = 51000;
-    QHostAddress addr;
-    addr.setAddress(hostport.value(0));
     qDebug() << Q_FUNC_INFO << hostport.value(0) << port;
 
     // Disconnect and reconnect
     connection->disconnectFromHost();
-    connection->connectTo(QHostAddress(hostport.value(0)), port);
+    connection->connectTo(hostport.value(0), port);
 }
 
 void PanelWindow::tick() {
