@@ -42,18 +42,10 @@ EngineRPM::EngineRPM(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrume
 }
 
 void EngineRPM::rpmChanged(QString name, QString valueString) {
-
-    qDebug() << Q_FUNC_INFO << "valueString " << valueString;
-    qDebug() << Q_FUNC_INFO << "name " << name;
-    
-    
+    //TODO: seems this is arbitrarily taking the 3rd value from array; we should add a setting for which value we want
     QStringList cmd = valueString.split(" ", QString::SkipEmptyParts);
     QString rpmStr = cmd.value(3);
     rpmStr.chop(1);
-    
-    qDebug() << Q_FUNC_INFO << "rpmStr " << rpmStr;
-    
-    
     setValue(rpmStr.toDouble());
 }
 

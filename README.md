@@ -62,7 +62,9 @@ There are currently a number of instruments available, including:
 - Altimeter
 - Attitude indicator
 - Variometer
-- RPM gauge.
+- RPM gauge
+- HSI
+- GPS/Radar map
 
 Currently most instruments look like general aviation instruments.
 

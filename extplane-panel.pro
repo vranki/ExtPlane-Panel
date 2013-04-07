@@ -85,7 +85,10 @@ SOURCES += \
     settings.cpp \
     hardware/outputdevice.cpp \
     hardware/servoblasteroutputdevice.cpp \
-    hardware/pololuoutputdevice.cpp
+    hardware/pololuoutputdevice.cpp \
+    panelitems/gpsmap.cpp \
+    panelitems/radarmap.cpp \
+    panelitems/mapinstrument.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -129,7 +132,10 @@ HEADERS += \
     settings.h \
     hardware/outputdevice.h \
     hardware/servoblasteroutputdevice.h \
-    hardware/pololuoutputdevice.h
+    hardware/pololuoutputdevice.h \
+    panelitems/gpsmap.h \
+    panelitems/radarmap.h \
+    panelitems/mapinstrument.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \

@@ -147,7 +147,6 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
         QPoint(25,-65),
         QPoint(2,-60),
         QPoint(0,-65),
-        
         QPoint(-2,-60),
         QPoint(-25,-65),
         QPoint(-25,-55),
@@ -158,7 +157,6 @@ void DirectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem
         QPoint(-60,-10),
         QPoint(-5, 30),
         QPoint(-5, 60),
-        
     };
     
     // Init
