@@ -19,7 +19,7 @@ void RadarMap::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     // Just setup the painter and draw our radar image
     setupPainter(painter);
-    painter->drawPixmap(0,0,_radarImage,0,0,width(),height());
+    painter->drawPixmap((width()-_radarImage.width())/2,(height()-_radarImage.height())/2,_radarImage,0,0,_radarImage.width(),_radarImage.height());
 
     PanelItem::paint(painter, option, widget);
 }
@@ -65,7 +65,7 @@ void RadarMap::tickTime(double dt, int total) {
     pixmapPainter.drawPixmap(0,0,_mapImage,0,0,width(),height());
 
     // Draw heading (masked)
-    drawHeading(&pixmapPainter);
+    drawHeading(&pixmapPainter,_radarImage.width()/2,_radarImage.height()/2);
 
     // Call for repaint
     update();
@@ -74,8 +74,8 @@ void RadarMap::tickTime(double dt, int total) {
 void RadarMap::storeSettings(QSettings &settings) {
     MapInstrument::storeSettings(settings);
 
-    settings.setValue("monitorfade", _mapSource);
-    settings.setValue("sweepspeed", _range);
+    settings.setValue("monitorfade", _radarMonitorFade);
+    settings.setValue("sweepspeed", _radarSweepSpeed);
 }
 
 void RadarMap::loadSettings(QSettings &settings) {

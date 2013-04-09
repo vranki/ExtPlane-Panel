@@ -6,7 +6,7 @@
 #include "widgets/velocityunitcombobox.h"
 #include "widgets/numberinputlineedit.h"
 
-REGISTER_WITH_PANEL_ITEM_FACTORY(EngineRPM,"indicator/enginerpm/round");
+REGISTER_WITH_PANEL_ITEM_FACTORY(EngineRPM,"indicator/enginerpm/round")
 
 EngineRPM::EngineRPM(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrument(parent), _client(this, typeName(), conn) {
     conn->registerClient(&_client);

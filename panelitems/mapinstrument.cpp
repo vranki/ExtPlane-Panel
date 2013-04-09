@@ -155,7 +155,7 @@ void MapInstrument::mapTileDownloadFinished(QNetworkReply *reply) {
     update();
 }
 
-void MapInstrument::drawHeading(QPainter *painter) {
+void MapInstrument::drawHeading(QPainter *painter, int x, int y) {
 
     // Shapes
     static const QPoint plane[] = {
@@ -187,7 +187,7 @@ void MapInstrument::drawHeading(QPainter *painter) {
         painter->save(); {
             // Line
             painter->setClipRect(0,0,width(),height(),Qt::IntersectClip);
-            painter->translate(width()/2.0,height()/2.0);
+            painter->translate(x,y);
             painter->rotate(_heading-90);
             painter->setPen(QPen(Qt::green,4,Qt::DotLine));
             painter->drawLine(0,0,_side/1.0,0);

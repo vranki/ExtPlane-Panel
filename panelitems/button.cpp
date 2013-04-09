@@ -7,7 +7,6 @@
 #include "widgets/numberinputlineedit.h"
 #include "extplaneclient.h"
 
-
 REGISTER_WITH_PANEL_ITEM_FACTORY(Button,"buttons/generic");
 
 Button::Button(QObject *parent, ExtPlaneConnection *conn) :

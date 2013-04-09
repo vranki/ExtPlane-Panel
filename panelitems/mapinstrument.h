@@ -42,7 +42,7 @@ public slots:
     void setMapRange(int val) {_range = val;_googleMapsZoom=(int)((1.0-val/100.0)*16.0);}
 
 protected:
-    void drawHeading(QPainter *painter);
+    void drawHeading(QPainter *painter, int x, int y);
 
 protected:
     // Internal variables
