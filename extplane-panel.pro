@@ -48,6 +48,7 @@ SOURCES += \
     $$EXTPLANE_CLIENT_PATH/clientdataref.cpp \
     $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.cpp \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.cpp \
+    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/fixedsimulateddataref.cpp \
     $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.cpp \
     main.cpp \
     panelitems/panelitem.cpp \
@@ -96,6 +97,7 @@ HEADERS += \
     $$EXTPLANE_CLIENT_PATH/clientdataref.h \
     $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.h \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.h \
+    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/fixedsimulateddataref.h \
     $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.h \
     panelitems/panelitem.h \
     panelwindow.h \
