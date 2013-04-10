@@ -199,6 +199,7 @@ void PanelWindow::addItem(PanelItem *newItem) {
     newItem->setDefaultFontSize(defaultFontSize);
     scene.addItem(newItem);
     panel->items()->append(newItem);
+    newItem->setSize(newItem->width(),newItem->height()); // PanelItems with cached Pixmaps redraw on the sizeChanged event, so we force it here to allow widgets to redraw with a scene
     connect(this, SIGNAL(tickTime(double,int)), newItem, SLOT(tickTime(double,int)));
 }
 

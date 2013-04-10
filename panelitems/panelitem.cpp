@@ -12,6 +12,7 @@
 
 #include "panel.h"
 #include "widgets/colorselector.h"
+#include "widgets/numberinputlineedit.h"
 
 PanelItem::PanelItem(ExtPlanePanel *panel, PanelItemType type, PanelItemShape shape) : QObject(panel), QGraphicsItem(), darkGrayColor(30,30,30) {
     // Init
@@ -236,7 +237,16 @@ void PanelItem::createLineEditSetting(QGridLayout *layout, QString label, QStrin
     connect(widget, SIGNAL(textChanged(QString)), this, SLOT(settingChanged()));
 }
 
-void PanelItem::createColorSetting(QGridLayout *layout, QString label, QString initialValue, const char* slot) {
+void PanelItem::createNumberInputSetting(QGridLayout *layout, QString label, float initialValue, const char* slot) {
+    layout->addWidget(new QLabel(label, layout->parentWidget()));
+    NumberInputLineEdit *widget = new NumberInputLineEdit(layout->parentWidget());
+    widget->setText(QString::number(initialValue));
+    layout->addWidget(widget);
+    connect(widget, SIGNAL(valueChangedFloat(float)), this, slot);
+    connect(widget, SIGNAL(valueChangedFloat(float)), this, SLOT(settingChanged()));
+}
+
+void PanelItem::createColorSetting(QGridLayout *layout, QString label, QColor initialValue, const char* slot) {
     layout->addWidget(new QLabel(label, layout->parentWidget()));
     ColorSelector *widget = new ColorSelector(layout->parentWidget());
     widget->setColor(initialValue);

@@ -27,25 +27,31 @@ public slots:
     void dataRefChanged(QString name, double val);
     void dataRefChanged(QString name, QString val);
     void setDataRefName(QString name);
-    void setLabelColor(QColor color) { _labelColor = color; }
+    void setThreshold(float val) { _threshold = val; }
+    void setLabelColor(QColor val) { _labelColor = val; }
+    void setLabelOn(QString val) { _labelOn = val; }
+    void setLabelOff(QString val) { _labelOff = val; }
+    void setGlowStrength(int val) { _glowStrength = val; _glowEnabled=(_glowStrength!=0); }
+    void setStrengthOn(int val) { _strengthOn = val; }
+    void setStrengthOff(int val) { _strengthOff = val; }
 
 private:
     // Internal variables
     ExtPlaneClient _client;
     double _datarefValue;
     bool _on;
-    QGraphicsPixmapItem _labelGlowItem;
-    QGraphicsBlurEffect _labelGlowEffect;
+    QGraphicsPixmapItem *_labelGlowItem;
 
     // Configuration variables
     QString _labelOn;
     QString _labelOff;
-    bool _labelGlow;
+    bool _glowEnabled;
     QColor _labelColor;
     QString _datarefName;
     double _threshold;
     int _strengthOn;
     int _strengthOff;
+    int _glowStrength;
 };
 
 #endif // INDICATORLIGHT_H

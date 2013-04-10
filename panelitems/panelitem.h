@@ -97,10 +97,11 @@ public:
      * Helper method for easily creating a line edit setting (QString)
      */
     void createLineEditSetting(QGridLayout *layout, QString label, QString initialValue, const char* slot);
+    void createNumberInputSetting(QGridLayout *layout, QString label, float initialValue, const char* slot);
     /**
      * Helper method for easily creating a color setting (QString) with an option for a color picker
      */
-    void createColorSetting(QGridLayout *layout, QString label, QString initialValue, const char* slot);
+    void createColorSetting(QGridLayout *layout, QString label, QColor initialValue, const char* slot);
     virtual void applySettings();
     inline PanelItemType itemType() { return _itemType; }
     inline PanelItemShape itemShape() { return _itemShape; }
