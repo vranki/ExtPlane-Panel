@@ -7,8 +7,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(DataRefDebugger,"misc/debugging/dataref")
 
-DataRefDebugger::DataRefDebugger(QObject *parent, ExtPlaneConnection *conn) :
-        PanelItem(parent), _client(this, typeName(), conn) {
+DataRefDebugger::DataRefDebugger(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+        PanelItem(panel, PanelItemTypeDisplay, PanelItemShapeRectangular),
+        _client(this, typeName(), conn) {
 
     // Init
     setSize(400,60);

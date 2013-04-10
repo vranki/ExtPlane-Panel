@@ -29,15 +29,19 @@
 // Typedefs
 enum PanelItemType
 {
-    PanelItemTypeGauge,
-    PanelItemTypeSwitch,
-    PanelItemTypeCover
+    PanelItemTypeGauge,     // Panel Item which acts as a gauge or flight instrument
+    PanelItemTypeSwitch,    // Panel Item which takes user input and has a state
+    PanelItemTypeCover,     // Panel Item that acts as a cover for other items
+    PanelItemTypeDisplay    // Panel Item which mainly acts as a display (such as a brake light)
 };
 enum PanelItemShape
 {
     PanelItemShapeCircular,
     PanelItemShapeRectangular
 };
+
+// Forward declares
+class ExtPlanePanel;
 
 class PanelItem : public QObject, public QGraphicsItem {
 
@@ -46,10 +50,8 @@ class PanelItem : public QObject, public QGraphicsItem {
         Q_INTERFACES(QGraphicsItem)
     #endif
 
-
-
 public:
-    explicit PanelItem(QObject *parent);
+    explicit PanelItem(ExtPlanePanel *panel, PanelItemType type, PanelItemShape shape);
     ~PanelItem();
     virtual QRectF boundingRect() const;
     /**
@@ -95,6 +97,9 @@ public:
      */
     void createLineEditSetting(QGridLayout *layout, QString label, QString initialValue, const char* slot);
     virtual void applySettings();
+    inline PanelItemType itemType() { return _itemType; }
+    inline PanelItemShape itemShape() { return _itemShape; }
+    inline ExtPlanePanel* panel() { return _panel; }
 
 protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
@@ -124,9 +129,9 @@ signals:
     void panelItemChanged(PanelItem *item);
 
 public slots:
-    void setPanelRotation(int angle);
-    void setItemRotation(int angle);
-    void setZValue(int z);
+    virtual void setPanelRotation(int angle);
+    virtual void setItemRotation(int angle);
+    virtual void setZValue(int z);
     virtual void tickTime(double dt, int total);
     virtual void setInterpolationEnabled(bool ie);
     virtual void setAntialiasEnabled(bool ie);
@@ -144,6 +149,7 @@ protected:
 private:
     PanelItemType _itemType;
     PanelItemShape _itemShape;
+    ExtPlanePanel *_panel;
     float _width, _height;
     bool _resizing, _editMode, _antialiasingEnabled;
     int _panelRotation, _itemRotation;

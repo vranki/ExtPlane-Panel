@@ -46,7 +46,7 @@ private:
 class NeedleInstrument : public PanelItem {
     Q_OBJECT
 public:
-    explicit NeedleInstrument(QObject *parent = 0);
+    explicit NeedleInstrument(ExtPlanePanel *panel = 0);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setScale(float zeroAngle, float zeroValue, float maxAngle, float maxValue);
     void setBars(float thick, float thin);

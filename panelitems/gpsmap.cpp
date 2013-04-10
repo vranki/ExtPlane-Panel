@@ -5,8 +5,8 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(GPSMap,"map/gps")
 
-GPSMap::GPSMap(QObject *parent, ExtPlaneConnection *conn) :
-        MapInstrument(parent,conn) {
+GPSMap::GPSMap(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+        MapInstrument(panel,conn) {
 }
 
 void GPSMap::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

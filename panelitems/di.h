@@ -16,7 +16,7 @@ class DirectionIndicator : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE DirectionIndicator(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE DirectionIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

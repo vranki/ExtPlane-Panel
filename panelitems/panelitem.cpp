@@ -1,4 +1,5 @@
 #include "panelitem.h"
+
 #include <QPainter>
 #include <QObject>
 #include <QGraphicsSceneMouseEvent>
@@ -7,10 +8,13 @@
 #include <QGridLayout>
 #include <QApplication>
 
-PanelItem::PanelItem(QObject *parent) : QObject(parent), QGraphicsItem(), darkGrayColor(30,30,30) {
+#include "panel.h"
+
+PanelItem::PanelItem(ExtPlanePanel *panel, PanelItemType type, PanelItemShape shape) : QObject(panel), QGraphicsItem(), darkGrayColor(30,30,30) {
     // Init
-    _itemType = PanelItemTypeGauge;
-    _itemShape = PanelItemShapeRectangular;
+    _panel = panel;
+    _itemType = type;
+    _itemShape = shape;
     _width = _height = 200;
     _panelRotation = _itemRotation = 0;
     _itemFontSize = 0;
@@ -175,16 +179,26 @@ float PanelItem::itemFontSize() {
 }
 
 void PanelItem::setZValue(int z) {
+    if(_itemType == PanelItemTypeCover) {
+        // Covers can't change z-value, they are awlways ontop (editmode=false) or onbottom (editmode=true)
+        if(_editMode)   QGraphicsItem::setZValue(-PANEL_PANELITEM_COVER_ZVALUE);
+        else            QGraphicsItem::setZValue(+PANEL_PANELITEM_COVER_ZVALUE);
+        return;
+    }
     QGraphicsItem::setZValue(z);
 }
 
 void PanelItem::createSettings(QGridLayout *layout) {}
 
 void PanelItem::setEditMode(bool em) {
+    // Setup the graphics item for editing
     _editMode = em;
     setFlag(QGraphicsItem::ItemIsMovable, em);
     setFlag(QGraphicsItem::ItemIsSelectable, em);
     _resizing = false;
+
+    // Update z value for covers (they are fixed depending on edit mode)
+    if(_itemType == PanelItemTypeCover) setZValue(0);
 }
 
 void PanelItem::createSliderSetting(QGridLayout *layout, QString label, int minV, int maxV, int initialV, const char* slot) {
@@ -196,6 +210,7 @@ void PanelItem::createSliderSetting(QGridLayout *layout, QString label, int minV
     connect(widget, SIGNAL(valueChanged(int)), this, slot);
     connect(widget, SIGNAL(valueChanged(int)), this, SLOT(settingChanged()));
 }
+
 void PanelItem::createCheckboxSetting(QGridLayout *layout, QString label, bool initialValue, const char* slot) {
     layout->addWidget(new QLabel(label, layout->parentWidget()));
     QCheckBox *widget = new QCheckBox(layout->parentWidget());
@@ -204,6 +219,7 @@ void PanelItem::createCheckboxSetting(QGridLayout *layout, QString label, bool i
     connect(widget, SIGNAL(clicked(bool)), this, slot);
     connect(widget, SIGNAL(clicked(bool)), this, SLOT(settingChanged()));
 }
+
 void PanelItem::createLineEditSetting(QGridLayout *layout, QString label, QString initialValue, const char* slot) {
     layout->addWidget(new QLabel(label, layout->parentWidget()));
     QLineEdit *widget = new QLineEdit(layout->parentWidget());

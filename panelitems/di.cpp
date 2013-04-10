@@ -12,8 +12,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(DirectionIndicator,"indicator/heading/basic");
 
-DirectionIndicator::DirectionIndicator(QObject *parent, ExtPlaneConnection *conn) :
-    PanelItem(parent), _client(this, typeName(), conn)
+DirectionIndicator::DirectionIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
+    _client(this, typeName(), conn)
 {
     _value = 0;
     setThickBars(10);

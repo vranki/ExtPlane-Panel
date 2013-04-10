@@ -7,7 +7,7 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(RadarMap,"map/radar")
 
-RadarMap::RadarMap(QObject *parent, ExtPlaneConnection *conn) : MapInstrument(parent,conn)
+RadarMap::RadarMap(ExtPlanePanel *panel, ExtPlaneConnection *conn) : MapInstrument(panel,conn)
 {
     // Init
     _radarMonitorFade = 1.5;

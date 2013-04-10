@@ -12,7 +12,7 @@ class SlipIndicator : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE SlipIndicator(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE SlipIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
 signals:

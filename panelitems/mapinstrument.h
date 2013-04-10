@@ -23,7 +23,7 @@
 class MapInstrument : public PanelItem {
     Q_OBJECT
 public:
-    explicit MapInstrument(QObject *parent, ExtPlaneConnection *conn);
+    explicit MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual ~MapInstrument();
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void itemSizeChanged(float w, float h);

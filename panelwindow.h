@@ -25,11 +25,11 @@ class HardwareManager;
  * @brief The PanelWindow class
  *
  * The QGraphicsView widget which acts as the main window containing
- * panel items and menu button in a  QGraphicsScene. Also contains
+ * panel items and menu button in a QGraphicsScene. Also contains
  * some main logic of the application (could be moved to separate class
- * if needed).
+ * if needed, ExtPlanePanel).
  *
- * @see PanelItem
+ * @see PanelItem, ExtPlanePanel
  */
 class PanelWindow : public QGraphicsView {
     Q_OBJECT
@@ -43,7 +43,8 @@ signals:
 public slots:
     void connectionMessage(QString txt);
     void itemDestroyed(QObject *obj);
-    void addItem(PanelItem *g);
+    void addItem(PanelItem *item);
+    void addItem(QString itemName);
     void panelRotationChanged(int r);
     void fullscreenChanged(bool fs);
     void setServerAddress(QString host);
@@ -73,7 +74,7 @@ protected:
 private:
     QList<PanelItem*> selectedGauges();
 private:
-    ExtPlane::Panel *panel; // Contains the panel items (class tag required because of naming confilct with QFrame::Panel)
+    ExtPlanePanel *panel; // Contains the panel items
     HardwareManager *hwManager;
     MenuButton *menuButton;
     SettingsDialog *settingsDialog;
@@ -83,6 +84,7 @@ private:
     bool editMode; // True if in edit mode
     bool dirty; // True when any panel changes have occured
     ExtPlaneConnection *connection;
+    PanelItemFactory itemFactory;
     Settings *appSettings; // Loaded on app start, contains general settings, passed on to settings dialog. Use valueFromSettingsOrCommandLine to extract settings from both the file and command line.
     EditItemDialog *editItemDialog; // Only one open at a time
     QTimer tickTimer; // Timer to update items synchronously

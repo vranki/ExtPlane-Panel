@@ -7,8 +7,9 @@
 
 #include "extplaneclient.h"
 
-MapInstrument::MapInstrument(QObject *parent, ExtPlaneConnection *conn) :
-    PanelItem(parent), _client(this, typeName(), conn) {
+MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),
+    _client(this, typeName(), conn) {
 
     // Init
     _mapSource = MAP_INSTRUMENT_SOURCE_GOOGLEMAPS;

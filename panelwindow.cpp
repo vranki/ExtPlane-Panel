@@ -48,7 +48,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     appSettings = new Settings("org.vranki", "extplane-panel", this);
 
     // Create panel object
-    panel = new ExtPlane::Panel(appSettings,this);
+    panel = new ExtPlanePanel(appSettings,this);
 
     // Create connection and item factory
     appSettings->beginGroup("settings");
@@ -84,11 +84,13 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(menuButton, SIGNAL(setServerAddress(QString)), this, SLOT(setServerAddress(QString)));
     //connect(menuButton, SIGNAL(editModeChanged(bool)), this, SLOT(editModeChanged(bool)));
     menuButton->setPos(0,0);
+    menuButton->setZValue(PANEL_PANELINFO_ZVALUE);
     connect(menuButton, SIGNAL(itemAdded(PanelItem*)), this, SLOT(addItem(PanelItem*)));
     scene.addItem(menuButton);
 
-    // Error message
+    // Status message
     connect(connection, SIGNAL(connectionMessage(QString)), this, SLOT(connectionMessage(QString)));
+    statusMessage.setZValue(PANEL_PANELINFO_ZVALUE);
     statusMessage.setDefaultTextColor(Qt::red);
     statusMessage.setPos(0,20);
     scene.addItem(&statusMessage);
@@ -146,8 +148,8 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
 }
 
 PanelWindow::~PanelWindow() {
-    while(!panel->items.isEmpty())
-        delete panel->items.first(); // Calls itemDeleted() and removes itself from list
+    while(!panel->items()->isEmpty())
+        delete panel->items()->first(); // Calls itemDeleted() and removes itself from list
     if(connection) delete connection;
     if(appSettings) delete appSettings;
     if(panel) delete panel;
@@ -171,16 +173,18 @@ void PanelWindow::connectionMessage(QString txt) {
 
 void PanelWindow::itemDestroyed(QObject *obj) {
     // Delete from panelItems
-    foreach(PanelItem *listItem, panel->items) {
+    //foreach(PanelItem *listItem, panel->items()) {
+    for(int i = 0; i < panel->items()->count(); i++) {
+        PanelItem *listItem = panel->items()->at(i);
         QObject *listItemQo = static_cast<QObject*>(listItem);
         if(listItemQo == obj) {
-            panel->items.removeOne(listItem);
+            panel->items()->removeOne(listItem);
         }
     }
 }
 
 void PanelWindow::addItem(PanelItem *newItem) {
-    Q_ASSERT(newItem->parent() == this); // Item's parent should always be this
+    //Q_ASSERT(newItem->parent() == this); // Item's parent should always be this
     connect(newItem, SIGNAL(destroyed(QObject*)), this, SLOT(itemDestroyed(QObject*)));
     connect(newItem, SIGNAL(editPanelItem(PanelItem*)), this, SLOT(editItem(PanelItem*)));
     connect(newItem, SIGNAL(panelItemChanged(PanelItem*)), this, SLOT(panelItemChanged(PanelItem*)));
@@ -194,14 +198,21 @@ void PanelWindow::addItem(PanelItem *newItem) {
     newItem->setAntialiasEnabled(aaEnabled);
     newItem->setDefaultFontSize(defaultFontSize);
     scene.addItem(newItem);
-    panel->items.append(newItem);
+    panel->items()->append(newItem);
     connect(this, SIGNAL(tickTime(double,int)), newItem, SLOT(tickTime(double,int)));
+}
+
+void PanelWindow::addItem(QString itemName) {
+    addItem(itemFactory.itemForName(itemName,panel,connection));
 }
 
 void PanelWindow::panelRotationChanged(int r) {
     panel->rotation = r;
-    foreach(PanelItem *i, panel->items)
-        i->setPanelRotation(r);
+    //foreach(PanelItem *i, panel->_items)
+    for(int i = 0; i < panel->items()->count(); i++) {
+        PanelItem *g = panel->items()->at(i);
+        g->setPanelRotation(r);
+    }
 }
 
 void PanelWindow::fullscreenChanged(bool fs) {
@@ -269,13 +280,18 @@ void PanelWindow::disableBlanking() {
 
 void PanelWindow::setEditMode(bool em) {
     editMode = em;
-    foreach(PanelItem *it, panel->items)
-        it->setEditMode(em);
+    //foreach(PanelItem *it, panel->_items)
+    for(int i = 0; i < panel->items()->count(); i++) {
+        PanelItem *g = panel->items()->at(i);
+        g->setEditMode(em);
+    }
 }
 
 QList<PanelItem*> PanelWindow::selectedGauges() {
     QList<PanelItem*> selection;
-    foreach(PanelItem* g, panel->items) {
+    //foreach(PanelItem* g, panel->_items) {
+    for(int i = 0; i < panel->items()->count(); i++) {
+        PanelItem *g = panel->items()->at(i);
         if(g->isSelected())
             selection.append(g);
     }
@@ -283,8 +299,8 @@ QList<PanelItem*> PanelWindow::selectedGauges() {
 }
 
 void PanelWindow::showAddItemDialog() {
-    PanelItemSelectionDialog *pisd = new PanelItemSelectionDialog(this, connection);
-    connect(pisd, SIGNAL(addItem(PanelItem*)), this, SLOT(addItem(PanelItem*)));
+    PanelItemSelectionDialog *pisd = new PanelItemSelectionDialog(this);
+    connect(pisd, SIGNAL(addItem(QString)), this, SLOT(addItem(QString)));
     connect(this, SIGNAL(tickTime(double,int)), pisd, SLOT(tickTime(double,int)));
     pisd->exec();
 }
@@ -329,9 +345,11 @@ void PanelWindow::saveProfile(QString filename) {
         panel->settings->group().clear();
         panel->settings->setValue("number", panelNumber);
         panel->settings->setValue("name", panelName);
-        panel->settings->setValue("gaugecount", panel->items.size());
+        panel->settings->setValue("gaugecount", panel->items()->size());
         int gn = 0;
-        foreach(PanelItem *g, panel->items) {
+        //foreach(PanelItem *g, panel->items()) {
+        for(int i = 0; i < panel->items()->count(); i++) {
+            PanelItem *g = panel->items()->at(i);
             panel->settings->beginGroup("gauge-" + QString::number(gn)); {
                 g->storeSettings(*panel->settings);
                 panel->settings->endGroup(); }
@@ -375,13 +393,13 @@ void PanelWindow::loadProfile(QString filename) {
             QString name = panel->settings->value("name").toString();
             for(int gn=0;gn<gc;gn++) {
                 panel->settings->beginGroup("gauge-" + QString::number(gn));
-                PanelItem *g = panel->itemFactory.itemForName(panel->settings->value("type").toString(), this, connection);
+                PanelItem *g = itemFactory.itemForName(panel->settings->value("type").toString(), panel, connection);
                 if(g) {
                     addItem(g);
                     g->loadSettings(*panel->settings);
                     g->applySettings();
                 } else {
-                    qDebug() << Q_FUNC_INFO << "Can't load item of type " << panel->settings->value("type").toString();
+                    qDebug() << Q_FUNC_INFO << "Error creating item of type" << panel->settings->value("type").toString();
                 }
                 panel->settings->endGroup();
             }
@@ -402,7 +420,9 @@ void PanelWindow::loadProfile(QString filename) {
 
 void PanelWindow::newProfile() {
     // Clear all panel items
-    foreach(PanelItem *g, panel->items) {
+    //foreach(PanelItem *g, panel->_items) {
+    for(int i = 0; i < panel->items()->count(); i++) {
+        PanelItem *g = panel->items()->at(i);
         g->deleteLater();
     }
 

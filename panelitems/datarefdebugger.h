@@ -8,7 +8,7 @@ class DataRefDebugger : public PanelItem
     Q_OBJECT
 
 public:
-    Q_INVOKABLE DataRefDebugger(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE DataRefDebugger(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);

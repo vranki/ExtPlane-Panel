@@ -1,13 +1,15 @@
 #include "panel.h"
 
-ExtPlane::Panel::Panel(Settings *appSettings, QObject *parent) : QObject(parent), appSettings(appSettings)
+ExtPlanePanel::ExtPlanePanel(Settings *appSettings, QObject *parent) : QObject(parent), appSettings(appSettings)
 {
+    _items = new PanelItemList();
     settings = NULL;
     rotation = 0;
 }
 
-ExtPlane::Panel::~Panel() {
+ExtPlanePanel::~ExtPlanePanel() {
     if(settings) delete settings;
+    if(_items) delete _items;
 }
 
 

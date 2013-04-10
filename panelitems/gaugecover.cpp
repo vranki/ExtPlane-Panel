@@ -1,14 +1,17 @@
 #include "gaugecover.h"
 
+#include <QDebug>
 #include <QtCore/qmath.h>
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(GaugeCover,"misc/cover/gauges");
 
-GaugeCover::GaugeCover(QObject *parent, ExtPlaneConnection *conn) : PanelItem(parent) {
+GaugeCover::GaugeCover(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+    PanelItem(panel, PanelItemTypeCover, PanelItemShapeRectangular) {
     // Init
-    _gaugesH = 4;
+    _gaugesH = 2;
     _gaugesV = 2;
     _gaugesSize = 100;
+    _gaugesInset = 20;
     _grainEnabled = true;
     _grainStrengh = 5;
     _grainZoom = 1;
@@ -21,20 +24,20 @@ GaugeCover::GaugeCover(QObject *parent, ExtPlaneConnection *conn) : PanelItem(pa
 void GaugeCover::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     setupPainter(painter);
 
-    painter->drawImage(QPoint(0,0),_coverImage);
+    if(!isEditMode()) painter->drawImage(QPoint(0,0),_coverImage);
 
     PanelItem::paint(painter, option, widget);
 }
 
 void GaugeCover::itemSizeChanged(float w, float h) {
-    drawCoverImage();
+    if(!isEditMode()) drawCoverImage();
     update();
 }
 
 void GaugeCover::setEditMode(bool em) {
     PanelItem::setEditMode(em);
-    //drawCoverImage();
-    //update();
+    if(!isEditMode()) drawCoverImage();
+    update();
 }
 
 void GaugeCover::storeSettings(QSettings &settings) {
@@ -65,7 +68,7 @@ void GaugeCover::createSettings(QGridLayout *layout) {
 }
 
 void GaugeCover::settingChanged() {
-    drawCoverImage();
+    if(!isEditMode()) drawCoverImage();
     update();
 }
 
@@ -155,7 +158,7 @@ void GaugeCover::drawCoverImage() {
     painter.setOpacity(1.0);
 
     // Draw gauge fittings
-    int gaugeSlotWidth = w / _gaugesH;
+    /*int gaugeSlotWidth = w / _gaugesH;
     int gaugeSlotHeight = h / _gaugesV;
     for(int y = 0; y < _gaugesV; y++) {
         for(int x = 0; x < _gaugesH; x++) {
@@ -163,6 +166,24 @@ void GaugeCover::drawCoverImage() {
             int xx = x * gaugeSlotWidth + (gaugeSlotWidth/2);
             int yy = y * gaugeSlotHeight + (gaugeSlotHeight/2);
             drawCoverImageGuageFitting(&painter,xx,yy,200);
+        }
+    }*/
+
+    //foreach(PanelItem *item, list) {
+    for(int i = 0; i < panel()->items()->count(); i++) {
+        PanelItem *item = panel()->items()->at(i);
+        qDebug() << Q_FUNC_INFO << item->itemType() << PanelItemTypeGauge << PanelItemTypeSwitch;
+        if(item->itemType() == PanelItemTypeGauge || item->itemType() == PanelItemTypeSwitch || item->itemType() == PanelItemTypeDisplay) {
+            int xx = item->x() - this->x();
+            int yy = item->y() - this->y();
+            int centerX = xx + item->width()/2;
+            int centerY = yy + item->height()/2;
+            if(item->itemShape() == PanelItemShapeCircular) {
+                int radius = qMin(item->width(),item->height());
+                drawCoverImageCircularFitting(&painter,centerX,centerY,radius);
+            } else if(item->itemShape() == PanelItemShapeRectangular) {
+                drawCoverImageRectangularFitting(&painter,centerX,centerY,item->width(),item->height());
+            }
         }
     }
 
@@ -172,13 +193,14 @@ void GaugeCover::drawCoverImage() {
     _coverImage = newCover;
 }
 
-void GaugeCover::drawCoverImageGuageFitting(QPainter *painter, int centerX, int centerY, int size) {
+void GaugeCover::drawCoverImageCircularFitting(QPainter *painter, int centerX, int centerY, int radius) {
+    qDebug() << Q_FUNC_INFO;
 
     painter->save(); {
 
         // Translage/scale/size
-        int fullSize = size;
-        int holeSize = fullSize-20;
+        int fullSize = radius+_gaugesInset;
+        int holeSize = radius;
         painter->translate(centerX,centerY);
         painter->scale(_gaugesSize/100.0,_gaugesSize/100.0);
 
@@ -199,27 +221,44 @@ void GaugeCover::drawCoverImageGuageFitting(QPainter *painter, int centerX, int 
     } painter->restore();
 }
 
-void GaugeCover::drawCoverImageLightFitting(QPainter *painter, int centerX, int centerY, int width, int height) {
+void GaugeCover::drawCoverImageRectangularFitting(QPainter *painter, int centerX, int centerY, int width, int height) {
 
     painter->save(); {
 
         // Translage/scale/size
-        int fullSize = 200;
-        int holeSize = fullSize-20;
+        //int fullSize = radius+_gaugesInset;
+        //int holeSize = radius;
+        int fullWidth = width + _gaugesInset;
+        int fullHeight = height + _gaugesInset;
+        qreal bevelY = 20;
+        qreal bevelX = 20;
+        qreal fittingBevel = 1.0;
+        qreal holeBevel = 0.8;
         painter->translate(centerX,centerY);
+        painter->scale(_gaugesSize/100.0,_gaugesSize/100.0);
 
         // Draw fitting color
         painter->setPen(Qt::NoPen);
         painter->setBrush(QColor(_backgroundColor).darker());
         painter->setOpacity(0.5);
-        painter->drawEllipse(-fullSize/2,-fullSize/2,fullSize,fullSize);
+        painter->drawRoundedRect(
+                    QRect(-fullWidth/2,-fullHeight/2,fullWidth,fullHeight),
+                    bevelX*fittingBevel,
+                    bevelY*fittingBevel,
+                    Qt::AbsoluteSize
+                 );
         painter->setOpacity(1.0);
 
         // Create the hole
         painter->setCompositionMode(QPainter::CompositionMode_Clear);
         painter->setPen(Qt::NoPen);
         painter->setBrush(Qt::black);
-        painter->drawEllipse(-holeSize/2,-holeSize/2,holeSize,holeSize);
+        painter->drawRoundedRect(
+                    QRect(-width/2,-height/2,width,height),
+                    bevelX*holeBevel,
+                    bevelY*holeBevel,
+                    Qt::AbsoluteSize
+                 );
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 
     } painter->restore();

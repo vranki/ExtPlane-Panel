@@ -8,7 +8,7 @@ class GPSMap : public MapInstrument
     Q_OBJECT
 
 public:
-    Q_INVOKABLE GPSMap(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE GPSMap(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);

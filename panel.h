@@ -2,33 +2,54 @@
 #define PANEL_H
 
 #include <QObject>
+#include <QList>
+#include <QDebug>
 
 #include "settings.h"
-#include "panelitemfactory.h"
-#include "panelitems/panelitem.h"
 
-namespace ExtPlane {
-    class Panel : public QObject
-    {
-        Q_OBJECT
-    public:
-        explicit Panel(Settings *appSettings, QObject *parent = 0);
-        ~Panel();
+// Forward declarations
+class PanelItem;
 
-    signals:
+// Typedefs
+typedef QList<PanelItem*> PanelItemList;
 
-    public slots:
+// Defs
+#define PANEL_PANELITEM_COVER_ZVALUE 9000
+#define PANEL_PANELINFO_ZVALUE 9500
+
+/**
+ * @brief A logical Panel
+ *
+ * Contains references to the panel's current PanelItems. The Panel is
+ * shared between all the PanelItems.
+ *
+ * Note: Called ExtPlanePanel instead of Panel because of Qt's QFrame::Panel
+ * name conflict. We might consider using namespaces?
+ *
+ * @see PanelItem, PanelWindow
+ */
+class ExtPlanePanel : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit ExtPlanePanel(Settings *appSettings, QObject *parent = 0);
+    ~ExtPlanePanel();
+    inline PanelItemList* items() { return _items; }
+
+signals:
+
+public slots:
 
 
-    public:
-        Settings *appSettings;
-        QSettings *settings; // Contains all PanelItem settings
-        PanelItemFactory itemFactory;
-        QList<PanelItem *> items;
-        int rotation; // Master rotation of the panel
+public:
+    Settings *appSettings;
+    QSettings *settings; // Contains all PanelItem settings
+    PanelItemList *_items;
+    int rotation; // Master rotation of the panel
 
 
-    };
-}
+};
+
 
 #endif // PANEL_H

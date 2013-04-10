@@ -49,7 +49,8 @@ void Arc::setColor(QString colorString){
 
 
 
-NeedleInstrument::NeedleInstrument(QObject *parent) : PanelItem(parent) {
+NeedleInstrument::NeedleInstrument(ExtPlanePanel *panel) :
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular) {
     _value = _zeroangle = 0;
     _zeroValue = 0;
     _maxValue = 1;
