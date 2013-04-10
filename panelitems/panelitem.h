@@ -71,6 +71,7 @@ public:
     virtual void itemSizeChanged(float w, float h) {};
     bool isResizing();
     virtual void setEditMode(bool em);
+    virtual void setPos(int x, int y);
     bool isEditMode();
     /**
      * Automatically implemented by panel items when using the REGISTER_WITH_PANEL_ITEM_FACTORY macro.
@@ -96,6 +97,10 @@ public:
      * Helper method for easily creating a line edit setting (QString)
      */
     void createLineEditSetting(QGridLayout *layout, QString label, QString initialValue, const char* slot);
+    /**
+     * Helper method for easily creating a color setting (QString) with an option for a color picker
+     */
+    void createColorSetting(QGridLayout *layout, QString label, QString initialValue, const char* slot);
     virtual void applySettings();
     inline PanelItemType itemType() { return _itemType; }
     inline PanelItemShape itemShape() { return _itemShape; }

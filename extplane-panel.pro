@@ -91,7 +91,9 @@ SOURCES += \
     panelitems/mapinstrument.cpp \
     panelitems/datarefdebugger.cpp \
     panelitems/gaugecover.cpp \
-    panel.cpp
+    panel.cpp \
+    panelitems/indicatorlight.cpp \
+    widgets/colorselector.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -141,7 +143,9 @@ HEADERS += \
     panelitems/mapinstrument.h \
     panelitems/datarefdebugger.h \
     panelitems/gaugecover.h \
-    panel.h
+    panel.h \
+    panelitems/indicatorlight.h \
+    widgets/colorselector.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \

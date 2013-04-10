@@ -15,6 +15,7 @@ typedef QList<PanelItem*> PanelItemList;
 
 // Defs
 #define PANEL_PANELITEM_COVER_ZVALUE 9000
+#define PANEL_PANELITEM_GLOW_ZVALUE 9100
 #define PANEL_PANELINFO_ZVALUE 9500
 
 /**

@@ -7,8 +7,11 @@
 #include <QVariant>
 #include <QGridLayout>
 #include <QApplication>
+#include <QPushButton>
+#include <QColorDialog>
 
 #include "panel.h"
+#include "widgets/colorselector.h"
 
 PanelItem::PanelItem(ExtPlanePanel *panel, PanelItemType type, PanelItemShape shape) : QObject(panel), QGraphicsItem(), darkGrayColor(30,30,30) {
     // Init
@@ -201,6 +204,10 @@ void PanelItem::setEditMode(bool em) {
     if(_itemType == PanelItemTypeCover) setZValue(0);
 }
 
+void PanelItem::setPos(int x, int y) {
+    QGraphicsItem::setPos(x,y);
+}
+
 void PanelItem::createSliderSetting(QGridLayout *layout, QString label, int minV, int maxV, int initialV, const char* slot) {
     layout->addWidget(new QLabel(label, layout->parentWidget()));
     QSlider *widget = new QSlider(Qt::Horizontal,layout->parentWidget());
@@ -228,6 +235,16 @@ void PanelItem::createLineEditSetting(QGridLayout *layout, QString label, QStrin
     connect(widget, SIGNAL(textChanged(QString)), this, slot);
     connect(widget, SIGNAL(textChanged(QString)), this, SLOT(settingChanged()));
 }
+
+void PanelItem::createColorSetting(QGridLayout *layout, QString label, QString initialValue, const char* slot) {
+    layout->addWidget(new QLabel(label, layout->parentWidget()));
+    ColorSelector *widget = new ColorSelector(layout->parentWidget());
+    widget->setColor(initialValue);
+    layout->addWidget(widget);
+    connect(widget, SIGNAL(colorChanged(QColor)), this, slot);
+    connect(widget, SIGNAL(colorChanged(QColor)), this, SLOT(settingChanged()));
+}
+
 
 bool PanelItem::isEditMode() {
     return _editMode;
