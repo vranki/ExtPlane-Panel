@@ -1,0 +1,19 @@
+language: cpp
+compiler:
+  - gcc
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq libqt4-dev build-essential
+ - git clone git://github.com/vranki/ExtPlane.git
+ - qmake
+script: make
+branches:
+  only:
+    - master
+notifications:
+  recipients:
+    - ville.ranki@iki.fi
+  email:
+    on_success: change
+    on_failure: always
+
