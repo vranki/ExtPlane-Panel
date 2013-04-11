@@ -11,8 +11,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(AttitudeIndicator,"indicator/attitude/basic");
 
-AttitudeIndicator::AttitudeIndicator(QObject *parent, ExtPlaneConnection *conn) :
-PanelItem(parent), _client(this, typeName(), conn)
+AttitudeIndicator::AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
+    _client(this, typeName(), conn)
 {
 /*    _value = 0;
     setThickBars(50);

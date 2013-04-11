@@ -3,8 +3,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Compass,"indicator/compass/basic");
 
-Compass::Compass(QObject *parent, ExtPlaneConnection *conn) :
-        PanelItem(parent), _client(this, typeName(), conn) {
+Compass::Compass(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+        PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
+        _client(this, typeName(), conn) {
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/cockpit/misc/compass_indicated", 1);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(headingChanged(QString,double)));

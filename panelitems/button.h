@@ -6,7 +6,7 @@
 class Button : public PanelItem {
     Q_OBJECT
 public:
-    Q_INVOKABLE Button(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE Button(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);

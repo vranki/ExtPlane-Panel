@@ -3,32 +3,55 @@
 
 #include <QGraphicsItem>
 #include <QSettings>
+#include <QPainter>
+#include <QGridLayout>
+#include <QSlider>
+#include <QLineEdit>
+#include <QCheckbox>
+#include <QLabel>
 
 // Not directly used by PanelItem, but included here to reduce
 // code amount in all subclasses
-#include <QPainter>
-#include <QGridLayout>
 #include "units.h"
-#include "../valueinterpolator.h"
 #include "extplaneconnection.h"
 #include "extplaneclient.h"
 #include "panelitemfactory.h"
+#include "../valueinterpolator.h"
 
-
+// Definitions
 #ifdef MOBILE_DEVICE
-#define SCALE_HANDLE_SIZE 50
+    #define SCALE_HANDLE_SIZE 50
 #else
-#define SCALE_HANDLE_SIZE 20
+    #define SCALE_HANDLE_SIZE 20
 #endif
 #define SNAP_GRID_SIZE 10
 
+// Typedefs
+enum PanelItemType
+{
+    PanelItemTypeGauge,     // Panel Item which acts as a gauge or flight instrument
+    PanelItemTypeSwitch,    // Panel Item which takes user input and has a state
+    PanelItemTypeCover,     // Panel Item that acts as a cover for other items
+    PanelItemTypeDisplay    // Panel Item which mainly acts as a display (such as a brake light)
+};
+enum PanelItemShape
+{
+    PanelItemShapeCircular,
+    PanelItemShapeRectangular
+};
+
+// Forward declares
+class ExtPlanePanel;
+
 class PanelItem : public QObject, public QGraphicsItem {
+
     Q_OBJECT
-#if QT_VERSION >= 0x040600 // Doesn't work on 4.5
-    Q_INTERFACES(QGraphicsItem)
-#endif 
+    #if QT_VERSION >= 0x040600 // Doesn't work on 4.5
+        Q_INTERFACES(QGraphicsItem)
+    #endif
+
 public:
-    explicit PanelItem(QObject *parent);
+    explicit PanelItem(ExtPlanePanel *panel, PanelItemType type, PanelItemShape shape);
     ~PanelItem();
     virtual QRectF boundingRect() const;
     /**
@@ -46,7 +69,9 @@ public:
      * Panel items which cache resources or pre-render complicated stuff should use this method for doing so.
      */
     virtual void itemSizeChanged(float w, float h) {};
-    void setEditMode(bool em);
+    bool isResizing();
+    virtual void setEditMode(bool em);
+    virtual void setPos(int x, int y);
     bool isEditMode();
     /**
      * Automatically implemented by panel items when using the REGISTER_WITH_PANEL_ITEM_FACTORY macro.
@@ -55,8 +80,33 @@ public:
     virtual QString typeName() = 0;
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
+
+    /**
+     * Method for creating any additional settings which a panel item might need
+     */
     virtual void createSettings(QGridLayout *layout);
+    /**
+     * Helper method for easily creating a slider setting (int)
+     */
+    void createSliderSetting(QGridLayout *layout, QString label, int minV, int maxV, int initialV, const char* slot);
+    /**
+     * Helper method for easily creating a checkbox setting (bool)
+     */
+    void createCheckboxSetting(QGridLayout *layout, QString label, bool initialValue, const char* slot);
+    /**
+     * Helper method for easily creating a line edit setting (QString)
+     */
+    void createLineEditSetting(QGridLayout *layout, QString label, QString initialValue, const char* slot);
+    void createNumberInputSetting(QGridLayout *layout, QString label, float initialValue, const char* slot);
+    /**
+     * Helper method for easily creating a color setting (QString) with an option for a color picker
+     */
+    void createColorSetting(QGridLayout *layout, QString label, QColor initialValue, const char* slot);
     virtual void applySettings();
+    inline PanelItemType itemType() { return _itemType; }
+    inline PanelItemShape itemShape() { return _itemShape; }
+    inline ExtPlanePanel* panel() { return _panel; }
+
 protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
@@ -73,6 +123,7 @@ protected:
 
     // Use for mechanical instruments
     QColor darkGrayColor;
+
 signals:
     void panelItemSelected(PanelItem *g, bool sel=true);
     void editPanelItem(PanelItem *item);
@@ -82,18 +133,31 @@ signals:
      * going in and touching all the panel items...
      */
     void panelItemChanged(PanelItem *item);
+
 public slots:
-    void setPanelRotation(int angle);
-    void setItemRotation(int angle);
-    void setZValue(int z);
+    virtual void setPanelRotation(int angle);
+    virtual void setItemRotation(int angle);
+    virtual void setZValue(int z);
     virtual void tickTime(double dt, int total);
     virtual void setInterpolationEnabled(bool ie);
     virtual void setAntialiasEnabled(bool ie);
     virtual void setDefaultFontSize(double dfs);
     virtual void setItemFontSize(double ifs);
+    /**
+     * Called when a setting has changed via the UI for settings created with the helper methods.
+     */
+    virtual void settingChanged() {};
+
+protected:
+    void setItemType(PanelItemType type);
+    void setItemShape(PanelItemShape shape);
+
 private:
+    PanelItemType _itemType;
+    PanelItemShape _itemShape;
+    ExtPlanePanel *_panel;
     float _width, _height;
-    bool resizing, _editMode, _aaEnabled;
+    bool _resizing, _editMode, _antialiasingEnabled;
     int _panelRotation, _itemRotation;
     float _itemFontSize, _defaultFontSize;
 };

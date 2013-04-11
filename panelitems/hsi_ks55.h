@@ -25,7 +25,7 @@ class HSI : public PanelItem
     Q_OBJECT
 
 public:
-    Q_INVOKABLE HSI(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE HSI(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void createSettings(QGridLayout *layout);
     virtual void loadSettings(QSettings &settings);
     virtual void storeSettings(QSettings &settings);

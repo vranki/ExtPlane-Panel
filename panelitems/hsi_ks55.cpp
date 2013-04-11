@@ -8,7 +8,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(HSI,"indicator/heading/hsi_ks5");
 
-HSI::HSI(QObject *parent, ExtPlaneConnection *conn) : PanelItem(parent), _client(this, typeName(), conn)
+HSI::HSI(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
+    _client(this, typeName(), conn)
 {
     
     // Init

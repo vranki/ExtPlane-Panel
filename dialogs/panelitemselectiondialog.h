@@ -8,11 +8,13 @@
 #include "../panelitemfactory.h"
 #include "simulatedextplaneconnection.h"
 #include "extplaneconnection.h"
+#include "panel.h"
 
 namespace Ui {
 class PanelItemSelectionDialog;
 }
 
+class Panel;
 class PanelItem;
 
 class PanelItemSelectionDialog : public QDialog
@@ -20,12 +22,12 @@ class PanelItemSelectionDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit PanelItemSelectionDialog(QWidget *parent, ExtPlaneConnection *rConnection);
+    explicit PanelItemSelectionDialog(QWidget *parent);
     ~PanelItemSelectionDialog();
 public slots:
     void tickTime(double dt, int total);
 signals:
-    void addItem(PanelItem * item);
+    void addItem(QString itemName);
 private slots:
     void itemChanged(QListWidgetItem* newItem);
     void itemAccepted();
@@ -33,9 +35,9 @@ private:
     Ui::PanelItemSelectionDialog *ui;
     PanelItemFactory factory;
     PanelItem *selectedPanelItem;
-    SimulatedExtPlaneConnection simulatedConnection;
-    ExtPlaneConnection *realConnection;
-    QGraphicsScene scene;
+    SimulatedExtPlaneConnection simulatedConnection; // Preview connection (simulated)
+    QGraphicsScene scene; // Preview scence
+    ExtPlanePanel *panel; // Preview panel
 };
 
 #endif // PANELITEMSELECTIONDIALOG_H

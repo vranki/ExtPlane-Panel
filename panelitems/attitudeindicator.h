@@ -16,7 +16,7 @@ class AttitudeIndicator : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE AttitudeIndicator(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);

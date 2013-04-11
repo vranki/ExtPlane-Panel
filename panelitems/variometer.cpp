@@ -9,7 +9,7 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Variometer,"indicator/variometer/round");
 
-Variometer::Variometer(QObject *parent, ExtPlaneConnection *conn) : NeedleInstrument(parent),
+Variometer::Variometer(ExtPlanePanel *panel, ExtPlaneConnection *conn) : NeedleInstrument(panel),
     _client(this, typeName(), conn), interpolator(0, 3) {
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/flightmodel/position/vh_ind", VARIOMETER_ACCURACY);

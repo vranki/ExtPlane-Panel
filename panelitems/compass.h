@@ -7,7 +7,7 @@ class Compass : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE Compass(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE Compass(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
 signals:

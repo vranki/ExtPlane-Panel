@@ -6,6 +6,8 @@
 #include <QStringList>
 #include <QMetaObject>
 
+#include "panel.h"
+
 class PanelItem;
 class ExtPlaneConnection;
 
@@ -28,7 +30,7 @@ public:
      * @param conn A ExtPlaneConnection object to use for this item
      * @return a new PanelItem
      */
-    PanelItem *itemForName(QString name, QObject *parentObject, ExtPlaneConnection *conn);
+    PanelItem *itemForName(QString name, ExtPlanePanel *panel, ExtPlaneConnection *conn);
     /**
      * @brief itemNames lists names of all available items
      * @return list of all available items

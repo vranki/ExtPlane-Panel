@@ -7,8 +7,9 @@
 
 #include "extplaneclient.h"
 
-MapInstrument::MapInstrument(QObject *parent, ExtPlaneConnection *conn) :
-    PanelItem(parent), _client(this, typeName(), conn) {
+MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),
+    _client(this, typeName(), conn) {
 
     // Init
     _mapSource = MAP_INSTRUMENT_SOURCE_GOOGLEMAPS;
@@ -20,7 +21,7 @@ MapInstrument::MapInstrument(QObject *parent, ExtPlaneConnection *conn) :
     _googleMapsZoom = 12;
     _googleMapsMaximumUpdateRate = 1000;
     _googleMapsType = "";
-    _googleMapsStyle = "feature:road.local|element:geometry|color:0x00ff00|weight:1|visibility:on&style=feature:landscape|element:geometry.fill|color:0x000000|visibility:on&style=feature:administrative|element:labels|weight:3.9|visibility:on|invert_lightness:true&style=feature:poi|visibility:simplified";
+    _googleMapsStyle = "feature:road.local|element:geometry|color:0x00ff00|weight:1|visibility:on&style=feature:landscape|element:geometry.fill|color:0x000000|visibility:on&style=feature:administrative|element:labels|weight:3.9|visibility:on|invert_lightness:true&style=feature:poi|visibility:simplified&style=feature:all|element:labels|visibility:off";
     _googleMapsAPIKey = "AIzaSyAeKX4PzLEefpE21WRnDgZa84XItJ-mHcA";
     _lastUpdateTime.restart();
 
@@ -70,11 +71,7 @@ void MapInstrument::loadSettings(QSettings &settings) {
 void MapInstrument::createSettings(QGridLayout *layout) {
     PanelItem::createSettings(layout);
 
-    layout->addWidget(new QLabel("Heading", layout->parentWidget()));
-    QCheckBox *headingCheckbox = new QCheckBox(layout->parentWidget());
-    headingCheckbox->setChecked(_showHeading);
-    layout->addWidget(headingCheckbox);
-    connect(headingCheckbox, SIGNAL(clicked(bool)), this, SLOT(setShowHeading(bool)));
+    createCheckboxSetting(layout,"Heading",_showHeading,SLOT(setShowHeading(bool)));
 
     layout->addWidget(new QLabel("Source", layout->parentWidget()));
     QComboBox *mapSourceCombobox = new QComboBox(layout->parentWidget());
@@ -84,12 +81,8 @@ void MapInstrument::createSettings(QGridLayout *layout) {
     layout->addWidget(mapSourceCombobox);
     connect(mapSourceCombobox, SIGNAL(currentIndexChanged(int)), this, SLOT(setMapSource(int)));
 
-    layout->addWidget(new QLabel("Range", layout->parentWidget()));
-    QSlider *rangeSlider = new QSlider(Qt::Horizontal,layout->parentWidget());
-    rangeSlider->setRange(0,100);
-    rangeSlider->setValue(_range);
-    layout->addWidget(rangeSlider);
-    connect(rangeSlider, SIGNAL(valueChanged(int)), this, SLOT(setMapRange(int)));
+    createSliderSetting(layout,"Range",0,100,_range,SLOT(setMapRange(int)));
+
 }
 
 void MapInstrument::latlongChanged(QString name, double value) {
@@ -155,7 +148,7 @@ void MapInstrument::mapTileDownloadFinished(QNetworkReply *reply) {
     update();
 }
 
-void MapInstrument::drawHeading(QPainter *painter) {
+void MapInstrument::drawHeading(QPainter *painter, int x, int y) {
 
     // Shapes
     static const QPoint plane[] = {
@@ -187,7 +180,7 @@ void MapInstrument::drawHeading(QPainter *painter) {
         painter->save(); {
             // Line
             painter->setClipRect(0,0,width(),height(),Qt::IntersectClip);
-            painter->translate(width()/2.0,height()/2.0);
+            painter->translate(x,y);
             painter->rotate(_heading-90);
             painter->setPen(QPen(Qt::green,4,Qt::DotLine));
             painter->drawLine(0,0,_side/1.0,0);

@@ -11,7 +11,7 @@
 
 #include "panelitemfactory.h"
 #include "settings.h"
-
+#include "panel.h"
 
 class PanelItem;
 class MenuButton;
@@ -25,11 +25,11 @@ class HardwareManager;
  * @brief The PanelWindow class
  *
  * The QGraphicsView widget which acts as the main window containing
- * panel items and menu button in a  QGraphicsScene. Also contains
+ * panel items and menu button in a QGraphicsScene. Also contains
  * some main logic of the application (could be moved to separate class
- * if needed).
+ * if needed, ExtPlanePanel).
  *
- * @see PanelItem
+ * @see PanelItem, ExtPlanePanel
  */
 class PanelWindow : public QGraphicsView {
     Q_OBJECT
@@ -43,7 +43,8 @@ signals:
 public slots:
     void connectionMessage(QString txt);
     void itemDestroyed(QObject *obj);
-    void addItem(PanelItem *g);
+    void addItem(PanelItem *item);
+    void addItem(QString itemName);
     void panelRotationChanged(int r);
     void fullscreenChanged(bool fs);
     void setServerAddress(QString host);
@@ -73,20 +74,18 @@ protected:
 private:
     QList<PanelItem*> selectedGauges();
 private:
+    ExtPlanePanel *panel; // Contains the panel items
     HardwareManager *hwManager;
     MenuButton *menuButton;
     SettingsDialog *settingsDialog;
     HardwareDialog *hardwareDialog;
     QGraphicsScene scene;
     QGraphicsTextItem statusMessage; // Displayed in panel
-    int panelRotation; // Master rotation of the panel
     bool editMode; // True if in edit mode
     bool dirty; // True when any panel changes have occured
     ExtPlaneConnection *connection;
-    Settings *appSettings; // Loaded on app start, contains general settings, passed on to settings dialog. Use valueFromSettingsOrCommandLine to extract settings from both the file and command line.
-    QSettings *panelSettings; // Contains all PanelItem settings
-    QList<PanelItem *> panelItems;
     PanelItemFactory itemFactory;
+    Settings *appSettings; // Loaded on app start, contains general settings, passed on to settings dialog. Use valueFromSettingsOrCommandLine to extract settings from both the file and command line.
     EditItemDialog *editItemDialog; // Only one open at a time
     QTimer tickTimer; // Timer to update items synchronously
     QTime time, totalTime;
@@ -95,6 +94,12 @@ private:
     #ifdef MAEMO
         QTimer blankingTimer; // Disables blanking on Maemo
     #endif
+
+
+        //QSettings *panelSettings; // Contains all PanelItem settings
+        //PanelItemFactory itemFactory;
+        //QList<PanelItem *> panelItems;
+        //int panelRotation; // Master rotation of the panel
 };
 
 #endif // PANELWINDOW_H

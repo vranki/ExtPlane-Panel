@@ -91,7 +91,13 @@ SOURCES += \
     hardware/pololuoutputdevice.cpp \
     panelitems/gpsmap.cpp \
     panelitems/radarmap.cpp \
-    panelitems/mapinstrument.cpp
+    panelitems/mapinstrument.cpp \
+    panelitems/datarefdebugger.cpp \
+    panelitems/gaugecover.cpp \
+    panel.cpp \
+    panelitems/indicatorlight.cpp \
+    widgets/colorselector.cpp \
+    util/perlinnoise.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -139,7 +145,13 @@ HEADERS += \
     hardware/pololuoutputdevice.h \
     panelitems/gpsmap.h \
     panelitems/radarmap.h \
-    panelitems/mapinstrument.h
+    panelitems/mapinstrument.h \
+    panelitems/datarefdebugger.h \
+    panelitems/gaugecover.h \
+    panel.h \
+    panelitems/indicatorlight.h \
+    widgets/colorselector.h \
+    util/perlinnoise.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \

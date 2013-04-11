@@ -12,7 +12,7 @@ class EngineRPM : public NeedleInstrument
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE EngineRPM(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE EngineRPM(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual QString typeName();

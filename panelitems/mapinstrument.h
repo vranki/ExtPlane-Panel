@@ -13,8 +13,8 @@
 #define MAP_INSTRUMENT_MODE_DOWNLOAD_LOADING 2
 #define MAP_INSTRUMENT_MODE_DOWNLOAD_FINISHED 3
 
-#define MAP_INSTRUMENT_SOURCE_GOOGLEMAPS 1
-#define MAP_INSTRUMENT_SOURCE_RADAR 2
+#define MAP_INSTRUMENT_SOURCE_GOOGLEMAPS 0
+#define MAP_INSTRUMENT_SOURCE_RADAR 1
 
 //#define MAP_INSTRUMENT_HEADING_DATAREF "sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot"
 #define MAP_INSTRUMENT_HEADING_DATAREF "sim/flightmodel/position/hpath" // This is the true north heading
@@ -23,7 +23,7 @@
 class MapInstrument : public PanelItem {
     Q_OBJECT
 public:
-    explicit MapInstrument(QObject *parent, ExtPlaneConnection *conn);
+    explicit MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual ~MapInstrument();
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void itemSizeChanged(float w, float h);
@@ -42,7 +42,7 @@ public slots:
     void setMapRange(int val) {_range = val;_googleMapsZoom=(int)((1.0-val/100.0)*16.0);}
 
 protected:
-    void drawHeading(QPainter *painter);
+    void drawHeading(QPainter *painter, int x, int y);
 
 protected:
     // Internal variables

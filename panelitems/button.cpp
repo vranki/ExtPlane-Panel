@@ -7,11 +7,11 @@
 #include "widgets/numberinputlineedit.h"
 #include "extplaneclient.h"
 
-
 REGISTER_WITH_PANEL_ITEM_FACTORY(Button,"buttons/generic");
 
-Button::Button(QObject *parent, ExtPlaneConnection *conn) :
-        PanelItem(parent), _client(this, typeName(), conn) {
+Button::Button(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+        PanelItem(panel, PanelItemTypeSwitch, PanelItemShapeRectangular),
+        _client(this, typeName(), conn) {
     conn->registerClient(&_client);
     _buttonId = 0;
     _label = "Button";

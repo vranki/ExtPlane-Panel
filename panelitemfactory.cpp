@@ -5,10 +5,11 @@
 PanelItemFactory::PanelItemFactory() {
 }
 
-PanelItem *PanelItemFactory::itemForName(QString name, QObject *parentObject, ExtPlaneConnection *conn) {
+PanelItem *PanelItemFactory::itemForName(QString name, ExtPlanePanel *panel, ExtPlaneConnection *conn) {
+    Q_ASSERT(panel != NULL);
     if(classMapping()->contains(name)) {
         const QMetaObject *meta = classMapping()->find(name).value();
-        return (PanelItem*) (meta->newInstance(Q_ARG(QObject*,parentObject),Q_ARG(ExtPlaneConnection*,conn)));
+        return (PanelItem*) (meta->newInstance(Q_ARG(ExtPlanePanel*,panel),Q_ARG(ExtPlaneConnection*,conn)));
     } else {
         qWarning() << Q_FUNC_INFO << "the panel item " << name << "is not recognized";
         return NULL;

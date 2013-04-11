@@ -16,7 +16,7 @@ class Variometer : public NeedleInstrument
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE Variometer(QObject *parent, ExtPlaneConnection *conn);
+    Q_INVOKABLE Variometer(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual QString typeName();

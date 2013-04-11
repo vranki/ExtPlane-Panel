@@ -5,8 +5,8 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(GPSMap,"map/gps")
 
-GPSMap::GPSMap(QObject *parent, ExtPlaneConnection *conn) :
-        MapInstrument(parent,conn) {
+GPSMap::GPSMap(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+        MapInstrument(panel,conn) {
 }
 
 void GPSMap::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -15,8 +15,8 @@ void GPSMap::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
         // Just paint the map image
         setupPainter(painter);
-        painter->drawPixmap(0,0,_mapImage,0,0,width(),height());
-        drawHeading(painter);
+        if(!_mapImage.isNull()) painter->drawPixmap(0,0,_mapImage,0,0,width(),height());
+        drawHeading(painter,width()/2,height()/2);
 
     } painter->restore();
 

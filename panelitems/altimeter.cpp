@@ -7,8 +7,10 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Altimeter,"indicator/altitude/basic");
 
-Altimeter::Altimeter(QObject *parent, ExtPlaneConnection *conn) :
-        PanelItem(parent), _client(this, typeName(), conn) {
+Altimeter::Altimeter(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+        PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
+        _client(this, typeName(), conn) {
+    // Init
     _value = 0;
     _thickBars = 50;
     _thinBars = 10;

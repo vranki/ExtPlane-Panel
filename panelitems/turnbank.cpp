@@ -17,8 +17,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(TurnAndBank,"indicator/turnbank/basic");
 
-TurnAndBank::TurnAndBank(QObject *parent, ExtPlaneConnection *conn) :
-    PanelItem(parent), _client(this, typeName(), conn)
+TurnAndBank::TurnAndBank(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
+    _client(this, typeName(), conn)
 {
     _rollValue = 10;
     _slipValue = -20;
