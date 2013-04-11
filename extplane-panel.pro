@@ -1,6 +1,7 @@
 # Qt Modules
-QT += gui network
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += gui network widgets
+
+# Widgets only gives warning on Qt 4.x.
 
 # Qt Mobility
 CONFIG += mobility
