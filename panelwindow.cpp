@@ -96,7 +96,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     scene.addItem(&statusMessage);
 
     // Hidden GUI mode? This removes any GUI stuff (except edit mode of course), useful for a simpit
-    if(appSettings->valueFromSettingsOrCommandLine("hidden-gui", true).toBool()) {
+    if(appSettings->valueFromSettingsOrCommandLine("hidden-gui", false).toBool()) {
         menuButton->setOpacity(0.001); // Newer Qt version will set to hidden if 0
         statusMessage.setOpacity(0.0);
     }
