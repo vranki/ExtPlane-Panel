@@ -93,7 +93,8 @@ SOURCES += \
     panelitems/gaugecover.cpp \
     panel.cpp \
     panelitems/indicatorlight.cpp \
-    widgets/colorselector.cpp
+    widgets/colorselector.cpp \
+    util/perlinnoise.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -145,7 +146,8 @@ HEADERS += \
     panelitems/gaugecover.h \
     panel.h \
     panelitems/indicatorlight.h \
-    widgets/colorselector.h
+    widgets/colorselector.h \
+    util/perlinnoise.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \

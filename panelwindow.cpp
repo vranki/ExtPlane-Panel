@@ -173,12 +173,11 @@ void PanelWindow::connectionMessage(QString txt) {
 
 void PanelWindow::itemDestroyed(QObject *obj) {
     // Delete from panelItems
-    //foreach(PanelItem *listItem, panel->items()) {
     for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *listItem = panel->items()->at(i);
-        QObject *listItemQo = static_cast<QObject*>(listItem);
+        PanelItem *item = panel->items()->at(i);
+        QObject *listItemQo = static_cast<QObject*>(item);
         if(listItemQo == obj) {
-            panel->items()->removeOne(listItem);
+            panel->items()->removeOne(item);
         }
     }
 }
@@ -209,10 +208,9 @@ void PanelWindow::addItem(QString itemName) {
 
 void PanelWindow::panelRotationChanged(int r) {
     panel->rotation = r;
-    //foreach(PanelItem *i, panel->_items)
     for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *g = panel->items()->at(i);
-        g->setPanelRotation(r);
+        PanelItem *item = panel->items()->at(i);
+        item->setPanelRotation(r);
     }
 }
 
@@ -281,20 +279,18 @@ void PanelWindow::disableBlanking() {
 
 void PanelWindow::setEditMode(bool em) {
     editMode = em;
-    //foreach(PanelItem *it, panel->_items)
     for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *g = panel->items()->at(i);
-        g->setEditMode(em);
+        PanelItem *item = panel->items()->at(i);
+        item->setEditMode(em);
     }
 }
 
 QList<PanelItem*> PanelWindow::selectedGauges() {
     QList<PanelItem*> selection;
-    //foreach(PanelItem* g, panel->_items) {
     for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *g = panel->items()->at(i);
-        if(g->isSelected())
-            selection.append(g);
+        PanelItem *item = panel->items()->at(i);
+        if(item->isSelected())
+            selection.append(item);
     }
     return selection;
 }
@@ -348,11 +344,10 @@ void PanelWindow::saveProfile(QString filename) {
         panel->settings->setValue("name", panelName);
         panel->settings->setValue("gaugecount", panel->items()->size());
         int gn = 0;
-        //foreach(PanelItem *g, panel->items()) {
         for(int i = 0; i < panel->items()->count(); i++) {
-            PanelItem *g = panel->items()->at(i);
+            PanelItem *item = panel->items()->at(i);
             panel->settings->beginGroup("gauge-" + QString::number(gn)); {
-                g->storeSettings(*panel->settings);
+                item->storeSettings(*panel->settings);
                 panel->settings->endGroup(); }
             gn++;
         }
@@ -421,10 +416,9 @@ void PanelWindow::loadProfile(QString filename) {
 
 void PanelWindow::newProfile() {
     // Clear all panel items
-    //foreach(PanelItem *g, panel->_items) {
     for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *g = panel->items()->at(i);
-        g->deleteLater();
+        PanelItem *item = panel->items()->at(i);
+        item->deleteLater();
     }
 
     // Load panel settings file

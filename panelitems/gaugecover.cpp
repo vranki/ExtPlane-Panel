@@ -1,29 +1,32 @@
 #include "gaugecover.h"
 
 #include <QDebug>
-#include <QtCore/qmath.h>
+
+#include "util/perlinnoise.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(GaugeCover,"misc/cover/gauges");
 
 GaugeCover::GaugeCover(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     PanelItem(panel, PanelItemTypeCover, PanelItemShapeRectangular) {
     // Init
-    _gaugesH = 2;
-    _gaugesV = 2;
     _gaugesSize = 100;
     _gaugesInset = 20;
-    _grainEnabled = true;
+    _grainEnabled = false;
     _grainStrengh = 5;
     _grainZoom = 1;
     _grainPersistance = 50;
     _grainQuality = 6;
-    _backgroundColor = "#BB9D7E";
+    _backgroundColor = QColor("#272727");
+    _screwsEnabled = true;
+    _screwsSize = 80;
+    _screwsOffset = -6;
     setSize(400,400);
 }
 
 void GaugeCover::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     setupPainter(painter);
 
+    // Draw the cover image when not editing
     if(!isEditMode()) painter->drawImage(QPoint(0,0),_coverImage);
 
     PanelItem::paint(painter, option, widget);
@@ -43,27 +46,52 @@ void GaugeCover::setEditMode(bool em) {
 void GaugeCover::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
 
-    //settings.setValue("label", _label);
+    settings.setValue("gaugesSize", _gaugesSize);
+    settings.setValue("gaugesInset", _gaugesInset);
+    settings.setValue("backgroundColor", _backgroundColor.name());
+    settings.setValue("grainEnabled", _grainEnabled);
+    settings.setValue("grainStrengh", _grainStrengh);
+    settings.setValue("grainPersistance", _grainPersistance);
+    settings.setValue("grainQuality", _grainQuality);
+    settings.setValue("grainZoom", _grainZoom);
+    settings.setValue("screwsEnabled", _screwsEnabled);
+    settings.setValue("screwsSize", _screwsSize);
+    settings.setValue("screwsOffset", _screwsOffset);
 }
 
 void GaugeCover::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
 
-    //setButtonId(settings.value("id", 0).toInt());
+    setGaugesSize(settings.value("gaugesSize", 100).toInt());
+    setGaugesInset(settings.value("gaugesInset", 20).toInt());
+    setBackgroundColor(QColor(settings.value("backgroundColor", "#272727").toString()));
+    setGrainEnabled(settings.value("grainEnabled", false).toBool());
+    setGrainStrength(settings.value("grainStrengh", 5).toInt());
+    setGrainPersistance(settings.value("grainPersistance", 50).toInt());
+    setGrainQuality(settings.value("grainQuality", 6).toInt());
+    setGrainZoom(settings.value("grainZoom", 1).toInt());
+    setScrewsEnabled(settings.value("screwsEnabled", true).toBool());
+    setScrewsSize(settings.value("screwsSize", 80).toInt());
+    setScrewsOffset(settings.value("screwsOffset", -6).toInt());
 }
 
-
-
 void GaugeCover::createSettings(QGridLayout *layout) {
-    createSliderSetting(layout,"Gauge Columns",1,10,_gaugesH,SLOT(setGaugesH(int)));
-    createSliderSetting(layout,"Gauge Rows",1,10,_gaugesV,SLOT(setGaugesV(int)));
+    // General
     createSliderSetting(layout,"Gauge Size",1,200,_gaugesSize,SLOT(setGaugesSize(int)));
-    createLineEditSetting(layout,"Cover Color",_backgroundColor,SLOT(setBackgroundColor(QString)));
+    createSliderSetting(layout,"Gauge Inset",0,100,_gaugesInset,SLOT(setGaugesInset(int)));
+    createColorSetting(layout,"Cover Color",_backgroundColor,SLOT(setBackgroundColor(QColor)));
+
+    // Grain
     createCheckboxSetting(layout,"Grain Enabled",_grainEnabled,SLOT(setGrainEnabled(bool)));
     createSliderSetting(layout,"Grain Strength",1,100,_grainStrengh,SLOT(setGrainStrength(int)));
     createSliderSetting(layout,"Grain Persistance",1,200,_grainPersistance,SLOT(setGrainPersistance(int)));
     createSliderSetting(layout,"Grain Quality",1,10,_grainQuality,SLOT(setGrainQuality(int)));
     createSliderSetting(layout,"Grain Roughness",1,200,_grainZoom,SLOT(setGrainZoom(int)));
+
+    // Screws
+    createCheckboxSetting(layout,"Screws Enabled",_screwsEnabled,SLOT(setScrewsEnabled(bool)));
+    createSliderSetting(layout,"Screws Size",1,200,_screwsSize,SLOT(setScrewsSize(int)));
+    createSliderSetting(layout,"Screws Offset",-40,40,_screwsOffset,SLOT(setScrewsOffset(int)));
 
 }
 
@@ -72,76 +100,7 @@ void GaugeCover::settingChanged() {
     update();
 }
 
-
-inline double findnoise2(double x,double y)
-{
- int n=(int)x+(int)y*57;
- n=(n<<13)^n;
- int nn=(n*(n*n*60493+19990303)+1376312589)&0x7fffffff;
- return 1.0-((double)nn/1073741824.0);
-}
-
-
-inline double interpolate1(double a,double b,double x)
-{
- double ft=x * 3.1415927;
- double f=(1.0-cos(ft))* 0.5;
- return a*(1.0-f)+b*f;
-}
-
-
-
-double noise2(double x,double y)
-{
- double floorx=(double)((int)x);//This is kinda a cheap way to floor a double integer.
- double floory=(double)((int)y);
- double s,t,u,v;//Integer declaration
- s=findnoise2(floorx,floory);
- t=findnoise2(floorx+1,floory);
- u=findnoise2(floorx,floory+1);//Get the surrounding pixels to calculate the transition.
- v=findnoise2(floorx+1,floory+1);
- double int1=interpolate1(s,t,x-floorx);//Interpolate between the values.
- double int2=interpolate1(u,v,x-floorx);//Here we use x-floorx, to get 1st dimension. Don't mind the x-floorx thingie, it's part of the cosine formula.
- return interpolate1(int1,int2,y-floory);//Here we use y-floory, to get the 2nd dimension.
-}
-
-
-
-
-
-//performs perlin noise function
-void drawPerlinNoise(QPainter *painter, int octaves, double p, double zoom, int width, int height) {
-    //long seed = 38383;
-    int w = width;
-    int h = height;
-
-
-
-
-    for(int y=0;y<h;y++)
-    {//Loops to loop trough all the pixels
-     for(int x=0;x<w;x++)
-     {
-      double getnoise =0;
-      for(int a=0;a<octaves-1;a++)//This loops trough the octaves.
-      {
-       double frequency = pow(2,a);//This increases the frequency with every loop of the octave.
-       double amplitude = pow(p,a);//This decreases the amplitude with every loop of the octave.
-       getnoise += noise2(((double)x)*frequency/zoom,((double)y)/zoom*frequency)*amplitude;//This uses our perlin noise functions. It calculates all our zoom and frequency and amplitude
-      }//											It gives a decimal value, you know, between the pixels. Like 4.2 or 5.1
-      int color= (int)((getnoise*128.0)+128.0); //Convert to 0-256 values.
-      if(color>255) color=255;
-      if(color<0) color=0;
-      painter->setPen(QColor(color,color,color));
-      painter->drawPoint(x,y);
-     }
-    }
-
-}
-
-
 void GaugeCover::drawCoverImage() {
-    qDebug() << Q_FUNC_INFO << width() << height() << _gaugesH << _gaugesV;
 
     // Init
     int w = width();
@@ -152,32 +111,25 @@ void GaugeCover::drawCoverImage() {
     setupPainter(&painter);
 
     // Draw background
-    painter.fillRect(0,0,w,h,QColor(_backgroundColor));
-    painter.setOpacity(_grainStrengh/100.0);
-    if(_grainEnabled) drawPerlinNoise(&painter,_grainQuality,_grainStrengh/100.0,_grainZoom,w,h);
-    painter.setOpacity(1.0);
+    painter.fillRect(0,0,w,h,_backgroundColor);
+    if(_grainEnabled) {
+        painter.setOpacity(_grainStrengh/100.0);
+        PerlinNoise::draw(&painter,_grainQuality,_grainStrengh/100.0,_grainZoom,w,h);
+        painter.setOpacity(0.05);
+        PerlinNoise::draw(&painter,2,1.0/2.0,200,w,h);
+        painter.setOpacity(1.0);
+    }
 
-    // Draw gauge fittings
-    /*int gaugeSlotWidth = w / _gaugesH;
-    int gaugeSlotHeight = h / _gaugesV;
-    for(int y = 0; y < _gaugesV; y++) {
-        for(int x = 0; x < _gaugesH; x++) {
-            // Get translated coords
-            int xx = x * gaugeSlotWidth + (gaugeSlotWidth/2);
-            int yy = y * gaugeSlotHeight + (gaugeSlotHeight/2);
-            drawCoverImageGuageFitting(&painter,xx,yy,200);
-        }
-    }*/
-
-    //foreach(PanelItem *item, list) {
+    // Find panel items to draw around
     for(int i = 0; i < panel()->items()->count(); i++) {
         PanelItem *item = panel()->items()->at(i);
-        qDebug() << Q_FUNC_INFO << item->itemType() << PanelItemTypeGauge << PanelItemTypeSwitch;
         if(item->itemType() == PanelItemTypeGauge || item->itemType() == PanelItemTypeSwitch || item->itemType() == PanelItemTypeDisplay) {
+            // Get logical coordinates
             int xx = item->x() - this->x();
             int yy = item->y() - this->y();
             int centerX = xx + item->width()/2;
             int centerY = yy + item->height()/2;
+            // Draw fitting based on shape
             if(item->itemShape() == PanelItemShapeCircular) {
                 int radius = qMin(item->width(),item->height());
                 drawCoverImageCircularFitting(&painter,centerX,centerY,radius);
@@ -187,26 +139,27 @@ void GaugeCover::drawCoverImage() {
         }
     }
 
-
     // Flip buffers
     painter.end();
     _coverImage = newCover;
 }
 
-void GaugeCover::drawCoverImageCircularFitting(QPainter *painter, int centerX, int centerY, int radius) {
-    qDebug() << Q_FUNC_INFO;
+void GaugeCover::drawCoverImageCircularFitting(QPainter *painter, int centerX, int centerY, int diameter) {
 
     painter->save(); {
 
         // Translage/scale/size
-        int fullSize = radius+_gaugesInset;
-        int holeSize = radius;
+        int fullSize = diameter+_gaugesInset;
+        int holeSize = diameter;
         painter->translate(centerX,centerY);
         painter->scale(_gaugesSize/100.0,_gaugesSize/100.0);
 
         // Draw fitting color
+        QRadialGradient gradient(QPointF(0,0), fullSize, QPoint(-fullSize/2,-fullSize/2));
+        gradient.setColorAt(0.0, _backgroundColor.lighter());
+        gradient.setColorAt(0.4, _backgroundColor.darker());
         painter->setPen(Qt::NoPen);
-        painter->setBrush(QColor(_backgroundColor).darker());
+        painter->setBrush(gradient);
         painter->setOpacity(0.5);
         painter->drawEllipse(-fullSize/2,-fullSize/2,fullSize,fullSize);
         painter->setOpacity(1.0);
@@ -219,6 +172,27 @@ void GaugeCover::drawCoverImageCircularFitting(QPainter *painter, int centerX, i
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 
     } painter->restore();
+
+    // Draw screws
+    if(_screwsEnabled) {
+        int radius = diameter/2;
+        // Top left
+        drawCoverImageScrew(painter,
+                            centerX-radius-_screwsOffset,
+                            centerY-radius-_screwsOffset);
+        // Top right
+        drawCoverImageScrew(painter,
+                            centerX+radius+_screwsOffset,
+                            centerY-radius-_screwsOffset);
+        // Bottom left
+        drawCoverImageScrew(painter,
+                            centerX-radius-_screwsOffset,
+                            centerY+radius+_screwsOffset);
+        // Bottom right
+        drawCoverImageScrew(painter,
+                            centerX+radius+_screwsOffset,
+                            centerY+radius+_screwsOffset);
+    }
 }
 
 void GaugeCover::drawCoverImageRectangularFitting(QPainter *painter, int centerX, int centerY, int width, int height) {
@@ -226,10 +200,9 @@ void GaugeCover::drawCoverImageRectangularFitting(QPainter *painter, int centerX
     painter->save(); {
 
         // Translage/scale/size
-        //int fullSize = radius+_gaugesInset;
-        //int holeSize = radius;
         int fullWidth = width + _gaugesInset;
         int fullHeight = height + _gaugesInset;
+        int size = qMax(fullWidth,fullHeight);
         qreal bevelY = 20;
         qreal bevelX = 20;
         qreal fittingBevel = 1.0;
@@ -238,8 +211,11 @@ void GaugeCover::drawCoverImageRectangularFitting(QPainter *painter, int centerX
         painter->scale(_gaugesSize/100.0,_gaugesSize/100.0);
 
         // Draw fitting color
+        QRadialGradient gradient(QPointF(0,0), size, QPoint(-fullWidth/2,-fullHeight/2));
+        gradient.setColorAt(0.0, _backgroundColor.lighter());
+        gradient.setColorAt(0.4, _backgroundColor.darker());
         painter->setPen(Qt::NoPen);
-        painter->setBrush(QColor(_backgroundColor).darker());
+        painter->setBrush(gradient);
         painter->setOpacity(0.5);
         painter->drawRoundedRect(
                     QRect(-fullWidth/2,-fullHeight/2,fullWidth,fullHeight),
@@ -260,6 +236,32 @@ void GaugeCover::drawCoverImageRectangularFitting(QPainter *painter, int centerX
                     Qt::AbsoluteSize
                  );
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+    } painter->restore();
+}
+
+void GaugeCover::drawCoverImageScrew(QPainter *painter, int centerX, int centerY) {
+
+    painter->save(); {
+
+        // Translage/scale/size
+        painter->translate(centerX,centerY);
+        painter->scale(_screwsSize/100.0,_screwsSize/100.0);
+
+        // Screw head
+        int screwSize = 10;
+        QRadialGradient gradient(QPointF(0,0), screwSize, QPoint(-screwSize/2,-screwSize/2));
+        gradient.setColorAt(0.0, Qt::white);
+        gradient.setColorAt(0.8, Qt::black);
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(QBrush(gradient));
+        painter->drawEllipse(QPoint(0,0),screwSize,screwSize);
+
+        // Engravement
+        painter->rotate(M_PI*qrand());
+        painter->setBrush(Qt::black);
+        painter->drawEllipse(QPoint(0,0),screwSize,screwSize/4);
+        painter->drawEllipse(QPoint(0,0),screwSize/4,screwSize);
 
     } painter->restore();
 }

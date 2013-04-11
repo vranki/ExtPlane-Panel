@@ -10,8 +10,9 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(RadarMap,"map/radar")
 RadarMap::RadarMap(ExtPlanePanel *panel, ExtPlaneConnection *conn) : MapInstrument(panel,conn)
 {
     // Init
-    _radarMonitorFade = 1.5;
-    _radarSweepSpeed = 2.0;
+    setItemShape(PanelItemShapeCircular);
+    _radarMonitorFade = 50;
+    _radarSweepSpeed = 60;
     _radarCurrentAngle = 0;
 }
 
@@ -88,18 +89,7 @@ void RadarMap::loadSettings(QSettings &settings) {
 void RadarMap::createSettings(QGridLayout *layout) {
     MapInstrument::createSettings(layout);
 
-    layout->addWidget(new QLabel("Monitor Fade", layout->parentWidget()));
-    QSlider *monitorFadeSlider = new QSlider(Qt::Horizontal,layout->parentWidget());
-    monitorFadeSlider->setRange(0,100);
-    monitorFadeSlider->setValue(_radarMonitorFade);
-    layout->addWidget(monitorFadeSlider);
-    connect(monitorFadeSlider, SIGNAL(valueChanged(int)), this, SLOT(setMonitorFade(int)));
-
-    layout->addWidget(new QLabel("Sweep Speed", layout->parentWidget()));
-    QSlider *sweepSpeedSlider = new QSlider(Qt::Horizontal,layout->parentWidget());
-    sweepSpeedSlider->setRange(0,100);
-    sweepSpeedSlider->setValue(_radarSweepSpeed);
-    layout->addWidget(sweepSpeedSlider);
-    connect(sweepSpeedSlider, SIGNAL(valueChanged(int)), this, SLOT(setSweepSpeed(int)));
+    createSliderSetting(layout,"Monitor Fade",0,100,_radarMonitorFade,SLOT(setMonitorFade(int)));
+    createSliderSetting(layout,"Sweep Speed",0,100,_radarSweepSpeed,SLOT(setSweepSpeed(int)));
 }
 

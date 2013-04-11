@@ -71,11 +71,7 @@ void MapInstrument::loadSettings(QSettings &settings) {
 void MapInstrument::createSettings(QGridLayout *layout) {
     PanelItem::createSettings(layout);
 
-    layout->addWidget(new QLabel("Heading", layout->parentWidget()));
-    QCheckBox *headingCheckbox = new QCheckBox(layout->parentWidget());
-    headingCheckbox->setChecked(_showHeading);
-    layout->addWidget(headingCheckbox);
-    connect(headingCheckbox, SIGNAL(clicked(bool)), this, SLOT(setShowHeading(bool)));
+    createCheckboxSetting(layout,"Heading",_showHeading,SLOT(setShowHeading(bool)));
 
     layout->addWidget(new QLabel("Source", layout->parentWidget()));
     QComboBox *mapSourceCombobox = new QComboBox(layout->parentWidget());
@@ -85,12 +81,8 @@ void MapInstrument::createSettings(QGridLayout *layout) {
     layout->addWidget(mapSourceCombobox);
     connect(mapSourceCombobox, SIGNAL(currentIndexChanged(int)), this, SLOT(setMapSource(int)));
 
-    layout->addWidget(new QLabel("Range", layout->parentWidget()));
-    QSlider *rangeSlider = new QSlider(Qt::Horizontal,layout->parentWidget());
-    rangeSlider->setRange(0,100);
-    rangeSlider->setValue(_range);
-    layout->addWidget(rangeSlider);
-    connect(rangeSlider, SIGNAL(valueChanged(int)), this, SLOT(setMapRange(int)));
+    createSliderSetting(layout,"Range",0,100,_range,SLOT(setMapRange(int)));
+
 }
 
 void MapInstrument::latlongChanged(QString name, double value) {

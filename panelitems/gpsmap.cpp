@@ -15,7 +15,7 @@ void GPSMap::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
         // Just paint the map image
         setupPainter(painter);
-        painter->drawPixmap(0,0,_mapImage,0,0,width(),height());
+        if(!_mapImage.isNull()) painter->drawPixmap(0,0,_mapImage,0,0,width(),height());
         drawHeading(painter,width()/2,height()/2);
 
     } painter->restore();
