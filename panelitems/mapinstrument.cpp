@@ -21,7 +21,7 @@ MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _googleMapsZoom = 12;
     _googleMapsMaximumUpdateRate = 1000;
     _googleMapsType = "";
-    _googleMapsStyle = "feature:road.local|element:geometry|color:0x00ff00|weight:1|visibility:on&style=feature:landscape|element:geometry.fill|color:0x000000|visibility:on&style=feature:administrative|element:labels|weight:3.9|visibility:on|invert_lightness:true&style=feature:poi|visibility:simplified";
+    _googleMapsStyle = "feature:road.local|element:geometry|color:0x00ff00|weight:1|visibility:on&style=feature:landscape|element:geometry.fill|color:0x000000|visibility:on&style=feature:administrative|element:labels|weight:3.9|visibility:on|invert_lightness:true&style=feature:poi|visibility:simplified&style=feature:all|element:labels|visibility:off";
     _googleMapsAPIKey = "AIzaSyAeKX4PzLEefpE21WRnDgZa84XItJ-mHcA";
     _lastUpdateTime.restart();
 
