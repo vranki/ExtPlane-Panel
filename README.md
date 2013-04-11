@@ -1,6 +1,6 @@
 # ExtPlane-Panel #
 
-![Screenshot](http://s23.postimg.org/8qox8ol97/Ext_Plane_Panel_Screenshot.png)
+![Screenshot](http://s23.postimg.org/8xhypdei3/extplane_panel_screenshot_v2.png)
 
 An external, networked cockpit panel for the X-Plane flight simulator.
 
@@ -65,8 +65,9 @@ There are currently a number of instruments available, including:
 - RPM gauge
 - HSI
 - GPS/Radar map
+- Light indicator
 
-Currently most instruments look like general aviation instruments.
+Most instruments look like general aviation instruments. You can also add and customize covers for your instruments.
 
 
 
@@ -98,7 +99,7 @@ be also toggled with space key.
 * **Load Profile** loads any given panel profile from disk.
 
 * **App Settings** has various settings for the application:
- - IP address of the X-Plane machine
+ - IP address or hostname of the X-Plane machine
  - Fullscreen
  - Screen rotation
  - Simulated connection - Use for testing new instruments without real X-Plane connection

@@ -95,6 +95,12 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     statusMessage.setPos(0,20);
     scene.addItem(&statusMessage);
 
+    // Hidden GUI mode? This removes any GUI stuff (except edit mode of course), useful for a simpit
+    if(appSettings->valueFromSettingsOrCommandLine("hidden-gui", true).toBool()) {
+        menuButton->setOpacity(0.001); // Newer Qt version will set to hidden if 0
+        statusMessage.setOpacity(0.0);
+    }
+
     // Setup tick timer
     connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
     tickTimer.setInterval(64);
