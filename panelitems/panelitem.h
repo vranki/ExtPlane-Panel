@@ -7,7 +7,6 @@
 #include <QGridLayout>
 #include <QSlider>
 #include <QLineEdit>
-#include <QCheckbox>
 #include <QLabel>
 
 // Not directly used by PanelItem, but included here to reduce

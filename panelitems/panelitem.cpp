@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QPushButton>
 #include <QColorDialog>
+#include <QtGui/QCheckBox>
 
 #include "panel.h"
 #include "widgets/colorselector.h"
