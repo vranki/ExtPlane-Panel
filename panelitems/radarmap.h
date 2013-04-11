@@ -8,7 +8,7 @@ class RadarMap : public MapInstrument
     Q_OBJECT
 
 public:
-     Q_INVOKABLE RadarMap(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE RadarMap(ExtPlanePanel *panel, ExtPlaneConnection *conn);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void itemSizeChanged(float w, float h);
     virtual QString typeName();
