@@ -47,7 +47,9 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     }
 
     QDialog *menu = new QDialog(panelWindow);
+#if defined(Q_OS_MACX) // Don't do this on other platforms, it's annoying.
     menu->setWindowFlags(menu->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint); // For OSX
+#endif
     menu->move(event->screenPos().x(), event->screenPos().y());
     QVBoxLayout *layout = new QVBoxLayout();
 

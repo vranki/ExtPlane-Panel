@@ -12,6 +12,16 @@ on the network to display cockpit instruments from remote X-Plane.
 Almost all instruments are drawn using scalable vector graphics for
 perfect scaling and high resolutions.
 
+The application also allows running hardware instruments with X-Plane
+datarefs. Currently it supports two output devices:
+
+* Raspberry Pi's ServoBlaster module which allows RPi's GPIO pins to output PWM
+* Pololu SSC04A (or compatible) serial servo controller
+
+Both of these are used to control servos using PWM. Other, more complex
+output devices can be implemented later.
+
+
 The app is written using Qt and is platform independent - it runs on
 different Linux variants, Mac and Windows. X-Plane SDK is NOT required
 to build ExtPlane-Panel.
@@ -23,8 +33,6 @@ Target hardware is:
 * MeeGo
 * Raspberry Pi
 * anything that will run Qt!
-
-
 
 ## Building ##
 
@@ -108,6 +116,31 @@ be also toggled with space key.
  - Panel update interval - time (in seconds) how often the panel should be redrawn
  - Default font size - affects all instruments
 
+### Setting up hardware instruments ###
+
+Currently servo-like devices are supported. ExtPlane-panel has concept
+of output devices which contain one or more outputs (usually servo outputs)
+and bindings which contain mapping between X-Plane dataref and one output on
+a output device.
+
+Example: Making a servo that displays indicated airspeed with range of 0-200 knots.
+
+ * Press hardware button. Enable the output device you want to use on Devices tab.
+ * Open Bindings tab. Click "New".
+ * Enter following details:
+   * Name: ASI
+   * Input dataref: sim/cockpit2/gauges/indicators/airspeed_kts_pilot
+   * Dateref accuracy: 0.5 (or as high value as possible)
+   * Input min: 0
+   * Input max: 200 (this sets the range of ASI in knots)
+   * Output device: the device you enabled
+   * Output num: Number of output on your device. Usually 0=first servo, 2=second servo..
+   * Output min: 45 (set this to the value that moves servo to zero position)
+   * Output max: 250 (set this to the value that moves servo to 200kt position)
+ * Click Save changes. Servo should now start moving.
+ * If you modify values, click Save changes again. Remember to save the panel to save these settings!
+
+Note: If you need to reverse the servo direction, swap input min and input max values.
 
 
 ## Creating new Panel Items ##
