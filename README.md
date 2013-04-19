@@ -43,7 +43,7 @@ The requirements for ExtPlane-Panel are as follows:
 * Qt Framework 4.5+
 * ExtPlane
 
-### Debian Linux ###
+### Debian/Ubuntu Linux ###
 ```bash
 # 1: Install required libraries and tools
 sudo apt-get install git build-essential libqt4-dev qtmobility-dev
@@ -123,7 +123,7 @@ of output devices which contain one or more outputs (usually servo outputs)
 and bindings which contain mapping between X-Plane dataref and one output on
 a output device.
 
-Example: Making a servo that displays indicated airspeed with range of 0-200 knots.
+**Example:** Making a servo that displays indicated airspeed with range of 0-200 knots.
 
  * Press hardware button. Enable the output device you want to use on Devices tab.
  * Open Bindings tab. Click "New".
