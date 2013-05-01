@@ -42,29 +42,38 @@ void HardwareManager::deleteBinding(HardwareBinding *binding)
 void HardwareManager::saveSettings(QSettings *panelSettings) {
     panelSettings->group().clear();
     panelSettings->setValue("bindingCount", bindings().count());
-    int bn = 0;
+    int n = 0;
     foreach(HardwareBinding *binding, bindings()) {
-        panelSettings->beginGroup("binding-" + QString::number(bn));
+        panelSettings->beginGroup("binding-" + QString::number(n));
         binding->storeSettings(panelSettings);
         panelSettings->endGroup();
-        bn++;
+        n++;
+    }
+    panelSettings->setValue("deviceCount", devices().count());
+    foreach(OutputDevice *device, devices()) {
+        panelSettings->beginGroup("device-" + QString::number(device->id()));
+        device->storeSettings(panelSettings);
+        panelSettings->endGroup();
     }
 }
 
 void HardwareManager::loadSettings(QSettings *panelSettings) {
-    // @todo load settings for devices
     foreach(OutputDevice *device, outputDevices)
         emit deviceAvailable(device->id(), device->init());
 
-    int bn = panelSettings->value("bindingCount").toInt();
-    for(int i=0;i<bn;i++) {
+    int n = panelSettings->value("bindingCount").toInt();
+    for(int i=0;i<n;i++) {
         panelSettings->beginGroup("binding-" + QString::number(i));
         HardwareBinding *binding = new HardwareBinding(this, connection());
         binding->loadSettings(panelSettings);
         panelSettings->endGroup();
         addBinding(binding);
-//        hwBindings.append(binding);
         binding->activate();
+    }
+    foreach(OutputDevice *device, devices()) {
+        panelSettings->beginGroup("device-" + QString::number(device->id()));
+        device->loadSettings(panelSettings);
+        panelSettings->endGroup();
     }
 }
 
