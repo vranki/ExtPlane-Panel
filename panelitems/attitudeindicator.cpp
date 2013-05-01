@@ -26,8 +26,6 @@ AttitudeIndicator::AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneConnection *c
     baroUnits = PRESSURE_HPA;
 */
   
-    //     boost::shared_ptr<Sprite> _cardSprite(new Sprite);
-    
     _pitchValue = 10;
     _rollValue = -20;
     
@@ -38,8 +36,6 @@ AttitudeIndicator::AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneConnection *c
     createGlass();
     createFrame();
     createBackground();
-    
-    _bezel = QPixmap::fromImage(QImage(QString("../../images/bezel_square_.png")), Qt::AutoColor);
 
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef(_pitchRef,0.05);
@@ -60,8 +56,8 @@ void AttitudeIndicator::createCard(void){
     
     
     QPainter p;
-    p.setRenderHint(QPainter::Antialiasing, true);
     p.begin(&_cardImage);
+    setupPainter(&p);
 
     // Draw background 
     // Use linear left to right mirrored gradients to
@@ -135,8 +131,8 @@ void AttitudeIndicator::createFrame(void){
     midy = height/2;
     
     QPainter p;
-    p.setRenderHint(QPainter::Antialiasing, true);
     p.begin(&_frameImage);
+    setupPainter(&p);
     p.translate(300, 300);
 
     
@@ -195,8 +191,8 @@ void AttitudeIndicator::createGlass(void){
     _glassImage.fill(0x00ffffff);
     
     QPainter p;
-    p.setRenderHint(QPainter::Antialiasing, true);
     p.begin(&_glassImage);
+    setupPainter(&p);
     //p.scale(1./2.5, 1./2.5);
     
 
@@ -282,8 +278,8 @@ void AttitudeIndicator::createBackground(void){
     _glassImage.fill(0x00ffffff);
     
     QPainter p;
-    p.setRenderHint(QPainter::Antialiasing, true);
     p.begin(&_glassImage);
+    setupPainter(&p);
     p.translate(100, 100);
     
     QLinearGradient gradient(0,-85,0,85);
@@ -307,7 +303,9 @@ void AttitudeIndicator::setNumbers(float div) {
 }
 
 void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    
+
+    setupPainter(painter);
+
     QColor needleColor(255, 255, 255);
     
     int side = qMin(width(), height());
@@ -385,7 +383,7 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     }
 
     painter->restore();
-    painter->drawPixmap(-100,-100,200,200, _bezel);
+    //painter->drawPixmap(-100,-100,200,200, _bezel);
     
     painter->restore();     //Untranslate
     painter->restore();     //Unscale

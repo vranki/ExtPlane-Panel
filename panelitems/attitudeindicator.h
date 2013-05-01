@@ -62,7 +62,6 @@ private:
     QPixmap _frame;
     QPixmap _glass;
     QPixmap _background;
-    QPixmap _bezel;
 };
 
 #endif // ATTITUDEINDICATOR_H
