@@ -128,14 +128,13 @@ void NeedleInstrument::repaintPixmaps() {
     bottomPixmap.fill(Qt::transparent);
 
     QPainter painter(&bottomPixmap);
+    setupPainter(&painter);
 
     QFont numberFont = defaultFont;
     numberFont.setPointSizeF(defaultFont.pointSizeF() * 1.5);
     painter.setFont(numberFont);
 
     int side = qMin(width(), height());
-
-    painter.setRenderHint(QPainter::Antialiasing);
 
     painter.save();
     painter.scale(side / 200.0, side / 200.0);

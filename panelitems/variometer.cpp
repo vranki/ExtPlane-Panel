@@ -100,6 +100,7 @@ void Variometer::paintTopPixmap() {
     topPixmap.fill(Qt::transparent);
 
     QPainter painter(&topPixmap);
+    setupPainter(&painter);
 
     painter.save();
     double side = qMin(width(), height());

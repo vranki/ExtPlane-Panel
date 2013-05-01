@@ -29,6 +29,8 @@ AirspeedIndicator::AirspeedIndicator(ExtPlanePanel *panel, ExtPlaneConnection *c
 }
 
 void AirspeedIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
+    setupPainter(painter);
+
     QPen pen = QPen(Qt::red);
     int side = qMin(width(), height());
 //    painter->setRenderHint(QPainter::Antialiasing);
