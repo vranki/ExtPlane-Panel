@@ -48,12 +48,10 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     appSettings = new Settings("org.vranki", "extplane-panel", this);
 
     // Create panel object
-    panel = new ExtPlanePanel(appSettings,this);
+    currentPanel = new ExtPlanePanel(appSettings,this);
 
     // Create connection and item factory
-    appSettings->beginGroup("settings");
     connection = appSettings->valueFromSettingsOrCommandLine("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
-    appSettings->endGroup();
     hwManager = new HardwareManager(this, connection);
 
     // Setup window
@@ -117,7 +115,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
         #else
             panelToLoad = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "ExtPlane-Panel-Default.ini";
         #endif
-        panel->settings = new QSettings(panelToLoad,QSettings::IniFormat,this);
+        currentPanel->settings = new QSettings(panelToLoad,QSettings::IniFormat,this);
         saveProfile();
     }
     if(!appSettings->valueFromSettingsOrCommandLine("profile","").toString().isEmpty())
@@ -143,8 +141,17 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
         QDesktopWidget desktop;
         this->setGeometry(desktop.screenGeometry(appSettings->valueFromSettingsOrCommandLine("screen").toInt()));
     } else {
-        // Default window size
-        resize(1024, 768);
+        // Remember size and position?
+        if(appSettings->valueFromSettingsOrCommandLine("remembersizeandposition",false).toBool() == true) {
+            // Load from last saved setting
+            this->setGeometry(appSettings->valueFromSettingsOrCommandLine("posx", 30).toInt(),
+                              appSettings->valueFromSettingsOrCommandLine("posy", 30).toInt(),
+                              appSettings->valueFromSettingsOrCommandLine("width", 1024).toInt(),
+                              appSettings->valueFromSettingsOrCommandLine("height", 768).toInt());
+        } else {
+            // Default window size
+            resize(1024,768);
+        }
     }
 
     // Start timers
@@ -154,11 +161,11 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
 }
 
 PanelWindow::~PanelWindow() {
-    while(!panel->items()->isEmpty())
-        delete panel->items()->first(); // Calls itemDeleted() and removes itself from list
+    while(!currentPanel->items()->isEmpty())
+        delete currentPanel->items()->first(); // Calls itemDeleted() and removes itself from list
     if(connection) delete connection;
     if(appSettings) delete appSettings;
-    if(panel) delete panel;
+    if(currentPanel) delete currentPanel;
 }
 
 void PanelWindow::keyPressEvent(QKeyEvent *event) {
@@ -179,11 +186,11 @@ void PanelWindow::connectionMessage(QString txt) {
 
 void PanelWindow::itemDestroyed(QObject *obj) {
     // Delete from panelItems
-    for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *item = panel->items()->at(i);
+    for(int i = 0; i < currentPanel->items()->count(); i++) {
+        PanelItem *item = currentPanel->items()->at(i);
         QObject *listItemQo = static_cast<QObject*>(item);
         if(listItemQo == obj) {
-            panel->items()->removeOne(item);
+            currentPanel->items()->removeOne(item);
         }
     }
 }
@@ -197,25 +204,25 @@ void PanelWindow::addItem(PanelItem *newItem) {
     connect(settingsDialog, SIGNAL(setAntialiasEnabled(bool)), newItem, SLOT(setAntialiasEnabled(bool)));
     connect(settingsDialog, SIGNAL(setDefaultFontSize(double)), newItem, SLOT(setDefaultFontSize(double)));
     newItem->setPos(width()/2, height()/2);
-    newItem->setPanelRotation(panel->rotation);
+    newItem->setPanelRotation(currentPanel->rotation);
     newItem->setEditMode(editMode);
     newItem->setInterpolationEnabled(interpolationEnabled);
     newItem->setAntialiasEnabled(aaEnabled);
     newItem->setDefaultFontSize(defaultFontSize);
     scene.addItem(newItem);
-    panel->items()->append(newItem);
+    currentPanel->items()->append(newItem);
     newItem->setSize(newItem->width(),newItem->height()); // PanelItems with cached Pixmaps redraw on the sizeChanged event, so we force it here to allow widgets to redraw with a scene
     connect(this, SIGNAL(tickTime(double,int)), newItem, SLOT(tickTime(double,int)));
 }
 
 void PanelWindow::addItem(QString itemName) {
-    addItem(itemFactory.itemForName(itemName,panel,connection));
+    addItem(itemFactory.itemForName(itemName,currentPanel,connection));
 }
 
 void PanelWindow::panelRotationChanged(int r) {
-    panel->rotation = r;
-    for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *item = panel->items()->at(i);
+    currentPanel->rotation = r;
+    for(int i = 0; i < currentPanel->items()->count(); i++) {
+        PanelItem *item = currentPanel->items()->at(i);
         item->setPanelRotation(r);
     }
 }
@@ -227,9 +234,22 @@ void PanelWindow::fullscreenChanged(bool fs) {
         showNormal();
     }
 }
-void PanelWindow::resizeEvent(QResizeEvent * event) {
+
+void PanelWindow::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     setSceneRect(0,0,width(), height());
+}
+
+void PanelWindow::closeEvent(QCloseEvent *event) {
+
+    // Save some gui related settings
+    appSettings->setValue("width",geometry().width());
+    appSettings->setValue("height",geometry().height());
+    appSettings->setValue("posx",geometry().x());
+    appSettings->setValue("posy",geometry().y());
+    appSettings->sync();
+
+    QWidget::closeEvent(event);
 }
 
 void PanelWindow::setServerAddress(QString host) {
@@ -285,16 +305,16 @@ void PanelWindow::disableBlanking() {
 
 void PanelWindow::setEditMode(bool em) {
     editMode = em;
-    for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *item = panel->items()->at(i);
+    for(int i = 0; i < currentPanel->items()->count(); i++) {
+        PanelItem *item = currentPanel->items()->at(i);
         item->setEditMode(em);
     }
 }
 
 QList<PanelItem*> PanelWindow::selectedGauges() {
     QList<PanelItem*> selection;
-    for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *item = panel->items()->at(i);
+    for(int i = 0; i < currentPanel->items()->count(); i++) {
+        PanelItem *item = currentPanel->items()->at(i);
         if(item->isSelected())
             selection.append(item);
     }
@@ -310,32 +330,32 @@ void PanelWindow::showAddItemDialog() {
 
 void PanelWindow::saveProfile() {
     // New or overwrite?
-    if(panel->settings == NULL) {
+    if(currentPanel->settings == NULL) {
         QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), "", tr("Ini Files (*.ini)"));
         if(!filename.isEmpty()) {
             // Create new file and save
-            panel->settings = new QSettings(filename,QSettings::IniFormat,this);
-            saveProfile(panel->settings->fileName());
+            currentPanel->settings = new QSettings(filename,QSettings::IniFormat,this);
+            saveProfile(currentPanel->settings->fileName());
 
             // Register this file as the last loaded...
-            appSettings->setValue("lastloadedprofile", panel->settings->fileName());
+            appSettings->setValue("lastloadedprofile", currentPanel->settings->fileName());
         }
     } else {
-        saveProfile(panel->settings->fileName());
+        saveProfile(currentPanel->settings->fileName());
     }
 }
 
 void PanelWindow::saveProfileAs() {
 
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), panel->settings->fileName(), tr("Ini Files (*.ini)"));
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), currentPanel->settings->fileName(), tr("Ini Files (*.ini)"));
     if(!filename.isEmpty()) {
         // Create new file and save
-        if(panel->settings) delete panel->settings;
-        panel->settings = new QSettings(filename,QSettings::IniFormat,this);
-        saveProfile(panel->settings->fileName());
+        if(currentPanel->settings) delete currentPanel->settings;
+        currentPanel->settings = new QSettings(filename,QSettings::IniFormat,this);
+        saveProfile(currentPanel->settings->fileName());
 
         // Register this file as the last loaded...
-        appSettings->setValue("lastloadedprofile", panel->settings->fileName());
+        appSettings->setValue("lastloadedprofile", currentPanel->settings->fileName());
     }
 }
 
@@ -344,24 +364,24 @@ void PanelWindow::saveProfile(QString filename) {
     qDebug() << Q_FUNC_INFO << "saving profile to " << filename;
     int panelNumber = 0;
     QString panelName = "Panel";
-    panel->settings->beginGroup("panel-" + QString::number(panelNumber)); {
-        panel->settings->group().clear();
-        panel->settings->setValue("number", panelNumber);
-        panel->settings->setValue("name", panelName);
-        panel->settings->setValue("gaugecount", panel->items()->size());
+    currentPanel->settings->beginGroup("panel-" + QString::number(panelNumber)); {
+        currentPanel->settings->group().clear();
+        currentPanel->settings->setValue("number", panelNumber);
+        currentPanel->settings->setValue("name", panelName);
+        currentPanel->settings->setValue("gaugecount", currentPanel->items()->size());
         int gn = 0;
-        for(int i = 0; i < panel->items()->count(); i++) {
-            PanelItem *item = panel->items()->at(i);
-            panel->settings->beginGroup("gauge-" + QString::number(gn)); {
-                item->storeSettings(*panel->settings);
-                panel->settings->endGroup(); }
+        for(int i = 0; i < currentPanel->items()->count(); i++) {
+            PanelItem *item = currentPanel->items()->at(i);
+            currentPanel->settings->beginGroup("gauge-" + QString::number(gn)); {
+                item->storeSettings(*currentPanel->settings);
+                currentPanel->settings->endGroup(); }
             gn++;
         }
-        panel->settings->endGroup(); }
-    panel->settings->beginGroup("hardware");
-    hwManager->saveSettings(panel->settings);
-    panel->settings->endGroup();
-    panel->settings->sync();
+        currentPanel->settings->endGroup(); }
+    currentPanel->settings->beginGroup("hardware");
+    hwManager->saveSettings(currentPanel->settings);
+    currentPanel->settings->endGroup();
+    currentPanel->settings->sync();
     dirty = false;
 }
 
@@ -384,36 +404,36 @@ void PanelWindow::loadProfile(QString filename) {
         connectionMessage(QString("Panel file %1 does not exist.").arg(filename));
         return;
     }
-    panel->settings = new QSettings(filename,QSettings::IniFormat,this);
+    currentPanel->settings = new QSettings(filename,QSettings::IniFormat,this);
 
     // Load from settings files
     int panelNumber = 0;
     while(panelNumber >= 0) {
-        panel->settings->beginGroup("panel-" + QString::number(panelNumber));
-        if(panel->settings->contains("name")) {
-            int gc = panel->settings->value("gaugecount", 0).toInt();
-            QString name = panel->settings->value("name").toString();
+        currentPanel->settings->beginGroup("panel-" + QString::number(panelNumber));
+        if(currentPanel->settings->contains("name")) {
+            int gc = currentPanel->settings->value("gaugecount", 0).toInt();
+            QString name = currentPanel->settings->value("name").toString();
             for(int gn=0;gn<gc;gn++) {
-                panel->settings->beginGroup("gauge-" + QString::number(gn));
-                PanelItem *g = itemFactory.itemForName(panel->settings->value("type").toString(), panel, connection);
+                currentPanel->settings->beginGroup("gauge-" + QString::number(gn));
+                PanelItem *g = itemFactory.itemForName(currentPanel->settings->value("type").toString(), currentPanel, connection);
                 if(g) {
                     addItem(g);
-                    g->loadSettings(*panel->settings);
+                    g->loadSettings(*currentPanel->settings);
                     g->applySettings();
                 } else {
-                    qDebug() << Q_FUNC_INFO << "Error creating item of type" << panel->settings->value("type").toString();
+                    qDebug() << Q_FUNC_INFO << "Error creating item of type" << currentPanel->settings->value("type").toString();
                 }
-                panel->settings->endGroup();
+                currentPanel->settings->endGroup();
             }
             panelNumber++;
         } else {
             panelNumber = -1;
         }
-        panel->settings->endGroup();
+        currentPanel->settings->endGroup();
     }
-    panel->settings->beginGroup("hardware");
-    hwManager->loadSettings(panel->settings);
-    panel->settings->endGroup();
+    currentPanel->settings->beginGroup("hardware");
+    hwManager->loadSettings(currentPanel->settings);
+    currentPanel->settings->endGroup();
 
     // Register this file as the last loaded...
     appSettings->setValue("lastloadedprofile",filename);
@@ -422,14 +442,14 @@ void PanelWindow::loadProfile(QString filename) {
 
 void PanelWindow::newProfile() {
     // Clear all panel items
-    for(int i = 0; i < panel->items()->count(); i++) {
-        PanelItem *item = panel->items()->at(i);
+    for(int i = 0; i < currentPanel->items()->count(); i++) {
+        PanelItem *item = currentPanel->items()->at(i);
         item->deleteLater();
     }
 
     // Load panel settings file
-    if(panel->settings) delete panel->settings;
-    panel->settings = NULL;
+    if(currentPanel->settings) delete currentPanel->settings;
+    currentPanel->settings = NULL;
 
     dirty = true;
 }

@@ -87,6 +87,8 @@ Command line arguments override application settings. This can be useful when yo
 
 * **--fullscreen** forces the app to launch in fullscreen mode
 * **--screen [number]** sets the panel to a specific monitor/screen
+* **--width [number]** set the width in pixels of the panel (if not fullscreen)
+* **--height [number]** set the height in pixels of the panel (if not fullscreen)
 * **--profile [filepath]** loads the panel profile specified by filepath
 
 ### User Interface ###

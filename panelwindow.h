@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QTime>
 #include <QKeyEvent>
+#include <QList>
 
 #include "panelitemfactory.h"
 #include "settings.h"
@@ -70,11 +71,13 @@ private slots:
     void setPanelUpdateInterval(double newInterval);
     void setDefaultFontSize(double newFs);
 protected:
-    virtual void resizeEvent(QResizeEvent * event);
+    virtual void resizeEvent(QResizeEvent *event);
+    virtual void closeEvent(QCloseEvent *event);
 private:
     QList<PanelItem*> selectedGauges();
 private:
-    ExtPlanePanel *panel; // Contains the panel items
+    QList<ExtPlanePanel*> panels;
+    ExtPlanePanel *currentPanel; // Contains the panel items
     HardwareManager *hwManager;
     MenuButton *menuButton;
     SettingsDialog *settingsDialog;

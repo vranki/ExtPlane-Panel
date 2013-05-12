@@ -33,36 +33,45 @@ void SettingsDialog::changeEvent(QEvent *e) {
 }
 
 void SettingsDialog::loadSettings() {
-    appSettings->beginGroup("settings");
+    // Global rotation
     ui->panelRotationDial->setValue(appSettings->valueFromSettingsOrCommandLine("panelrotation").toInt());
-#ifdef MOBILE_DEVICE // Default to fullscreen on mobile devices
-    ui->fullscreenCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("fullscreen", true).toBool());
-#else
-    ui->fullscreenCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("fullscreen", false).toBool());
-#endif
+
+    // Fullscreen checkbox
+    #ifdef MOBILE_DEVICE // Default to fullscreen on mobile devices
+        ui->fullscreenCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("fullscreen", true).toBool());
+    #else
+        ui->fullscreenCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("fullscreen", false).toBool());
+    #endif
     emit fullscreenChanged(ui->fullscreenCheckbox->isChecked());
+
+    // Simulate checkbox
     ui->simulateCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("simulate", false).toBool());
     emit simulateChanged(ui->simulateCheckbox->isChecked());
+
+    // Server line edit
     ui->serverAddressEdit->setText(appSettings->valueFromSettingsOrCommandLine("serveraddress", "127.0.0.1:51000").toString());
     emit setServerAddress(ui->serverAddressEdit->text());
 
+    // Update interval combobox
     ui->updateIntervalComboBox->setCurrentIndex(appSettings->valueFromSettingsOrCommandLine("updateinterval", 0).toInt());
     updateIntervalChanged();
 
+    // Additional checkboxes
     ui->interpolateCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("interpolate", true).toBool());
     emit setInterpolationEnabled(ui->interpolateCheckbox->isChecked());
     ui->antialiasCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("antialias", true).toBool());
     emit setAntialiasEnabled(ui->antialiasCheckbox->isChecked());
+    ui->rememberSizeAndPositionCheckBox->setChecked(appSettings->valueFromSettingsOrCommandLine("remembersizeandposition", false).toBool());
 
+    // Panel update interval
     ui->panelUpdateComboBox->setCurrentIndex(appSettings->valueFromSettingsOrCommandLine("panelupdateinterval", 4).toInt());
 
+    // Font size
     ui->fontSizeSpinBox->setValue(appSettings->valueFromSettingsOrCommandLine("fontsize", 10).toDouble());
     emit setDefaultFontSize(ui->fontSizeSpinBox->value());
-    appSettings->endGroup();
 }
 
 void SettingsDialog::saveSettings() {
-    appSettings->beginGroup("settings");
     appSettings->setValue("panelrotation", ui->panelRotationDial->value());
     appSettings->setValue("fullscreen", ui->fullscreenCheckbox->isChecked());
     appSettings->setValue("simulate", ui->simulateCheckbox->isChecked());
@@ -72,7 +81,7 @@ void SettingsDialog::saveSettings() {
     appSettings->setValue("antialias", ui->antialiasCheckbox->isChecked());
     appSettings->setValue("panelupdateinterval", ui->panelUpdateComboBox->currentIndex());
     appSettings->setValue("fontsize", ui->fontSizeSpinBox->value());
-    appSettings->endGroup();
+    appSettings->setValue("remembersizeandposition", ui->rememberSizeAndPositionCheckBox->isChecked());
     appSettings->sync();
 }
 
