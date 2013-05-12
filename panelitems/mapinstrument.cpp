@@ -5,6 +5,7 @@
 #include <QComboBox>
 #include <QSlider>
 
+#include "util/console.h"
 #include "extplaneclient.h"
 
 MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
@@ -127,7 +128,7 @@ void MapInstrument::updateMap() {
             .arg(_googleMapsType)
             .arg(_googleMapsStyle)
             .arg(_googleMapsAPIKey);
-    qDebug() << Q_FUNC_INFO << "will download" << url;
+    DEBUG << "will download" << url;
     _netManager->get(QNetworkRequest(QUrl(url)));
 }
 

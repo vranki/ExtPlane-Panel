@@ -1,7 +1,7 @@
 #include "pololuoutputdevice.h"
 #include <QFile>
-#include <QDebug>
 #include <termios.h>
+#include "util/console.h"
 
 PololuOutputDevice::PololuOutputDevice(QObject *parent) : OutputDevice(parent)
 {
@@ -21,7 +21,7 @@ bool PololuOutputDevice::init()
     int max = 255;
 
     if(min < 0 || min >= max) {
-        qDebug() << Q_FUNC_INFO << "Invalid range " << min << max;
+        DEBUG << "Invalid range " << min << max;
         return false;
     }
     devFile.setFileName("/dev/ttyUSB0");
@@ -89,7 +89,7 @@ void PololuOutputDevice::outputValue(double value, int output)
 void PololuOutputDevice::setpos(int servo, int pos) {
     if(!devFile.isWritable()) return;
     if(servopos.contains(servo) && servopos[servo] == pos) return;
-    qDebug() << Q_FUNC_INFO << servo << pos;
+    DEBUG << servo << pos;
     char foo[3];
     foo[0] = 0xff;
     foo[1] = servo + 8;

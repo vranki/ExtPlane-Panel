@@ -5,6 +5,7 @@
 #include <QCheckBox>
 #include "widgets/numberinputlineedit.h"
 #include "extplaneclient.h"
+#include "util/console.h"
 #include <QGraphicsSceneMouseEvent>
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Switch,"switches/generic");
@@ -118,7 +119,7 @@ void Switch::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void Switch::valueChanged(QString ref, double newValue) {
-    qDebug() << Q_FUNC_INFO << ref << newValue;
+    DEBUG << ref << newValue;
     Q_ASSERT(ref==_refname);
     _value = newValue != 0;
 }

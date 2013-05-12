@@ -3,6 +3,7 @@
 #include "hardwarebinding.h"
 #include "servoblasteroutputdevice.h"
 #include "pololuoutputdevice.h"
+#include "util/console.h"
 
 HardwareManager::HardwareManager(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection_(conn) {
     ServoBlasterOutputDevice *sbo = new ServoBlasterOutputDevice(this);
@@ -81,7 +82,7 @@ void HardwareManager::deviceChanged(HardwareBinding *binding, int device)
 {
     Q_ASSERT(outputDevices.contains(binding->device()));
     connect(binding, SIGNAL(outputValue(double,int)), outputDevices.value(binding->device()), SLOT(outputValue(double,int)));
-    qDebug() << Q_FUNC_INFO << "connected output of binding" << binding->name() << "to device " << outputDevices.value(binding->device())->id();
+    DEBUG << "connected output of binding" << binding->name() << "to device " << outputDevices.value(binding->device())->id();
 }
 
 void HardwareManager::deviceEnabled(int dev, bool enable)

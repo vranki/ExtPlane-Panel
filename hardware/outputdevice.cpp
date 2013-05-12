@@ -1,5 +1,5 @@
 #include "outputdevice.h"
-#include <QDebug>
+#include "util/console.h"
 
 OutputDevice::OutputDevice(QObject *parent) :
     QObject(parent), enabled(false), available(false)
@@ -24,7 +24,7 @@ void OutputDevice::loadSettings(QSettings *panelSettings)
             setEnabled(true);
         } else {
             // @todo Error dialog?
-            qDebug() << Q_FUNC_INFO << "Device not available!";
+            DEBUG << "Device not available!";
         }
     }
 }

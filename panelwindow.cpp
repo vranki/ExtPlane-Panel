@@ -20,6 +20,7 @@
 #include <QDesktopWidget>
 #include <QDesktopServices>
 
+#include "util/console.h"
 #include "extplaneconnection.h"
 #include "simulatedextplaneconnection.h"
 #include "menubutton.h"
@@ -180,7 +181,7 @@ void PanelWindow::keyPressEvent(QKeyEvent *event) {
 }
 
 void PanelWindow::connectionMessage(QString txt) {
-    qDebug() << Q_FUNC_INFO << txt;
+    INFO << txt;
     statusMessage.setPlainText(txt);
 }
 
@@ -258,7 +259,7 @@ void PanelWindow::setServerAddress(QString host) {
     QStringList hostport = host.split(":");
     if(hostport.length()==2) port = hostport.value(1).toUInt(NULL);
     if(port==0) port = 51000;
-    qDebug() << Q_FUNC_INFO << hostport.value(0) << port;
+    INFO << "Connecting to" << hostport.value(0) << "on port" << port;
 
     // Disconnect and reconnect
     connection->disconnectFromHost();
@@ -269,7 +270,7 @@ void PanelWindow::tick() {
     double dt = time.elapsed() / 1000.0f;
     time.start();
     if(dt > 0.2f) {
-        qDebug() << "Skipping frame, dt: " << dt;
+        DEBUG << "Skipping frame, dt: " << dt;
         dt = 0;
     }
     emit tickTime(dt, totalTime.elapsed());
@@ -346,7 +347,6 @@ void PanelWindow::saveProfile() {
 }
 
 void PanelWindow::saveProfileAs() {
-
     QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), currentPanel->settings->fileName(), tr("Ini Files (*.ini)"));
     if(!filename.isEmpty()) {
         // Create new file and save
@@ -361,7 +361,7 @@ void PanelWindow::saveProfileAs() {
 
 
 void PanelWindow::saveProfile(QString filename) {
-    qDebug() << Q_FUNC_INFO << "saving profile to " << filename;
+    INFO << "Saving profile to " << filename;
     int panelNumber = 0;
     QString panelName = "Panel";
     currentPanel->settings->beginGroup("panel-" + QString::number(panelNumber)); {
@@ -399,7 +399,7 @@ void PanelWindow::loadProfile(QString filename) {
     newProfile();
 
     // Load panel settings file
-    qDebug() << Q_FUNC_INFO << "loading panel from " << filename;
+    INFO << "Loading panel from " << filename;
     if(!QFile::exists(filename)) {
         connectionMessage(QString("Panel file %1 does not exist.").arg(filename));
         return;
@@ -421,7 +421,7 @@ void PanelWindow::loadProfile(QString filename) {
                     g->loadSettings(*currentPanel->settings);
                     g->applySettings();
                 } else {
-                    qDebug() << Q_FUNC_INFO << "Error creating item of type" << currentPanel->settings->value("type").toString();
+                    DEBUG << "Error creating item of type" << currentPanel->settings->value("type").toString();
                 }
                 currentPanel->settings->endGroup();
             }
@@ -484,7 +484,6 @@ void PanelWindow::editItem(PanelItem *item) { // Call with item 0 to destroy dia
 
 void PanelWindow::panelItemChanged(PanelItem *item) {
     if(!dirty) {
-        qDebug() << Q_FUNC_INFO;
         dirty = true;
     }
 }

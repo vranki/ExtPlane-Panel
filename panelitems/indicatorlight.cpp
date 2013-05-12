@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QBitmap>
 
+#include "util/console.h"
 #include "extplaneclient.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(IndicatorLight,"indicator/light/basic")
@@ -140,7 +141,7 @@ void IndicatorLight::loadSettings(QSettings &settings) {
     setLabelColor(QColor(settings.value("labelcolor","red").toString()));
     setGlowStrength(settings.value("glowstrength","80").toInt());
 
-    qDebug() << Q_FUNC_INFO << _datarefName;
+    DEBUG << _datarefName;
 }
 
 void IndicatorLight::createSettings(QGridLayout *layout) {
@@ -155,7 +156,7 @@ void IndicatorLight::createSettings(QGridLayout *layout) {
     createColorSetting(layout,"Label Color",_labelColor,SLOT(setLabelColor(QColor)));
     createSliderSetting(layout,"Label Glow",0,100,_glowStrength,SLOT(setGlowStrength(int)));
 
-    qDebug() << Q_FUNC_INFO << _datarefName;
+    DEBUG << _datarefName;
 }
 
 void IndicatorLight::setDataRefName(QString name) {

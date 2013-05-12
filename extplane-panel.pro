@@ -24,6 +24,14 @@ EXTPLANE_PLUGIN_PATH=../ExtPlane
 EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt
 INCLUDEPATH += $$EXTPLANE_CLIENT_PATH
 
+CONFIG(debug, debug|release) {
+    # Debug
+} else {
+    # Release
+    DEFINES += QT_NO_DEBUG
+    DEFINES += QT_NO_DEBUG_OUTPUT
+}
+
 maemo5: { 
     QT += dbus
     DEFINES += MAEMO
@@ -152,7 +160,8 @@ HEADERS += \
     panel.h \
     panelitems/indicatorlight.h \
     widgets/colorselector.h \
-    util/perlinnoise.h
+    util/perlinnoise.h \
+    util/console.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \

@@ -1,6 +1,7 @@
 #include "hardwarebinding.h"
 #include "clientdataref.h"
 #include "extplaneconnection.h"
+#include "util/console.h"
 
 HardwareBinding::HardwareBinding(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection(conn), clientDataRef(0) {
     inputMin_ = inputMax_ = outputMin_ = outputMax_ = 0;
@@ -111,7 +112,7 @@ void HardwareBinding::refChanged(ClientDataRef *ref) {
     bool ok;
     double refValue = ref->valueString().toDouble(&ok);
     if(!ok) {
-        qDebug() << Q_FUNC_INFO << "Can't convert value " << ref->valueString() << " to double.";
+        DEBUG << "Can't convert value " << ref->valueString() << " to double.";
         return;
     }
     bool invert = inputMax_ < inputMin_;

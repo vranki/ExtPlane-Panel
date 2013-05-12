@@ -1,5 +1,5 @@
 #include "servoblasteroutputdevice.h"
-#include <QDebug>
+#include "../util/console.h"
 
 ServoBlasterOutputDevice::ServoBlasterOutputDevice(QObject *parent) : OutputDevice(parent)
 {
@@ -12,7 +12,7 @@ bool ServoBlasterOutputDevice::init()
     int max = 220;
 
     if(min <= 0 || min >= max) {
-        qDebug() << Q_FUNC_INFO << "Invalid range " << minValue << maxValue;
+        DEBUG << "Invalid range " << minValue << maxValue;
         return false;
     }
     devFile.setFileName("/dev/servoblaster");
@@ -45,7 +45,7 @@ void ServoBlasterOutputDevice::outputValue(double value, int output)
     pos = qMax(pos, minValue);
     pos = qMin(pos, maxValue);
 
-    qDebug() << Q_FUNC_INFO << output << pos;
+    DEBUG << output << pos;
 
     QString outputString = QString("%1=%2\n").arg(output).arg(pos);
 
