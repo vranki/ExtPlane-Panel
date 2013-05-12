@@ -1,5 +1,5 @@
-#ifndef OUTPUT_H
-#define OUTPUT_H
+#ifndef CONSOLE_H
+#define CONSOLE_H
 
 #include <QDebug>
 
@@ -25,4 +25,4 @@
  */
 #define INFO qCritical() << "ExtPlane-Panel:"
 
-#endif // OUTPUT_H
+#endif // CONSOLE_H
