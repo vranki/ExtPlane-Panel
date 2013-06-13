@@ -106,7 +106,9 @@ SOURCES += \
     panel.cpp \
     panelitems/indicatorlight.cpp \
     widgets/colorselector.cpp \
-    util/perlinnoise.cpp
+    util/perlinnoise.cpp \
+    panelitems/enginedisplay.cpp \
+    panelitems/displayinstrument.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -161,7 +163,9 @@ HEADERS += \
     panelitems/indicatorlight.h \
     widgets/colorselector.h \
     util/perlinnoise.h \
-    util/console.h
+    util/console.h \
+    panelitems/enginedisplay.h \
+    panelitems/displayinstrument.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
