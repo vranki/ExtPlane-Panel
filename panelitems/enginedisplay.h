@@ -3,6 +3,9 @@
 
 #include "displayinstrument.h"
 
+/**
+ * Displays the engine thrust and rpm...
+ */
 class EngineDisplay : public DisplayInstrument
 {
     Q_OBJECT
@@ -18,9 +21,11 @@ signals:
     
 public slots:
     void refChanged(QString name, QString valueString);
+    void setBarLabels(int val) {_barLabels=val;}
 
 protected:
     int _engineCount;
+    int _barLabels;
     QStringList _throttleValues;
     QStringList _rpmValues;
     

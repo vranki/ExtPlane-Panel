@@ -61,7 +61,6 @@ void DisplayInstrument::itemSizeChanged(float w, float h) {
     _monitorImage.fill(Qt::black);
 }
 
-
 void DisplayInstrument::tickTime(double dt, int total) {
     // Is it time to redraw?
     if(_lastRender.elapsed() > 1000/_refreshHerz) {
@@ -90,10 +89,8 @@ void DisplayInstrument::tickTime(double dt, int total) {
     }
 }
 
-
 void DisplayInstrument::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
-
 
     settings.setValue("monitorFade", _monitorFade);
     settings.setValue("displayStrength", _displayStrength);
