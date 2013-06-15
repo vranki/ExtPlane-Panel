@@ -22,10 +22,9 @@ DisplayInstrument::DisplayInstrument(ExtPlanePanel *panel, ExtPlaneConnection *c
 
     // Make connection and register data refs
     conn->registerClient(&_client);
-    //_client.subscribeDataRef("sim/flightmodel/position/latitude", 0);
-    //_client.subscribeDataRef("sim/flightmodel/position/longitude", 0);
+    //TODO: avionics on/off dataref for powering instrument
     //_client.subscribeDataRef(MAP_INSTRUMENT_HEADING_DATAREF, 0);
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(latlongChanged(QString,double)));
+    //connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(latlongChanged(QString,double)));
 
 }
 

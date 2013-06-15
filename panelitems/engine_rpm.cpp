@@ -5,6 +5,7 @@
 
 #include "widgets/velocityunitcombobox.h"
 #include "widgets/numberinputlineedit.h"
+#include "util/console.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(EngineRPM,"indicator/enginerpm/round")
 
@@ -19,7 +20,8 @@ EngineRPM::EngineRPM(ExtPlanePanel *panel, ExtPlaneConnection *conn) : NeedleIns
     setMaxValue(3000);
     setValue(2900);
     isTotalEnergy = false;
-    //setNumberFontsize(20); //TODO
+    _setMaxValueAutomatically = false;
+    _engineNumber = 1;
     
     Arc * arc = new Arc(this, this);
     arc->_use = true;
@@ -37,14 +39,17 @@ EngineRPM::EngineRPM(ExtPlanePanel *panel, ExtPlaneConnection *conn) : NeedleIns
     arc1->_radius_outer=1.0;
     arc1->_color = QColor(200,0,0);
     addArc(arc1);
-    
-    
+
 }
 
 void EngineRPM::rpmChanged(QString name, QStringList values) {
     //TODO: seems this is arbitrarily taking the first engine; we should add a setting for which value we want
-    QString rpmStr = values.at(1);
-    setValue(rpmStr.toDouble());
+    QString rpmStr = _engineNumber > values.count() ? "0" : values.at(_engineNumber-1);
+    double rpm = rpmStr.toDouble();
+    if(_setMaxValueAutomatically && rpm > _maxValue) {
+        setMaxValue(rpm);
+    }
+    setValue(rpm);
 }
 
 void EngineRPM::setUnit(VelocityUnit unit) {
@@ -58,6 +63,7 @@ void EngineRPM::storeSettings(QSettings &settings) {
     settings.setValue("maxvalue", QString::number(maxValue));
     settings.setValue("scalevalue", QString::number(_numberScale));
     settings.setValue("totalenergy", isTotalEnergy);
+    settings.setValue("enginenumber", _engineNumber);
 }
 
 void EngineRPM::loadSettings(QSettings &settings) {
@@ -67,6 +73,7 @@ void EngineRPM::loadSettings(QSettings &settings) {
     setUnit(unit);
     setMaxValue(settings.value("maxvalue", 300).toDouble());
     setNumberScale(settings.value("scalevalue", 1.).toDouble());
+    setEngineNumber(settings.value("enginenumber", 1).toInt());
 }
 
 void EngineRPM::setMaxValue(float mv) {
@@ -75,8 +82,6 @@ void EngineRPM::setMaxValue(float mv) {
 }
 
 void EngineRPM::setNumberScale(float ns) {
-    //numberScale = ns;
-    //setNumberMult(ns);
     _numberScale = ns;
 }
 
@@ -87,9 +92,6 @@ void EngineRPM::createSettings(QGridLayout *layout) {
     VelocityUnitComboBox *unitsCombo = new VelocityUnitComboBox(layout->parentWidget(), units);
     connect(unitsCombo, SIGNAL(unitSelected(VelocityUnit)), this, SLOT(setUnit(VelocityUnit)));
     layout->addWidget(unitsCombo);
-
-
-    
 
     QLabel *maxLabel = new QLabel("Maximum value", layout->parentWidget());
     layout->addWidget(maxLabel);
@@ -104,6 +106,8 @@ void EngineRPM::createSettings(QGridLayout *layout) {
     scaleValueEdit->setText(QString::number(_numberScale));
     layout->addWidget(scaleValueEdit);
     connect(scaleValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNumberScale(float)));
+
+    createNumberInputSetting(layout,"Engine Number",_engineNumber,SLOT(setEngineNumber(float)));
 
     NeedleInstrument::createSettings(layout);
 }

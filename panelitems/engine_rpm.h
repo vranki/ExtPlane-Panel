@@ -24,10 +24,13 @@ signals:
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
     void setNumberScale(float ns);
+    void setEngineNumber(float val) { _engineNumber = (int)val; }
 
 private:
     ExtPlaneClient _client;
     VelocityUnit units;
+    bool _setMaxValueAutomatically;
+    int _engineNumber;
     float maxValue;
     //float numberScale;
     bool isTotalEnergy;

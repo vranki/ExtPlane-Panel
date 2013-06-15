@@ -74,6 +74,7 @@ There are currently a number of instruments available, including:
 - HSI
 - GPS/Radar map
 - Light indicator
+- Engine display
 
 Most instruments look like general aviation instruments. You can also add and customize covers for your instruments.
 

@@ -87,7 +87,7 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
 
         // Draw N1
         if(_n1Enabled) {
-            for(int i = 0; i < _engineCount; i++) {
+            for(int i = 0; i < qMin(_engineCount,_n1Values.count()); i++) {
                 // Grab value
                 double value = _n1Values.at(i).toDouble();
                 // Draw
@@ -98,7 +98,7 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
 
         // Draw EPR
         if(_eprEnabled) {
-            for(int i = 0; i < _engineCount; i++) {
+            for(int i = 0; i < qMin(_engineCount,_eprValues.count()); i++) {
                 // Grab value
                 double value = _eprValues.at(i).toDouble();
                 // Draw
@@ -109,7 +109,7 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
 
         // Draw EGT
         if(_egtEnabled) {
-            for(int i = 0; i < _engineCount; i++) {
+            for(int i = 0; i < qMin(_engineCount,_egtValues.count()); i++) {
                 // Grab value
                 double value = _egtValues.at(i).toDouble();
                 // Draw
@@ -126,12 +126,54 @@ void EngineDisplay::storeSettings(QSettings &settings) {
     DisplayInstrument::storeSettings(settings);
 
     settings.setValue("barLabels", _barLabels);
+
+    settings.setValue("n1enabled",_n1Enabled);
+    settings.setValue("n1datarefmin",_n1DatarefMinimum);
+    settings.setValue("n1datarefmax",_n1DatarefMaximum);
+    settings.setValue("n1rangemin",_n1RangeMinimum);
+    settings.setValue("n1rangemax",_n1RangeMaximum);
+    settings.setValue("n1color",_n1Color.name());
+
+    settings.setValue("eprenabled",_eprEnabled);
+    settings.setValue("eprdatarefmin",_eprDatarefMinimum);
+    settings.setValue("eprdatarefmax",_eprDatarefMaximum);
+    settings.setValue("eprrangemin",_eprRangeMinimum);
+    settings.setValue("eprrangemax",_eprRangeMaximum);
+    settings.setValue("eprcolor",_eprColor.name());
+
+    settings.setValue("egtenabled",_egtEnabled);
+    settings.setValue("egtdatarefmin",_egtDatarefMinimum);
+    settings.setValue("egtdatarefmax",_egtDatarefMaximum);
+    settings.setValue("egtrangemin",_egtRangeMinimum);
+    settings.setValue("egtrangemax",_egtRangeMaximum);
+    settings.setValue("egtcolor",_egtColor.name());
 }
 
 void EngineDisplay::loadSettings(QSettings &settings) {
     DisplayInstrument::loadSettings(settings);
 
     setBarLabels(settings.value("barLabels","6").toInt());
+
+    setN1Enabled(settings.value("n1enabled","true").toBool());
+    setN1DatarefMinimum(settings.value("n1datarefmin","0").toDouble());
+    setN1DatarefMaximum(settings.value("n1datarefmax","100").toDouble());
+    setN1RangeMinimum(settings.value("n1rangemin","0").toDouble());
+    setN1RangeMaximum(settings.value("n1rangemax","100").toDouble());
+    setN1Color(QColor(settings.value("n1color","#00FF00").toString()));
+
+    setEPREnabled(settings.value("eprenabled","true").toBool());
+    setEPRDatarefMinimum(settings.value("eprdatarefmin","1.0").toDouble());
+    setEPRDatarefMaximum(settings.value("eprdatarefmax","2.0").toDouble());
+    setEPRRangeMinimum(settings.value("eprrangemin","1.0").toDouble());
+    setEPRRangeMaximum(settings.value("eprrangemax","2.0").toDouble());
+    setEPRColor(QColor(settings.value("eprcolor","blue").toString()));
+
+    setEGTEnabled(settings.value("egtenabled","true").toBool());
+    setEGTDatarefMinimum(settings.value("egtdatarefmin","0").toDouble());
+    setEGTDatarefMaximum(settings.value("egtdatarefmax","700").toDouble());
+    setEGTRangeMinimum(settings.value("egtrangemin","0").toDouble());
+    setEGTRangeMaximum(settings.value("egtrangemax","700").toDouble());
+    setEGTColor(QColor(settings.value("egtcolor","yellow").toString()));
 }
 
 void EngineDisplay::createGaugeSetSettings(QGridLayout *layout, QString name, bool enabled, double dataRefMin, double dataRefMax, double rangeMin, double rangeMax, QColor color) {
@@ -147,7 +189,6 @@ void EngineDisplay::createSettings(QGridLayout *layout) {
     DisplayInstrument::createSettings(layout);
 
     createSliderSetting(layout,"Number of Labels",0,11,_barLabels,SLOT(setBarLabels(int)));
-
     createGaugeSetSettings(layout,"N1",_n1Enabled,_n1DatarefMinimum,_n1DatarefMaximum,_n1RangeMinimum,_n1RangeMaximum,_n1Color);
     createGaugeSetSettings(layout,"EPR",_eprEnabled,_eprDatarefMinimum,_eprDatarefMaximum,_eprRangeMinimum,_eprRangeMaximum,_eprColor);
     createGaugeSetSettings(layout,"EGT",_egtEnabled,_egtDatarefMinimum,_egtDatarefMaximum,_egtRangeMinimum,_egtRangeMaximum,_egtColor);
