@@ -20,7 +20,7 @@ public:
 signals:
     
     public slots:
-    void rpmChanged(QString name, QString valueString);
+    void rpmChanged(QString name, QStringList values);
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
     void setNumberScale(float ns);

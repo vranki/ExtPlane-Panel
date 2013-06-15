@@ -29,7 +29,7 @@ public:
     virtual void createSettings(QGridLayout *layout);
 
 protected:
-    void drawVerticalBarGauge(QPainter *painter, double x, double y, double width, double height, double value, double maxValue, double rangeStart, double rangeEnd, bool decimalPrecision, int labelCount);
+    void drawVerticalBarGauge(QPainter *painter, QColor color, double x, double y, double width, double height, double value, double minValue, double maxValue, double rangeStart, double rangeEnd, bool decimalPrecision, int labelCount);
 
 signals:
     

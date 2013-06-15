@@ -119,11 +119,13 @@ void DisplayInstrument::createSettings(QGridLayout *layout) {
 
 void DisplayInstrument::drawVerticalBarGauge(
         QPainter *painter,
+        QColor color,
         double x,
         double y,
         double width,
         double height,
         double value,
+        double minValue,
         double maxValue,
         double rangeStart,
         double rangeEnd,
@@ -135,7 +137,8 @@ void DisplayInstrument::drawVerticalBarGauge(
     double valueHeight = 30;
     double barHeight = height - valueHeight - labelHeight - labelHeight;
     double strokeWidth = 2.0;
-    double percent = value / maxValue;
+    double percent = (value-minValue) / (maxValue-minValue);
+    if(percent < 0.0) percent = 0.0;
     if(percent > 1.0) percent = 1.0;
 
     // Draw bar outline
@@ -146,7 +149,7 @@ void DisplayInstrument::drawVerticalBarGauge(
 
     // Draw bar inner
     painter->setPen(Qt::transparent);
-    painter->setBrush(Qt::green);
+    painter->setBrush(color);
     double barInnerHeight = barHeight-strokeWidth-strokeWidth;
     double barInnerValue = barInnerHeight * percent;
     painter->drawRect(x+strokeWidth,
@@ -168,6 +171,7 @@ void DisplayInstrument::drawVerticalBarGauge(
             // int precision
             text = QString("%1").arg((int)labelValueRanged);
         }
+        painter->setFont(this->defaultFont);
         painter->drawText(x+width+labelHeight/3.0,
                           y+valueHeight+barHeight-(i*(barHeight/(double)labelCountLogical)),
                           labelHeight*3,
@@ -177,7 +181,7 @@ void DisplayInstrument::drawVerticalBarGauge(
     }
 
     // Draw value
-    double valuePercent = value / maxValue;
+    double valuePercent = (value-minValue) / (maxValue-minValue);
     double valueRanged = rangeStart + (valuePercent*(rangeEnd-rangeStart));
     QString valueText;
     if(decimalPrecision) {
@@ -187,6 +191,7 @@ void DisplayInstrument::drawVerticalBarGauge(
         // int precision
         valueText = QString("%1").arg((int)valueRanged,3,10,QChar('0'));
     }
+    painter->setFont(QFont(this->defaultFont.family(),this->defaultFont.pointSize()*2.0));
     painter->drawText(x,
                       y,
                       valueHeight*3,

@@ -11,7 +11,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(EngineRPM,"indicator/enginerpm/round")
 EngineRPM::EngineRPM(ExtPlanePanel *panel, ExtPlaneConnection *conn) : NeedleInstrument(panel), _client(this, typeName(), conn) {
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/cockpit2/engine/indicators/engine_speed_rpm", 15.0);//, 10.0);
-    connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(rpmChanged(QString,QString)));
+    connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(rpmChanged(QString,QStringList)));
     setBars(500, 100);
     setNumbers(500);
     setNumberScale(0.01);
@@ -41,11 +41,9 @@ EngineRPM::EngineRPM(ExtPlanePanel *panel, ExtPlaneConnection *conn) : NeedleIns
     
 }
 
-void EngineRPM::rpmChanged(QString name, QString valueString) {
-    //TODO: seems this is arbitrarily taking the 3rd value from array; we should add a setting for which value we want
-    QStringList cmd = valueString.split(" ", QString::SkipEmptyParts);
-    QString rpmStr = cmd.value(3);
-    rpmStr.chop(1);
+void EngineRPM::rpmChanged(QString name, QStringList values) {
+    //TODO: seems this is arbitrarily taking the first engine; we should add a setting for which value we want
+    QString rpmStr = values.at(1);
     setValue(rpmStr.toDouble());
 }
 
