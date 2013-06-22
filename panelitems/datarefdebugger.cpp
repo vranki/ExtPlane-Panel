@@ -13,13 +13,15 @@ DataRefDebugger::DataRefDebugger(ExtPlanePanel *panel, ExtPlaneConnection *conn)
 
     // Init
     setSize(400,60);
+    _currentValue = "";
+    _currentAccuracy = 0;
     setDataRefName("sim/cockpit/misc/compass_indicated");
 
     // Make connection
     conn->registerClient(&_client);
-    //_client.subscribeDataRef("sim/flightmodel/position/hpath", 1);
     connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(dataRefChanged(QString,QString)));
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(dataRefChanged(QString,double)));
+    connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(dataRefChanged(QString,QStringList)));
 
 }
 
@@ -41,11 +43,13 @@ void DataRefDebugger::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
 
     settings.setValue("datarefname", _currentName);
+    settings.setValue("datarefaccuracy", _currentAccuracy);
 }
 
 void DataRefDebugger::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
 
+    setDataRefAccuracy(settings.value("datarefaccuracy",0).toDouble());
     setDataRefName(settings.value("datarefname","sim/cockpit/misc/compass_indicated").toString());
 }
 
@@ -57,6 +61,8 @@ void DataRefDebugger::createSettings(QGridLayout *layout) {
     dataRefNameLineEdit->setText(_currentName);
     layout->addWidget(dataRefNameLineEdit);
     connect(dataRefNameLineEdit, SIGNAL(textChanged(QString)), this, SLOT(setDataRefName(QString)));
+
+    createNumberInputSetting(layout,"Accuracy", _currentAccuracy, SLOT(setDataRefAccuracy(float)));
 }
 
 void DataRefDebugger::setDataRefName(QString name) {
@@ -64,11 +70,16 @@ void DataRefDebugger::setDataRefName(QString name) {
     // Unsubscribe old
     if(_currentName != "") _client.unsubscribeDataRef(_currentName); //TODO: there seems to be something wrong with unsubscribing...
     _currentName = name;
-     _currentValue = "";
+    _currentValue = "";
 
     // Subscribe new
-    _client.subscribeDataRef(name, 0);
+    if(name != "") _client.subscribeDataRef(name, _currentAccuracy);
     update();
+}
+
+void DataRefDebugger::setDataRefAccuracy(float val) {
+    _currentAccuracy = val;
+    setDataRefName(_currentName);
 }
 
 void DataRefDebugger::dataRefChanged(QString name, QString val) {
@@ -78,4 +89,14 @@ void DataRefDebugger::dataRefChanged(QString name, QString val) {
 
 void DataRefDebugger::dataRefChanged(QString name, double val) {
     dataRefChanged(name,QString("%1").arg(val));
+}
+
+void DataRefDebugger::dataRefChanged(QString name, QStringList values) {
+    QString out = "[";
+    for(int i = 0; i < values.count(); i++) {
+        if(i != 0) out += ",";
+        out.append(values.at(i));
+    }
+    out.append("]");
+    dataRefChanged(name,out);
 }
