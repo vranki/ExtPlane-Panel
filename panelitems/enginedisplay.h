@@ -4,7 +4,7 @@
 #include "displayinstrument.h"
 
 /**
- * Displays the engine thrust and rpm...
+ * Displays the engine N1, EPR and EGT for any number of engines.
  */
 class EngineDisplay : public DisplayInstrument
 {

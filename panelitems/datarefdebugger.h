@@ -18,12 +18,15 @@ public:
 public slots:
     void dataRefChanged(QString name, double val);
     void dataRefChanged(QString name, QString val);
+    void dataRefChanged(QString name, QStringList values);
     void setDataRefName(QString name);
+    void setDataRefAccuracy(float accuracy);
 
 private:
     ExtPlaneClient _client;
     QString _currentValue;
     QString _currentName;
+    double _currentAccuracy;
 };
 
 #endif // DATAREFDEBUGGER_H
