@@ -59,6 +59,29 @@ make
 ```
 
 
+### Windows ###
+```bash
+# 1: Install required libraries and tools
+Download and install Qt5 from http://qt-project.org/downloads
+Download and install Git from http://git-scm.com/downloads
+
+# 2: Download source code from GitHub
+git clone https://github.com/vranki/ExtPlane.git
+git clone https://github.com/vranki/ExtPlane-Panel.git
+
+# 3: Build project
+cd ExtPlane-Panel
+qmake
+nmake
+
+Note: If you do not have a C++ compiler, you can install one of the following:
+MinGW version of Qt: http://qt-project.org/downloads
+Windows 7 SDK: http://www.microsoft.com/en-us/download/confirmation.aspx?id=8279
+Windows 8 SDK: http://msdn.microsoft.com/en-us/library/windows/desktop/hh852363.aspx
+Visual Studio Express: http://www.microsoft.com/visualstudio/eng/downloads#d-2012-express 
+```
+
+
 
 ## Instruments ##
 
