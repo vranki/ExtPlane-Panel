@@ -3,7 +3,7 @@
 #include <QLabel>
 #include <QCheckBox>
 
-#include "util/console.h"
+#include "../util/console.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(EngineDisplay,"display/engines")
 

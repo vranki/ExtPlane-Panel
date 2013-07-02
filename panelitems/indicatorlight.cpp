@@ -6,7 +6,7 @@
 #include <QImage>
 #include <QBitmap>
 
-#include "util/console.h"
+#include "../util/console.h"
 #include "extplaneclient.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(IndicatorLight,"indicator/light/basic")

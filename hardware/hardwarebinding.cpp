@@ -1,7 +1,7 @@
 #include "hardwarebinding.h"
 #include "clientdataref.h"
 #include "extplaneconnection.h"
-#include "util/console.h"
+#include "../util/console.h"
 
 HardwareBinding::HardwareBinding(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection(conn), clientDataRef(0) {
     inputMin_ = inputMax_ = outputMin_ = outputMax_ = 0;

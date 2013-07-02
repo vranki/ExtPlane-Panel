@@ -6,7 +6,7 @@
 #include <QSlider>
 #include <QTime>
 
-#include "util/console.h"
+#include "../util/console.h"
 #include "extplaneclient.h"
 
 DisplayInstrument::DisplayInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :

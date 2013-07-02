@@ -3,10 +3,13 @@
  */
 
 #include "attitudeindicator.h"
-#include <cmath>
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include "../widgets/distanceunitcombobox.h"
 #include "extplaneclient.h"
-#include "widgets/numberinputlineedit.h"
+#include "../widgets/numberinputlineedit.h"
 #include <QLabel>
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(AttitudeIndicator,"indicator/attitude/basic");

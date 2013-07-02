@@ -11,9 +11,9 @@
 #include <QColorDialog>
 #include <QCheckBox>
 
-#include "panel.h"
-#include "widgets/colorselector.h"
-#include "widgets/numberinputlineedit.h"
+#include "../panel.h"
+#include "../widgets/colorselector.h"
+#include "../widgets/numberinputlineedit.h"
 
 PanelItem::PanelItem(ExtPlanePanel *panel, PanelItemType type, PanelItemShape shape) : QObject(panel), QGraphicsItem(), darkGrayColor(30,30,30) {
     // Init

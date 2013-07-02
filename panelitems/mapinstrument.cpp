@@ -5,7 +5,7 @@
 #include <QComboBox>
 #include <QSlider>
 
-#include "util/console.h"
+#include "../util/console.h"
 #include "extplaneclient.h"
 
 MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
