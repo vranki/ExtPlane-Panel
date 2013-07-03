@@ -31,8 +31,8 @@ void PerlinNoise::draw(QPainter *painter, int octaves, double p, double zoom, in
         for(int x = 0; x < width; x++) {
             double getnoise =0;
             for(int a = 0; a < octaves - 1; a++) {
-                double frequency = pow(2,a); //This increases the frequency with every loop of the octave.
-                double amplitude = pow(p,a); //This decreases the amplitude with every loop of the octave.
+                double frequency = qPow(2,a); //This increases the frequency with every loop of the octave.
+                double amplitude = qPow(p,a); //This decreases the amplitude with every loop of the octave.
                 getnoise += PerlinNoise::noise2(((double)x)*frequency/zoom,((double)y)/zoom*frequency)*amplitude; //This uses our perlin noise functions. It calculates all our zoom and frequency and amplitude. It gives a decimal value, you know, between the pixels. Like 4.2 or 5.1
             }
             int color= (int)((getnoise*128.0)+128.0); //Convert to 0-256 values.
