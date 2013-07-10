@@ -25,21 +25,24 @@ bool PololuOutputDevice::init()
         return false;
     }
     devFile.setFileName("/dev/ttyUSB0");
+
     if(!devFile.exists()) {
         status = "Device file doesn't exist";
         return false;
     }
-    if(devFile.isWritable()) {
+
+
+    //open the device(com port) to be non-blocking (read will return immediately)
+    devFile.open(QIODevice::WriteOnly);
+
+    if(!devFile.isWritable()) {
         status = "Device file not writable";
         return false;
     }
 
-    struct termios newtio;
-
-    //open the device(com port) to be non-blocking (read will return immediately)
-    devFile.open(QIODevice::WriteOnly);
     int fd = devFile.handle();
-    //    (())                fd = open(devicename, O_WRONLY | O_NOCTTY);
+
+    struct termios newtio;
     // set new port settings for canonical input processing
     newtio.c_cflag = B9600 | CRTSCTS | CS8 | 1 | 0 | 0 | CLOCAL/* | CREAD*/;
     newtio.c_iflag = IGNPAR;
@@ -90,11 +93,11 @@ void PololuOutputDevice::setpos(int servo, int pos) {
     if(!devFile.isWritable()) return;
     if(servopos.contains(servo) && servopos[servo] == pos) return;
     DEBUG << servo << pos;
-    char foo[3];
-    foo[0] = 0xff;
-    foo[1] = servo + 8;
-    foo[2] = pos;
-    devFile.write(foo, 3);
+    QByteArray data(3, 0);
+    data[0] = 0xff;
+    data[1] = servo + 8;
+    data[2] = pos;
+    devFile.write(data);
     servopos[servo] = pos;
     devFile.flush();
 }

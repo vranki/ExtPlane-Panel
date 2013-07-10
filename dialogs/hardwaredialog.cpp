@@ -75,6 +75,7 @@ void HardwareDialog::saveChanges() {
     currentBinding->setInputValues(ui->inputMinSpinbox->value(), ui->inputMaxSpinbox->value());
     currentBinding->setOutputValues(ui->outputMinSpinbox->value(), ui->outputMaxSpinbox->value());
     currentBinding->setDevice(ui->outputDeviceComboBox->currentIndex());
+    currentBinding->setOutput(ui->outputNumSpinbox->value());
     updateUi();
     currentBinding->activate();
 }
