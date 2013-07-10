@@ -32,6 +32,10 @@ CONFIG(debug, debug|release) {
     DEFINES += QT_NO_DEBUG_OUTPUT
 }
 
+unix: {
+    DEFINES += TERMIOS_AVAILABLE
+}
+
 maemo5: { 
     QT += dbus
     DEFINES += MAEMO

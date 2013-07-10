@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-#include "util/perlinnoise.h"
+#include "../util/perlinnoise.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(GaugeCover,"misc/cover/gauges");
 

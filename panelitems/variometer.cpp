@@ -2,8 +2,8 @@
 #include <QLabel>
 #include <QCheckBox>
 #include "../units.h"
-#include "widgets/velocityunitcombobox.h"
-#include "widgets/numberinputlineedit.h"
+#include "../widgets/velocityunitcombobox.h"
+#include "../widgets/numberinputlineedit.h"
 #include "../valueinterpolator.h"
 #include "../needles/gabalancedneedle.h"
 

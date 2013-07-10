@@ -8,7 +8,7 @@
 #include "../panelitemfactory.h"
 #include "simulatedextplaneconnection.h"
 #include "extplaneconnection.h"
-#include "panel.h"
+#include "../panel.h"
 
 namespace Ui {
 class PanelItemSelectionDialog;

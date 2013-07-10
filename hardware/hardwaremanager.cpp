@@ -3,7 +3,7 @@
 #include "hardwarebinding.h"
 #include "servoblasteroutputdevice.h"
 #include "pololuoutputdevice.h"
-#include "util/console.h"
+#include "../util/console.h"
 
 HardwareManager::HardwareManager(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection_(conn) {
     ServoBlasterOutputDevice *sbo = new ServoBlasterOutputDevice(this);

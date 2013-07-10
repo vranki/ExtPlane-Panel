@@ -4,7 +4,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QCheckBox>
-#include "widgets/numberinputlineedit.h"
+#include "../widgets/numberinputlineedit.h"
 #include "extplaneclient.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Button,"buttons/generic");

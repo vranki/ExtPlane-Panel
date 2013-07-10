@@ -1,7 +1,10 @@
 #include "pololuoutputdevice.h"
 #include <QFile>
-#include <termios.h>
-#include "util/console.h"
+#include "../util/console.h"
+
+#ifdef TERMIOS_AVAILABLE
+    #include <termios.h>
+#endif
 
 PololuOutputDevice::PololuOutputDevice(QObject *parent) : OutputDevice(parent)
 {
@@ -31,7 +34,6 @@ bool PololuOutputDevice::init()
         return false;
     }
 
-
     //open the device(com port) to be non-blocking (read will return immediately)
     devFile.open(QIODevice::WriteOnly);
 
@@ -42,16 +44,19 @@ bool PololuOutputDevice::init()
 
     int fd = devFile.handle();
 
-    struct termios newtio;
     // set new port settings for canonical input processing
-    newtio.c_cflag = B9600 | CRTSCTS | CS8 | 1 | 0 | 0 | CLOCAL/* | CREAD*/;
-    newtio.c_iflag = IGNPAR;
-    newtio.c_oflag = 0;
-    newtio.c_lflag = 0;       //ICANON;
-    newtio.c_cc[VMIN]=1;
-    newtio.c_cc[VTIME]=0;
-    tcflush(fd, TCIFLUSH);
-    tcsetattr(fd,TCSANOW, &newtio);
+    #ifdef TERMIOS_AVAILABLE
+        struct termios newtio;
+        newtio.c_cflag = B9600 | CRTSCTS | CS8 | 1 | 0 | 0 | CLOCAL/* | CREAD*/;
+        newtio.c_iflag = IGNPAR;
+        newtio.c_oflag = 0;
+        newtio.c_lflag = 0;       //ICANON;
+        newtio.c_cc[VMIN]=1;
+        newtio.c_cc[VTIME]=0;
+        tcflush(fd, TCIFLUSH);
+        tcsetattr(fd,TCSANOW, &newtio);
+    #endif
+
     setpos(0, 127);
     setpos(1, 127);
 
