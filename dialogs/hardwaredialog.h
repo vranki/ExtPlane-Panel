@@ -28,6 +28,7 @@ private slots:
     void currentRowChanged(int row);
     void enableSB(bool enable);
     void enablePololu(bool enable);
+    void enableChroma(bool enable);
     void deviceAvailable(int dev, bool avail);
 signals:
     void deviceEnabled(int dev, bool enable);

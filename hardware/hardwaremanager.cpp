@@ -3,6 +3,7 @@
 #include "hardwarebinding.h"
 #include "servoblasteroutputdevice.h"
 #include "pololuoutputdevice.h"
+#include "chromaoutputdevice.h"
 #include "../util/console.h"
 
 HardwareManager::HardwareManager(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection_(conn) {
@@ -10,6 +11,8 @@ HardwareManager::HardwareManager(QObject *parent, ExtPlaneConnection *conn) : QO
     outputDevices.insert(sbo->id(), sbo);
     PololuOutputDevice *pod = new PololuOutputDevice(this);
     outputDevices.insert(pod->id(), pod);
+    ChromaOutputDevice *chd = new ChromaOutputDevice(this);
+    outputDevices.insert(chd->id(), chd);
 }
 
 QList<HardwareBinding *> &HardwareManager::bindings() {
@@ -50,7 +53,7 @@ void HardwareManager::saveSettings(QSettings *panelSettings) {
         panelSettings->endGroup();
         n++;
     }
-    panelSettings->setValue("deviceCount", devices().count());
+    panelSettings->setValue("deviceCount", outputDevices.values().count());
     foreach(OutputDevice *device, devices()) {
         panelSettings->beginGroup("device-" + QString::number(device->id()));
         device->storeSettings(panelSettings);
@@ -71,7 +74,7 @@ void HardwareManager::loadSettings(QSettings *panelSettings) {
         addBinding(binding);
         binding->activate();
     }
-    foreach(OutputDevice *device, devices()) {
+    foreach(OutputDevice *device, outputDevices.values()) {
         panelSettings->beginGroup("device-" + QString::number(device->id()));
         device->loadSettings(panelSettings);
         panelSettings->endGroup();

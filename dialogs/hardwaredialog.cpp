@@ -5,7 +5,7 @@
 #include "../hardware/outputdevice.h"
 #include "../hardware/servoblasteroutputdevice.h"
 #include "../hardware/pololuoutputdevice.h"
-
+#include "../hardware/chromaoutputdevice.h"
 
 HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
     QDialog(parent),
@@ -18,8 +18,10 @@ HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
     connect(ui->bindingListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(currentRowChanged(int)));
     connect(ui->enableSB, SIGNAL(clicked(bool)), this, SLOT(enableSB(bool)));
     connect(ui->enablePololu, SIGNAL(clicked(bool)), this, SLOT(enablePololu(bool)));
+    connect(ui->enableChroma, SIGNAL(clicked(bool)), this, SLOT(enableChroma(bool)));
     connect(hwManager->devices().value(POLOLU_ID), SIGNAL(deviceEnabled(bool)), ui->enablePololu, SLOT(setChecked(bool)));
     connect(hwManager->devices().value(SERVOBLASTER_ID), SIGNAL(deviceEnabled(bool)), ui->enableSB, SLOT(setChecked(bool)));
+    connect(hwManager->devices().value(CHROMA_ID), SIGNAL(deviceEnabled(bool)), ui->enableChroma, SLOT(setChecked(bool)));
     connect(manager, SIGNAL(deviceAvailable(int,bool)), this, SLOT(deviceAvailable(int,bool)));
     connect(this, SIGNAL(deviceEnabled(int,bool)), manager, SLOT(deviceEnabled(int,bool)));
     updateUi();
@@ -96,6 +98,11 @@ void HardwareDialog::enablePololu(bool enable)
     emit deviceEnabled(POLOLU_ID, enable);
 }
 
+void HardwareDialog::enableChroma(bool enable)
+{
+    emit deviceEnabled(CHROMA_ID, enable);
+}
+
 void HardwareDialog::updateUi() {
     if(currentBinding) {
         ui->bindingNameLineEdit->setText(currentBinding->name());
@@ -128,6 +135,11 @@ void HardwareDialog::updateUi() {
             ui->enablePololu->setChecked(device->isEnabled());
             ui->enablePololu->setEnabled(device->isAvailable());
             ui->pololuWorkingLabel->setText(device->statusString());
+        }
+        if(device->id()==CHROMA_ID) {
+            ui->enableChroma->setChecked(device->isEnabled());
+            ui->enableChroma->setEnabled(device->isAvailable());
+            ui->chromaWorkingLabel->setText(device->statusString());
         }
     }
 }
