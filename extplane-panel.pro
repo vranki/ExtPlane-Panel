@@ -57,6 +57,10 @@ OBJECTS_DIR = build
 MOC_DIR = build
 TEMPLATE = app
 
+target.path = /usr/bin
+
+INSTALLS += target
+
 SOURCES += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.cpp \
     $$EXTPLANE_CLIENT_PATH/extplaneclient.cpp \
@@ -212,4 +216,4 @@ OTHER_FILES += android/AndroidManifest.xml \
     android/src/org/kde/necessitas/ministro/IMinistro.aidl \
     android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
     android/version.xml
-OTHER_FILES += README.md
+OTHER_FILES += README.md debian/rules debian/changelog debian/control debian/extplane-panel.install debian/extplane-panel-dbg.install
