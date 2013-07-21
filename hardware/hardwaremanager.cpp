@@ -81,6 +81,12 @@ void HardwareManager::loadSettings(QSettings *panelSettings) {
     }
 }
 
+void HardwareManager::tickTime(double dt, int total)
+{
+    foreach(HardwareBinding *binding, bindings())
+        binding->tickTime(dt, total);
+}
+
 void HardwareManager::deviceChanged(HardwareBinding *binding, int device)
 {
     Q_ASSERT(outputDevices.contains(binding->device()));

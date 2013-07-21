@@ -75,8 +75,9 @@ void ChromaOutputDevice::outputValue(double value, int output)
 void ChromaOutputDevice::setpos(int servo, int pos) {
     if(!devFile.isWritable()) return;
     if(servopos.contains(servo) && servopos[servo] == pos) return;
-    int speed = 4;
-    QString outstring = QString("s%0 %1 %2\n").arg(servo).arg(pos).arg(speed);
+//    int speed = 4;
+//    QString outstring = QString("s%0 %1 %2\n").arg(servo).arg(pos).arg(speed);
+    QString outstring = QString("s%0 %1\n").arg(servo).arg(pos);
     // DEBUG << servo << pos;
     devFile.write(outstring.toUtf8());
     servopos[servo] = pos;

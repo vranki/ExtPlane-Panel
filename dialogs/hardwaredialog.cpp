@@ -78,6 +78,7 @@ void HardwareDialog::saveChanges() {
     currentBinding->setOutputValues(ui->outputMinSpinbox->value(), ui->outputMaxSpinbox->value());
     currentBinding->setDevice(ui->outputDeviceComboBox->currentIndex());
     currentBinding->setOutput(ui->outputNumSpinbox->value());
+    currentBinding->setInterpolationSpeed(ui->interpolationSpeedSpinbox->value());
     updateUi();
     currentBinding->activate();
 }
@@ -113,6 +114,7 @@ void HardwareDialog::updateUi() {
         ui->outputMinSpinbox->setValue(currentBinding->outputMin());
         ui->outputMaxSpinbox->setValue(currentBinding->outputMax());
         ui->outputDeviceComboBox->setCurrentIndex(currentBinding->device());
+        ui->interpolationSpeedSpinbox->setValue(currentBinding->interpolationSpeed());
     } else {
         ui->bindingNameLineEdit->setText("");
     }
