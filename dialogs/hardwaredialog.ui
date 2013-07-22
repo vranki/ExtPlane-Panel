@@ -89,13 +89,63 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="pololuPort">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>/dev/ttyUSB0</string>
             </property>
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Chroma USB Servo Board</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Status:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="chromaWorkingLabel">
+            <property name="text">
+             <string>?</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Port</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="chromaPort">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>/dev/ttyUSB0</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="enableChroma">
+         <property name="text">
+          <string>Enable</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -264,6 +314,11 @@
               <string>Pololu serial</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>Chroma USB Servo Board</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="0" column="0">
@@ -276,7 +331,7 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="bindingNameLineEdit"/>
           </item>
-          <item row="9" column="1">
+          <item row="10" column="1">
            <widget class="QPushButton" name="saveChangesButton">
             <property name="text">
              <string>Save changes</string>
@@ -292,6 +347,20 @@
           </item>
           <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="refAccuracySpinBox"/>
+          </item>
+          <item row="9" column="1">
+           <widget class="QDoubleSpinBox" name="interpolationSpeedSpinbox">
+            <property name="toolTip">
+             <string>Set to 0 for no interpolation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Interpolation speed</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

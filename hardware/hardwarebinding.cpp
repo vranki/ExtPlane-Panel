@@ -3,9 +3,10 @@
 #include "extplaneconnection.h"
 #include "../util/console.h"
 
-HardwareBinding::HardwareBinding(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection(conn), clientDataRef(0) {
+
+HardwareBinding::HardwareBinding(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection(conn), clientDataRef(0), interpolator_(0,0) {
     inputMin_ = inputMax_ = outputMin_ = outputMax_ = 0;
-    accuracy_ = 0;
+    accuracy_ = interpolationSpeed_ = 0;
 }
 
 HardwareBinding::~HardwareBinding() {
@@ -15,6 +16,11 @@ HardwareBinding::~HardwareBinding() {
     }
 }
 
+void HardwareBinding::tickTime(double dt, int total)
+{
+    interpolator_.tickTime(dt, total);
+}
+
 void HardwareBinding::activate() {
     if(clientDataRef) {
         clientDataRef->unsubscribe();
@@ -22,8 +28,12 @@ void HardwareBinding::activate() {
     }
     if(!refName().isEmpty()) {
         clientDataRef = connection->subscribeDataRef(refName(), accuracy());
+//        connect(clientDataRef, SIGNAL(refChanged(QString, double)), &interpolator_, SLOT(valueChanged(QString,double)));
         connect(clientDataRef, SIGNAL(changed(ClientDataRef*)), this, SLOT(refChanged(ClientDataRef*)));
+        connect(&interpolator_, SIGNAL(interpolatedValueChanged(QString,double)), this, SLOT(refValueChanged(QString,double)));
         connect(clientDataRef, SIGNAL(destroyed()), this, SLOT(refDeleted()));
+        interpolator_.setSpeed(interpolationSpeed_);
+        interpolator_.setEnabled(interpolationSpeed_ > 0);
     }
 }
 
@@ -108,13 +118,19 @@ int HardwareBinding::output()
     return output_;
 }
 
-void HardwareBinding::refChanged(ClientDataRef *ref) {
-    bool ok;
-    double refValue = ref->valueString().toDouble(&ok);
-    if(!ok) {
-        DEBUG << "Can't convert value " << ref->valueString() << " to double.";
-        return;
-    }
+void HardwareBinding::setInterpolationSpeed(double speed)
+{
+    if(speed < 0 ) speed = 0;
+    interpolationSpeed_ = speed;
+}
+
+double HardwareBinding::interpolationSpeed()
+{
+    return interpolationSpeed_;
+}
+
+void HardwareBinding::refValueChanged(QString, double refValue)
+{
     bool invert = inputMax_ < inputMin_;
     // Limit value to input limits
     if(!invert) {
@@ -149,6 +165,7 @@ void HardwareBinding::storeSettings(QSettings *panelSettings) {
     panelSettings->setValue("outputmax", outputMax());
     panelSettings->setValue("device", device());
     panelSettings->setValue("output", output());
+    panelSettings->setValue("interpolationspeed", interpolationSpeed());
 }
 
 void HardwareBinding::loadSettings(QSettings *panelSettings) {
@@ -159,4 +176,17 @@ void HardwareBinding::loadSettings(QSettings *panelSettings) {
     setOutputValues(panelSettings->value("outputmin").toDouble(), panelSettings->value("outputmax").toDouble());
     setDevice(panelSettings->value("device").toInt());
     setOutput(panelSettings->value("output").toInt());
+    setInterpolationSpeed(panelSettings->value("interpolationspeed").toDouble());
+}
+
+
+void HardwareBinding::refChanged(ClientDataRef *ref)
+{
+    bool ok = true;
+    double value = ref->valueString().toDouble(&ok);
+    if(ok) {
+        interpolator_.valueChanged(ref->name(), value);
+    } else {
+        DEBUG << Q_FUNC_INFO << "unable to convert ref value " << ref->valueString() << " to double";
+    }
 }

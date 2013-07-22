@@ -54,7 +54,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     // Create connection and item factory
     connection = appSettings->valueFromSettingsOrCommandLine("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
     hwManager = new HardwareManager(this, connection);
-
+    connect(this, SIGNAL(tickTime(double,int)), hwManager, SLOT(tickTime(double,int)));
     // Setup window
     setScene(&scene);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

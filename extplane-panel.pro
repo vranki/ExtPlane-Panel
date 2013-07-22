@@ -57,6 +57,10 @@ OBJECTS_DIR = build
 MOC_DIR = build
 TEMPLATE = app
 
+target.path = /usr/bin
+
+INSTALLS += target
+
 SOURCES += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.cpp \
     $$EXTPLANE_CLIENT_PATH/extplaneclient.cpp \
@@ -112,7 +116,8 @@ SOURCES += \
     widgets/colorselector.cpp \
     util/perlinnoise.cpp \
     panelitems/enginedisplay.cpp \
-    panelitems/displayinstrument.cpp
+    panelitems/displayinstrument.cpp \
+    hardware/chromaoutputdevice.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -169,7 +174,8 @@ HEADERS += \
     util/perlinnoise.h \
     util/console.h \
     panelitems/enginedisplay.h \
-    panelitems/displayinstrument.h
+    panelitems/displayinstrument.h \
+    hardware/chromaoutputdevice.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
@@ -210,4 +216,4 @@ OTHER_FILES += android/AndroidManifest.xml \
     android/src/org/kde/necessitas/ministro/IMinistro.aidl \
     android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
     android/version.xml
-OTHER_FILES += README.md
+OTHER_FILES += README.md debian/rules debian/changelog debian/control debian/extplane-panel.install debian/extplane-panel-dbg.install

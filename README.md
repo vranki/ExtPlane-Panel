@@ -13,13 +13,15 @@ Almost all instruments are drawn using scalable vector graphics for
 perfect scaling and high resolutions.
 
 The application also allows running hardware instruments with X-Plane
-datarefs. Currently it supports two output devices:
+datarefs. Currently supported output devices:
 
 * Raspberry Pi's ServoBlaster module which allows RPi's GPIO pins to output PWM
 * Pololu SSC04A (or compatible) serial servo controller
+* Chroma USB Servo controller (http://electronics.chroma.se/usbsb.php)
 
-Both of these are used to control servos using PWM. Other, more complex
-output devices can be implemented later.
+These are used to control servos using PWM. Other, more complex output devices
+can be implemented later. Currently Chroma is the most tested device but the
+others should also work.
 
 
 The app is written using Qt and is platform independent - it runs on
@@ -160,9 +162,10 @@ a output device.
    * Input min: 0
    * Input max: 200 (this sets the range of ASI in knots)
    * Output device: the device you enabled
-   * Output num: Number of output on your device. Usually 0=first servo, 2=second servo..
-   * Output min: 45 (set this to the value that moves servo to zero position)
-   * Output max: 250 (set this to the value that moves servo to 200kt position)
+   * Output num: Number of output on your device. Usually 0=first servo, 1=second servo..
+   * Output min: 45 (device dependent; set this to the value that moves servo to zero position)
+   * Output max: 250 (device dependent; set this to the value that moves servo to 200kt position)
+   * Interpolation speed: 3 (Makes the movement less jerky. Set to 0 for no interpolation)
  * Click Save changes. Servo should now start moving.
  * If you modify values, click Save changes again. Remember to save the panel to save these settings!
 
