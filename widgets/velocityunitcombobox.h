@@ -2,7 +2,7 @@
 #define VELOCITYUNITCOMBOBOX_H
 
 #include <QComboBox>
-#include "units.h"
+#include "../units.h"
 
 /**
  * Allows user to pick one velocity unit

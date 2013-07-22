@@ -7,6 +7,10 @@
 
 #include "panelitem.h"
 
+
+#define maxRoll 70
+#define maxOffbalance 7.5
+
 class TurnAndBank : public PanelItem
 {
     Q_OBJECT
@@ -43,9 +47,6 @@ private:
     float _thickBars, _thinBars, _numbers;
     float _numbersScale;
     float _baroPressure;
-    
-    static const float maxRoll=70;
-    static const float maxOffbalance=7.5;
     
     float _slipValue;
     float _rollValue;

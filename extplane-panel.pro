@@ -32,6 +32,10 @@ CONFIG(debug, debug|release) {
     DEFINES += QT_NO_DEBUG_OUTPUT
 }
 
+unix: {
+    DEFINES += TERMIOS_AVAILABLE
+}
+
 maemo5: { 
     QT += dbus
     DEFINES += MAEMO
@@ -52,6 +56,10 @@ DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
 TEMPLATE = app
+
+target.path = /usr/bin
+
+INSTALLS += target
 
 SOURCES += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.cpp \
@@ -109,7 +117,8 @@ SOURCES += \
     util/perlinnoise.cpp \
     panelitems/enginedisplay.cpp \
     panelitems/displayinstrument.cpp \
-    panelitems/navdisplay.cpp
+    panelitems/navdisplay.cpp \
+    hardware/chromaoutputdevice.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -167,7 +176,8 @@ HEADERS += \
     util/console.h \
     panelitems/enginedisplay.h \
     panelitems/displayinstrument.h \
-    panelitems/navdisplay.h
+    panelitems/navdisplay.h \
+    hardware/chromaoutputdevice.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
@@ -208,4 +218,4 @@ OTHER_FILES += android/AndroidManifest.xml \
     android/src/org/kde/necessitas/ministro/IMinistro.aidl \
     android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
     android/version.xml
-OTHER_FILES += README.md
+OTHER_FILES += README.md debian/rules debian/changelog debian/control debian/extplane-panel.install debian/extplane-panel-dbg.install

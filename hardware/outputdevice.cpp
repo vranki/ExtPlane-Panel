@@ -1,5 +1,5 @@
 #include "outputdevice.h"
-#include "util/console.h"
+#include "../util/console.h"
 
 OutputDevice::OutputDevice(QObject *parent) :
     QObject(parent), enabled(false), available(false)

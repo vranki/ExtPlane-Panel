@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QSettings>
+#include "valueinterpolator.h"
 
 class ExtPlaneConnection;
 class ClientDataRef;
@@ -33,12 +34,17 @@ public:
     int device();
     void setOutput(int output);
     int output();
+    void setInterpolationSpeed(double speed);
+    double interpolationSpeed();
+public slots:
+    void tickTime(double dt, int total);
+
 signals:
     void outputValue(double value, int output);
     void deviceChanged(HardwareBinding *binding, int device);
-public slots:
 private slots:
     void refChanged(ClientDataRef *ref);
+    void refValueChanged(QString name, double refValue);
     void refDeleted();
 private:
     ExtPlaneConnection *connection;
@@ -46,7 +52,8 @@ private:
     QString name_, refName_;
     int device_, output_;
     double inputMin_, inputMax_, outputMin_, outputMax_;
-    double accuracy_;
+    double accuracy_, interpolationSpeed_;
+    ValueInterpolator interpolator_;
 };
 
 #endif // HARDWAREBINDING_H

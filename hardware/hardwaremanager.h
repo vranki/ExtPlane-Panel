@@ -24,6 +24,7 @@ public:
 signals:
     void deviceAvailable(int dev, bool avail);
 public slots:
+    void tickTime(double dt, int total);
 private slots:
     void deviceChanged(HardwareBinding *binding, int device);
     void deviceEnabled(int dev, bool enable);

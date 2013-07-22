@@ -23,6 +23,7 @@ void ValueInterpolator::valueChanged(QString name, double val) {
 void ValueInterpolator::tickTime(double dt, int total) {
     if(!enabled) return;
 
+    double lastValue = currentValue;
     double diff = qAbs(currentValue - targetValue);
     if(currentValue < targetValue)
         currentValue += diff * speed * dt;
@@ -30,9 +31,15 @@ void ValueInterpolator::tickTime(double dt, int total) {
     if(currentValue > targetValue)
         currentValue -= diff * speed * dt;
 
-    emit interpolatedValueChanged(refName, currentValue);
+    if(lastValue != currentValue)
+        emit interpolatedValueChanged(refName, currentValue);
 }
 
 void ValueInterpolator::setEnabled(bool ie) {
     enabled = ie;
+}
+
+void ValueInterpolator::setSpeed(double newSpeed)
+{
+    speed = newSpeed;
 }

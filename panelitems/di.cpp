@@ -8,7 +8,7 @@
 #include "../widgets/distanceunitcombobox.h"
 #include "extplaneclient.h"
 
-#include "widgets/numberinputlineedit.h"
+#include "../widgets/numberinputlineedit.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(DirectionIndicator,"indicator/heading/basic");
 

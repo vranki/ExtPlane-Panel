@@ -11,10 +11,10 @@
 
 // Not directly used by PanelItem, but included here to reduce
 // code amount in all subclasses
-#include "units.h"
+#include "../units.h"
 #include "extplaneconnection.h"
 #include "extplaneclient.h"
-#include "panelitemfactory.h"
+#include "../panelitemfactory.h"
 #include "../valueinterpolator.h"
 
 // Definitions

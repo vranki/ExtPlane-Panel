@@ -3,9 +3,9 @@
 #include <QLabel>
 #include <QCheckBox>
 
-#include "widgets/velocityunitcombobox.h"
-#include "widgets/numberinputlineedit.h"
-#include "util/console.h"
+#include "../widgets/velocityunitcombobox.h"
+#include "../widgets/numberinputlineedit.h"
+#include "../util/console.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(EngineRPM,"indicator/enginerpm/round")
 

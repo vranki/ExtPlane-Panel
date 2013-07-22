@@ -1,11 +1,13 @@
 #include "turnbank.h"
-#include <cmath>
+
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include <QLabel>
 #include "../widgets/distanceunitcombobox.h"
 #include "extplaneclient.h"
 #include "../units.h"
-#include "widgets/numberinputlineedit.h"
+#include "../widgets/numberinputlineedit.h"
 
 #define GROUNDBROWN QColor(191,163,94)
 #define LIGHTGROUNDBROWN QColor(231,203,134)

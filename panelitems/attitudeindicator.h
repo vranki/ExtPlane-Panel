@@ -12,6 +12,9 @@
 #define WHITEBLUE QColor(240, 248, 255)
 #define SKYBLUE QColor(79, 129, 255)
 
+#define pitchPixelsPerDegree 1.0
+#define maxPitch 35
+
 class AttitudeIndicator : public PanelItem
 {
     Q_OBJECT
@@ -49,9 +52,6 @@ private:
     float _thickBars, _thinBars, _numbers;
     float _numbersScale;
     float _baroPressure;
-    
-    static const float pitchPixelsPerDegree=1.0;
-    static const float maxPitch=35;
     
     float _rollValue;
     float _pitchValue;
