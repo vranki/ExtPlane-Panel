@@ -21,7 +21,7 @@ QT_BIN_PATH="C:/Qt/Qt5.0.2/5.0.2/msvc2012_64/bin"
 QT_PLUGIN_PATH="C:/Qt/Qt5.0.2/5.0.2/msvc2012_64/plugins"
 EXTPLANE_PROJECT_PATH="C:/Users/admin/ExtPlane-Panel"
 EXTPLANE_BIN_PATH="C:/Users/admin/build-extplane-panel-Qt5_64bit-Release/bin"
-EXTPLANE_PACKAGE_PATH="C:/Users/admin/ExtPlane-Panel/packages/ExtPlane-Panel-v$VERSION-$PLATFORM"
+EXTPLANE_PACKAGE_PATH="C:/Users/admin/ExtPlane-Packages/ExtPlane-Panel-v$VERSION-$PLATFORM"
 
 # Show config
 echo " "
