@@ -79,8 +79,14 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     connect(newButton, SIGNAL(clicked()), panelWindow, SLOT(newProfile()));
     layout->addWidget(newButton);
 
+    QPushButton *mangePanelsButton = new QPushButton("Manage Panels", menu);
+    connect(mangePanelsButton, SIGNAL(clicked()), panelWindow, SLOT(showPanels()));
+    connect(mangePanelsButton, SIGNAL(clicked()), this, SLOT(closeCurrentMenu()));
+    layout->addWidget(mangePanelsButton);
+
     QPushButton *hardwareButton = new QPushButton("Hardware", menu);
     connect(hardwareButton, SIGNAL(clicked()), panelWindow, SLOT(showHardware()));
+    connect(hardwareButton, SIGNAL(clicked()), this, SLOT(closeCurrentMenu()));
     layout->addWidget(hardwareButton);
 
     QPushButton *settingsButton = new QPushButton("App Settings", menu);

@@ -20,6 +20,7 @@ class SettingsDialog;
 class ExtPlaneConnection;
 class EditItemDialog;
 class HardwareDialog;
+class PanelsDialog;
 class HardwareManager;
 
 /**
@@ -59,8 +60,10 @@ public slots:
     void loadProfile();
     void loadProfile(QString filename);
     void newProfile();
+    void loadPanel(QString name);
     void showHardware();
     void showSettings();
+    void showPanels();
     void editItem(PanelItem *item=0);
     void panelItemChanged(PanelItem *item=0); // Should be emitted by panel item when they become dirty
     void quit();
@@ -82,6 +85,7 @@ private:
     MenuButton *menuButton;
     SettingsDialog *settingsDialog;
     HardwareDialog *hardwareDialog;
+    PanelsDialog *panelsDialog;
     QGraphicsScene scene;
     QGraphicsTextItem statusMessage; // Displayed in panel
     bool editMode; // True if in edit mode
@@ -89,6 +93,7 @@ private:
     ExtPlaneConnection *connection;
     PanelItemFactory itemFactory;
     Settings *appSettings; // Loaded on app start, contains general settings, passed on to settings dialog. Use valueFromSettingsOrCommandLine to extract settings from both the file and command line.
+    QSettings *profileSettings; // Loaded when a profile is loaded, contains settings related to a single profile (which may contain multiple panels).
     EditItemDialog *editItemDialog; // Only one open at a time
     QTimer tickTimer; // Timer to update items synchronously
     QTime time, totalTime;
@@ -97,12 +102,6 @@ private:
     #ifdef MAEMO
         QTimer blankingTimer; // Disables blanking on Maemo
     #endif
-
-
-        //QSettings *panelSettings; // Contains all PanelItem settings
-        //PanelItemFactory itemFactory;
-        //QList<PanelItem *> panelItems;
-        //int panelRotation; // Master rotation of the panel
 };
 
 #endif // PANELWINDOW_H

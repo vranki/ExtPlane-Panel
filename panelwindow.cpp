@@ -31,6 +31,7 @@
 #include "dialogs/edititemdialog.h"
 #include "dialogs/panelitemselectiondialog.h"
 #include "dialogs/hardwaredialog.h"
+#include "dialogs/panelsdialog.h"
 
 PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     // Init
@@ -395,42 +396,24 @@ void PanelWindow::loadProfile(QString filename) {
 
     //TODO: dankrusi: confirm if the currently loaded panel is dirty...
 
-    // Clear all panel items
-    newProfile();
-
     // Load panel settings file
     INFO << "Loading panel from " << filename;
     if(!QFile::exists(filename)) {
         connectionMessage(QString("Panel file %1 does not exist.").arg(filename));
         return;
     }
-    currentPanel->settings = new QSettings(filename,QSettings::IniFormat,this);
 
-    // Load from settings files
-    int panelNumber = 0;
-    while(panelNumber >= 0) {
-        currentPanel->settings->beginGroup("panel-" + QString::number(panelNumber));
-        if(currentPanel->settings->contains("name")) {
-            int gc = currentPanel->settings->value("gaugecount", 0).toInt();
-            QString name = currentPanel->settings->value("name").toString();
-            for(int gn=0;gn<gc;gn++) {
-                currentPanel->settings->beginGroup("gauge-" + QString::number(gn));
-                PanelItem *g = itemFactory.itemForName(currentPanel->settings->value("type").toString(), currentPanel, connection);
-                if(g) {
-                    addItem(g);
-                    g->loadSettings(*currentPanel->settings);
-                    g->applySettings();
-                } else {
-                    DEBUG << "Error creating item of type" << currentPanel->settings->value("type").toString();
-                }
-                currentPanel->settings->endGroup();
-            }
-            panelNumber++;
-        } else {
-            panelNumber = -1;
-        }
-        currentPanel->settings->endGroup();
-    }
+    // Clear all panel items
+    newProfile();
+
+    // Load settings
+    profileSettings = new QSettings(filename,QSettings::IniFormat,this);
+    currentPanel->settings = profileSettings;
+
+    // Load first panel
+    loadPanel(QString::null);
+
+    // Load hardware settings
     currentPanel->settings->beginGroup("hardware");
     hwManager->loadSettings(currentPanel->settings);
     currentPanel->settings->endGroup();
@@ -438,6 +421,40 @@ void PanelWindow::loadProfile(QString filename) {
     // Register this file as the last loaded...
     appSettings->setValue("lastloadedprofile",filename);
     dirty = false;
+}
+
+void PanelWindow::loadPanel(QString name) {
+    // Clear all panel items
+    for(int i = 0; i < currentPanel->items()->count(); i++) {
+        PanelItem *item = currentPanel->items()->at(i);
+        item->deleteLater();
+    }
+
+    // Find the panel by name, then load panel items
+    int panelNumber = 0;
+    while(panelNumber >= 0) {
+        profileSettings->beginGroup("panel-" + QString::number(panelNumber));
+        if(profileSettings->contains("name") && (name == QString::null || profileSettings->value("name") == name)) {
+            int gc = profileSettings->value("gaugecount", 0).toInt();
+            //QString name = profileSettings->value("name").toString();
+            for(int gn=0;gn<gc;gn++) {
+                profileSettings->beginGroup("gauge-" + QString::number(gn));
+                PanelItem *g = itemFactory.itemForName(profileSettings->value("type").toString(), currentPanel, connection);
+                if(g) {
+                    addItem(g);
+                    g->loadSettings(*profileSettings);
+                    g->applySettings();
+                } else {
+                    DEBUG << "Error creating item of type" << profileSettings->value("type").toString();
+                }
+                profileSettings->endGroup();
+            }
+            panelNumber = -1; // break out
+        } else {
+            panelNumber = -1;
+        }
+        profileSettings->endGroup();
+    }
 }
 
 void PanelWindow::newProfile() {
@@ -463,6 +480,13 @@ void PanelWindow::showHardware() {
 
 void PanelWindow::showSettings() {
     settingsDialog->show();
+}
+
+void PanelWindow::showPanels() {
+    if(!panelsDialog) {
+        panelsDialog = new PanelsDialog(this, this->appSettings,this->profileSettings);
+    }
+    panelsDialog->show();
 }
 
 // Displays EditItemDialog. Closes old one if open

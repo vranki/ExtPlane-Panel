@@ -118,7 +118,9 @@ SOURCES += \
     panelitems/enginedisplay.cpp \
     panelitems/displayinstrument.cpp \
     panelitems/navdisplay.cpp \
-    hardware/chromaoutputdevice.cpp
+    hardware/chromaoutputdevice.cpp \
+    ../ExtPlane/client/extplane-client-qt/simulateddatarefs/alternatingsimulateddataref.cpp \
+    dialogs/panelsdialog.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -177,12 +179,15 @@ HEADERS += \
     panelitems/enginedisplay.h \
     panelitems/displayinstrument.h \
     panelitems/navdisplay.h \
-    hardware/chromaoutputdevice.h
+    hardware/chromaoutputdevice.h \
+    ../ExtPlane/client/extplane-client-qt/simulateddatarefs/alternatingsimulateddataref.h \
+    dialogs/panelsdialog.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
     dialogs/panelitemselectiondialog.ui \
-    dialogs/hardwaredialog.ui
+    dialogs/hardwaredialog.ui \
+    dialogs/panelsdialog.ui
 
 # Lot of files for Android build, ignore them if not used
 OTHER_FILES += android/AndroidManifest.xml \
