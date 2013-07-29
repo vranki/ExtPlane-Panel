@@ -22,6 +22,7 @@
 
 #include "util/console.h"
 #include "extplaneconnection.h"
+#include "extplaneclient.h"
 #include "simulatedextplaneconnection.h"
 #include "menubutton.h"
 #include "panelitemfactory.h"
@@ -33,9 +34,10 @@
 #include "dialogs/hardwaredialog.h"
 #include "dialogs/panelsdialog.h"
 
+#define AUTO_PANEL_DATAREF "sim/aircraft/view/acf_tailnum" // dankrusi: This seems to be the best trigger - correct me if I am wrong
+
 PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     // Init
-    //panel = NULL;
     appSettings = NULL;
     profileSettings = NULL;
     settingsDialog = NULL;
@@ -58,6 +60,12 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connection = appSettings->valueFromSettingsOrCommandLine("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
     hwManager = new HardwareManager(this, connection);
     connect(this, SIGNAL(tickTime(double,int)), hwManager, SLOT(tickTime(double,int)));
+
+    // Create our panel window client
+    client = new ExtPlaneClient(this,"PanelWindow",connection);
+    connection->registerClient(client);
+    connect(client, SIGNAL(refChanged(QString,QString)), this, SLOT(clientDataRefChanged(QString,QString)));
+
     // Setup window
     setScene(&scene);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -75,6 +83,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(settingsDialog, SIGNAL(setPanelUpdateInterval(double)), this, SLOT(setPanelUpdateInterval(double)));
     connect(settingsDialog, SIGNAL(setInterpolationEnabled(bool)), this, SLOT(setInterpolationEnabled(bool)));
     connect(settingsDialog, SIGNAL(setAntialiasEnabled(bool)), this, SLOT(setAntialiasEnabled(bool)));
+    connect(settingsDialog, SIGNAL(setAutoPanelsEnabled(bool)), this, SLOT(setAutoPanelsEnabled(bool)));
     connect(settingsDialog, SIGNAL(setDefaultFontSize(double)), this, SLOT(setDefaultFontSize(double)));
     settingsDialog->setModal(false);
     settingsDialog->hide();
@@ -170,6 +179,7 @@ PanelWindow::~PanelWindow() {
     if(connection) delete connection;
     if(appSettings) delete appSettings;
     if(currentPanel) delete currentPanel;
+    if(client) delete client;
 }
 
 void PanelWindow::keyPressEvent(QKeyEvent *event) {
@@ -279,12 +289,17 @@ void PanelWindow::tick() {
     emit tickTime(dt, totalTime.elapsed());
 }
 
-void PanelWindow::setInterpolationEnabled(bool ie) {
-    interpolationEnabled = ie;
+void PanelWindow::setInterpolationEnabled(bool enabled) {
+    interpolationEnabled = enabled;
 }
 
-void PanelWindow::setAntialiasEnabled(bool ie) {
-    aaEnabled = ie;
+void PanelWindow::setAntialiasEnabled(bool enabled) {
+    aaEnabled = enabled;
+}
+
+void PanelWindow::setAutoPanelsEnabled(bool enabled) {
+    if(client && enabled && !client->isDataRefSubscribed(AUTO_PANEL_DATAREF)) client->subscribeDataRef(AUTO_PANEL_DATAREF);
+    else if(client && !enabled && client->isDataRefSubscribed(AUTO_PANEL_DATAREF)) client->unsubscribeDataRef(AUTO_PANEL_DATAREF);
 }
 
 void PanelWindow::setPanelUpdateInterval(double newInterval) {
@@ -511,12 +526,18 @@ void PanelWindow::removePanel(QString name) {
 }
 
 QString PanelWindow::newPanel() {
+    return newPanelWithName(QString::null);
+}
+
+QString PanelWindow::newPanelWithName(QString newName) {
     // Find a unique name
-    int panelNameNumber = 1;
-    QString newName = QString("Panel%1").arg(panelNameNumber);
-    while(existsPanel(newName)) {
-        panelNameNumber++;
+    if(newName == QString::null) {
+        int panelNameNumber = 1;
         newName = QString("Panel%1").arg(panelNameNumber);
+        while(existsPanel(newName)) {
+            panelNameNumber++;
+            newName = QString("Panel%1").arg(panelNameNumber);
+        }
     }
     // Find the lowest panel number available
     int panelNumber = 0;
@@ -621,6 +642,17 @@ void PanelWindow::editItem(PanelItem *item) { // Call with item 0 to destroy dia
 void PanelWindow::panelItemChanged(PanelItem *item) {
     if(!dirty) {
         dirty = true;
+    }
+}
+
+void PanelWindow::clientDataRefChanged(QString name, QString val) {
+    if(name == AUTO_PANEL_DATAREF && appSettings->value("autopanels").toBool()) {
+        INFO << "Aircraft changed:" << val;
+        if(existsPanel(val)) {
+            loadPanel(val);
+        } else {
+            newPanelWithName(val);
+        }
     }
 }
 

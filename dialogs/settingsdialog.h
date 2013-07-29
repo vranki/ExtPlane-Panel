@@ -36,6 +36,7 @@ signals:
     void setInterpolationEnabled(bool ie);
     void setAntialiasEnabled(bool ie);
     void setDefaultFontSize(double newSize);
+    void setAutoPanelsEnabled(bool enabled);
 private:
     Ui::SettingsDialog *ui;
     Settings *appSettings; // General settings, passed from PanelWindow

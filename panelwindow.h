@@ -18,6 +18,7 @@ class PanelItem;
 class MenuButton;
 class SettingsDialog;
 class ExtPlaneConnection;
+class ExtPlaneClient;
 class EditItemDialog;
 class HardwareDialog;
 class PanelsDialog;
@@ -68,6 +69,7 @@ public slots:
     void editItem(PanelItem *item=0);
     void panelItemChanged(PanelItem *item=0); // Should be emitted by panel item when they become dirty
     void quit();
+    void clientDataRefChanged(QString name, QString val);
 private slots:
     QStringList getPanelGroupNames();
     void saveCurrentPanel();
@@ -75,11 +77,13 @@ private slots:
     void copyPanel(QString name);
     void removePanel(QString name);
     QString newPanel();
+    QString newPanelWithName(QString newName);
     void clearPanel();
     bool existsPanel(QString name);
     void tick();
-    void setInterpolationEnabled(bool ie);
-    void setAntialiasEnabled(bool ie);
+    void setInterpolationEnabled(bool enabled);
+    void setAntialiasEnabled(bool enabled);
+    void setAutoPanelsEnabled(bool enabled);
     void setPanelUpdateInterval(double newInterval);
     void setDefaultFontSize(double newFs);
 protected:
@@ -88,8 +92,9 @@ protected:
 private:
     QList<PanelItem*> selectedGauges();
 private:
-    QList<ExtPlanePanel*> panels;
-    ExtPlanePanel *currentPanel; // Contains the panel items
+    ExtPlaneConnection *connection; // The master connection which all panel item clients will use
+    ExtPlanePanel *currentPanel; // Contains the panel items, exposed to panel items so they can know about each other (for example the covers)
+    ExtPlaneClient *client; // Client for performing universal action such as automatically chaning the panel when aircraft changes, dimming lights, et cetera
     HardwareManager *hwManager;
     MenuButton *menuButton;
     SettingsDialog *settingsDialog;
@@ -99,7 +104,6 @@ private:
     QGraphicsTextItem statusMessage; // Displayed in panel
     bool editMode; // True if in edit mode
     bool dirty; // True when any panel changes have occured
-    ExtPlaneConnection *connection;
     PanelItemFactory itemFactory;
     Settings *appSettings; // Loaded on app start, contains general settings, passed on to settings dialog. Use valueFromSettingsOrCommandLine to extract settings from both the file and command line.
     QSettings *profileSettings; // Loaded when a profile is loaded, contains settings related to a single profile (which may contain multiple panels).
