@@ -42,6 +42,7 @@ public:
     virtual void keyPressEvent( QKeyEvent * event );
 signals:
     void tickTime(double dt, int total);
+    void panelsChanged();
 public slots:
     void connectionMessage(QString txt);
     void itemDestroyed(QObject *obj);
@@ -54,13 +55,13 @@ public slots:
 public slots:
     void setEditMode(bool em);
     void showAddItemDialog();
+    void setProfileSettings(QSettings *settings);
     void saveProfile();
     void saveProfile(QString filename);
     void saveProfileAs();
     void loadProfile();
     void loadProfile(QString filename);
     void newProfile();
-    void loadPanel(QString name);
     void showHardware();
     void showSettings();
     void showPanels();
@@ -68,6 +69,14 @@ public slots:
     void panelItemChanged(PanelItem *item=0); // Should be emitted by panel item when they become dirty
     void quit();
 private slots:
+    QStringList getPanelGroupNames();
+    void saveCurrentPanel();
+    void loadPanel(QString name); // A null string will load the first panel found
+    void copyPanel(QString name);
+    void removePanel(QString name);
+    QString newPanel();
+    void clearPanel();
+    bool existsPanel(QString name);
     void tick();
     void setInterpolationEnabled(bool ie);
     void setAntialiasEnabled(bool ie);

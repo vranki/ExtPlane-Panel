@@ -46,8 +46,12 @@ public slots:
 public:
     Settings *appSettings;
     QSettings *settings; // Contains all PanelItem settings
-    PanelItemList *_items;
     int rotation; // Master rotation of the panel
+    QString name;
+    QString groupName;
+
+private:
+    PanelItemList *_items;
 
 
 };

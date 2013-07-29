@@ -37,9 +37,11 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     // Init
     //panel = NULL;
     appSettings = NULL;
+    profileSettings = NULL;
     settingsDialog = NULL;
     editItemDialog = NULL;
-    hardwareDialog = 0;
+    hardwareDialog = NULL;
+    panelsDialog = NULL;
     interpolationEnabled = false;
     aaEnabled = false;
     defaultFontSize = 15;
@@ -117,7 +119,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
         #else
             panelToLoad = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "ExtPlane-Panel-Default.ini";
         #endif
-        currentPanel->settings = new QSettings(panelToLoad,QSettings::IniFormat,this);
+        setProfileSettings(new QSettings(panelToLoad,QSettings::IniFormat,this));
         saveProfile();
     }
     if(!appSettings->valueFromSettingsOrCommandLine("profile","").toString().isEmpty())
@@ -330,59 +332,50 @@ void PanelWindow::showAddItemDialog() {
     pisd->exec();
 }
 
+void PanelWindow::setProfileSettings(QSettings *settings) {
+    if(profileSettings) delete profileSettings;
+    profileSettings = settings;
+    currentPanel->settings = settings;
+    if(panelsDialog) panelsDialog->profileSettings = settings;
+
+}
+
 void PanelWindow::saveProfile() {
     // New or overwrite?
-    if(currentPanel->settings == NULL) {
+    if(profileSettings == NULL) {
         QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), "", tr("Ini Files (*.ini)"));
         if(!filename.isEmpty()) {
             // Create new file and save
-            currentPanel->settings = new QSettings(filename,QSettings::IniFormat,this);
-            saveProfile(currentPanel->settings->fileName());
+            setProfileSettings(new QSettings(filename,QSettings::IniFormat,this));
+            saveProfile(profileSettings->fileName());
 
             // Register this file as the last loaded...
-            appSettings->setValue("lastloadedprofile", currentPanel->settings->fileName());
+            appSettings->setValue("lastloadedprofile", profileSettings->fileName());
         }
     } else {
-        saveProfile(currentPanel->settings->fileName());
+        saveProfile(profileSettings->fileName());
     }
 }
 
 void PanelWindow::saveProfileAs() {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), currentPanel->settings->fileName(), tr("Ini Files (*.ini)"));
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), profileSettings->fileName(), tr("Ini Files (*.ini)"));
     if(!filename.isEmpty()) {
         // Create new file and save
-        if(currentPanel->settings) delete currentPanel->settings;
-        currentPanel->settings = new QSettings(filename,QSettings::IniFormat,this);
-        saveProfile(currentPanel->settings->fileName());
+        setProfileSettings(new QSettings(filename,QSettings::IniFormat,this));
 
         // Register this file as the last loaded...
-        appSettings->setValue("lastloadedprofile", currentPanel->settings->fileName());
+        appSettings->setValue("lastloadedprofile", profileSettings->fileName());
     }
 }
 
 
 void PanelWindow::saveProfile(QString filename) {
     INFO << "Saving profile to " << filename;
-    int panelNumber = 0;
-    QString panelName = "Panel";
-    currentPanel->settings->beginGroup("panel-" + QString::number(panelNumber)); {
-        currentPanel->settings->group().clear();
-        currentPanel->settings->setValue("number", panelNumber);
-        currentPanel->settings->setValue("name", panelName);
-        currentPanel->settings->setValue("gaugecount", currentPanel->items()->size());
-        int gn = 0;
-        for(int i = 0; i < currentPanel->items()->count(); i++) {
-            PanelItem *item = currentPanel->items()->at(i);
-            currentPanel->settings->beginGroup("gauge-" + QString::number(gn)); {
-                item->storeSettings(*currentPanel->settings);
-                currentPanel->settings->endGroup(); }
-            gn++;
-        }
-        currentPanel->settings->endGroup(); }
-    currentPanel->settings->beginGroup("hardware");
-    hwManager->saveSettings(currentPanel->settings);
-    currentPanel->settings->endGroup();
-    currentPanel->settings->sync();
+    saveCurrentPanel();
+    profileSettings->beginGroup("hardware");
+    hwManager->saveSettings(profileSettings);
+    profileSettings->endGroup();
+    profileSettings->sync();
     dirty = false;
 }
 
@@ -397,46 +390,81 @@ void PanelWindow::loadProfile(QString filename) {
     //TODO: dankrusi: confirm if the currently loaded panel is dirty...
 
     // Load panel settings file
-    INFO << "Loading panel from " << filename;
+    INFO << "Loading profile from" << filename;
     if(!QFile::exists(filename)) {
-        connectionMessage(QString("Panel file %1 does not exist.").arg(filename));
+        connectionMessage(QString("Profile %1 does not exist.").arg(filename));
         return;
     }
 
     // Clear all panel items
-    newProfile();
+    clearPanel();
 
     // Load settings
-    profileSettings = new QSettings(filename,QSettings::IniFormat,this);
-    currentPanel->settings = profileSettings;
+    setProfileSettings(new QSettings(filename,QSettings::IniFormat,this));
+    DEBUG << "Discovered panels:" << getPanelGroupNames();
 
     // Load first panel
     loadPanel(QString::null);
 
     // Load hardware settings
-    currentPanel->settings->beginGroup("hardware");
-    hwManager->loadSettings(currentPanel->settings);
-    currentPanel->settings->endGroup();
+    profileSettings->beginGroup("hardware");
+    hwManager->loadSettings(profileSettings);
+    profileSettings->endGroup();
 
     // Register this file as the last loaded...
     appSettings->setValue("lastloadedprofile",filename);
     dirty = false;
 }
 
-void PanelWindow::loadPanel(QString name) {
-    // Clear all panel items
-    for(int i = 0; i < currentPanel->items()->count(); i++) {
-        PanelItem *item = currentPanel->items()->at(i);
-        item->deleteLater();
+QStringList PanelWindow::getPanelGroupNames() {
+    // The QSettings and its groups are not really optimal for having data which cannot be entirely flushed out on
+    // every save. Thus we have a problem when using panel-# when copying and removing and renaming, as we cannot
+    // do this easily using QSettings in a manor where we can still read by iterating 0-N until nothing shows up.
+    // Thus we use this method for 'discovering' all panels that might be contained, which also alows a more sane
+    // iteration. Con: we must loop all keys (the entire file). Probably no problem, if it is, we can cache this on
+    // profile load.
+    QStringList ret;
+    foreach(QString key, profileSettings->allKeys()) {
+        if(key.split('/').count() == 2 && key.startsWith("panel-") && key.endsWith("/name")) {
+            ret.append(key.replace("/name",""));
+        }
     }
+    return ret;
+}
 
-    // Find the panel by name, then load panel items
-    int panelNumber = 0;
-    while(panelNumber >= 0) {
-        profileSettings->beginGroup("panel-" + QString::number(panelNumber));
-        if(profileSettings->contains("name") && (name == QString::null || profileSettings->value("name") == name)) {
+void PanelWindow::saveCurrentPanel() {
+    profileSettings->beginGroup(currentPanel->groupName); {
+        profileSettings->group().clear(); //TODO: this doesnt actually clear the group. Group is string.
+        profileSettings->setValue("name", currentPanel->name);
+        profileSettings->setValue("gaugecount", currentPanel->items()->size());
+        int gn = 0;
+        for(int i = 0; i < currentPanel->items()->count(); i++) {
+            PanelItem *item = currentPanel->items()->at(i);
+            profileSettings->beginGroup("gauge-" + QString::number(gn)); {
+                item->storeSettings(*profileSettings);
+                profileSettings->endGroup(); }
+            gn++;
+        }
+        profileSettings->endGroup();
+    }
+}
+
+void PanelWindow::loadPanel(QString name) {
+
+    // Clear all panel items
+    clearPanel();
+
+    // Find the panel by name
+    foreach(QString panelGroupName, getPanelGroupNames()) {
+        profileSettings->beginGroup(panelGroupName);
+        // Check if name matches, if search name is null, take first panel
+        if(name == QString::null || profileSettings->value("name").toString() == name) {
+            INFO << "Loading panel" << profileSettings->value("name").toString();
+            currentPanel->name = profileSettings->value("name").toString();
+            currentPanel->groupName = panelGroupName;
+            this->setWindowTitle(QString("ExtPlane-Panel - %1").arg(profileSettings->value("name").toString()));
+            // Load all panel items
             int gc = profileSettings->value("gaugecount", 0).toInt();
-            //QString name = profileSettings->value("name").toString();
             for(int gn=0;gn<gc;gn++) {
                 profileSettings->beginGroup("gauge-" + QString::number(gn));
                 PanelItem *g = itemFactory.itemForName(profileSettings->value("type").toString(), currentPanel, connection);
@@ -449,26 +477,102 @@ void PanelWindow::loadPanel(QString name) {
                 }
                 profileSettings->endGroup();
             }
-            panelNumber = -1; // break out
-        } else {
-            panelNumber = -1;
+            // Break out
+            profileSettings->endGroup();
+            break;
         }
         profileSettings->endGroup();
     }
 }
 
-void PanelWindow::newProfile() {
+void PanelWindow::copyPanel(QString name) {
+    if(existsPanel(name)) {
+
+    }
+}
+
+void PanelWindow::removePanel(QString name) {
+
+    //TODO: is currently loaded?
+
+    // Find correct settings group
+    foreach(QString panelGroupName, getPanelGroupNames()) {
+        profileSettings->beginGroup(panelGroupName);
+        if(profileSettings->value("name") == name) {
+            // Remove all keys for this group
+            foreach(QString key, profileSettings->allKeys()) profileSettings->remove(key);
+            profileSettings->endGroup();
+            INFO << "Removed panel with name" << name;
+            emit panelsChanged();
+            return;
+        }
+        profileSettings->endGroup();
+    }
+}
+
+QString PanelWindow::newPanel() {
+    // Find a unique name
+    int panelNameNumber = 1;
+    QString newName = QString("Panel%1").arg(panelNameNumber);
+    while(existsPanel(newName)) {
+        panelNameNumber++;
+        newName = QString("Panel%1").arg(panelNameNumber);
+    }
+    // Find the lowest panel number available
+    int panelNumber = 0;
+    while(panelNumber >= 0) {
+        profileSettings->beginGroup("panel-" + QString::number(panelNumber));
+        if(!profileSettings->contains("name")) {
+            INFO << "New panel with name" << newName << "(#" << panelNumber << ")";
+            profileSettings->setValue("name",newName);
+            panelNumber = -1; // break out
+        } else {
+            panelNumber++;
+        }
+        profileSettings->endGroup();
+    }
+    loadPanel(newName);
+    emit panelsChanged();
+    return newName;
+}
+
+bool PanelWindow::existsPanel(QString name) {
+    foreach(QString panelGroupName, getPanelGroupNames()) {
+        profileSettings->beginGroup(panelGroupName);
+        if(profileSettings->value("name") == name) {
+            profileSettings->endGroup();
+            return true;
+        }
+        profileSettings->endGroup();
+    }
+    return false;
+}
+
+void PanelWindow::clearPanel() {
     // Clear all panel items
     for(int i = 0; i < currentPanel->items()->count(); i++) {
         PanelItem *item = currentPanel->items()->at(i);
         item->deleteLater();
     }
+    currentPanel->items()->clear();
+}
 
-    // Load panel settings file
-    if(currentPanel->settings) delete currentPanel->settings;
-    currentPanel->settings = NULL;
+void PanelWindow::newProfile() {
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), "", tr("Ini Files (*.ini)"));
+    if(!filename.isEmpty()) {
+        // Clear out panel
+        clearPanel();
 
-    dirty = true;
+        // Create new file and save
+        setProfileSettings(new QSettings(filename,QSettings::IniFormat,this));
+        currentPanel->name = "Panel1";
+        currentPanel->groupName = "panel-0";
+        saveProfile(profileSettings->fileName());
+        loadProfile(profileSettings->fileName());
+
+        // Register this file as the last loaded...
+        appSettings->setValue("lastloadedprofile", profileSettings->fileName());
+    }
 }
 
 void PanelWindow::showHardware() {
@@ -483,8 +587,16 @@ void PanelWindow::showSettings() {
 }
 
 void PanelWindow::showPanels() {
+    // Lazy load the UI
     if(!panelsDialog) {
-        panelsDialog = new PanelsDialog(this, this->appSettings,this->profileSettings);
+        panelsDialog = new PanelsDialog(this, this->appSettings);
+        panelsDialog->profileSettings = this->profileSettings;
+        panelsDialog->refreshPanelList();
+        connect(this,SIGNAL(panelsChanged()),panelsDialog,SLOT(refreshPanelList()));
+        connect(panelsDialog,SIGNAL(newPanel()),this,SLOT(newPanel()));
+        connect(panelsDialog,SIGNAL(copyPanel(QString)),this,SLOT(copyPanel(QString)));
+        connect(panelsDialog,SIGNAL(removePanel(QString)),this,SLOT(removePanel(QString)));
+        connect(panelsDialog,SIGNAL(loadPanel(QString)),this,SLOT(loadPanel(QString)));
     }
     panelsDialog->show();
 }
