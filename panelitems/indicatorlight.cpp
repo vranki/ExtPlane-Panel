@@ -178,6 +178,7 @@ void IndicatorLight::dataRefChanged(QString name, double val) {
     // On or off?
     _datarefValue = val;
     bool newOn = (_datarefValue > _threshold);
+    if(!this->panel()->hasAvionicsPower) newOn = false;
     if(_on != newOn) {
         _on = newOn;
         update();

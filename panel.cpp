@@ -5,6 +5,7 @@ ExtPlanePanel::ExtPlanePanel(Settings *appSettings, QObject *parent) : QObject(p
     _items = new PanelItemList();
     settings = NULL;
     rotation = 0;
+    hasAvionicsPower = true;
 }
 
 ExtPlanePanel::~ExtPlanePanel() {

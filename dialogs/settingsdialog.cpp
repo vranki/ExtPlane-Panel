@@ -14,7 +14,8 @@ SettingsDialog::SettingsDialog(QWidget *parent, Settings *appSettings) :
     connect(ui->panelUpdateComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(panelUpdateIntervalChanged()));
     connect(ui->fontSizeSpinBox, SIGNAL(valueChanged(double)), this, SIGNAL(setDefaultFontSize(double)));
     connect(ui->antialiasCheckbox, SIGNAL(toggled(bool)), this, SIGNAL(setAntialiasEnabled(bool)));
-    connect(ui->autoPanelsCheckBox, SIGNAL(toggled(bool)), this, SIGNAL(setAutoPanelsEnabled(bool)));
+    connect(ui->autoPanelsCheckbox, SIGNAL(toggled(bool)), this, SIGNAL(setAutoPanelsEnabled(bool)));
+    connect(ui->adjustPowerCheckbox, SIGNAL(toggled(bool)), this, SIGNAL(setAdjustPowerEnabled(bool)));
     connect(this, SIGNAL(finished(int)), this, SLOT(saveSettings()));
 }
 
@@ -62,8 +63,10 @@ void SettingsDialog::loadSettings() {
     emit setInterpolationEnabled(ui->interpolateCheckbox->isChecked());
     ui->antialiasCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("antialias", true).toBool());
     emit setAntialiasEnabled(ui->antialiasCheckbox->isChecked());
-    ui->autoPanelsCheckBox->setChecked(appSettings->valueFromSettingsOrCommandLine("autopanels", false).toBool());
-    emit setAutoPanelsEnabled(ui->autoPanelsCheckBox->isChecked());
+    ui->autoPanelsCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("autopanels", false).toBool());
+    emit setAutoPanelsEnabled(ui->autoPanelsCheckbox->isChecked());
+    ui->adjustPowerCheckbox->setChecked(appSettings->valueFromSettingsOrCommandLine("adjustpower", false).toBool());
+    emit setAdjustPowerEnabled(ui->adjustPowerCheckbox->isChecked());
     ui->rememberSizeAndPositionCheckBox->setChecked(appSettings->valueFromSettingsOrCommandLine("remembersizeandposition", false).toBool());
 
     // Panel update interval
@@ -82,7 +85,8 @@ void SettingsDialog::saveSettings() {
     appSettings->setValue("updateinterval", ui->updateIntervalComboBox->currentIndex());
     appSettings->setValue("interpolate", ui->interpolateCheckbox->isChecked());
     appSettings->setValue("antialias", ui->antialiasCheckbox->isChecked());
-    appSettings->setValue("autopanels", ui->autoPanelsCheckBox->isChecked());
+    appSettings->setValue("autopanels", ui->autoPanelsCheckbox->isChecked());
+    appSettings->setValue("adjustpower", ui->adjustPowerCheckbox->isChecked());
     appSettings->setValue("panelupdateinterval", ui->panelUpdateComboBox->currentIndex());
     appSettings->setValue("fontsize", ui->fontSizeSpinBox->value());
     appSettings->setValue("remembersizeandposition", ui->rememberSizeAndPositionCheckBox->isChecked());

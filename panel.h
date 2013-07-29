@@ -49,6 +49,7 @@ public:
     int rotation; // Master rotation of the panel
     QString name;
     QString groupName;
+    bool hasAvionicsPower;
 
 private:
     PanelItemList *_items;

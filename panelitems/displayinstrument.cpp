@@ -33,7 +33,7 @@ DisplayInstrument::~DisplayInstrument() {
 
 void DisplayInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 
-    // Just setup the painter and draw our radar image
+    // Just setup the painter and draw our image
     setupPainter(painter);
 
     // Do we need to downscale for pixelation effect?
@@ -70,17 +70,20 @@ void DisplayInstrument::tickTime(double dt, int total) {
 
         // Draw black over monitor for fade
         double monitorFadePercent = 1.0 - _monitorFade/100.0;
+        if(!this->panel()->hasAvionicsPower) monitorFadePercent = 0.1;
         if(monitorFadePercent != 0.0) {
             pixmapPainter.setOpacity(monitorFadePercent);
             pixmapPainter.fillRect(0,0,_monitorImage.width(),_monitorImage.height(), Qt::black);
         }
 
         // Render display
-        double displayStrengthPercent = _displayStrength/100.0;
-        if(displayStrengthPercent != 1.0) {
-            pixmapPainter.setOpacity(displayStrengthPercent);
+        if(this->panel()->hasAvionicsPower) {
+            double displayStrengthPercent = _displayStrength/100.0;
+            if(displayStrengthPercent != 1.0) {
+                pixmapPainter.setOpacity(displayStrengthPercent);
+            }
+            this->render(&pixmapPainter, this->width(), this->height());
         }
-        this->render(&pixmapPainter, this->width(), this->height());
 
         // Call for repaint
         _lastRender.restart();

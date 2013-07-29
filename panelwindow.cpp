@@ -35,6 +35,7 @@
 #include "dialogs/panelsdialog.h"
 
 #define AUTO_PANEL_DATAREF "sim/aircraft/view/acf_tailnum" // dankrusi: This seems to be the best trigger - correct me if I am wrong
+#define ADJUST_POWER_DATAREF "sim/cockpit/electrical/avionics_on"
 
 PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     // Init
@@ -65,6 +66,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     client = new ExtPlaneClient(this,"PanelWindow",connection);
     connection->registerClient(client);
     connect(client, SIGNAL(refChanged(QString,QString)), this, SLOT(clientDataRefChanged(QString,QString)));
+    connect(client, SIGNAL(refChanged(QString,double)), this, SLOT(clientDataRefChanged(QString,double)));
 
     // Setup window
     setScene(&scene);
@@ -84,6 +86,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(settingsDialog, SIGNAL(setInterpolationEnabled(bool)), this, SLOT(setInterpolationEnabled(bool)));
     connect(settingsDialog, SIGNAL(setAntialiasEnabled(bool)), this, SLOT(setAntialiasEnabled(bool)));
     connect(settingsDialog, SIGNAL(setAutoPanelsEnabled(bool)), this, SLOT(setAutoPanelsEnabled(bool)));
+    connect(settingsDialog, SIGNAL(setAdjustPowerEnabled(bool)), this, SLOT(setAdjustPowerEnabled(bool)));
     connect(settingsDialog, SIGNAL(setDefaultFontSize(double)), this, SLOT(setDefaultFontSize(double)));
     settingsDialog->setModal(false);
     settingsDialog->hide();
@@ -300,6 +303,11 @@ void PanelWindow::setAntialiasEnabled(bool enabled) {
 void PanelWindow::setAutoPanelsEnabled(bool enabled) {
     if(client && enabled && !client->isDataRefSubscribed(AUTO_PANEL_DATAREF)) client->subscribeDataRef(AUTO_PANEL_DATAREF);
     else if(client && !enabled && client->isDataRefSubscribed(AUTO_PANEL_DATAREF)) client->unsubscribeDataRef(AUTO_PANEL_DATAREF);
+}
+
+void PanelWindow::setAdjustPowerEnabled(bool enabled) {
+    if(client && enabled && !client->isDataRefSubscribed(ADJUST_POWER_DATAREF)) client->subscribeDataRef(ADJUST_POWER_DATAREF);
+    else if(client && !enabled && client->isDataRefSubscribed(ADJUST_POWER_DATAREF)) client->unsubscribeDataRef(ADJUST_POWER_DATAREF);
 }
 
 void PanelWindow::setPanelUpdateInterval(double newInterval) {
@@ -653,6 +661,13 @@ void PanelWindow::clientDataRefChanged(QString name, QString val) {
         } else {
             newPanelWithName(val);
         }
+    }
+}
+
+void PanelWindow::clientDataRefChanged(QString name, double val) {
+    if(name == ADJUST_POWER_DATAREF && appSettings->value("adjustpower").toBool()) {
+        INFO << "Power changed:" << val;
+        currentPanel->hasAvionicsPower = val == 1;
     }
 }
 

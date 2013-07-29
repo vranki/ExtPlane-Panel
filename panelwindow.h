@@ -70,6 +70,7 @@ public slots:
     void panelItemChanged(PanelItem *item=0); // Should be emitted by panel item when they become dirty
     void quit();
     void clientDataRefChanged(QString name, QString val);
+    void clientDataRefChanged(QString name, double val);
 private slots:
     QStringList getPanelGroupNames();
     void saveCurrentPanel();
@@ -84,6 +85,7 @@ private slots:
     void setInterpolationEnabled(bool enabled);
     void setAntialiasEnabled(bool enabled);
     void setAutoPanelsEnabled(bool enabled);
+    void setAdjustPowerEnabled(bool enabled);
     void setPanelUpdateInterval(double newInterval);
     void setDefaultFontSize(double newFs);
 protected:
