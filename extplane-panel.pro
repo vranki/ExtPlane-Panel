@@ -68,6 +68,7 @@ SOURCES += \
     $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.cpp \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.cpp \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/fixedsimulateddataref.cpp \
+    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/alternatingsimulateddataref.cpp \
     $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.cpp \
     main.cpp \
     panelitems/panelitem.cpp \
@@ -119,7 +120,6 @@ SOURCES += \
     panelitems/displayinstrument.cpp \
     panelitems/navdisplay.cpp \
     hardware/chromaoutputdevice.cpp \
-    ../ExtPlane/client/extplane-client-qt/simulateddatarefs/alternatingsimulateddataref.cpp \
     dialogs/panelsdialog.cpp
 
 HEADERS += \
@@ -129,6 +129,7 @@ HEADERS += \
     $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.h \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.h \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/fixedsimulateddataref.h \
+    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/alternatingsimulateddataref.h \
     $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.h \
     panelitems/panelitem.h \
     panelwindow.h \
@@ -180,7 +181,6 @@ HEADERS += \
     panelitems/displayinstrument.h \
     panelitems/navdisplay.h \
     hardware/chromaoutputdevice.h \
-    ../ExtPlane/client/extplane-client-qt/simulateddatarefs/alternatingsimulateddataref.h \
     dialogs/panelsdialog.h
 
 FORMS += dialogs/settingsdialog.ui \
