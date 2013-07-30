@@ -13,6 +13,7 @@ class IndicatorLight : public PanelItem
 
 public:
     Q_INVOKABLE IndicatorLight(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    virtual ~IndicatorLight();
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);

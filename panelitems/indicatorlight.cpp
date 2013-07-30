@@ -37,6 +37,12 @@ IndicatorLight::IndicatorLight(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     setSize(200,60);
 }
 
+IndicatorLight::~IndicatorLight() {
+    if(_labelGlowItem) {
+        _labelGlowItem->scene()->removeItem(_labelGlowItem);
+    }
+}
+
 void IndicatorLight::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 
     // Init painter
