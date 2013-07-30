@@ -185,14 +185,64 @@ PanelWindow::~PanelWindow() {
     if(client) delete client;
 }
 
-void PanelWindow::keyPressEvent(QKeyEvent *event) {
-    QGraphicsView::keyPressEvent(event);
-    if(event->key()==Qt::Key_Space) {
-        setEditMode(!editMode); // @todo set the ui checkbox also
-    } else if(event->key()==Qt::Key_F) {
-        fullscreenChanged(!isFullScreen());
-    } else if(event->key()==Qt::Key_Delete) {
-        qDeleteAll(selectedGauges());
+// -------------------------------------------------------------------------------------
+// -- GUI Methods
+// -------------------------------------------------------------------------------------
+
+void PanelWindow::showHardware() {
+    // Lazy load the UI
+    if(!hardwareDialog) {
+        hardwareDialog = new HardwareDialog(this, hwManager);
+    }
+    hardwareDialog->show();
+}
+
+void PanelWindow::showSettings() {
+    // Settings UI is always loaded
+    settingsDialog->show();
+}
+
+void PanelWindow::showPanels() {
+    // Lazy load the UI
+    if(!panelsDialog) {
+        panelsDialog = new PanelsDialog(this, this->appSettings);
+        panelsDialog->profileSettings = this->profileSettings;
+        panelsDialog->refreshPanelList();
+        connect(this,SIGNAL(panelsChanged()),panelsDialog,SLOT(refreshPanelList()));
+        connect(panelsDialog,SIGNAL(newPanel()),this,SLOT(newPanel()));
+        connect(panelsDialog,SIGNAL(copyPanel(QString)),this,SLOT(copyPanel(QString)));
+        connect(panelsDialog,SIGNAL(removePanel(QString)),this,SLOT(removePanel(QString)));
+        connect(panelsDialog,SIGNAL(loadPanel(QString)),this,SLOT(loadPanel(QString)));
+    }
+    panelsDialog->show();
+}
+
+void PanelWindow::showAddItemDialog() {
+    PanelItemSelectionDialog *pisd = new PanelItemSelectionDialog(this);
+    connect(pisd, SIGNAL(addItem(QString)), this, SLOT(addItem(QString)));
+    connect(this, SIGNAL(tickTime(double,int)), pisd, SLOT(tickTime(double,int)));
+    pisd->exec();
+}
+
+void PanelWindow::editItem(PanelItem *item) { // Call with item 0 to destroy dialog
+    // Displays EditItemDialog. Closes old one if open
+    if(editItemDialog) {
+        disconnect(editItemDialog, 0, this, 0);
+        editItemDialog->deleteLater();
+    }
+    editItemDialog = 0;
+    if(!item) return;
+    if(!editMode) return; // Don't open dialog if not in edit mode
+    editItemDialog =  new EditItemDialog(this);
+    editItemDialog->setModal(false);
+    editItemDialog->setPanelItem(item);
+    editItemDialog->show();
+    connect(editItemDialog, SIGNAL(destroyed()), this, SLOT(editItem())); // Call this slot when dialog closed
+}
+
+void PanelWindow::panelItemChanged(PanelItem *item) {
+    if(!dirty) {
+        dirty = true;
     }
 }
 
@@ -236,19 +286,53 @@ void PanelWindow::addItem(QString itemName) {
     addItem(itemFactory.itemForName(itemName,currentPanel,connection));
 }
 
-void PanelWindow::panelRotationChanged(int r) {
-    currentPanel->rotation = r;
+void PanelWindow::tick() {
+    double dt = time.elapsed() / 1000.0f;
+    time.start();
+    if(dt > 0.2f) {
+        DEBUG << "Skipping frame, dt: " << dt;
+        dt = 0;
+    }
+    emit tickTime(dt, totalTime.elapsed());
+}
+
+void PanelWindow::setEditMode(bool em) {
+    editMode = em;
     for(int i = 0; i < currentPanel->items()->count(); i++) {
         PanelItem *item = currentPanel->items()->at(i);
-        item->setPanelRotation(r);
+        item->setEditMode(em);
     }
 }
 
-void PanelWindow::fullscreenChanged(bool fs) {
-    if(fs) {
-        showFullScreen();
-    } else {
-        showNormal();
+QList<PanelItem*> PanelWindow::selectedGauges() {
+    QList<PanelItem*> selection;
+    for(int i = 0; i < currentPanel->items()->count(); i++) {
+        PanelItem *item = currentPanel->items()->at(i);
+        if(item->isSelected())
+            selection.append(item);
+    }
+    return selection;
+}
+
+// -------------------------------------------------------------------------------------
+// -- Window Methods
+// -------------------------------------------------------------------------------------
+
+void PanelWindow::disableBlanking() {
+#ifdef MAEMO
+    QDBusConnection::systemBus().call(QDBusMessage::createMethodCall(MCE_SERVICE, MCE_REQUEST_PATH,MCE_REQUEST_IF, MCE_PREVENT_BLANK_REQ));
+    blankingTimer.start(30000);
+#endif
+}
+
+void PanelWindow::keyPressEvent(QKeyEvent *event) {
+    QGraphicsView::keyPressEvent(event);
+    if(event->key()==Qt::Key_Space) {
+        setEditMode(!editMode); // @todo set the ui checkbox also
+    } else if(event->key()==Qt::Key_F) {
+        fullscreenChanged(!isFullScreen());
+    } else if(event->key()==Qt::Key_Delete) {
+        qDeleteAll(selectedGauges());
     }
 }
 
@@ -269,6 +353,31 @@ void PanelWindow::closeEvent(QCloseEvent *event) {
     QWidget::closeEvent(event);
 }
 
+void PanelWindow::quit() {
+    // @TODO: ask for save if dirty
+    QCoreApplication::quit();
+}
+
+// -------------------------------------------------------------------------------------
+// -- Settings Methods
+// -------------------------------------------------------------------------------------
+
+void PanelWindow::panelRotationChanged(int r) {
+    currentPanel->rotation = r;
+    for(int i = 0; i < currentPanel->items()->count(); i++) {
+        PanelItem *item = currentPanel->items()->at(i);
+        item->setPanelRotation(r);
+    }
+}
+
+void PanelWindow::fullscreenChanged(bool fs) {
+    if(fs) {
+        showFullScreen();
+    } else {
+        showNormal();
+    }
+}
+
 void PanelWindow::setServerAddress(QString host) {
     // Extract address and port
     unsigned int port = 0;
@@ -280,16 +389,6 @@ void PanelWindow::setServerAddress(QString host) {
     // Disconnect and reconnect
     connection->disconnectFromHost();
     connection->connectTo(hostport.value(0), port);
-}
-
-void PanelWindow::tick() {
-    double dt = time.elapsed() / 1000.0f;
-    time.start();
-    if(dt > 0.2f) {
-        DEBUG << "Skipping frame, dt: " << dt;
-        dt = 0;
-    }
-    emit tickTime(dt, totalTime.elapsed());
 }
 
 void PanelWindow::setInterpolationEnabled(bool enabled) {
@@ -323,37 +422,9 @@ void PanelWindow::setDefaultFontSize(double newFs) {
     defaultFontSize = newFs;
 }
 
-void PanelWindow::disableBlanking() {
-#ifdef MAEMO
-    QDBusConnection::systemBus().call(QDBusMessage::createMethodCall(MCE_SERVICE, MCE_REQUEST_PATH,MCE_REQUEST_IF, MCE_PREVENT_BLANK_REQ));
-    blankingTimer.start(30000);
-#endif
-}
-
-void PanelWindow::setEditMode(bool em) {
-    editMode = em;
-    for(int i = 0; i < currentPanel->items()->count(); i++) {
-        PanelItem *item = currentPanel->items()->at(i);
-        item->setEditMode(em);
-    }
-}
-
-QList<PanelItem*> PanelWindow::selectedGauges() {
-    QList<PanelItem*> selection;
-    for(int i = 0; i < currentPanel->items()->count(); i++) {
-        PanelItem *item = currentPanel->items()->at(i);
-        if(item->isSelected())
-            selection.append(item);
-    }
-    return selection;
-}
-
-void PanelWindow::showAddItemDialog() {
-    PanelItemSelectionDialog *pisd = new PanelItemSelectionDialog(this);
-    connect(pisd, SIGNAL(addItem(QString)), this, SLOT(addItem(QString)));
-    connect(this, SIGNAL(tickTime(double,int)), pisd, SLOT(tickTime(double,int)));
-    pisd->exec();
-}
+// -------------------------------------------------------------------------------------
+// -- Profile Methods
+// -------------------------------------------------------------------------------------
 
 void PanelWindow::setProfileSettings(QSettings *settings) {
     if(profileSettings) delete profileSettings;
@@ -439,6 +510,28 @@ void PanelWindow::loadProfile(QString filename) {
     dirty = false;
 }
 
+void PanelWindow::newProfile() {
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), "", tr("Ini Files (*.ini)"));
+    if(!filename.isEmpty()) {
+        // Clear out panel
+        clearPanel();
+
+        // Create new file and save
+        setProfileSettings(new QSettings(filename,QSettings::IniFormat,this));
+        currentPanel->name = "Panel1";
+        currentPanel->groupName = "panel-0";
+        saveProfile(profileSettings->fileName());
+        loadProfile(profileSettings->fileName());
+
+        // Register this file as the last loaded...
+        appSettings->setValue("lastloadedprofile", profileSettings->fileName());
+    }
+}
+
+// -------------------------------------------------------------------------------------
+// -- Panel Methods
+// -------------------------------------------------------------------------------------
+
 QStringList PanelWindow::getPanelGroupNames() {
     // The QSettings and its groups are not really optimal for having data which cannot be entirely flushed out on
     // every save. Thus we have a problem when using panel-# when copying and removing and renaming, as we cannot
@@ -510,7 +603,7 @@ void PanelWindow::loadPanel(QString name) {
 
 void PanelWindow::copyPanel(QString name) {
     if(existsPanel(name)) {
-
+        //TODO
     }
 }
 
@@ -586,72 +679,9 @@ void PanelWindow::clearPanel() {
     currentPanel->items()->clear();
 }
 
-void PanelWindow::newProfile() {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), "", tr("Ini Files (*.ini)"));
-    if(!filename.isEmpty()) {
-        // Clear out panel
-        clearPanel();
-
-        // Create new file and save
-        setProfileSettings(new QSettings(filename,QSettings::IniFormat,this));
-        currentPanel->name = "Panel1";
-        currentPanel->groupName = "panel-0";
-        saveProfile(profileSettings->fileName());
-        loadProfile(profileSettings->fileName());
-
-        // Register this file as the last loaded...
-        appSettings->setValue("lastloadedprofile", profileSettings->fileName());
-    }
-}
-
-void PanelWindow::showHardware() {
-    if(!hardwareDialog) {
-        hardwareDialog = new HardwareDialog(this, hwManager);
-    }
-    hardwareDialog->show();
-}
-
-void PanelWindow::showSettings() {
-    settingsDialog->show();
-}
-
-void PanelWindow::showPanels() {
-    // Lazy load the UI
-    if(!panelsDialog) {
-        panelsDialog = new PanelsDialog(this, this->appSettings);
-        panelsDialog->profileSettings = this->profileSettings;
-        panelsDialog->refreshPanelList();
-        connect(this,SIGNAL(panelsChanged()),panelsDialog,SLOT(refreshPanelList()));
-        connect(panelsDialog,SIGNAL(newPanel()),this,SLOT(newPanel()));
-        connect(panelsDialog,SIGNAL(copyPanel(QString)),this,SLOT(copyPanel(QString)));
-        connect(panelsDialog,SIGNAL(removePanel(QString)),this,SLOT(removePanel(QString)));
-        connect(panelsDialog,SIGNAL(loadPanel(QString)),this,SLOT(loadPanel(QString)));
-    }
-    panelsDialog->show();
-}
-
-// Displays EditItemDialog. Closes old one if open
-void PanelWindow::editItem(PanelItem *item) { // Call with item 0 to destroy dialog
-    if(editItemDialog) {
-        disconnect(editItemDialog, 0, this, 0);
-        editItemDialog->deleteLater();
-    }
-    editItemDialog = 0;
-    if(!item)
-        return;
-    if(!editMode) return; // Don't open dialog if not in edit mode
-    editItemDialog =  new EditItemDialog(this);
-    editItemDialog->setModal(false);
-    editItemDialog->setPanelItem(item);
-    editItemDialog->show();
-    connect(editItemDialog, SIGNAL(destroyed()), this, SLOT(editItem())); // Call this slot when dialog closed
-}
-
-void PanelWindow::panelItemChanged(PanelItem *item) {
-    if(!dirty) {
-        dirty = true;
-    }
-}
+// -------------------------------------------------------------------------------------
+// -- Client Data Refs
+// -------------------------------------------------------------------------------------
 
 void PanelWindow::clientDataRefChanged(QString name, QString val) {
     if(name == AUTO_PANEL_DATAREF && appSettings->value("autopanels").toBool()) {
@@ -671,7 +701,3 @@ void PanelWindow::clientDataRefChanged(QString name, double val) {
     }
 }
 
-void PanelWindow::quit() {
-    // @TODO: ask for save if dirty
-    QCoreApplication::quit();
-}
