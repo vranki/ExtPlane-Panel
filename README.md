@@ -23,7 +23,6 @@ These are used to control servos using PWM. Other, more complex output devices
 can be implemented later. Currently Chroma is the most tested device but the
 others should also work.
 
-
 The app is written using Qt and is platform independent - it runs on
 different Linux variants, Mac and Windows. X-Plane SDK is NOT required
 to build ExtPlane-Panel.
@@ -35,6 +34,7 @@ Target hardware is:
 * MeeGo
 * Raspberry Pi
 * anything that will run Qt!
+
 
 ## Building ##
 
@@ -61,11 +61,31 @@ make
 ```
 
 
+### OS X ###
+```bash
+# 1: Install required libraries and tools
+# Download and install X-Code and Developer Tools from http://developer.apple.com
+# Download and install Qt5 from http://qt-project.org/downloads
+
+# 2: Download source code from GitHub
+git clone https://github.com/vranki/ExtPlane.git
+git clone https://github.com/vranki/ExtPlane-Panel.git
+
+# 3: Build project
+cd ExtPlane-Panel
+qmake
+make
+
+# Note: If qmake is not on your command path, add the Qt bin directory to your path using
+# export.
+```
+
+
 ### Windows ###
 ```bash
 # 1: Install required libraries and tools
-Download and install Qt5 from http://qt-project.org/downloads
-Download and install Git from http://git-scm.com/downloads
+# Download and install Qt5 from http://qt-project.org/downloads
+# Download and install Git from http://git-scm.com/downloads
 
 # 2: Download source code from GitHub
 git clone https://github.com/vranki/ExtPlane.git
@@ -76,11 +96,11 @@ cd ExtPlane-Panel
 qmake
 nmake
 
-Note: If you do not have a C++ compiler, you can install one of the following:
-MinGW version of Qt: http://qt-project.org/downloads
-Windows 7 SDK: http://www.microsoft.com/en-us/download/confirmation.aspx?id=8279
-Windows 8 SDK: http://msdn.microsoft.com/en-us/library/windows/desktop/hh852363.aspx
-Visual Studio Express: http://www.microsoft.com/visualstudio/eng/downloads#d-2012-express 
+# Note: If you do not have a C++ compiler, you can install one of the following:
+# MinGW version of Qt: http://qt-project.org/downloads
+# Windows 7 SDK: http://www.microsoft.com/en-us/download/confirmation.aspx?id=8279
+# Windows 8 SDK: http://msdn.microsoft.com/en-us/library/windows/desktop/hh852363.aspx
+# Visual Studio Express: http://www.microsoft.com/visualstudio/eng/downloads#d-2012-express
 ```
 
 
@@ -100,6 +120,7 @@ There are currently a number of instruments available, including:
 - GPS/Radar map
 - Light indicator
 - Engine display
+- Navigation display
 
 Most instruments look like general aviation instruments. You can also add and customize covers for your instruments.
 
@@ -111,11 +132,11 @@ Most instruments look like general aviation instruments. You can also add and cu
 
 Command line arguments override application settings. This can be useful when you wish to launch multiple panels on multiple monitors, each panel using a preset configuration.
 
-* **--fullscreen** forces the app to launch in fullscreen mode
-* **--screen [number]** sets the panel to a specific monitor/screen
-* **--width [number]** set the width in pixels of the panel (if not fullscreen)
-* **--height [number]** set the height in pixels of the panel (if not fullscreen)
-* **--profile [filepath]** loads the panel profile specified by filepath
+* **--fullscreen**           forces the app to launch in fullscreen mode
+* **--screen [number]**      sets the panel to a specific monitor/screen
+* **--width [number]**       set the width in pixels of the panel (if not fullscreen)
+* **--height [number]**      set the height in pixels of the panel (if not fullscreen)
+* **--profile [filepath]**   loads the panel profile specified by filepath
 
 ### User Interface ###
 
