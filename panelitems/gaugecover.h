@@ -24,12 +24,12 @@ public:
     virtual void loadSettings(QSettings &settings);
     virtual void createSettings(QGridLayout *layout);
     virtual void settingChanged();
-    void drawCoverImage();
     void drawCoverImageCircularFitting(QPainter *painter, int centerX, int centerY, int radius);
     void drawCoverImageRectangularFitting(QPainter *painter, int centerX, int centerY, int width, int height);
     void drawCoverImageScrew(QPainter *painter, int centerX, int centerY);
 
 public slots:
+    void drawCoverImage();
     void setGaugesInset(int val) {_gaugesInset = val;}
     void setGaugesSize(int val) {_gaugesSize = val;}
     void setGrainEnabled(bool val) {_grainEnabled = val;}

@@ -611,6 +611,11 @@ void PanelWindow::loadPanel(QString name) {
                 }
                 profileSettings->endGroup();
             }
+            // Force covers to update once all items have been added
+            for(int i = 0; i < currentPanel->items()->count(); i++) {
+                PanelItem *item = currentPanel->items()->at(i);
+                if(item->itemType() == PanelItemTypeCover) item->setEditMode(editMode);
+            }
             // Break out
             profileSettings->endGroup();
             break;
