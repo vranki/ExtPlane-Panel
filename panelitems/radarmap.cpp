@@ -58,15 +58,17 @@ void RadarMap::tickTime(double dt, int total) {
     pixmapPainter.setOpacity(1.0);
 
     // Mask update pie region and draw
-    maskPainter.fillRect(0,0,_side,_side,Qt::white);
-    maskPainter.setBrush(Qt::black);
-    maskPainter.drawPie(0,0,_side,_side,_radarCurrentAngle*16,(60.0/sweepSpeed)*16);
-    maskPainter.end();
-    pixmapPainter.setClipRegion(QRegion(_mask));
-    pixmapPainter.drawPixmap(0,0,_mapImage,0,0,width(),height());
+    if(panel()->hasAvionicsPower) {
+        maskPainter.fillRect(0,0,_side,_side,Qt::white);
+        maskPainter.setBrush(Qt::black);
+        maskPainter.drawPie(0,0,_side,_side,_radarCurrentAngle*16,(60.0/sweepSpeed)*16);
+        maskPainter.end();
+        pixmapPainter.setClipRegion(QRegion(_mask));
+        pixmapPainter.drawPixmap(0,0,_mapImage,0,0,width(),height());
 
-    // Draw heading (masked)
-    drawHeading(&pixmapPainter,_radarImage.width()/2,_radarImage.height()/2);
+        // Draw heading (masked)
+        drawHeading(&pixmapPainter,_radarImage.width()/2,_radarImage.height()/2);
+    }
 
     // Call for repaint
     update();
