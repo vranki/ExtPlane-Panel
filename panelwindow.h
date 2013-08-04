@@ -73,6 +73,7 @@ public slots:
     void clientDataRefChanged(QString name, double val);
 private slots:
     QStringList getPanelGroupNames();
+    QStringList getPanelNames();
     void saveCurrentPanel();
     void loadPanel(QString name); // A null string will load the first panel found
     void copyPanel(QString name);
@@ -80,6 +81,8 @@ private slots:
     QString newPanel();
     QString newPanelWithName(QString newName);
     void clearPanel();
+    void prevPanel();
+    void nextPanel();
     bool existsPanel(QString name);
     void tick();
     void setInterpolationEnabled(bool enabled);

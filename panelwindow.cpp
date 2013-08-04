@@ -333,6 +333,10 @@ void PanelWindow::keyPressEvent(QKeyEvent *event) {
         fullscreenChanged(!isFullScreen());
     } else if(event->key()==Qt::Key_Delete) {
         qDeleteAll(selectedGauges());
+    } else if(event->key()==Qt::Key_Left) {
+        prevPanel();
+    } else if(event->key()==Qt::Key_Right) {
+        nextPanel();
     }
 }
 
@@ -540,9 +544,23 @@ QStringList PanelWindow::getPanelGroupNames() {
     // iteration. Con: we must loop all keys (the entire file). Probably no problem, if it is, we can cache this on
     // profile load.
     QStringList ret;
-    foreach(QString key, profileSettings->allKeys()) {
-        if(key.split('/').count() == 2 && key.startsWith("panel-") && key.endsWith("/name")) {
-            ret.append(key.replace("/name",""));
+    if(profileSettings != NULL) {
+        foreach(QString key, profileSettings->allKeys()) {
+            if(key.split('/').count() == 2 && key.startsWith("panel-") && key.endsWith("/name")) {
+                ret.append(key.replace("/name",""));
+            }
+        }
+    }
+    return ret;
+}
+
+QStringList PanelWindow::getPanelNames() {
+    QStringList ret;
+    if(profileSettings != NULL) {
+        foreach(QString groupName, getPanelGroupNames()) {
+            profileSettings->beginGroup(groupName);
+            ret.append(profileSettings->value("name").toString());
+            profileSettings->endGroup();
         }
     }
     return ret;
@@ -550,7 +568,7 @@ QStringList PanelWindow::getPanelGroupNames() {
 
 void PanelWindow::saveCurrentPanel() {
     profileSettings->beginGroup(currentPanel->groupName); {
-        profileSettings->group().clear(); //TODO: this doesnt actually clear the group. Group is string.
+        profileSettings->group().clear(); //TODO: this doesnt actually clear the group; group() is a string.
         profileSettings->setValue("name", currentPanel->name);
         profileSettings->setValue("gaugecount", currentPanel->items()->size());
         int gn = 0;
@@ -677,6 +695,22 @@ void PanelWindow::clearPanel() {
         item->deleteLater();
     }
     currentPanel->items()->clear();
+}
+
+void PanelWindow::prevPanel() {
+    QStringList panelNames = getPanelNames();
+    int newIndex = panelNames.indexOf(currentPanel->name)-1;
+    if(newIndex >= 0 && newIndex < panelNames.count()) {
+        loadPanel(panelNames.at(newIndex));
+    }
+}
+
+void PanelWindow::nextPanel() {
+    QStringList panelNames = getPanelNames();
+    int newIndex = panelNames.indexOf(currentPanel->name)+1;
+    if(newIndex >= 0 && newIndex < panelNames.count()) {
+        loadPanel(panelNames.at(newIndex));
+    }
 }
 
 // -------------------------------------------------------------------------------------

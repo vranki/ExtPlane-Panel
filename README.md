@@ -155,6 +155,8 @@ be also toggled with space key.
 
 * **Load Profile** loads any given panel profile from disk.
 
+* **Manage Panels** allows you to remove, add, rename and copy panels.
+
 * **App Settings** has various settings for the application:
  - IP address or hostname of the X-Plane machine
  - Fullscreen
@@ -164,6 +166,14 @@ be also toggled with space key.
  - ExtPlane update interval - time (in seconds) how often X-Plane should send updates at maximum
  - Panel update interval - time (in seconds) how often the panel should be redrawn
  - Default font size - affects all instruments
+
+### Keyboard Shortcuts ###
+
+* **Space** toggles edit mode
+* **F** sets fullscreen mode
+* **Delete** deletes selected panel items
+* **Left** selects the previous panel (if any)
+* **Right** selects the next panel (if any)
 
 ### Setting up hardware instruments ###
 
