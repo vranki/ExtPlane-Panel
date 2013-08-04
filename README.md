@@ -36,73 +36,6 @@ Target hardware is:
 * anything that will run Qt!
 
 
-## Building ##
-
-ExtPlane-Panel uses the Qt Framework for graphics and cross-platform compatibility. Before building you'll need to setup Qt 4.5 or greater and Qt Mobility to compile. You'll also need to check out the ExtPlane plugin sources (https://github.com/vranki/ExtPlane) to the directory next to the ExtPlane-Panel directory.
-
-The requirements for ExtPlane-Panel are as follows:
-* C++ Toolchain
-* Qt Framework 4.5+
-* ExtPlane
-
-### Debian/Ubuntu Linux ###
-```bash
-# 1: Install required libraries and tools
-sudo apt-get install git build-essential libqt4-dev qtmobility-dev
-
-# 2: Download source code from GitHub
-git clone https://github.com/vranki/ExtPlane.git
-git clone https://github.com/vranki/ExtPlane-Panel.git
-
-# 3: Build project
-cd ExtPlane-Panel
-qmake
-make
-```
-
-
-### OS X ###
-```bash
-# 1: Install required libraries and tools
-# Download and install X-Code and Developer Tools from http://developer.apple.com
-# Download and install Qt5 from http://qt-project.org/downloads
-
-# 2: Download source code from GitHub
-git clone https://github.com/vranki/ExtPlane.git
-git clone https://github.com/vranki/ExtPlane-Panel.git
-
-# 3: Build project
-cd ExtPlane-Panel
-qmake
-make
-
-# Note: If qmake is not on your command path, add the Qt bin directory to your path using
-# export.
-```
-
-
-### Windows ###
-```bash
-# 1: Install required libraries and tools
-# Download and install Qt5 from http://qt-project.org/downloads
-# Download and install Git from http://git-scm.com/downloads
-
-# 2: Download source code from GitHub
-git clone https://github.com/vranki/ExtPlane.git
-git clone https://github.com/vranki/ExtPlane-Panel.git
-
-# 3: Build project
-cd ExtPlane-Panel
-qmake
-nmake
-
-# Note: If you do not have a C++ compiler, you can install one of the following:
-# MinGW version of Qt: http://qt-project.org/downloads
-# Windows 7 SDK: http://www.microsoft.com/en-us/download/confirmation.aspx?id=8279
-# Windows 8 SDK: http://msdn.microsoft.com/en-us/library/windows/desktop/hh852363.aspx
-# Visual Studio Express: http://www.microsoft.com/visualstudio/eng/downloads#d-2012-express
-```
-
 
 
 ## Instruments ##
@@ -122,7 +55,9 @@ There are currently a number of instruments available, including:
 - Engine display
 - Navigation display
 
-Most instruments look like general aviation instruments. You can also add and customize covers for your instruments.
+Most instruments look like general aviation instruments and can be customized and adjusted.
+You can also add and customize covers for your instruments. In addition, there are also
+debugging tools which can help when developing with the X-Plane API.
 
 
 
@@ -130,13 +65,25 @@ Most instruments look like general aviation instruments. You can also add and cu
 
 ### Command Line ###
 
-Command line arguments override application settings. This can be useful when you wish to launch multiple panels on multiple monitors, each panel using a preset configuration.
+Command line arguments override application settings. This can be useful when you wish to launch
+multiple panels on multiple monitors, each panel using a preset configuration.
 
-* **--fullscreen**           forces the app to launch in fullscreen mode
-* **--screen [number]**      sets the panel to a specific monitor/screen
-* **--width [number]**       set the width in pixels of the panel (if not fullscreen)
-* **--height [number]**      set the height in pixels of the panel (if not fullscreen)
-* **--profile [filepath]**   loads the panel profile specified by filepath
+* **--fullscreen**                forces the app to launch in fullscreen mode
+* **--screen {number}**           sets the panel to a specific monitor/screen
+* **--width {number}**            set the width in pixels of the panel (if not fullscreen)
+* **--height {number}**           set the height in pixels of the panel (if not fullscreen)
+* **--profile {filepath}**        loads the panel profile specified by filepath
+* **--hidden-gui {true|false}**   when true, removes any visible extra UI (such as the yellow tab for opening menu)
+* **--simulate {true|false}**     when true, simulates the ExtPlane connection
+* **--panelrotation {0-360}**     sets the global panel rotation
+* **--serveraddress {host:port}** sets the ExtPlane plugin host and port
+* **--interpolate {true|false}**  when true, enables value interpolation
+* **--antialias {true|false}**    when true, enables rendering antialias
+* **--autopanels {true|false}**    when true, a panel will automatically be loaded (or created) when the aircraft changes
+* **--adjustpower {true|false}**   when true, panel items will be dimmed or powered off when avionics or battery is off
+* **--fontsize {number}**          sets the default font size for all panel items
+* **--remembersizeandposition {true|false}**  when true, the panel window will always be positioned at the same place
+* **--panelupdateinterval {seconds}** sets the update interval in seconds
 
 ### User Interface ###
 
@@ -155,17 +102,23 @@ be also toggled with space key.
 
 * **Load Profile** loads any given panel profile from disk.
 
+* **New Profile** creates an empty new profile with a single panel.
+
 * **Manage Panels** allows you to remove, add, rename and copy panels.
+
+* **Hardware** opens the hardware window where you can configure various physical devices.
 
 * **App Settings** has various settings for the application:
  - IP address or hostname of the X-Plane machine
  - Fullscreen
  - Screen rotation
- - Simulated connection - Use for testing new instruments without real X-Plane connection
- - Interpolate values - You can disable this on slow devices.
+ - Simulated connection - use for testing new instruments without real X-Plane connection
+ - Interpolate values - you can disable this on slow devices
  - ExtPlane update interval - time (in seconds) how often X-Plane should send updates at maximum
  - Panel update interval - time (in seconds) how often the panel should be redrawn
  - Default font size - affects all instruments
+ - Automatically create and load panels - a panel will automatically be loaded (or created) when the aircraft changes
+ - Adjust panel brightness and power - panel items will be dimmed or powered off when avionics or battery is off
 
 ### Keyboard Shortcuts ###
 
@@ -201,6 +154,74 @@ a output device.
  * If you modify values, click Save changes again. Remember to save the panel to save these settings!
 
 Note: If you need to reverse the servo direction, swap input min and input max values.
+
+
+
+## Building ##
+
+ExtPlane-Panel uses the Qt Framework for graphics and cross-platform compatibility. Before building you'll need to setup Qt 4.5 or greater and Qt Mobility to compile. You'll also need to check out the ExtPlane plugin sources (https://github.com/vranki/ExtPlane) to the directory next to the ExtPlane-Panel directory.
+
+The requirements for ExtPlane-Panel are as follows:
+* C++ Toolchain
+* Qt Framework 4.5+
+* ExtPlane
+
+### Debian/Ubuntu Linux ###
+```bash
+# 1: Install required libraries and tools
+sudo apt-get install git build-essential libqt4-dev qtmobility-dev
+
+# 2: Download source code from GitHub
+git clone https://github.com/vranki/ExtPlane.git
+git clone https://github.com/vranki/ExtPlane-Panel.git
+
+# 3: Build project
+cd ExtPlane-Panel
+qmake
+make
+```
+
+### OS X ###
+```bash
+# 1: Install required libraries and tools
+# Download and install X-Code and Developer Tools from http://developer.apple.com
+# Download and install Qt5 from http://qt-project.org/downloads
+
+# 2: Download source code from GitHub
+git clone https://github.com/vranki/ExtPlane.git
+git clone https://github.com/vranki/ExtPlane-Panel.git
+
+# 3: Build project
+cd ExtPlane-Panel
+qmake
+make
+
+# Note: If qmake is not on your command path, add the Qt bin directory to your path using
+# export.
+```
+
+### Windows ###
+```bash
+# 1: Install required libraries and tools
+# Download and install Qt5 from http://qt-project.org/downloads
+# Download and install Git from http://git-scm.com/downloads
+
+# 2: Download source code from GitHub
+git clone https://github.com/vranki/ExtPlane.git
+git clone https://github.com/vranki/ExtPlane-Panel.git
+
+# 3: Build project
+cd ExtPlane-Panel
+qmake
+nmake
+
+# Note: If you do not have a C++ compiler, you can install one of the following:
+# MinGW version of Qt: http://qt-project.org/downloads
+# Windows 7 SDK: http://www.microsoft.com/en-us/download/confirmation.aspx?id=8279
+# Windows 8 SDK: http://msdn.microsoft.com/en-us/library/windows/desktop/hh852363.aspx
+# Visual Studio Express: http://www.microsoft.com/visualstudio/eng/downloads#d-2012-express
+```
+
 
 
 ## Creating new Panel Items ##
