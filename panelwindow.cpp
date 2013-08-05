@@ -132,7 +132,10 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
             panelToLoad = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "ExtPlane-Panel-Default.ini";
         #endif
         setProfileSettings(new QSettings(panelToLoad,QSettings::IniFormat,this));
-        saveProfile();
+        currentPanel->name = "Panel1";
+        currentPanel->groupName = "panel-0";
+        saveProfile(profileSettings->fileName());
+        loadProfile(profileSettings->fileName());
     }
     if(!appSettings->valueFromSettingsOrCommandLine("profile","").toString().isEmpty())
         panelToLoad = appSettings->valueFromSettingsOrCommandLine("profile").toString();
@@ -618,6 +621,7 @@ void PanelWindow::loadPanel(QString name) {
             }
             // Break out
             profileSettings->endGroup();
+            emit panelsChanged();
             break;
         }
         profileSettings->endGroup();
@@ -627,6 +631,8 @@ void PanelWindow::loadPanel(QString name) {
 void PanelWindow::copyPanel(QString name) {
     if(existsPanel(name)) {
         //TODO
+
+        emit panelsChanged();
     }
 }
 
