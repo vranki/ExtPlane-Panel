@@ -13,15 +13,9 @@ Almost all instruments are drawn using scalable vector graphics for
 perfect scaling and high resolutions.
 
 The application also allows running hardware instruments with X-Plane
-datarefs. Currently supported output devices:
-
-* Raspberry Pi's ServoBlaster module which allows RPi's GPIO pins to output PWM
-* Pololu SSC04A (or compatible) serial servo controller
-* Chroma USB Servo controller (http://electronics.chroma.se/usbsb.php)
-
-These are used to control servos using PWM. Other, more complex output devices
-can be implemented later. Currently Chroma is the most tested device but the
-others should also work.
+datarefs. These are used to control servos using PWM. Other, more complex
+output devices can be implemented later. Currently Chroma is the most
+tested device but the others should also work.
 
 The app is written using Qt and is platform independent - it runs on
 different Linux variants, Mac and Windows. X-Plane SDK is NOT required
@@ -34,7 +28,6 @@ Target hardware is:
 * MeeGo
 * Raspberry Pi
 * anything that will run Qt!
-
 
 
 
@@ -61,7 +54,27 @@ debugging tools which can help when developing with the X-Plane API.
 
 
 
+## Hardware Devices ##
+
+Currently supported output devices:
+
+* Raspberry Pi's ServoBlaster module which allows RPi's GPIO pins to output PWM
+* Pololu SSC04A (or compatible) serial servo controller
+* Chroma USB Servo controller (http://electronics.chroma.se/usbsb.php)
+
+
+
 ## Usage ##
+
+### Profiles and Panels ###
+
+You can save your work when setting up your ExtPlane-Panel through the use of profiles. A profile
+is a file that can be saved to disk (ending with `.ini`). At first launch, ExtPlane-Panel will
+automatically create and load a profile in your documents folder called `ExtPlane-Panel-Default.ini`.
+
+Each profile may contain multiple panels, which can be switched using arrow keys, or through
+the panel manager, or automatically when changing aircraft (if enabled in app settings). Only a single
+panel is loaded at any time.
 
 ### Command Line ###
 
