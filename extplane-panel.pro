@@ -61,6 +61,11 @@ target.path = /usr/bin
 
 INSTALLS += target
 
+desktop.files = extplane-panel.desktop
+desktop.path = /usr/share/applications
+
+unix: INSTALLS += desktop
+
 SOURCES += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.cpp \
     $$EXTPLANE_CLIENT_PATH/extplaneclient.cpp \

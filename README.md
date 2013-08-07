@@ -24,11 +24,17 @@ to build ExtPlane-Panel.
 Target hardware is:
 * Desktop PC's
 * Android
-* Nokia Maemo 4 & 5,
-* MeeGo
+* Nokia Maemo 4 & 5
+* MeeGo (Harmattan / Mer / Sailfish)
 * Raspberry Pi
 * anything that will run Qt!
 
+
+## Download ##
+
+Look into the "binary" directory in GitHub for ready built binaries. 
+If you can't find one for your platform, you'll need to build 
+ExtPlane-Panel yourself. 
 
 
 ## Instruments ##
@@ -58,10 +64,9 @@ debugging tools which can help when developing with the X-Plane API.
 
 Currently supported output devices:
 
+* Chroma USB Servo controller (http://electronics.chroma.se/usbsb.php) 
 * Raspberry Pi's ServoBlaster module which allows RPi's GPIO pins to output PWM
 * Pololu SSC04A (or compatible) serial servo controller
-* Chroma USB Servo controller (http://electronics.chroma.se/usbsb.php)
-
 
 
 ## Usage ##
@@ -176,13 +181,13 @@ ExtPlane-Panel uses the Qt Framework for graphics and cross-platform compatibili
 
 The requirements for ExtPlane-Panel are as follows:
 * C++ Toolchain
-* Qt Framework 4.5+
+* Qt Framework 4.5+ (Qt 5.x is recommended)
 * ExtPlane
 
 ### Debian/Ubuntu Linux ###
 ```bash
 # 1: Install required libraries and tools
-sudo apt-get install git build-essential libqt4-dev qtmobility-dev
+sudo apt-get install git build-essential qtbase5-dev qt5-default qtmobility-dev
 
 # 2: Download source code from GitHub
 git clone https://github.com/vranki/ExtPlane.git
@@ -192,6 +197,10 @@ git clone https://github.com/vranki/ExtPlane-Panel.git
 cd ExtPlane-Panel
 qmake
 make
+
+# 4: (optional) Create and install debian package
+dpkg-buildpackage -rfakeroot -b
+sudo dpkg -i ../extplane-panel*.deb
 ```
 
 ### OS X ###
