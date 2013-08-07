@@ -1,7 +1,10 @@
 #include "chromaoutputdevice.h"
 #include <QFile>
-#include <fcntl.h>
 #include "../util/console.h"
+
+#ifdef TERMIOS_AVAILABLE
+    #include <fcntl.h>
+#endif
 
 ChromaOutputDevice::ChromaOutputDevice(QObject *parent) : OutputDevice(parent)
 {
@@ -54,7 +57,10 @@ void ChromaOutputDevice::setEnabled(bool e)
 
         int fd = devFile.handle();
 
-        fcntl(fd, F_SETFL, 0);
+        // TODO: What about windows? This should be ported to QSerialPort
+        #ifdef TERMIOS_AVAILABLE
+            fcntl(fd, F_SETFL, 0);
+        #endif
     } else {
         devFile.close();
     }

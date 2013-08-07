@@ -53,7 +53,8 @@ void PololuOutputDevice::setEnabled(bool e)
 
         int fd = devFile.handle();
 
-        // set new port settings for canonical input processing
+        // Set new port settings for canonical input processing
+        // TODO: What about windows? This should be ported to QSerialPort
         #ifdef TERMIOS_AVAILABLE
             struct termios newtio;
             newtio.c_cflag = B9600 | CRTSCTS | CS8 | 1 | 0 | 0 | CLOCAL/* | CREAD*/;
