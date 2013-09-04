@@ -59,13 +59,22 @@ void ChromaOutputDevice::setEnabled(bool e)
         #ifdef TERMIOS_AVAILABLE
             fcntl(fd, F_SETFL, 0);
         #endif
+            // Servo enable
+            QString outstring = "se\n";
+            devFile.write(outstring.toUtf8());
+            devFile.flush();
     } else {
+        if(devFile.isWritable()) {
+            // Servo disable
+            QString outstring = "sd\n";
+            devFile.write(outstring.toUtf8());
+            devFile.flush();
+        }
         devFile.close();
     }
 }
 
-void ChromaOutputDevice::outputValue(double value, int output, int speed)
-{
+void ChromaOutputDevice::outputValue(double value, int output, int speed) {
     INFO << Q_FUNC_INFO << value << output << enabled;
     if(!enabled)
         return;
