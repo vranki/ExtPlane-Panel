@@ -6,6 +6,7 @@
 #include "../hardware/servoblasteroutputdevice.h"
 #include "../hardware/pololuoutputdevice.h"
 #include "../hardware/chromaoutputdevice.h"
+#include "bindingcurvedialog.h"
 
 HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
     QDialog(parent),
@@ -19,6 +20,7 @@ HardwareDialog::HardwareDialog(QWidget *parent, HardwareManager *manager) :
     connect(ui->enableSB, SIGNAL(clicked(bool)), this, SLOT(enableSB(bool)));
     connect(ui->enablePololu, SIGNAL(clicked(bool)), this, SLOT(enablePololu(bool)));
     connect(ui->enableChroma, SIGNAL(clicked(bool)), this, SLOT(enableChroma(bool)));
+    connect(ui->outputCurvesButton, SIGNAL(clicked()), this, SLOT(showOutputCurvesDialog()));
     connect(hwManager->devices().value(POLOLU_ID), SIGNAL(deviceEnabled(bool)), ui->enablePololu, SLOT(setChecked(bool)));
     connect(hwManager->devices().value(SERVOBLASTER_ID), SIGNAL(deviceEnabled(bool)), ui->enableSB, SLOT(setChecked(bool)));
     connect(hwManager->devices().value(CHROMA_ID), SIGNAL(deviceEnabled(bool)), ui->enableChroma, SLOT(setChecked(bool)));
@@ -35,6 +37,15 @@ HardwareDialog::~HardwareDialog()
 void HardwareDialog::deviceAvailable(int dev, bool avail)
 {
     updateUi();
+}
+
+void HardwareDialog::showOutputCurvesDialog()
+{
+    if(!currentBinding) return;
+    BindingCurveDialog *bcd = new BindingCurveDialog(this);
+    bcd->setBinding(currentBinding);
+    bcd->exec();
+    bcd->deleteLater();
 }
 
 void HardwareDialog::changeEvent(QEvent *e)
@@ -75,10 +86,10 @@ void HardwareDialog::saveChanges() {
     currentBinding->setRefName(ui->bindingRefNameEdit->text());
     currentBinding->setAccuracy(ui->refAccuracySpinBox->value());
     currentBinding->setInputValues(ui->inputMinSpinbox->value(), ui->inputMaxSpinbox->value());
-    currentBinding->setOutputValues(ui->outputMinSpinbox->value(), ui->outputMaxSpinbox->value());
     currentBinding->setDevice(ui->outputDeviceComboBox->currentIndex());
     currentBinding->setOutput(ui->outputNumSpinbox->value());
     currentBinding->setInterpolationSpeed(ui->interpolationSpeedSpinbox->value());
+    currentBinding->setSpeed(ui->outputSpeedSpinbox->value());
     updateUi();
     currentBinding->activate();
 }
@@ -111,11 +122,10 @@ void HardwareDialog::updateUi() {
         ui->refAccuracySpinBox->setValue(currentBinding->accuracy());
         ui->inputMinSpinbox->setValue(currentBinding->inputMin());
         ui->inputMaxSpinbox->setValue(currentBinding->inputMax());
-        ui->outputMinSpinbox->setValue(currentBinding->outputMin());
-        ui->outputMaxSpinbox->setValue(currentBinding->outputMax());
         ui->outputDeviceComboBox->setCurrentIndex(currentBinding->device());
         ui->outputNumSpinbox->setValue(currentBinding->output());
         ui->interpolationSpeedSpinbox->setValue(currentBinding->interpolationSpeed());
+        ui->outputSpeedSpinbox->setValue(currentBinding->speed());
     } else {
         ui->bindingNameLineEdit->setText("");
     }

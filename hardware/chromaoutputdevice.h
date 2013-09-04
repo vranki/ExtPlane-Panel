@@ -17,9 +17,10 @@ public:
     virtual int id();
     virtual void setEnabled(bool e);
 public slots:
-    void outputValue(double value, int output);
+    void outputValue(double value, int output, int speed);
 private:
-    void setpos(int servo, int pos);
+    void safePosition();
+    void setpos(int servo, int pos, int speed);
     QFile devFile;
     QMap<int, int> servopos;
 };

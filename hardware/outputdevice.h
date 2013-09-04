@@ -21,9 +21,9 @@ public:
 signals:
     void deviceEnabled(bool e);
 public slots:
-    virtual void outputValue(double value, int output)=0;
+    virtual void outputValue(double value, int output, int speed)=0;
 protected:
-    int minValue, maxValue;
+    double minValue, maxValue;
     bool enabled, available;
     QString status;
 };

@@ -90,8 +90,8 @@ void HardwareManager::tickTime(double dt, int total)
 void HardwareManager::deviceChanged(HardwareBinding *binding, int device)
 {
     Q_ASSERT(outputDevices.contains(binding->device()));
-    connect(binding, SIGNAL(outputValue(double,int)), outputDevices.value(binding->device()), SLOT(outputValue(double,int)));
-    DEBUG << "connected output of binding" << binding->name() << "to device " << outputDevices.value(binding->device())->id();
+    connect(binding, SIGNAL(outputValue(double, int, int)), outputDevices.value(binding->device()), SLOT(outputValue(double, int, int)));
+    DEBUG << "connected output of binding" << binding->name() << "to device" << outputDevices.value(binding->device())->id();
 }
 
 void HardwareManager::deviceEnabled(int dev, bool enable)

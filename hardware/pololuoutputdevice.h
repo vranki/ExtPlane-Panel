@@ -15,7 +15,7 @@ public:
     virtual int id();
     virtual void setEnabled(bool e);
 public slots:
-    void outputValue(double value, int output);
+    void outputValue(double value, int output, int speed);
 private:
     void setpos(int servo, int pos);
     QFile devFile;

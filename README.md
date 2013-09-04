@@ -165,13 +165,12 @@ a output device.
    * Input max: 200 (this sets the range of ASI in knots)
    * Output device: the device you enabled
    * Output num: Number of output on your device. Usually 0=first servo, 1=second servo..
+   * Open the output curve dialog and set:
    * Output min: 45 (device dependent; set this to the value that moves servo to zero position)
    * Output max: 250 (device dependent; set this to the value that moves servo to 200kt position)
    * Interpolation speed: 3 (Makes the movement less jerky. Set to 0 for no interpolation)
  * Click Save changes. Servo should now start moving.
  * If you modify values, click Save changes again. Remember to save the panel to save these settings!
-
-Note: If you need to reverse the servo direction, swap input min and input max values.
 
 
 

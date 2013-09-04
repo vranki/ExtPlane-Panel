@@ -2,11 +2,15 @@
 #include "clientdataref.h"
 #include "extplaneconnection.h"
 #include "../util/console.h"
-
+#include "../util/interpolation.h"
 
 HardwareBinding::HardwareBinding(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection(conn), clientDataRef(0), interpolator_(0,0) {
-    inputMin_ = inputMax_ = outputMin_ = outputMax_ = 0;
+    inputMin_ = inputMax_ = 0;
     accuracy_ = interpolationSpeed_ = 0;
+    invert_ = false;
+    speed_ = 0;
+    for(int i=0; i < OUTPUT_CURVE_SIZE; i ++)
+        outputCurve_.append(0);
 }
 
 HardwareBinding::~HardwareBinding() {
@@ -28,7 +32,6 @@ void HardwareBinding::activate() {
     }
     if(!refName().isEmpty()) {
         clientDataRef = connection->subscribeDataRef(refName(), accuracy());
-//        connect(clientDataRef, SIGNAL(refChanged(QString, double)), &interpolator_, SLOT(valueChanged(QString,double)));
         connect(clientDataRef, SIGNAL(changed(ClientDataRef*)), this, SLOT(refChanged(ClientDataRef*)));
         connect(&interpolator_, SIGNAL(interpolatedValueChanged(QString,double)), this, SLOT(refValueChanged(QString,double)));
         connect(clientDataRef, SIGNAL(destroyed()), this, SLOT(refDeleted()));
@@ -81,22 +84,6 @@ double HardwareBinding::inputMax()
     return inputMax_;
 }
 
-void HardwareBinding::setOutputValues(double min, double max)
-{
-    outputMin_ = min;
-    outputMax_ = max;
-}
-
-double HardwareBinding::outputMin()
-{
-    return outputMin_;
-}
-
-double HardwareBinding::outputMax()
-{
-    return outputMax_;
-}
-
 void HardwareBinding::setDevice(int dev)
 {
     device_ = dev;
@@ -120,7 +107,7 @@ int HardwareBinding::output()
 
 void HardwareBinding::setInterpolationSpeed(double speed)
 {
-    if(speed < 0 ) speed = 0;
+    if(speed < 0) speed = 0;
     interpolationSpeed_ = speed;
 }
 
@@ -129,26 +116,92 @@ double HardwareBinding::interpolationSpeed()
     return interpolationSpeed_;
 }
 
+void HardwareBinding::setInverted(bool inv)
+{
+    invert_ = inv;
+}
+
+bool HardwareBinding::isInverted()
+{
+    return invert_;
+}
+
+double HardwareBinding::invertValueIfNeeded(double val)
+{
+    if(!invert_) return val;
+    return outputMax() - (val - outputMin());
+}
+
+void HardwareBinding::setSpeed(int spd)
+{
+    speed_ = spd;
+}
+
+int HardwareBinding::speed()
+{
+    return speed_;
+}
+
+QList<double> &HardwareBinding::outputCurve()
+{
+    return outputCurve_;
+}
+
+double HardwareBinding::calculateOutValue(double inValue)
+{
+    double valueOut = -66666;
+    if(inValue <= inputMin()) {
+        valueOut = outputMin();
+    } else if(inValue >= inputMax()) {
+        valueOut = outputMax();
+    } else {
+        double inputStep = inputRange() / 9;
+
+        int i=0;
+        bool valueFound = false;
+        while(i < 9 && !valueFound) {
+            double in1 = inputMin_ + i * inputStep;
+            double in2 = inputMin_ + (i+1) * inputStep;
+
+            if(inValue < in2) {
+                double out1 = outputCurve_.at(i);
+                double out2 = outputCurve_.at(i+1);
+                valueOut = Interpolation::linear(in1, in2, out1, out2, inValue);
+                valueFound = true;
+                break;
+            }
+            i++;
+        }
+        if(!valueFound)
+            valueOut = outputMax();
+    }
+    valueOut = invertValueIfNeeded(valueOut);
+    return valueOut;
+}
+
+double HardwareBinding::outputMin()
+{
+    return outputCurve_.first();
+}
+
+double HardwareBinding::outputMax()
+{
+    return outputCurve().last();
+}
+
+double HardwareBinding::outputRange() {
+    return outputMax() - outputMin();
+}
+
+double HardwareBinding::inputRange()
+{
+    return inputMax() - inputMin();
+}
+
 void HardwareBinding::refValueChanged(QString, double refValue)
 {
-    bool invert = inputMax_ < inputMin_;
-    // Limit value to input limits
-    if(!invert) {
-        refValue = qMin(refValue, inputMax_);
-        refValue = qMax(refValue, inputMin_);
-    } else {
-        refValue = qMin(refValue, inputMin_);
-        refValue = qMax(refValue, inputMax_);
-    }
-    double valueScaled = (refValue - inputMin_) / (inputMax_ - inputMin_); // [0-1]
-
-    double valueOut = outputMin_ + (outputMax_ - outputMin_) * valueScaled;
-
-    // Out value should be within limits
-    valueOut = qMax(valueOut, outputMin_);
-    valueOut = qMin(valueOut, outputMax_);
-
-    emit outputValue(valueOut, output_);
+    INFO << Q_FUNC_INFO << refValue << calculateOutValue(refValue) << output() << speed_;
+    emit outputValue(calculateOutValue(refValue), output_, speed_);
 }
 
 void HardwareBinding::refDeleted() {
@@ -161,11 +214,17 @@ void HardwareBinding::storeSettings(QSettings *panelSettings) {
     panelSettings->setValue("accuracy", accuracy());
     panelSettings->setValue("inputmin", inputMin());
     panelSettings->setValue("inputmax", inputMax());
-    panelSettings->setValue("outputmin", outputMin());
-    panelSettings->setValue("outputmax", outputMax());
     panelSettings->setValue("device", device());
     panelSettings->setValue("output", output());
+    panelSettings->setValue("speed", speed());
+    panelSettings->setValue("invert", isInverted());
     panelSettings->setValue("interpolationspeed", interpolationSpeed());
+    panelSettings->beginWriteArray("outputcurve", outputCurve_.size());
+    for (int i = 0; i < outputCurve_.size(); ++i) {
+        panelSettings->setArrayIndex(i);
+        panelSettings->setValue("curvevalue", outputCurve_.at(i));
+    }
+    panelSettings->endArray();
 }
 
 void HardwareBinding::loadSettings(QSettings *panelSettings) {
@@ -173,10 +232,21 @@ void HardwareBinding::loadSettings(QSettings *panelSettings) {
     setRefName(panelSettings->value("refname").toString());
     setAccuracy(panelSettings->value("accuracy").toDouble());
     setInputValues(panelSettings->value("inputmin").toDouble(), panelSettings->value("inputmax").toDouble());
-    setOutputValues(panelSettings->value("outputmin").toDouble(), panelSettings->value("outputmax").toDouble());
     setDevice(panelSettings->value("device").toInt());
     setOutput(panelSettings->value("output").toInt());
+    setSpeed(panelSettings->value("speed").toInt());
+    setInverted(panelSettings->value("invert").toBool());
     setInterpolationSpeed(panelSettings->value("interpolationspeed").toDouble());
+    int size = panelSettings->beginReadArray("outputcurve");
+    if(size == OUTPUT_CURVE_SIZE) {
+        outputCurve_.clear();
+        outputCurve_.reserve(size);
+        for (int i = 0; i < size; ++i) {
+            panelSettings->setArrayIndex(i);
+            outputCurve_.append(panelSettings->value("curvevalue").toDouble());
+        }
+    }
+    panelSettings->endArray();
 }
 
 

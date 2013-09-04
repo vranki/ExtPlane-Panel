@@ -14,12 +14,11 @@ ChromaOutputDevice::~ChromaOutputDevice()
 {
     if(enabled)
         setEnabled(false);
-
 }
 
 bool ChromaOutputDevice::init()
 {
-    minValue = -1000;
+    minValue = 0;
     maxValue = 1000;
 
     devFile.setFileName("/dev/ttyUSB0");
@@ -43,8 +42,7 @@ void ChromaOutputDevice::setEnabled(bool e)
 {
     OutputDevice::setEnabled(e);
     if(devFile.isOpen())
-        foreach(int servo, servopos.keys())
-            setpos(servo,0);
+        safePosition();
     if(enabled) {
         //open the device(com port) to be non-blocking (read will return immediately)
         devFile.open(QIODevice::ReadWrite | QIODevice::Text);
@@ -66,25 +64,39 @@ void ChromaOutputDevice::setEnabled(bool e)
     }
 }
 
-void ChromaOutputDevice::outputValue(double value, int output)
+void ChromaOutputDevice::outputValue(double value, int output, int speed)
 {
+    INFO << Q_FUNC_INFO << value << output << enabled;
     if(!enabled)
         return;
 
-    int pos = value;
+    double pos = value;
     pos = qMax(pos, minValue);
     pos = qMin(pos, maxValue);
 
-    setpos(output, pos);
+    // Convert to real range -1000 to 1000
+    pos = pos * 2 - 1000;
+
+    if(speed > 0 ) {
+        speed = speed - 1;
+    } else {
+        speed = 3;
+    }
+
+    setpos(output, pos, speed);
 }
 
-void ChromaOutputDevice::setpos(int servo, int pos) {
+void ChromaOutputDevice::safePosition() {
+    foreach(int servo, servopos.keys())
+        setpos(servo, (minValue + maxValue) / 2, 4);
+}
+
+void ChromaOutputDevice::setpos(int servo, int pos, int speed) {
     if(!devFile.isWritable()) return;
     if(servopos.contains(servo) && servopos[servo] == pos) return;
-//    int speed = 4;
-//    QString outstring = QString("s%0 %1 %2\n").arg(servo).arg(pos).arg(speed);
-    QString outstring = QString("s%0 %1\n").arg(servo).arg(pos);
-    // DEBUG << servo << pos;
+
+    QString outstring = QString("s%0 %1 %2\n").arg(servo).arg(pos).arg(speed);
+    INFO << servo << pos;
     devFile.write(outstring.toUtf8());
     servopos[servo] = pos;
     devFile.flush();

@@ -13,7 +13,7 @@ public:
     virtual bool init();
     virtual int id();
 public slots:
-    void outputValue(double value, int output);
+    void outputValue(double value, int output, int speed);
 private:
     QFile devFile;
 };

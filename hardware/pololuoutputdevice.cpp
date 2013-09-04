@@ -78,12 +78,12 @@ void PololuOutputDevice::setEnabled(bool e)
     }
 }
 
-void PololuOutputDevice::outputValue(double value, int output)
+void PololuOutputDevice::outputValue(double value, int output, int speed)
 {
     if(!enabled)
         return;
 
-    int pos = value;
+    double pos = value;
     pos = qMax(pos, minValue);
     pos = qMin(pos, maxValue);
 
