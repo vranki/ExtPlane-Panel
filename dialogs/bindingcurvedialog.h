@@ -22,11 +22,14 @@ public:
     ~BindingCurveDialog();
     void setBinding(HardwareBinding *b);
     void updateTable();
+signals:
+    void outputValue(double value, int output, int speed);
+protected:
+    virtual void resizeEvent(QResizeEvent *e);
 private slots:
     void saveChanges();
     void updateValues();
-    void minValueChanged();
-    void maxValueChanged();
+    void limitValueChanged();
     void sliderChanged();
     void resetCurve();
 private:

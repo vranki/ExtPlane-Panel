@@ -14,6 +14,7 @@ public:
     virtual void setEnabled(bool e);
     virtual void storeSettings(QSettings *panelSettings);
     virtual void loadSettings(QSettings *panelSettings);
+    virtual void safePosition(); // Move servos to safe position
     bool isAvailable();
     bool isEnabled();
     virtual int id()=0;

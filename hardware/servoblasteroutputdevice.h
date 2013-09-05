@@ -4,7 +4,7 @@
 #include <QFile>
 #include "outputdevice.h"
 
-#define SERVOBLASTER_ID 0
+#define SERVOBLASTER_ID 1
 
 class ServoBlasterOutputDevice : public OutputDevice
 {

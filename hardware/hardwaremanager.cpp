@@ -4,9 +4,12 @@
 #include "servoblasteroutputdevice.h"
 #include "pololuoutputdevice.h"
 #include "chromaoutputdevice.h"
+#include "nulloutputdevice.h"
 #include "../util/console.h"
 
 HardwareManager::HardwareManager(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection_(conn) {
+    NullOutputDevice *no = new NullOutputDevice(this);
+    outputDevices.insert(no->id(), no);
     ServoBlasterOutputDevice *sbo = new ServoBlasterOutputDevice(this);
     outputDevices.insert(sbo->id(), sbo);
     PololuOutputDevice *pod = new PololuOutputDevice(this);
@@ -62,8 +65,9 @@ void HardwareManager::saveSettings(QSettings *panelSettings) {
 }
 
 void HardwareManager::loadSettings(QSettings *panelSettings) {
-    foreach(OutputDevice *device, outputDevices)
+    foreach(OutputDevice *device, outputDevices) {
         emit deviceAvailable(device->id(), device->init());
+    }
 
     int n = panelSettings->value("bindingCount").toInt();
     for(int i=0;i<n;i++) {

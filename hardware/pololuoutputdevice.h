@@ -4,7 +4,7 @@
 #include "outputdevice.h"
 #include <QFile>
 #include <QMap>
-#define POLOLU_ID 1
+#define POLOLU_ID 2
 
 class PololuOutputDevice : public OutputDevice
 {

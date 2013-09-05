@@ -10,6 +10,7 @@ BindingCurveDialog::BindingCurveDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::BindingCurveDialog)
 {
+    currentBinding = 0;
     ui->setupUi(this);
     sliders.append(ui->verticalSlider);
     sliders.append(ui->verticalSlider_2);
@@ -32,6 +33,8 @@ BindingCurveDialog::~BindingCurveDialog()
 
 void BindingCurveDialog::setBinding(HardwareBinding *b)
 {
+    Q_ASSERT(b);
+    Q_ASSERT(!currentBinding);
     currentBinding = b;
     ui->outputMinSpinBox->setValue(currentBinding->outputCurve().first());
     ui->outputMaxSpinBox->setValue(currentBinding->outputCurve().last());
@@ -40,9 +43,10 @@ void BindingCurveDialog::setBinding(HardwareBinding *b)
     foreach(QSlider *slider, sliders) {
         connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged()));
     }
-    connect(ui->outputMinSpinBox, SIGNAL(valueChanged(double)), this, SLOT(minValueChanged()));
-    connect(ui->outputMaxSpinBox, SIGNAL(valueChanged(double)), this, SLOT(maxValueChanged()));
+    connect(ui->outputMinSpinBox, SIGNAL(valueChanged(double)), this, SLOT(limitValueChanged()));
+    connect(ui->outputMaxSpinBox, SIGNAL(valueChanged(double)), this, SLOT(limitValueChanged()));
     connect(ui->invertCheckbox, SIGNAL(clicked()), this, SLOT(updateValues()));
+    connect(this, SIGNAL(outputValue(double,int,int)), currentBinding, SIGNAL(outputValue(double,int,int)));
 
     updateTable();
     ui->outputGraphView->fitInView(&pixmapItem);
@@ -81,10 +85,12 @@ void BindingCurveDialog::updateTable()
         double input = Interpolation::linear(0, pixmap.width(), currentBinding->inputMin(), currentBinding->inputMax(), x);
         double output = currentBinding->calculateOutValue(input);
         int y = Interpolation::linear(currentBinding->outputMin(), currentBinding->outputMax(), 0, pixmap.height(), output);
-        painter.setPen(Qt::black);
+        painter.setPen(Qt::lightGray);
         painter.drawLine(x, pixmap.height() - y, x, pixmap.height());
+        painter.setPen(Qt::black);
+        painter.drawLine(x, pixmap.height() - y, x, pixmap.height() - y+2);
         if(x % 50==0) {
-            overlayPainter.setPen(Qt::green);
+            overlayPainter.setPen(Qt::darkGreen);
             overlayPainter.setOpacity(1);
             overlayPainter.drawText(x, 20, QString::number(input, 'g', 4));
             overlayPainter.drawText(x, 40, QString::number(output, 'g', 4));
@@ -97,25 +103,22 @@ void BindingCurveDialog::updateTable()
     ui->outputGraphView->fitInView(&pixmapItem);
 }
 
+void BindingCurveDialog::resizeEvent(QResizeEvent *e) {
+    QDialog::resizeEvent(e);
+    updateValues();
+}
+
 void BindingCurveDialog::updateValues()
 {
     saveChanges();
     updateTable();
 }
 
-void BindingCurveDialog::minValueChanged()
+void BindingCurveDialog::limitValueChanged()
 {
     saveChanges();
-    currentBinding->outputValue(currentBinding->invertValueIfNeeded(ui->outputMinSpinBox->value()), currentBinding->output(), 0);
     updateSliderLimits();
-    updateValues();
-}
-
-void BindingCurveDialog::maxValueChanged()
-{
-    saveChanges();
-    currentBinding->outputValue(currentBinding->invertValueIfNeeded(ui->outputMaxSpinBox->value()), currentBinding->output(), 0);
-    updateSliderLimits();
+    emit outputValue(currentBinding->invertValueIfNeeded(ui->outputMinSpinBox->value()), currentBinding->output(), 0);
     updateValues();
 }
 
@@ -123,20 +126,16 @@ void BindingCurveDialog::sliderChanged()
 {
     QObject *sliderO = sender();
     QSlider *slider = qobject_cast<QSlider*> (sliderO);
-    currentBinding->outputValue(currentBinding->invertValueIfNeeded(slider->value()), currentBinding->output(), 0);
+    if(slider)
+        emit outputValue(currentBinding->invertValueIfNeeded(slider->value()), currentBinding->output(), 0);
     saveChanges();
     updateValues();
 }
 
 void BindingCurveDialog::resetCurve()
 {
+    currentBinding->resetOutputCurve();
     updateSliderLimits();
-    double v = currentBinding->outputMin();
-    double d = currentBinding->outputRange() / 8;
-    foreach(QSlider *slider, sliders) {
-        slider->setValue(v);
-        v += d;
-    }
 }
 
 void BindingCurveDialog::updateSliderLimits()
@@ -148,7 +147,6 @@ void BindingCurveDialog::updateSliderLimits()
         slider->setValue(currentBinding->outputCurve().at(i));
         i++;
     }
-    qDebug() << "Set slider ranges to " << currentBinding->outputMin() << currentBinding->outputMax() << currentBinding->outputRange() / 1000.0f;
 }
 
 bool BindingCurveDialog::valuesInverted()

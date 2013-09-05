@@ -5,12 +5,17 @@
 #include "../util/interpolation.h"
 
 HardwareBinding::HardwareBinding(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection(conn), clientDataRef(0), interpolator_(0,0) {
-    inputMin_ = inputMax_ = 0;
+    inputMin_ = 0;
+    inputMax_ = 100;
     accuracy_ = interpolationSpeed_ = 0;
+    device_ = 0;
+    output_ = 0;
     invert_ = false;
     speed_ = 0;
     for(int i=0; i < OUTPUT_CURVE_SIZE; i ++)
         outputCurve_.append(0);
+    outputCurve_.replace(OUTPUT_CURVE_SIZE - 1, 100);
+    resetOutputCurve();
 }
 
 HardwareBinding::~HardwareBinding() {
@@ -196,6 +201,16 @@ double HardwareBinding::outputRange() {
 double HardwareBinding::inputRange()
 {
     return inputMax() - inputMin();
+}
+
+void HardwareBinding::resetOutputCurve()
+{
+    double v = outputMin();
+    double d = outputRange() / 9;
+    for(int i=1;i<OUTPUT_CURVE_SIZE - 1;i++) {
+        v += d;
+        outputCurve_.replace(i, v);
+    }
 }
 
 void HardwareBinding::refValueChanged(QString, double refValue)

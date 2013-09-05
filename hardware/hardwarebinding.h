@@ -51,7 +51,7 @@ public:
     double outputMax();
     double outputRange();
     double inputRange();
-
+    void resetOutputCurve();
 public slots:
     void tickTime(double dt, int total);
     void refValueChanged(QString name, double refValue); // Name is ignored

@@ -2,7 +2,7 @@
 #include "../util/console.h"
 
 OutputDevice::OutputDevice(QObject *parent) :
-    QObject(parent), enabled(false), available(false)
+    QObject(parent), enabled(false), available(false), minValue(0), maxValue(1000)
 {
 }
 
@@ -27,6 +27,10 @@ void OutputDevice::loadSettings(QSettings *panelSettings)
             DEBUG << "Device not available!";
         }
     }
+}
+
+void OutputDevice::safePosition()
+{
 }
 
 bool OutputDevice::isAvailable()

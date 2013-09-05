@@ -129,7 +129,8 @@ SOURCES += \
     hardware/chromaoutputdevice.cpp \
     dialogs/panelsdialog.cpp \
     dialogs/bindingcurvedialog.cpp \
-    util/interpolation.cpp
+    util/interpolation.cpp \
+    hardware/nulloutputdevice.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -192,7 +193,8 @@ HEADERS += \
     hardware/chromaoutputdevice.h \
     dialogs/panelsdialog.h \
     dialogs/bindingcurvedialog.h \
-    util/interpolation.h
+    util/interpolation.h \
+    hardware/nulloutputdevice.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
