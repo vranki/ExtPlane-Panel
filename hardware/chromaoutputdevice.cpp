@@ -1,6 +1,7 @@
 #include "chromaoutputdevice.h"
 #include <QFile>
 #include "../util/console.h"
+#include <QThread>
 
 #ifdef TERMIOS_AVAILABLE
     #include <fcntl.h>
@@ -98,7 +99,8 @@ void ChromaOutputDevice::outputValue(double value, int output, int speed) {
 
 void ChromaOutputDevice::safePosition() {
     foreach(int servo, servopos.keys())
-        setpos(servo, (minValue + maxValue) / 2, 4);
+        setpos(servo, 0, 3);
+    QThread::sleep(1); // Wait for servos to move to zero, @todo asynchronously
 }
 
 void ChromaOutputDevice::setpos(int servo, int pos, int speed) {
