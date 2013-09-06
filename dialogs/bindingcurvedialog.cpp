@@ -119,9 +119,9 @@ void BindingCurveDialog::limitValueChanged()
     saveChanges();
     updateSliderLimits();
     if(qobject_cast<QWidget*> (sender()) == ui->outputMinSpinBox)
-        emit outputValue(currentBinding->invertValueIfNeeded(ui->outputMinSpinBox->value()), currentBinding->output(), currentBinding->speed());
+        emit outputValue(ui->outputMinSpinBox->value(), currentBinding->output(), currentBinding->speed());
     if(qobject_cast<QWidget*> (sender()) == ui->outputMaxSpinBox)
-        emit outputValue(currentBinding->invertValueIfNeeded(ui->outputMaxSpinBox->value()), currentBinding->output(), currentBinding->speed());
+        emit outputValue(ui->outputMaxSpinBox->value(), currentBinding->output(), currentBinding->speed());
     updateValues();
 }
 
