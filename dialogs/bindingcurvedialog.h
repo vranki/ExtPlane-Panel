@@ -35,6 +35,7 @@ private slots:
 private:
     void updateSliderLimits();
     bool valuesInverted();
+    void outputCurve2Sliders();
 
     Ui::BindingCurveDialog *ui;
     HardwareBinding *currentBinding;

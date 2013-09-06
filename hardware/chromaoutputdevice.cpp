@@ -83,8 +83,9 @@ void ChromaOutputDevice::outputValue(double value, int output, int speed) {
     pos = qMax(pos, minValue);
     pos = qMin(pos, maxValue);
 
-    // Convert to real range -1000 to 1000
+    // Convert to real range -1500 to 1500
     pos = pos * 2 - 1000;
+    pos *= 1.5;
 
     if(speed > 0 ) {
         speed = speed - 1;

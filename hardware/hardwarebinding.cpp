@@ -205,9 +205,9 @@ double HardwareBinding::inputRange()
 
 void HardwareBinding::resetOutputCurve()
 {
-    double v = outputMin();
     double d = outputRange() / 9;
-    for(int i=1;i<OUTPUT_CURVE_SIZE - 1;i++) {
+    double v = outputMin();
+    for(int i=1; i<OUTPUT_CURVE_SIZE - 1; i++) {
         v += d;
         outputCurve_.replace(i, v);
     }

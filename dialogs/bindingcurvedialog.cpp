@@ -118,7 +118,10 @@ void BindingCurveDialog::limitValueChanged()
 {
     saveChanges();
     updateSliderLimits();
-    emit outputValue(currentBinding->invertValueIfNeeded(ui->outputMinSpinBox->value()), currentBinding->output(), 0);
+    if(qobject_cast<QWidget*> (sender()) == ui->outputMinSpinBox)
+        emit outputValue(currentBinding->invertValueIfNeeded(ui->outputMinSpinBox->value()), currentBinding->output(), currentBinding->speed());
+    if(qobject_cast<QWidget*> (sender()) == ui->outputMaxSpinBox)
+        emit outputValue(currentBinding->invertValueIfNeeded(ui->outputMaxSpinBox->value()), currentBinding->output(), currentBinding->speed());
     updateValues();
 }
 
@@ -127,7 +130,7 @@ void BindingCurveDialog::sliderChanged()
     QObject *sliderO = sender();
     QSlider *slider = qobject_cast<QSlider*> (sliderO);
     if(slider)
-        emit outputValue(currentBinding->invertValueIfNeeded(slider->value()), currentBinding->output(), 0);
+        emit outputValue(currentBinding->invertValueIfNeeded(slider->value()), currentBinding->output(), currentBinding->speed());
     saveChanges();
     updateValues();
 }
@@ -136,20 +139,35 @@ void BindingCurveDialog::resetCurve()
 {
     currentBinding->resetOutputCurve();
     updateSliderLimits();
+    saveChanges();
+    updateValues();
 }
 
 void BindingCurveDialog::updateSliderLimits()
 {
     int i = 1;
     foreach(QSlider *slider, sliders) {
+        disconnect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged()));
         slider->setRange(currentBinding->outputMin(), currentBinding->outputMax());
         slider->setSingleStep(currentBinding->outputRange() / 1000.0f);
-        slider->setValue(currentBinding->outputCurve().at(i));
+        connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged()));
         i++;
     }
+    outputCurve2Sliders();
 }
 
 bool BindingCurveDialog::valuesInverted()
 {
     return currentBinding->outputMin() > currentBinding->outputMax();
+}
+
+void BindingCurveDialog::outputCurve2Sliders()
+{
+    int i = 1;
+    foreach(QSlider *slider, sliders) {
+        disconnect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged()));
+        slider->setValue(currentBinding->outputCurve().at(i));
+        connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged()));
+        i++;
+    }
 }
