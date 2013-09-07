@@ -100,7 +100,8 @@ void ChromaOutputDevice::outputValue(double value, int output, int speed) {
 void ChromaOutputDevice::safePosition() {
     for(int servo=0; servo < 7;servo++)
         setpos(servo, 0, 3);
-    QThread::sleep(1); // Wait for servos to move to zero, @todo asynchronously
+    // @todo Now it would be nice to sleep asynchronously for a second or so, to
+    // let the servos move into correct safe position.
 }
 
 void ChromaOutputDevice::setpos(int servo, int pos, int speed) {
