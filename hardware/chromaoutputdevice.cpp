@@ -9,6 +9,10 @@
 
 ChromaOutputDevice::ChromaOutputDevice(QObject *parent) : OutputDevice(parent)
 {
+    servosStarted = 0;
+    connect(&startNextServoTimer, SIGNAL(timeout()), this, SLOT(startNextServo()));
+    startNextServoTimer.setInterval(1000);
+    startNextServoTimer.setSingleShot(true);
 }
 
 ChromaOutputDevice::~ChromaOutputDevice()
@@ -64,6 +68,9 @@ void ChromaOutputDevice::setEnabled(bool e)
             QString outstring = "se\n";
             devFile.write(outstring.toUtf8());
             devFile.flush();
+
+            servosStarted = 0;
+            startNextServoTimer.start();
     } else {
         if(devFile.isWritable()) {
             // Servo disable
@@ -73,6 +80,10 @@ void ChromaOutputDevice::setEnabled(bool e)
         }
         devFile.close();
     }
+}
+
+void ChromaOutputDevice::safePosition()
+{
 }
 
 void ChromaOutputDevice::outputValue(double value, int output, int speed) {
@@ -97,20 +108,28 @@ void ChromaOutputDevice::outputValue(double value, int output, int speed) {
     setpos(output, pos, speed);
 }
 
-void ChromaOutputDevice::safePosition() {
-    for(int servo=0; servo < 7;servo++)
-        setpos(servo, 0, 3);
-    // @todo Now it would be nice to sleep asynchronously for a second or so, to
-    // let the servos move into correct safe position.
-}
 
 void ChromaOutputDevice::setpos(int servo, int pos, int speed) {
     if(!devFile.isWritable()) return;
     if(servopos.contains(servo) && servopos[servo] == pos) return;
 
+    servopos[servo] = pos;
+
+
     QString outstring = QString("s%0 %1 %2\n").arg(servo).arg(pos).arg(speed);
     INFO << servo << pos;
     devFile.write(outstring.toUtf8());
-    servopos[servo] = pos;
     devFile.flush();
+}
+
+void ChromaOutputDevice::startNextServo()
+{
+    if(servosStarted < 7) {
+        servosStarted++;
+        int servo = servosStarted-1;
+        if(servopos.contains(servo)) {
+            setpos(servo, servopos[servo], 3);
+        }
+        startNextServoTimer.start();
+    }
 }

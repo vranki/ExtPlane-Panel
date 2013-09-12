@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QFile>
 #include <QMap>
+#include <QTimer>
 #include "outputdevice.h"
 #define CHROMA_ID 3
 
@@ -23,6 +24,14 @@ private:
     void setpos(int servo, int pos, int speed);
     QFile devFile;
     QMap<int, int> servopos;
+
+    // To avoid servos draining all power and kill RPi, start them
+    // one by one
+private slots:
+    void startNextServo();
+private:
+    QTimer startNextServoTimer;
+    int servosStarted;
 };
 
 #endif // CHROMAOUTPUTDEVICE_H
