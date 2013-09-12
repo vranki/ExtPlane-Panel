@@ -115,7 +115,7 @@ void ChromaOutputDevice::setpos(int servo, int pos, int speed) {
 
     servopos[servo] = pos;
 
-    if(servo < servosStarted) {
+    if(servo >= servosStarted) {
         INFO << "servo " << servo << " not started yet - ignoring";
         return;
     }
