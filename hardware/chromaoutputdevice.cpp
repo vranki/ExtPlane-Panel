@@ -115,7 +115,10 @@ void ChromaOutputDevice::setpos(int servo, int pos, int speed) {
 
     servopos[servo] = pos;
 
-
+    if(servo < servosStarted) {
+        INFO << "servo " << servo << " not started yet - ignoring";
+        return;
+    }
     QString outstring = QString("s%0 %1 %2\n").arg(servo).arg(pos).arg(speed);
     INFO << servo << pos;
     devFile.write(outstring.toUtf8());
