@@ -38,7 +38,7 @@ IndicatorLight::IndicatorLight(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
 }
 
 IndicatorLight::~IndicatorLight() {
-    if(_labelGlowItem) {
+    if(_labelGlowItem && this->scene()) {
         _labelGlowItem->scene()->removeItem(_labelGlowItem);
     }
 }

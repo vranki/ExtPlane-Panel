@@ -45,6 +45,7 @@ void PanelItemSelectionDialog::itemChanged(QListWidgetItem *newItem) {
     // Remove the previously showed one
     if(selectedPanelItem) {
         scene.removeItem(selectedPanelItem);
+        scene.clear();
         selectedPanelItem->deleteLater();
         selectedPanelItem = 0;
     }
