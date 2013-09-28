@@ -97,7 +97,6 @@ protected:
     double      _egtRangeMaximum;
     QColor      _egtColor;
 
-
     bool        _ffEnabled;
     QStringList _ffValues;
     double      _ffDatarefMinimum;
