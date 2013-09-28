@@ -25,22 +25,14 @@ public:
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void createSettings(QGridLayout *layout);
-    void setLabel(QString text);
-    void setBars(float thick, float thin);
+    virtual void itemSizeChanged(float w, float h);
     public slots:
     void refChanged(QString name, double alt);
-    void setUnit(DistanceUnit un);
-    void setRange1(float v);
-    void setRange2(float v);
-    void setThickBars(float v);
-    void setThinBars(float v);
-    void setNumbersScale(float v);
-    void setNumbers(float div);
 private:
-    void createCard(void);
-    void createFrame(void);
-    void createGlass(void);
-    void createBackground(void);
+    void createCard(float w, float h);
+    void createFrame(float w, float h);
+    void createGlass(float w, float h);
+    void createBackground(float w, float h);
     void createBezel(void);
     
     float value2Angle1(float value);
@@ -55,7 +47,6 @@ private:
     
     float _rollValue;
     float _pitchValue;
-    QString _label;
     QString _pitchRef;
     QString _rollRef;
     QPixmap _card;
