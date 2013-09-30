@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QImage>
 #include <QBitmap>
+#include <QComboBox>
 
 #include "../util/console.h"
 #include "extplaneclient.h"
@@ -89,6 +90,7 @@ void IndicatorLight::createLabel(int w, int h) {
         } painter.end();
 
         // Setup the graphics item for glow
+        // This has a special z-value ontop of other graphics items so that it can glow above the panel cover...
         if(_labelGlowItem) {
             this->scene()->removeItem(_labelGlowItem);
         }
@@ -153,6 +155,7 @@ void IndicatorLight::loadSettings(QSettings &settings) {
 void IndicatorLight::createSettings(QGridLayout *layout) {
     PanelItem::createSettings(layout);
 
+    // Standard settings
     createLineEditSetting(layout,"DataRef",_datarefName,SLOT(setDataRefName(QString)));
     createNumberInputSetting(layout,"Threshold",_threshold,SLOT(setThreshold(float)));
     createSliderSetting(layout,"Strength On",0,100,_strengthOn,SLOT(setStrengthOn(int)));
@@ -162,7 +165,159 @@ void IndicatorLight::createSettings(QGridLayout *layout) {
     createColorSetting(layout,"Label Color",_labelColor,SLOT(setLabelColor(QColor)));
     createSliderSetting(layout,"Label Glow",0,100,_glowStrength,SLOT(setGlowStrength(int)));
 
-    DEBUG << _datarefName;
+    // Presets
+    layout->addWidget(new QLabel("Load Preset", layout->parentWidget()));
+    QComboBox *combobox = new QComboBox(layout->parentWidget());
+    combobox->addItem("");
+    combobox->addItem("Brakes");
+    combobox->addItem("Gear");
+    combobox->addItem("Battery");
+    combobox->addItem("Engine Fire");
+    combobox->addItem("Fuel Pressure");
+    combobox->addItem("Oil Pressure");
+    combobox->addItem("Oil Temperature");
+    combobox->addItem("Fuel Low");
+    combobox->addItem("Ice Detected");
+    combobox->addItem("Beacon Lights");
+    combobox->addItem("Landing Lights");
+    combobox->addItem("Navigation Lights");
+    combobox->addItem("Taxi Lights");
+    combobox->addItem("Strobe Lights");
+    layout->addWidget(combobox);
+    connect(combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadPreset(int)));
+    connect(combobox, SIGNAL(currentIndexChanged(int)), layout->parentWidget()->window(), SLOT(close())); // This is kindof a hack, but we need to close the window to reflect the changes to the gui
+
+}
+
+void IndicatorLight::loadPreset(int val) {
+    if(val == 1) {
+        _labelOn = "BRAKES";
+        _labelOff = "BRAKES";
+        _labelColor = Qt::red;
+        _threshold = 0.1;
+        _strengthOn = 100;
+        _strengthOff = 20;
+        setGlowStrength(80);
+        setDataRefName("sim/flightmodel/controls/parkbrake");
+    } else if(val == 2) {
+        _labelOn = "GEAR";
+        _labelOff = "GEAR";
+        _labelColor = Qt::white;
+        _threshold = 0.1;
+        _strengthOn = 100;
+        _strengthOff = 20;
+        setGlowStrength(50);
+        setDataRefName("sim/cockpit/switches/gear_handle_status");
+    } else if(val == 3) {
+        _labelOn = "BATTERY";
+        _labelOff = "BATTERY";
+        _labelColor = Qt::white;
+        _threshold = 0.1;
+        _strengthOn = 50;
+        _strengthOff = 20;
+        setGlowStrength(50);
+        setDataRefName("sim/cockpit/electrical/battery_on");
+    } else if(val == 4) {
+        _labelOn = "ENGINE FIRE";
+        _labelOff = "ENGINE FIRE";
+        _labelColor = Qt::red;
+        _threshold = 0.1;
+        _strengthOn = 100;
+        _strengthOff = 20;
+        setGlowStrength(80);
+        setDataRefName("sim/cockpit/warnings/annunciators/engine_fire");
+    } else if(val == 5) {
+        _labelOn = "FUEL PRESSURE";
+        _labelOff = "FUEL PRESSURE";
+        _labelColor = Qt::red;
+        _threshold = 0.1;
+        _strengthOn = 100;
+        _strengthOff = 20;
+        setGlowStrength(80);
+        setDataRefName("sim/cockpit/warnings/annunciators/fuel_pressure");
+    } else if(val == 6) {
+        _labelOn = "OIL PRESSURE";
+        _labelOff = "OIL PRESSURE";
+        _labelColor = Qt::red;
+        _threshold = 0.1;
+        _strengthOn = 100;
+        _strengthOff = 20;
+        setGlowStrength(80);
+        setDataRefName("sim/cockpit/warnings/annunciators/oil_pressure");
+    } else if(val == 7) {
+        _labelOn = "OIL TEMP";
+        _labelOff = "OIL TEMP";
+        _labelColor = Qt::red;
+        _threshold = 0.1;
+        _strengthOn = 100;
+        _strengthOff = 20;
+        setGlowStrength(80);
+        setDataRefName("sim/cockpit/warnings/annunciators/oil_temperature");
+    } else if(val == 8) {
+        _labelOn = "FUEL LOW";
+        _labelOff = "FUEL LOW";
+        _labelColor = Qt::red;
+        _threshold = 0.1;
+        _strengthOn = 100;
+        _strengthOff = 20;
+        setGlowStrength(80);
+        setDataRefName("sim/cockpit/warnings/annunciators/fuel_quantity");
+    } else if(val == 9) {
+        _labelOn = "ICE";
+        _labelOff = "ICE";
+        _labelColor = Qt::red;
+        _threshold = 0.1;
+        _strengthOn = 100;
+        _strengthOff = 20;
+        setGlowStrength(80);
+        setDataRefName("sim/cockpit/warnings/annunciators/ice");
+    } else if(val == 10) {
+        _labelOn = "BEACON";
+        _labelOff = "BEACON";
+        _labelColor = Qt::white;
+        _threshold = 0.1;
+        _strengthOn = 50;
+        _strengthOff = 20;
+        setGlowStrength(50);
+        setDataRefName("sim/cockpit/electrical/beacon_lights_on");
+    } else if(val == 11) {
+        _labelOn = "LANDING";
+        _labelOff = "LANDING";
+        _labelColor = Qt::white;
+        _threshold = 0.1;
+        _strengthOn = 50;
+        _strengthOff = 20;
+        setGlowStrength(50);
+        setDataRefName("sim/cockpit/electrical/landing_lights_on");
+    } else if(val == 12) {
+        _labelOn = "NAV";
+        _labelOff = "NAV";
+        _labelColor = Qt::white;
+        _threshold = 0.1;
+        _strengthOn = 50;
+        _strengthOff = 20;
+        setGlowStrength(50);
+        setDataRefName("sim/cockpit/electrical/nav_lights_on");
+    } else if(val == 13) {
+        _labelOn = "TAXI";
+        _labelOff = "TAXI";
+        _labelColor = Qt::white;
+        _threshold = 0.1;
+        _strengthOn = 50;
+        _strengthOff = 20;
+        setGlowStrength(50);
+        setDataRefName("sim/cockpit/electrical/taxi_light_on");
+    } else if(val == 14) {
+        _labelOn = "STROBE";
+        _labelOff = "STROBE";
+        _labelColor = Qt::white;
+        _threshold = 0.1;
+        _strengthOn = 50;
+        _strengthOff = 20;
+        setGlowStrength(50);
+        setDataRefName("sim/cockpit/electrical/strobe_lights_on");
+    }
+
 }
 
 void IndicatorLight::setDataRefName(QString name) {
@@ -174,6 +329,7 @@ void IndicatorLight::setDataRefName(QString name) {
 
     // Subscribe new
     _client.subscribeDataRef(name, 0);
+    createLabel(width(),height());
 }
 
 void IndicatorLight::dataRefChanged(QString name, QString val) {
@@ -182,6 +338,7 @@ void IndicatorLight::dataRefChanged(QString name, QString val) {
 
 void IndicatorLight::dataRefChanged(QString name, double val) {
     // On or off?
+    DEBUG << name << val;
     _datarefValue = val;
     bool newOn = (_datarefValue > _threshold);
     if(!this->panel()->hasAvionicsPower) newOn = false;

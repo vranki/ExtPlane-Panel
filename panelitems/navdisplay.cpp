@@ -15,7 +15,8 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(NavDisplay,"display/nav")
 #define DATAREF_LOCALX "sim/flightmodel/position/local_x"
 #define DATAREF_LOCALZ "sim/flightmodel/position/local_z"
 //#define DATAREF_HEADING "sim/flightmodel/position/hpath"
-#define DATAREF_HEADING "sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot"
+//#define DATAREF_HEADING "sim/cockpit/misc/compass_indicated"
+#define DATAREF_HEADING "sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot"
 
 NavDisplay::NavDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         DisplayInstrument(panel,conn) {
@@ -247,7 +248,7 @@ void NavDisplay::createSettings(QGridLayout *layout) {
     DisplayInstrument::createSettings(layout);
 
     createSliderSetting(layout,"Range",100,200000,_displayRange,SLOT(setDisplayRange(int)));
-    createSliderSetting(layout,"Heading",0,360,_displayHeading,SLOT(setDisplayHeading(int)));
+    createSliderSetting(layout,"Heading Offset",0,360,_displayHeading,SLOT(setDisplayHeading(int)));
 
     layout->addWidget(new QLabel("Data Source", layout->parentWidget()));
     QComboBox *combobox = new QComboBox(layout->parentWidget());

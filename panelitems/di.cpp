@@ -25,8 +25,9 @@ DirectionIndicator::DirectionIndicator(ExtPlanePanel *panel, ExtPlaneConnection 
     setNumbersScale(0.1);
     units = DISTANCE_M;
     baroUnits = PRESSURE_HPA;
-
-    _dataRef = QString("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot");
+    // sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot
+    // sim/cockpit2/gauges/indicators/compass_heading_deg_mag
+    _dataRef = QString("sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot");
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef(_dataRef,0.1);
 }
