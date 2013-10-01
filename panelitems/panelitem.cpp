@@ -85,15 +85,16 @@ void PanelItem::mouseMoveEvent ( QGraphicsSceneMouseEvent * event ) {
 }
 
 void PanelItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-    if(_resizing) {
-        _resizing = false;
-    }
+    if(_resizing) _resizing = false;
     int nposx = pos().x();
     int nposy = pos().y();
-    nposx = nposx/SNAP_GRID_SIZE;
-    nposx = nposx * SNAP_GRID_SIZE;
-    nposy = nposy/SNAP_GRID_SIZE;
-    nposy = nposy * SNAP_GRID_SIZE;
+    int snapSize = SNAP_GRID_SIZE;
+    int snapx = (nposx % snapSize);
+    if(snapx <= snapSize/2) nposx -= snapx;
+    else nposx += (snapSize-snapx);
+    int snapy = (nposy % snapSize);
+    if(snapy <= snapSize/2) nposy -= snapy;
+    else nposy += (snapSize-snapy);
     setPos(nposx, nposy);
 
     QGraphicsItem::mouseReleaseEvent(event);
