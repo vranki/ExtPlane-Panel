@@ -323,7 +323,7 @@ void IndicatorLight::loadPreset(int val) {
 void IndicatorLight::setDataRefName(QString name) {
 
     // Unsubscribe old
-    if(_datarefName != "") _client.unsubscribeDataRef(_datarefName); //TODO: there seems to be something wrong with unsubscribing...
+    if(_datarefName != "" && _client.isDataRefSubscribed(_datarefName)) _client.unsubscribeDataRef(_datarefName); //TODO: there seems to be something wrong with unsubscribing...
     _datarefName = name;
      _datarefValue = 0;
 
@@ -337,6 +337,8 @@ void IndicatorLight::dataRefChanged(QString name, QString val) {
 }
 
 void IndicatorLight::dataRefChanged(QString name, double val) {
+    if(name != _datarefName) return;
+
     // On or off?
     DEBUG << name << val;
     _datarefValue = val;
