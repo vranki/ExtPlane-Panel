@@ -10,6 +10,7 @@
 #include "../widgets/distanceunitcombobox.h"
 #include "extplaneclient.h"
 #include "../widgets/numberinputlineedit.h"
+#include "../util/console.h"
 #include <QLabel>
 
 #define ATTITUDE_COLOR_BROWN_LIGHT QColor(164,147,108)
@@ -323,9 +324,9 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     // Init
     setupPainter(painter);
     double side = qMin(width(), height());
-    float pitch = _pitchValue;
-    if (pitch>maxPitch) pitch=maxPitch;
-    if (pitch<(0-maxPitch)) pitch=(0-maxPitch);
+    double pitch = _pitchValue;
+    if (pitch > maxPitch) pitch = maxPitch;
+    if (pitch < (0-maxPitch)) pitch = (0-maxPitch);
 
     // Do drawing of cached pixmaps
     painter->save(); {
@@ -339,7 +340,9 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
         // Rotate to roll and draw moving card
         painter->rotate(-_rollValue);
-        painter->drawPixmap(-_card.width()/2,-_card.height()/2 + pitch*(side*0.005),_card);
+        double pitchPixelsY = pitch*(side*0.005f);
+                DEBUG << pitchPixelsY;
+        painter->drawPixmap(QPointF(-_card.width()/2.0,-_card.height()/2.0 + pitchPixelsY),_card);
 
         // Draw frame
         painter->drawPixmap(-_frame.width()/2,-_frame.height()/2,_frame);
@@ -362,11 +365,9 @@ void AttitudeIndicator::itemSizeChanged(float w, float h) {
 }
 
 void AttitudeIndicator::refChanged(QString name, double value) {
-    if (name==_rollRef) {
-        if(value == _rollValue) return;
+    if (name == _rollRef) {
         _rollValue = value;
-    } else if (name==_pitchRef) {
-        if(value == _pitchValue) return;
+    } else if (name == _pitchRef) {
         _pitchValue = value;
     }
     update();
