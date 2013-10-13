@@ -6,7 +6,9 @@ QT += gui network widgets
 # Qt Mobility
 CONFIG += mobility
 MOBILITY += systeminfo
-load(mobilityconfig)
+
+# This doesn't seem to work; whines "Cannot find feature mobilityconfig"
+# load(mobilityconfig)
 contains(MOBILITY_VERSION, 1.1.1) {
     DEFINES += QTMOBILITY
 }
@@ -126,7 +128,10 @@ SOURCES += \
     panelitems/navdisplay.cpp \
     hardware/chromaoutputdevice.cpp \
     dialogs/panelsdialog.cpp \
-    panelitems/dial.cpp
+    panelitems/dial.cpp \
+    dialogs/bindingcurvedialog.cpp \
+    util/interpolation.cpp \
+    hardware/nulloutputdevice.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -188,13 +193,17 @@ HEADERS += \
     panelitems/navdisplay.h \
     hardware/chromaoutputdevice.h \
     dialogs/panelsdialog.h \
-    panelitems/dial.h
+    panelitems/dial.h \
+    dialogs/bindingcurvedialog.h \
+    util/interpolation.h \
+    hardware/nulloutputdevice.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
     dialogs/panelitemselectiondialog.ui \
     dialogs/hardwaredialog.ui \
-    dialogs/panelsdialog.ui
+    dialogs/panelsdialog.ui \
+    dialogs/bindingcurvedialog.ui
 
 # Lot of files for Android build, ignore them if not used
 OTHER_FILES += android/AndroidManifest.xml \

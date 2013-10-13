@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -204,6 +204,19 @@
           <string>Binding properties</string>
          </property>
          <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Binding name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="bindingNameLineEdit"/>
+          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
@@ -214,17 +227,20 @@
           <item row="1" column="1">
            <widget class="QLineEdit" name="bindingRefNameEdit"/>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Dataref accuracy</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="refAccuracySpinBox"/>
+          </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Input min</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Input max</string>
             </property>
            </widget>
           </item>
@@ -238,6 +254,13 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Input max</string>
+            </property>
+           </widget>
+          </item>
           <item row="4" column="1">
            <widget class="QDoubleSpinBox" name="inputMaxSpinbox">
             <property name="minimum">
@@ -246,49 +269,8 @@
             <property name="maximum">
              <double>99999.000000000000000</double>
             </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Output num</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QSpinBox" name="outputNumSpinbox"/>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Output min</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <widget class="QDoubleSpinBox" name="outputMinSpinbox">
-            <property name="minimum">
-             <double>-99999.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>99999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Output max</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QDoubleSpinBox" name="outputMaxSpinbox">
-            <property name="minimum">
-             <double>-999999.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>99999.990000000005239</double>
+            <property name="value">
+             <double>100.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -306,6 +288,11 @@
             </property>
             <item>
              <property name="text">
+              <string>Null output for testing</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>RPi Servoblaster</string>
              </property>
             </item>
@@ -321,32 +308,29 @@
             </item>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_8">
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Binding name</string>
+             <string>Output num</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="bindingNameLineEdit"/>
+          <item row="6" column="1">
+           <widget class="QSpinBox" name="outputNumSpinbox"/>
           </item>
-          <item row="10" column="1">
-           <widget class="QPushButton" name="saveChangesButton">
+          <item row="8" column="1">
+           <widget class="QPushButton" name="outputCurvesButton">
             <property name="text">
-             <string>Save changes</string>
+             <string>Output curve..</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_9">
+          <item row="9" column="0">
+           <widget class="QLabel" name="label_15">
             <property name="text">
-             <string>Dataref accuracy</string>
+             <string>Interpolation speed</string>
             </property>
            </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="refAccuracySpinBox"/>
           </item>
           <item row="9" column="1">
            <widget class="QDoubleSpinBox" name="interpolationSpeedSpinbox">
@@ -355,10 +339,24 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
-           <widget class="QLabel" name="label_15">
+          <item row="10" column="1">
+           <widget class="QPushButton" name="saveChangesButton">
             <property name="text">
-             <string>Interpolation speed</string>
+             <string>Save changes</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QSpinBox" name="outputSpeedSpinbox">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hardware-dependent maximum speed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Output speed</string>
             </property>
            </widget>
           </item>

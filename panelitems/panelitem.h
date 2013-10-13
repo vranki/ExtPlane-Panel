@@ -23,7 +23,7 @@
 #else
     #define SCALE_HANDLE_SIZE 20
 #endif
-#define SNAP_GRID_SIZE 10
+#define SNAP_GRID_SIZE 10 // Must be even
 
 // Typedefs
 enum PanelItemType

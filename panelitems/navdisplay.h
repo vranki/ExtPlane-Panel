@@ -21,6 +21,9 @@ class NavAid;
 #define NAVAID_TYPE_DME                             1024
 #define NAVAID_TYPE_LatLon                          2048
 
+#define DATASOURCE_5KM 0
+#define DATASOURCE_20KM 1
+#define DATASOURCE_100KM 2
 
 /**
  * Displays a digital navigation data panel.
@@ -46,7 +49,7 @@ public slots:
     void refChanged(QString name, QString value);
     void setDisplayRange(int val) { _displayRange = val; }
     void setDisplayHeading(int val) { _displayHeading = val; }
-
+    void setDataSource(int val);
 
 protected:
     QList<NavAid*> _navAids;
@@ -56,7 +59,7 @@ protected:
 
     float _displayRange;      // meters
     float _displayHeading;      // degrees
-
+    int _dataSource;
 };
 
 

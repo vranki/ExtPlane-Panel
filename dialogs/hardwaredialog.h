@@ -30,6 +30,7 @@ private slots:
     void enablePololu(bool enable);
     void enableChroma(bool enable);
     void deviceAvailable(int dev, bool avail);
+    void showOutputCurvesDialog();
 signals:
     void deviceEnabled(int dev, bool enable);
 private:

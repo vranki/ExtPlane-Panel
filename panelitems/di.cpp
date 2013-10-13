@@ -17,23 +17,17 @@ DirectionIndicator::DirectionIndicator(ExtPlanePanel *panel, ExtPlaneConnection 
     _client(this, typeName(), conn)
 {
     _value = 0;
-    setThickBars(10);
-    setThinBars(5);
-    setRange1(360);
-    setRange2(360);
-    setNumbers(30);
-    setNumbersScale(0.1);
-    units = DISTANCE_M;
-    baroUnits = PRESSURE_HPA;
-
-    _dataRef = QString("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot");
+    _range1 = 360;
+    _range2 = 360;
+    _thickBars = 10;
+    _thinBars = 5;
+    _numbers = 30;
+    _numbersScale = 0.1f;
+    // sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot
+    // sim/cockpit2/gauges/indicators/compass_heading_deg_mag
+    _dataRef = QString("sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot");
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     _client.subscribeDataRef(_dataRef,0.1);
-}
-
-void DirectionIndicator::setNumbers(float div) {
-    _numbers = div;
-    update();
 }
 
 void DirectionIndicator::createCard(float w, float h){
@@ -61,11 +55,6 @@ void DirectionIndicator::createCard(float w, float h){
     p.scale((double)side/600.0, (double)side/600.0);
     p.scale(DIRECTION_INDICATOR_HEADING_SCALE, DIRECTION_INDICATOR_HEADING_SCALE);
 
-    //TODO: dankrusi: I've disabled this. Black on black is invisible...
-    //p.setPen(Qt::blue);
-    //p.setBrush(Qt::red);
-    //p.drawChord(-midx,-midy,width,height,0,360*16);
-
     // Draw the bars
     p.setPen(Qt::white);
     p.setBrush(Qt::white);
@@ -88,36 +77,34 @@ void DirectionIndicator::createCard(float w, float h){
 
     // Draw the numbers and NESW labels
     p.setPen(QColor(200,200,200));
-    p.setFont(QFont(QString("Helvetica"), defaultFont.pointSize()*4.5, QFont::Bold, false)); //TODO: dankrusi: should we reference such explicit fonts?
+    p.setFont(QFont(defaultFont.family(), defaultFont.pointSize()*4.5, QFont::Bold, false));
     if(_numbers != 0) {
         for (float i = 0 ; i < _range1; i+=_numbers) {
-            p.save();
-            p.rotate(value2Angle1(i));
-            p.save();
-            QString lineNumber;
-            switch (int(i*_numbersScale)) {
-            case 0:
-                lineNumber = QString("N");
-                break;
-            case 9:
-                lineNumber = QString("E");
-                break;
-            case 18:
-                lineNumber = QString("S");
-                break;
-            case 27:
-                lineNumber = QString("W");
-                break;
-            default:
-                lineNumber = QString::number(i*_numbersScale);
-                break;
-            }
-            p.translate(0,-234);
-            int width = p.fontMetrics().width(lineNumber);
-            int height = p.fontMetrics().height();
-            p.drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
-            p.restore();
-            p.restore();
+            p.save(); {
+                p.rotate(value2Angle1(i));
+                QString lineNumber;
+                switch (int(i*_numbersScale)) {
+                case 0:
+                    lineNumber = QString("N");
+                    break;
+                case 9:
+                    lineNumber = QString("E");
+                    break;
+                case 18:
+                    lineNumber = QString("S");
+                    break;
+                case 27:
+                    lineNumber = QString("W");
+                    break;
+                default:
+                    lineNumber = QString::number(i*_numbersScale);
+                    break;
+                }
+                p.translate(0,-234);
+                int width = p.fontMetrics().width(lineNumber);
+                int height = p.fontMetrics().height();
+                p.drawText(-width/2,-height/2,width,height, Qt::AlignCenter,  lineNumber);
+            } p.restore();
         }
     }
 
@@ -217,25 +204,9 @@ void DirectionIndicator::setLabel(QString text) {
     _label = text;
 }
 
-void DirectionIndicator::setRange1(float r1) {
-    _range1 = qMax(r1, 1.0f);
-    update();
-}
-
-void DirectionIndicator::setRange2(float r2) {
-    _range2 = qMax(r2, 1.0f);
-    update();
-}
-
-void DirectionIndicator::setUnit(DistanceUnit unit) {
-    units = unit;
-    setLabel(Units::unitName(units));
-    update();
-}
-
 void DirectionIndicator::refChanged(QString name, double hdg) {
     if(name==_dataRef) {
-        if(hdg == _value) return;
+        //if(hdg == _value) return;
         _value = hdg;
     }
     update();
@@ -251,32 +222,8 @@ void DirectionIndicator::storeSettings(QSettings &settings) {
 }
 void DirectionIndicator::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
-    QString unitname = settings.value("unit").toString();
-    DistanceUnit unit = Units::distanceUnitForName(unitname);
-    setUnit(unit);
-    setRange1(settings.value("range1", 360).toDouble());
-    setRange2(settings.value("range2", 360).toDouble());
-    setThinBars(settings.value("thinbars", 10).toDouble());
-    setThickBars(settings.value("thickbars", 30).toDouble());
-    setNumbers(settings.value("numbers", 30).toDouble());
-    setNumbersScale(settings.value("numbersscale", 0.1).toDouble());
 }
 
 void DirectionIndicator::createSettings(QGridLayout *layout) {
 
-}
-
-void DirectionIndicator::setThickBars(float v){
-    _thickBars = v;
-    update();
-}
-
-void DirectionIndicator::setThinBars(float v) {
-    _thinBars = v;
-    update();
-}
-
-void DirectionIndicator::setNumbersScale(float v) {
-    _numbersScale = v;
-    update();
 }

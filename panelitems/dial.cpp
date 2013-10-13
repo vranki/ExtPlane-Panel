@@ -18,12 +18,24 @@ Dial::Dial(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         _client(this, typeName(), conn) {
     conn->registerClient(&_client);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
-    _value = false;
-    _label = "Dial";
-    _ref = 0;
+    connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(valueChanged(QString,QString)));
+    _value = "";
+    _label = "AUTOPILOT";
+    _positionLabel1 = "OFF";
+    _positionValue1 = "0";
+    _positionLabel2 = "FD";
+    _positionValue2 = "1";
+    _positionLabel3 = "ON";
+    _positionValue3 = "2";
+    _positionLabel4 = "";
+    _positionValue4 = "";
+    _positionLabel5 = "";
+    _positionValue5 = "";
     _dialPositions = 3;
     _dialPosition = 1;
-    setSize(100,30);
+    _dataref = NULL;
+    setSize(200,200);
+    updatePositions();
 }
 
 void Dial::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -95,7 +107,13 @@ void Dial::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
             double sn = qSin(theta);
             double rpx = labelX * cs - labelY * sn;
             double rpy = labelX * sn + labelY * cs;
-            painter->drawText(QRect(rpx-labelW/2.0,rpy,labelW,labelH), Qt::AlignCenter, "OFF");
+            QString label = "";
+            if(i == 1) label = _positionLabel1;
+            if(i == 2) label = _positionLabel2;
+            if(i == 3) label = _positionLabel3;
+            if(i == 4) label = _positionLabel4;
+            if(i == 5) label = _positionLabel5;
+            painter->drawText(QRect(rpx-labelW/2.0,rpy,labelW,labelH), Qt::AlignCenter, label);
             //painter->drawRect(QRect(rpx-labelW/2.0,rpy,labelW,labelH));
             labelPositionDegrees += degreesPerPosition;
         }
@@ -122,86 +140,79 @@ void Dial::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         painter->setPen(QPen(Qt::white,lineWidth));
         painter->drawLine(QPointF(0,0),QPointF(0,-dialR*0.8));
 
-
     } painter->restore();
 
     PanelItem::paint(painter, option, widget);
-    return;
-/*
-    double circleSize = height()/3;
-    painter->drawEllipse(0, height()/2-circleSize/2, circleSize, circleSize);
-
-    painter->save();
-    double switchWidth = height()/3;
-    painter->translate(switchWidth/2, height()/2);
-
-    QPolygon p;
-    p << QPoint(-switchWidth/4, 0) << QPoint(switchWidth/4, 0)
-      << QPoint(switchWidth/2, height()/2) << QPoint(-switchWidth/2, height()/2);
-    if(_value)
-        painter->scale(1,-1);
-    if(_value) {
-        painter->setBrush(Qt::darkGray);
-    } else {
-        painter->setBrush(Qt::lightGray);
-    }
-    painter->drawPolygon(p);
-
-    painter->restore();
-    painter->setPen(Qt::white);
-    QFont font = defaultFont;
-    font.setPixelSize(height()*0.75);
-    painter->setFont(font);
-    painter->drawText(QRect(switchWidth,0,width()-switchWidth, height()), Qt::AlignCenter, _label);
-    PanelItem::paint(painter, option, widget);*/
 }
 
 void Dial::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
 
     settings.setValue("label", _label);
-    settings.setValue("dataref", _refname);
+    settings.setValue("dataref", _datarefName);
+
+    settings.setValue("positionLabel1", _positionLabel1);
+    settings.setValue("positionValue1", _positionValue1);
+    settings.setValue("positionLabel2", _positionLabel2);
+    settings.setValue("positionValue2", _positionValue2);
+    settings.setValue("positionLabel3", _positionLabel3);
+    settings.setValue("positionValue3", _positionValue3);
+    settings.setValue("positionLabel4", _positionLabel4);
+    settings.setValue("positionValue4", _positionValue4);
+    settings.setValue("positionLabel5", _positionLabel5);
+    settings.setValue("positionValue5", _positionValue5);
 }
 
 void Dial::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
 
-    setLabel(settings.value("label", "Dial").toString());
-    setRef(settings.value("dataref", "").toString());
+    setLabel(settings.value("label", "AUTOPILOT").toString());
+    setDataRef(settings.value("dataref", "sim/cockpit/autopilot/autopilot_mode").toString());
+
+    setPositionLabel1(settings.value("positionLabel1", "OFF").toString());
+    setPositionValue1(settings.value("positionValue1", "0").toString());
+    setPositionLabel2(settings.value("positionLabel2", "FD").toString());
+    setPositionValue2(settings.value("positionValue2", "1").toString());
+    setPositionLabel3(settings.value("positionLabel3", "ON").toString());
+    setPositionValue3(settings.value("positionValue3", "2").toString());
+    setPositionLabel4(settings.value("positionLabel4", "").toString());
+    setPositionValue4(settings.value("positionValue4", "").toString());
+    setPositionLabel5(settings.value("positionLabel5", "").toString());
+    setPositionValue5(settings.value("positionValue5", "").toString());
 }
 
 void Dial::createSettings(QGridLayout *layout) {
-    layout->addWidget(new QLabel("Label", layout->parentWidget()));
-    QLineEdit *labelEdit = new QLineEdit(_label, layout->parentWidget());
-    connect(labelEdit, SIGNAL(textChanged(QString)), this, SLOT(setLabel(QString)));
-    layout->addWidget(labelEdit);
+    PanelItem::createSettings(layout);
 
-    layout->addWidget(new QLabel("Dataref", layout->parentWidget()));
-    QLineEdit *refEdit = new QLineEdit(_refname, layout->parentWidget());
-    connect(refEdit, SIGNAL(textChanged(QString)), this, SLOT(setRef(QString)));
-    layout->addWidget(refEdit);
+    createLineEditSetting(layout, "Dial Label", _label, SLOT(setLabel(QString)));
+    createLineEditSetting(layout, "Data Ref", _datarefName, SLOT(setDataRef(QString)));
+
+    createLineEditSetting(layout, "Label #1", _positionLabel1, SLOT(setPositionLabel1(QString)));
+    createLineEditSetting(layout, "Value #1", _positionValue1, SLOT(setPositionValue1(QString)));
+    createLineEditSetting(layout, "Label #2", _positionLabel2, SLOT(setPositionLabel2(QString)));
+    createLineEditSetting(layout, "Value #2", _positionValue2, SLOT(setPositionValue2(QString)));
+    createLineEditSetting(layout, "Label #3", _positionLabel3, SLOT(setPositionLabel3(QString)));
+    createLineEditSetting(layout, "Value #3", _positionValue3, SLOT(setPositionValue3(QString)));
+    createLineEditSetting(layout, "Label #4", _positionLabel4, SLOT(setPositionLabel4(QString)));
+    createLineEditSetting(layout, "Value #4", _positionValue4, SLOT(setPositionValue4(QString)));
+    createLineEditSetting(layout, "Label #5", _positionLabel5, SLOT(setPositionLabel5(QString)));
+    createLineEditSetting(layout, "Value #5", _positionValue5, SLOT(setPositionValue5(QString)));
 }
 
 void Dial::applySettings() {
-    if(_ref) {
-        _ref->unsubscribe();
-        _ref = 0;
-    }
-    if(!_refname.isEmpty())
-        _ref = _client.subscribeDataRef(_refname, 0);
+
 }
 
-void Dial::setLabel(QString txt) {
-    _label = txt;
+void Dial::setLabel(QString val) {
+    _label = val;
     update();
 }
 
-void Dial::setRef(QString txt) {
-    if(_ref) {
-        _ref->unsubscribe();
-        _ref = 0;
-    }
-    _refname = txt;
+void Dial::setDataRef(QString val) {
+    if(val.isEmpty()) return;
+    if(_client.isDataRefSubscribed(_datarefName)) _client.unsubscribeDataRef(_datarefName);
+    _datarefName = val;
+    _dataref = _client.subscribeDataRef(_datarefName, 0);
     update();
 }
 
@@ -215,15 +226,47 @@ void Dial::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     if(isEditMode()) {
         PanelItem::mouseReleaseEvent(event);
     } else {
-        //_value = !_value;
-        //if(_ref) _ref->setValue(_value ? 1 : 0);
         _dialPosition++;
         if(_dialPosition > _dialPositions) _dialPosition = 1;
+        if(_dataref) {
+            //TODO: if there is a problem with the connection this will crash
+            if(_dialPosition == 1) _dataref->setValue(_positionValue1.toDouble());
+            if(_dialPosition == 2) _dataref->setValue(_positionValue2.toDouble());
+            if(_dialPosition == 3) _dataref->setValue(_positionValue3.toDouble());
+            if(_dialPosition == 4) _dataref->setValue(_positionValue4.toDouble());
+            if(_dialPosition == 5) _dataref->setValue(_positionValue5.toDouble());
+        }
         update();
     }
 }
 
 void Dial::valueChanged(QString ref, double newValue) {
-    Q_ASSERT(ref==_refname);
-    _value = newValue != 0;
+    valueChanged(ref,QString("%1").arg(newValue));
+}
+
+void Dial::valueChanged(QString ref, QString newValue) {
+    _value = newValue;
+    DEBUG << "value is changing to" << newValue << "with dialpos" << _dialPosition;
+    if(_value == _positionValue1) _dialPosition = 1;
+    if(_value == _positionValue2) _dialPosition = 2;
+    if(_value == _positionValue3) _dialPosition = 3;
+    if(_value == _positionValue4) _dialPosition = 4;
+    if(_value == _positionValue5) _dialPosition = 5;
+    DEBUG << "value has changed to" << newValue << "with new dialpos" << _dialPosition;
+    update();
+}
+
+void Dial::updatePositions() {
+    int numPositions = 0;
+    for(int i = 1; i <=5; i++) {
+        if(i == 1 && _positionValue1.isEmpty()) break;
+        if(i == 2 && _positionValue2.isEmpty()) break;
+        if(i == 3 && _positionValue3.isEmpty()) break;
+        if(i == 4 && _positionValue4.isEmpty()) break;
+        if(i == 5 && _positionValue5.isEmpty()) break;
+        numPositions++;
+    }
+    DEBUG << "new dial positions:" << numPositions;
+    _dialPositions = numPositions;
+    update();
 }

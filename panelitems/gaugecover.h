@@ -37,6 +37,7 @@ public slots:
     void setGrainZoom(int val) {_grainZoom = val;}
     void setGrainPersistance(int val) {_grainPersistance = val;}
     void setGrainQuality(int val) {_grainQuality = val;}
+    void setGrainTiles(int val) {_grainTiles = val;}
     void setBackgroundColor(QColor val) {_backgroundColor = val;}
     void setScrewsEnabled(bool val) {_screwsEnabled = val;}
     void setScrewsSize(int val) {_screwsSize = val;}
@@ -55,6 +56,7 @@ private:
     int         _grainZoom;
     int         _grainPersistance;
     int         _grainQuality;
+    int         _grainTiles;
     bool        _screwsEnabled;
     int        _screwsSize;
     int        _screwsOffset;

@@ -16,6 +16,7 @@ GaugeCover::GaugeCover(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _grainZoom = 1;
     _grainPersistance = 50;
     _grainQuality = 6;
+    _grainTiles = 1;
     _backgroundColor = QColor("#272727");
     _screwsEnabled = true;
     _screwsSize = 80;
@@ -54,6 +55,7 @@ void GaugeCover::storeSettings(QSettings &settings) {
     settings.setValue("grainPersistance", _grainPersistance);
     settings.setValue("grainQuality", _grainQuality);
     settings.setValue("grainZoom", _grainZoom);
+    settings.setValue("grainTiles", _grainTiles);
     settings.setValue("screwsEnabled", _screwsEnabled);
     settings.setValue("screwsSize", _screwsSize);
     settings.setValue("screwsOffset", _screwsOffset);
@@ -70,6 +72,7 @@ void GaugeCover::loadSettings(QSettings &settings) {
     setGrainPersistance(settings.value("grainPersistance", 50).toInt());
     setGrainQuality(settings.value("grainQuality", 6).toInt());
     setGrainZoom(settings.value("grainZoom", 1).toInt());
+    setGrainTiles(settings.value("grainTiles", 1).toInt());
     setScrewsEnabled(settings.value("screwsEnabled", true).toBool());
     setScrewsSize(settings.value("screwsSize", 80).toInt());
     setScrewsOffset(settings.value("screwsOffset", -6).toInt());
@@ -86,7 +89,8 @@ void GaugeCover::createSettings(QGridLayout *layout) {
     createSliderSetting(layout,"Grain Strength",1,100,_grainStrengh,SLOT(setGrainStrength(int)));
     createSliderSetting(layout,"Grain Persistance",1,200,_grainPersistance,SLOT(setGrainPersistance(int)));
     createSliderSetting(layout,"Grain Quality",1,10,_grainQuality,SLOT(setGrainQuality(int)));
-    createSliderSetting(layout,"Grain Roughness",1,200,_grainZoom,SLOT(setGrainZoom(int)));
+    createSliderSetting(layout,"Grain Smoothnes",1,200,_grainZoom,SLOT(setGrainZoom(int)));
+    createSliderSetting(layout,"Grain Tiles",1,20,_grainTiles,SLOT(setGrainTiles(int)));
 
     // Screws
     createCheckboxSetting(layout,"Screws Enabled",_screwsEnabled,SLOT(setScrewsEnabled(bool)));
@@ -113,10 +117,15 @@ void GaugeCover::drawCoverImage() {
     // Draw background
     painter.fillRect(0,0,w,h,_backgroundColor);
     if(_grainEnabled) {
+        int tileSize = w/_grainTiles;
+        QImage grainTile = QImage(tileSize,tileSize,QImage::Format_ARGB32);
+        QPainter grainPainter;
+        grainPainter.begin(&grainTile);
+        setupPainter(&grainPainter);
+        PerlinNoise::draw(&grainPainter,_grainQuality,_grainStrengh/100.0,_grainZoom,tileSize,tileSize);
+        QBrush grainBrush = QBrush(grainTile);
         painter.setOpacity(_grainStrengh/100.0);
-        PerlinNoise::draw(&painter,_grainQuality,_grainStrengh/100.0,_grainZoom,w,h);
-        painter.setOpacity(0.05);
-        PerlinNoise::draw(&painter,2,1.0/2.0,200,w,h);
+        painter.fillRect(QRect(0,0,w,h),grainBrush);
         painter.setOpacity(1.0);
     }
 

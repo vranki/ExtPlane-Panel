@@ -29,12 +29,13 @@ public slots:
     void dataRefChanged(QString name, QString val);
     void setDataRefName(QString name);
     void setThreshold(float val) { _threshold = val; }
-    void setLabelColor(QColor val) { _labelColor = val; }
+    void setLabelColor(QColor val) { _labelColor = val; createLabel(width(),height()); }
     void setLabelOn(QString val) { _labelOn = val; }
     void setLabelOff(QString val) { _labelOff = val; }
     void setGlowStrength(int val) { _glowStrength = val; _glowEnabled=(_glowStrength!=0); }
     void setStrengthOn(int val) { _strengthOn = val; }
     void setStrengthOff(int val) { _strengthOff = val; }
+    void loadPreset(int val);
 
 private:
     // Internal variables

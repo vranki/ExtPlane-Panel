@@ -14,6 +14,7 @@ public:
     virtual void setEnabled(bool e);
     virtual void storeSettings(QSettings *panelSettings);
     virtual void loadSettings(QSettings *panelSettings);
+    virtual void safePosition(); // Move servos to safe position
     bool isAvailable();
     bool isEnabled();
     virtual int id()=0;
@@ -21,9 +22,9 @@ public:
 signals:
     void deviceEnabled(bool e);
 public slots:
-    virtual void outputValue(double value, int output)=0;
+    virtual void outputValue(double value, int output, int speed)=0;
 protected:
-    int minValue, maxValue;
+    double minValue, maxValue;
     bool enabled, available;
     QString status;
 };

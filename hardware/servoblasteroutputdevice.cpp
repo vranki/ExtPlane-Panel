@@ -36,12 +36,12 @@ int ServoBlasterOutputDevice::id()
     return SERVOBLASTER_ID;
 }
 
-void ServoBlasterOutputDevice::outputValue(double value, int output)
+void ServoBlasterOutputDevice::outputValue(double value, int output, int speed)
 {
     if(!enabled)
         return;
 
-    int pos = value;
+    double pos = value;
     pos = qMax(pos, minValue);
     pos = qMin(pos, maxValue);
 
