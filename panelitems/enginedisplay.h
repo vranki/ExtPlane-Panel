@@ -23,6 +23,8 @@ signals:
 public slots:
     void refChanged(QString name, double value);
     void refChanged(QString name, QStringList values);
+
+    void setStyle(int val) {_style=val;}
     void setBarLabels(int val) {_barLabels=val;}
 
     void setN1Enabled(bool val) {_n1Enabled=val;}
@@ -64,6 +66,7 @@ public slots:
 protected:
     int _engineCount;
     int _barLabels;
+    int _style; // 0=Generic 1=Boeing
 
     bool        _n1Enabled;
     QStringList _n1Values;

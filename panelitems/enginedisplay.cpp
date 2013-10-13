@@ -14,11 +14,15 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(EngineDisplay,"display/engines")
 #define DATAREF_EGT "sim/cockpit2/engine/indicators/EGT_deg_C"
 #define DATAREF_FF "sim/cockpit2/engine/indicators/fuel_flow_kg_sec"
 
+#define ENGINE_STYLE_GENERIC 0
+#define ENGINE_STYLE_BOEING 1
+
 EngineDisplay::EngineDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         DisplayInstrument(panel,conn) {
     // Init
     _barLabels = 6;
     _engineCount = 0;
+    _style = ENGINE_STYLE_GENERIC;
 
     _n1Enabled = true;
     _n1DatarefMinimum = 0.0;
@@ -57,6 +61,7 @@ EngineDisplay::EngineDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
 
     // Connect
     _client.subscribeDataRef(DATAREF_N1, 1.0);
+    _client.subscribeDataRef(DATAREF_N2, 1.0);
     _client.subscribeDataRef(DATAREF_EPR, 0.01);
     _client.subscribeDataRef(DATAREF_EGT, 1.0);
     _client.subscribeDataRef(DATAREF_NUMENGINES, 0.0);
@@ -102,11 +107,20 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
         if(_egtEnabled) gaugeSets += 1;
         if(_ffEnabled) gaugeSets += 1;
         double paddingLeft = 15;
-        double gaugeSpacing = (width-paddingLeft) / (_engineCount*gaugeSets);
-        double gaugeWidth = gaugeSpacing * 0.4;
+        double paddingTop = 15;
+        double gaugeHSpacing = (width-paddingLeft) / (_engineCount*gaugeSets);
+        double gaugeVSpacing = 0;
+        double gaugeWidth = gaugeHSpacing * 0.4;
         double gaugeHeight = height;
+        double middleSpacing = 0;
         double xx = paddingLeft;
         double yy = 0;
+        if(_style == ENGINE_STYLE_BOEING) {
+            gaugeHSpacing = (width-paddingLeft) / (_engineCount);
+            gaugeVSpacing = (height-paddingTop) / (gaugeSets);
+            gaugeWidth = gaugeHSpacing * 0.8;
+            gaugeHeight = gaugeVSpacing;
+        }
 
         // Draw N1
         if(_n1Enabled) {
@@ -115,8 +129,10 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
                 double value = _n1Values.at(i).toDouble();
                 // Draw
                 drawVerticalBarGauge(painter,_n1Color,xx,yy,gaugeWidth,gaugeHeight,value,_n1DatarefMinimum,_n1DatarefMaximum,_n1RangeMinimum,_n1RangeMaximum,false,_barLabels);
-                xx += gaugeSpacing;
+                xx += gaugeHSpacing;
             }
+            if(_style == ENGINE_STYLE_BOEING) xx = paddingLeft;
+            yy += gaugeVSpacing;
         }
 
         // Draw N2
@@ -126,8 +142,10 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
                 double value = _n2Values.at(i).toDouble();
                 // Draw
                 drawVerticalBarGauge(painter,_n2Color,xx,yy,gaugeWidth,gaugeHeight,value,_n2DatarefMinimum,_n2DatarefMaximum,_n2RangeMinimum,_n2RangeMaximum,false,_barLabels);
-                xx += gaugeSpacing;
+                xx += gaugeHSpacing;
             }
+            if(_style == ENGINE_STYLE_BOEING) xx = paddingLeft;
+            yy += gaugeVSpacing;
         }
 
         // Draw EPR
@@ -137,8 +155,10 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
                 double value = _eprValues.at(i).toDouble();
                 // Draw
                 drawVerticalBarGauge(painter,_eprColor,xx,yy,gaugeWidth,gaugeHeight,value,_eprDatarefMinimum,_eprDatarefMaximum,_eprRangeMinimum,_eprRangeMaximum,true,_barLabels);
-                xx += gaugeSpacing;
+                xx += gaugeHSpacing;
             }
+            if(_style == ENGINE_STYLE_BOEING) xx = paddingLeft;
+            yy += gaugeVSpacing;
         }
 
         // Draw EGT
@@ -148,8 +168,10 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
                 double value = _egtValues.at(i).toDouble();
                 // Draw
                 drawVerticalBarGauge(painter,_egtColor,xx,yy,gaugeWidth,gaugeHeight,value,_egtDatarefMinimum,_egtDatarefMaximum,_egtRangeMinimum,_egtRangeMaximum,true,_barLabels);
-                xx += gaugeSpacing;
+                xx += gaugeHSpacing;
             }
+            if(_style == ENGINE_STYLE_BOEING) xx = paddingLeft;
+            yy += gaugeVSpacing;
         }
 
         // Draw FF
@@ -159,8 +181,10 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
                 double value = _ffValues.at(i).toDouble();
                 // Draw
                 drawVerticalBarGauge(painter,_ffColor,xx,yy,gaugeWidth,gaugeHeight,value,_ffDatarefMinimum,_ffDatarefMaximum,_ffRangeMinimum,_ffRangeMaximum,true,_barLabels);
-                xx += gaugeSpacing;
+                xx += gaugeHSpacing;
             }
+            if(_style == ENGINE_STYLE_BOEING) xx = paddingLeft;
+            yy += gaugeVSpacing;
         }
 
     } painter->restore();
@@ -171,6 +195,7 @@ void EngineDisplay::storeSettings(QSettings &settings) {
     DisplayInstrument::storeSettings(settings);
 
     settings.setValue("barLabels", _barLabels);
+    settings.setValue("style", _style);
 
     settings.setValue("n1enabled",_n1Enabled);
     settings.setValue("n1datarefmin",_n1DatarefMinimum);
@@ -212,6 +237,7 @@ void EngineDisplay::loadSettings(QSettings &settings) {
     DisplayInstrument::loadSettings(settings);
 
     setBarLabels(settings.value("barLabels","6").toInt());
+    setStyle(settings.value("style","0").toInt());
 
     setN1Enabled(settings.value("n1enabled","true").toBool());
     setN1DatarefMinimum(settings.value("n1datarefmin","0").toDouble());
@@ -220,12 +246,12 @@ void EngineDisplay::loadSettings(QSettings &settings) {
     setN1RangeMaximum(settings.value("n1rangemax","100").toDouble());
     setN1Color(QColor(settings.value("n1color","#00FF00").toString()));
 
-    setN1Enabled(settings.value("n2enabled","false").toBool());
-    setN1DatarefMinimum(settings.value("n2datarefmin","0").toDouble());
-    setN1DatarefMaximum(settings.value("n2datarefmax","100").toDouble());
-    setN1RangeMinimum(settings.value("n2rangemin","0").toDouble());
-    setN1RangeMaximum(settings.value("n2rangemax","100").toDouble());
-    setN1Color(QColor(settings.value("n2color","#00FF00").toString()));
+    setN2Enabled(settings.value("n2enabled","false").toBool());
+    setN2DatarefMinimum(settings.value("n2datarefmin","0").toDouble());
+    setN2DatarefMaximum(settings.value("n2datarefmax","100").toDouble());
+    setN2RangeMinimum(settings.value("n2rangemin","0").toDouble());
+    setN2RangeMaximum(settings.value("n2rangemax","100").toDouble());
+    setN2Color(QColor(settings.value("n2color","#00FF00").toString()));
 
     setEPREnabled(settings.value("eprenabled","true").toBool());
     setEPRDatarefMinimum(settings.value("eprdatarefmin","1.0").toDouble());
@@ -261,6 +287,9 @@ void EngineDisplay::createGaugeSetSettings(QGridLayout *layout, QString name, bo
 void EngineDisplay::createSettings(QGridLayout *layout) {
     DisplayInstrument::createSettings(layout);
 
+    QStringList styles;
+    styles << "Generic" << "Boing";
+    createComboBoxSetting(layout,"Style",_style,styles,SLOT(setStyle(int)));
     createSliderSetting(layout,"Number of Labels",0,11,_barLabels,SLOT(setBarLabels(int)));
     createGaugeSetSettings(layout,"N1",_n1Enabled,_n1DatarefMinimum,_n1DatarefMaximum,_n1RangeMinimum,_n1RangeMaximum,_n1Color);
     createGaugeSetSettings(layout,"N2",_n2Enabled,_n2DatarefMinimum,_n2DatarefMaximum,_n2RangeMinimum,_n2RangeMaximum,_n2Color);

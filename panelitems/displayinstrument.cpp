@@ -147,7 +147,7 @@ void DisplayInstrument::drawVerticalBarGauge(
     QPen pen(Qt::white,strokeWidth);
     painter->setPen(pen);
     painter->setBrush(Qt::transparent);
-    painter->drawRect(x,valueHeight+labelHeight/2,width,barHeight);
+    painter->drawRect(x,y+valueHeight+labelHeight/2,width,barHeight);
 
     // Draw bar inner
     painter->setPen(Qt::transparent);

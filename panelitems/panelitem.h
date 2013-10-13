@@ -101,6 +101,10 @@ public:
      * Helper method for easily creating a color setting (QString) with an option for a color picker
      */
     void createColorSetting(QGridLayout *layout, QString label, QColor initialValue, const char* slot);
+    /**
+     * Helper method for easily creating a combo box setting (int) with a list of QString items
+     */
+    void createComboBoxSetting(QGridLayout *layout, QString label, int initialValue, QStringList items, const char* slot);
     virtual void applySettings();
     inline PanelItemType itemType() { return _itemType; }
     inline PanelItemShape itemShape() { return _itemShape; }

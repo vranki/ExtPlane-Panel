@@ -125,7 +125,8 @@ SOURCES += \
     panelitems/displayinstrument.cpp \
     panelitems/navdisplay.cpp \
     hardware/chromaoutputdevice.cpp \
-    dialogs/panelsdialog.cpp
+    dialogs/panelsdialog.cpp \
+    panelitems/dial.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -186,7 +187,8 @@ HEADERS += \
     panelitems/displayinstrument.h \
     panelitems/navdisplay.h \
     hardware/chromaoutputdevice.h \
-    dialogs/panelsdialog.h
+    dialogs/panelsdialog.h \
+    panelitems/dial.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \

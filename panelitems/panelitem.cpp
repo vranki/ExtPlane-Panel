@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QColorDialog>
 #include <QCheckBox>
+#include <QComboBox>
 
 #include "../panel.h"
 #include "../widgets/colorselector.h"
@@ -259,6 +260,16 @@ void PanelItem::createColorSetting(QGridLayout *layout, QString label, QColor in
     layout->addWidget(widget);
     connect(widget, SIGNAL(colorChanged(QColor)), this, slot);
     connect(widget, SIGNAL(colorChanged(QColor)), this, SLOT(settingChanged()));
+}
+
+void PanelItem::createComboBoxSetting(QGridLayout *layout, QString label, int initialValue, QStringList items, const char* slot) {
+    layout->addWidget(new QLabel(label, layout->parentWidget()));
+    QComboBox *widget = new QComboBox(layout->parentWidget());
+    widget->addItems(items);
+    widget->setCurrentIndex(initialValue);
+    layout->addWidget(widget);
+    connect(widget, SIGNAL(currentIndexChanged(int)), this, slot);
+    connect(widget, SIGNAL(currentIndexChanged(int)), this, SLOT(settingChanged()));
 }
 
 
