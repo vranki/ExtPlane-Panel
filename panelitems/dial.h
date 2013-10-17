@@ -34,6 +34,7 @@ public slots:
     void setPositionValue4(QString val) { _positionValue4 = val; updatePositions(); }
     void setPositionLabel5(QString val) { _positionLabel5 = val; updatePositions(); }
     void setPositionValue5(QString val) { _positionValue5 = val; updatePositions(); }
+    void loadPreset(int val);
 
 private slots:
     void valueChanged(QString ref, double newValue);

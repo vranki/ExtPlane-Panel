@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QGraphicsSceneMouseEvent>
 #include <qmath.h>
 
@@ -184,6 +185,17 @@ void Dial::loadSettings(QSettings &settings) {
 void Dial::createSettings(QGridLayout *layout) {
     PanelItem::createSettings(layout);
 
+    // Presets
+    layout->addWidget(new QLabel("Load Preset", layout->parentWidget()));
+    QComboBox *combobox = new QComboBox(layout->parentWidget());
+    combobox->addItem("");
+    combobox->addItem("Autopilot");
+    //TODO: @noel add presets here, see indicatorlight.cpp for reference
+    layout->addWidget(combobox);
+    connect(combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(loadPreset(int)));
+    connect(combobox, SIGNAL(currentIndexChanged(int)), layout->parentWidget()->window(), SLOT(close())); // This is kindof a hack, but we need to close the window to reflect the changes to the gui
+
+
     createLineEditSetting(layout, "Dial Label", _label, SLOT(setLabel(QString)));
     createLineEditSetting(layout, "Data Ref", _datarefName, SLOT(setDataRef(QString)));
 
@@ -201,6 +213,38 @@ void Dial::createSettings(QGridLayout *layout) {
 
 void Dial::applySettings() {
 
+}
+
+void Dial::loadPreset(int val) {
+
+    // Reset
+    _label = "";
+    _positionLabel1 = "";
+    _positionValue1 = "";
+    _positionLabel2 = "";
+    _positionValue2 = "";
+    _positionLabel3 = "";
+    _positionValue3 = "";
+    _positionLabel4 = "";
+    _positionValue4 = "";
+    _positionLabel5 = "";
+    _positionValue5 = "";
+
+    // Apply preset
+    if(val == 1) {
+        _label = "AUTOPILOT";
+        _positionLabel1 = "OFF";
+        _positionValue1 = "0";
+        _positionLabel2 = "FD";
+        _positionValue2 = "1";
+        _positionLabel3 = "ON";
+        _positionValue3 = "2";
+        setDataRef("sim/cockpit/autopilot/autopilot_mode");
+    }
+    //TODO: @noe add presets here, see indicatorlight.cpp for referencel
+
+    // Apply changes
+    updatePositions();
 }
 
 void Dial::setLabel(QString val) {

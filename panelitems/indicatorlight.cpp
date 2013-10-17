@@ -317,7 +317,6 @@ void IndicatorLight::loadPreset(int val) {
         setGlowStrength(50);
         setDataRefName("sim/cockpit/electrical/strobe_lights_on");
     }
-
 }
 
 void IndicatorLight::setDataRefName(QString name) {
