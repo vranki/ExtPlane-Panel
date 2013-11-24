@@ -21,12 +21,17 @@ public slots:
     void dataRefChanged(QString name, QStringList values);
     void setDataRefName(QString name);
     void setDataRefAccuracy(float accuracy);
+    void setShowAllIndexes( bool showAll );
+    void setChosenIndex( float index ); // is float to avoid error from UI call
 
 private:
     ExtPlaneClient _client;
     QString _currentValue;
     QString _currentName;
     double _currentAccuracy;
+    bool _showAllIndexes;
+    int _chosenIndex; // UI index input from user
+    int _validIndex; // chosenIndex clamped to dataref array length
 };
 
 #endif // DATAREFDEBUGGER_H
