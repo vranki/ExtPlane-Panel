@@ -34,6 +34,7 @@ void Variometer::velocityChanged(QString name, double speed) {
 
 void Variometer::setUnit(VelocityUnit unit) {
     units = unit;
+    repaintPixmaps();
 }
 
 void Variometer::storeSettings(QSettings &settings) {
@@ -61,15 +62,18 @@ void Variometer::setMaxValue(float mv) {
 void Variometer::createSettings(QGridLayout *layout) {
     QLabel *unitsLabel = new QLabel("Unit", layout->parentWidget());
     layout->addWidget(unitsLabel, layout->rowCount(), 0);
+
     VelocityUnitComboBox *unitsCombo = new VelocityUnitComboBox(layout->parentWidget(), units);
     connect(unitsCombo, SIGNAL(unitSelected(VelocityUnit)), this, SLOT(setUnit(VelocityUnit)));
     layout->addWidget(unitsCombo);
+
     QLabel *maxLabel = new QLabel("Maximum value", layout->parentWidget());
     layout->addWidget(maxLabel);
     NumberInputLineEdit *maxValueEdit = new NumberInputLineEdit(layout->parentWidget());
     maxValueEdit->setText(QString::number(maxValue));
     layout->addWidget(maxValueEdit);
     connect(maxValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMaxValue(float)));
+
     QCheckBox *totalCheckbox = new QCheckBox("Total energy", layout->parentWidget());
     totalCheckbox->setChecked(isTotalEnergy);
     layout->addWidget(totalCheckbox);

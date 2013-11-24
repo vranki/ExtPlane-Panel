@@ -14,6 +14,8 @@ double Units::convertSpeed(VelocityUnit from, VelocityUnit to, double value) {
         ms = value;
     if(from == VELOCITY_FPM)
         ms = value * 0.00508;
+    if(from == VELOCITY_KFPM)
+        ms = value * 5.08;
 
     if(to == VELOCITY_KMH)
         return ms * 3.6;
@@ -21,6 +23,8 @@ double Units::convertSpeed(VelocityUnit from, VelocityUnit to, double value) {
         return ms * 1.94;
     if(to == VELOCITY_FPM)
         return ms * 196.850393;
+    if(to == VELOCITY_KFPM)
+        return ms * 0.196850393;
     return ms;
 }
 
@@ -64,6 +68,8 @@ QString Units::unitName(VelocityUnit unit) {
         return "m/s";
     if(unit == VELOCITY_FPM)
         return "ft/min";
+    if(unit == VELOCITY_KFPM)
+        return "ft/min x1000";
     return "?";
 }
 
@@ -90,6 +96,7 @@ VelocityUnit Units::velocityUnitForName(QString name) {
     if(name=="km/h") return VELOCITY_KMH;
     if(name=="m/s") return VELOCITY_MS;
     if(name=="ft/min") return VELOCITY_FPM;
+    if(name=="ft/min x1000") return VELOCITY_KFPM;
     return VELOCITY_UNKNOWN;
 }
 

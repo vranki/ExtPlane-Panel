@@ -8,7 +8,8 @@ enum VelocityUnit {
     VELOCITY_MS,
     VELOCITY_KMH,
     VELOCITY_KTS,
-    VELOCITY_FPM
+    VELOCITY_FPM,
+    VELOCITY_KFPM // thousand feet per minute
 };
 
 enum DistanceUnit {
