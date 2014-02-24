@@ -51,6 +51,9 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     editMode = false;
     dirty = false;
 
+    // Set up viewport for touch events
+    viewport()->setAttribute(Qt::WA_AcceptTouchEvents);
+
     // Load settings
     appSettings = new Settings("org.vranki", "extplane-panel", this);
 

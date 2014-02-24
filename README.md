@@ -181,25 +181,27 @@ ExtPlane-Panel uses the Qt Framework for graphics and cross-platform compatibili
 The requirements for ExtPlane-Panel are as follows:
 * C++ Toolchain
 * Qt Framework 4.5+ (Qt 5.x is recommended)
-* ExtPlane
+* ExtPlane (contains the reusable client Qt code)
 
-### Debian/Ubuntu Linux ###
+### Linux ###
+
 ```bash
-# 1: Install required libraries and tools
-sudo apt-get install git build-essential qtbase5-dev qt5-default qtmobility-dev
+# 1: (Debian/Ubuntu) Install required libraries and tools
+sudo apt-get install git build-essential qtbase5-dev qt5-default qtmobility-dev debhelper cdbs devscripts
 
-# 2: Download source code from GitHub
+# 2: Download source code from GitHub and enter the ExtPlane directory
 git clone https://github.com/vranki/ExtPlane.git
 git clone https://github.com/vranki/ExtPlane-Panel.git
-
-# 3: Build project
 cd ExtPlane-Panel
+
+# 3a: (Debian/Ubuntu) Build and install debian package
+dpkg-buildpackage -rfakeroot -b
+sudo dpkg -i ../extplane-panel*.deb
+
+# 3b: (NOT Debian/Ubuntu) Build binary
 qmake
 make
 
-# 4: (optional) Create and install debian package
-dpkg-buildpackage -rfakeroot -b
-sudo dpkg -i ../extplane-panel*.deb
 ```
 
 ### OS X ###
