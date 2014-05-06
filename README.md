@@ -32,9 +32,19 @@ Target hardware is:
 
 ## Download ##
 
-Look into the "binary" directory in GitHub for ready built binaries. 
-If you can't find one for your platform, you'll need to build 
-ExtPlane-Panel yourself. 
+### Ext-Plane Plugin + Panel ###
+
+* Linux 32bit, 15MB
+    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Linux32.zip](http://goo.gl/BNzoeZ)
+* Linux 64bit, 15MB
+    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Linux64.zip](http://goo.gl/akBtl4)
+* Windows 32bit, 12MB
+    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Win32.zip](http://goo.gl/Nupczn)
+* Windows 64bit, 13MB
+    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Win64.zip](http://goo.gl/6EHtei)
+* OS-X 64bit, 15MB
+    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-OSX64.zip](http://goo.gl/8kLzJg)
+
 
 
 ## Instruments ##
