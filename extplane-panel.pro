@@ -131,7 +131,8 @@ SOURCES += \
     panelitems/dial.cpp \
     dialogs/bindingcurvedialog.cpp \
     util/interpolation.cpp \
-    hardware/nulloutputdevice.cpp
+    hardware/nulloutputdevice.cpp \
+    panelitems/engine_fuel_p.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -196,7 +197,8 @@ HEADERS += \
     panelitems/dial.h \
     dialogs/bindingcurvedialog.h \
     util/interpolation.h \
-    hardware/nulloutputdevice.h
+    hardware/nulloutputdevice.h \
+    panelitems/engine_fuel_p.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
@@ -240,3 +242,7 @@ OTHER_FILES += android/AndroidManifest.xml \
     android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
     android/version.xml
 OTHER_FILES += README.md debian/rules debian/changelog debian/control debian/extplane-panel.install debian/extplane-panel-dbg.install
+
+
+RESOURCES += \
+    applicationresources.qrc
