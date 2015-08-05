@@ -3,6 +3,8 @@
 #include <math.h>
 #include "../util/console.h"
 #include "extplaneclient.h"
+#include "../valueinterpolator.h"
+#include "../widgets/numberinputlineedit.h"
 
 
 
@@ -16,6 +18,8 @@ EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
                 pressureValueMin(0),
                 pressureValueMax(400),
                 scaleFactor(1),
+                pressureGreenBegin(100),
+                pressureGreenEnd(350),
                 _client(this, typeName(), conn),
                 bottomImage(":/images/DR400_engine_FUELP.png"),
                 bottomPixmap(0),
@@ -27,7 +31,6 @@ EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     //subscibe to dataref
     _client.subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 15.0);
     connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(pressureChanged(QString,QStringList)));
-
 
 
     //set size
@@ -43,16 +46,65 @@ EngineFuelP::~EngineFuelP() {
 
 void EngineFuelP::storeSettings(QSettings &settings) {
     PanelItem::storeSettings(settings);
+    settings.setValue("maxvalue", QString::number(pressureValueMax));
+    settings.setValue("greenBegin", QString::number(pressureGreenBegin));
+    settings.setValue("greenEnd", QString::number(pressureGreenEnd));
 }
 
 void EngineFuelP::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
+    setMaxValue(settings.value("maxvalue",400).toInt());
+    setGreenBeginValue(settings.value("greenBegin",100).toInt());
+    setGreenEndValue(settings.value("greenEnd",350).toInt());
+
 }
 
 void EngineFuelP::createSettings(QGridLayout *layout) {
-   
-    QLabel *unitsLabel = new QLabel("Nothing to set for this time", layout->parentWidget());
-    layout->addWidget(unitsLabel, layout->rowCount(), 0);
+
+    QLabel *maxPressure = new QLabel("Maximum psi range", layout->parentWidget());
+    layout->addWidget(maxPressure);
+    NumberInputLineEdit *maxValueEdit = new NumberInputLineEdit(layout->parentWidget());
+    maxValueEdit->setText(QString::number(pressureValueMax));
+    layout->addWidget(maxValueEdit);
+    connect(maxValueEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMaxValue(float)));
+
+    QLabel *greenBeginPressure = new QLabel("Green value begins", layout->parentWidget());
+    layout->addWidget(greenBeginPressure);
+    NumberInputLineEdit *greenBeginPressureEdit = new NumberInputLineEdit(layout->parentWidget());
+    greenBeginPressureEdit->setText(QString::number(pressureGreenBegin));
+    layout->addWidget(greenBeginPressureEdit);
+    connect(greenBeginPressureEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setGreenBeginValue(float)));
+
+    QLabel *greenEndPressure = new QLabel("Green value ends", layout->parentWidget());
+    layout->addWidget(greenEndPressure);
+    NumberInputLineEdit *greenEndPressureEdit = new NumberInputLineEdit(layout->parentWidget());
+    greenEndPressureEdit->setText(QString::number(pressureGreenEnd));
+    layout->addWidget(greenEndPressureEdit);
+    connect(greenEndPressureEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setGreenEndValue(float)));
+
+}
+
+void EngineFuelP::setMaxValue(float mv) {
+    if (mv != pressureValueMax && mv > 0) {
+        pressureValueMax = mv;
+        this->drawBottomPixmap();
+    }
+}
+
+void EngineFuelP::setGreenBeginValue(float mv) {
+    if (mv != pressureGreenBegin && mv > 0) {
+        //pressureGreenBegin value must be between pressureValueMin and pressureGreenEnd
+        pressureGreenBegin = qMax(qMin(mv, this->pressureGreenEnd), this->pressureValueMin);
+        this->drawBottomPixmap();
+    }
+}
+
+void EngineFuelP::setGreenEndValue(float mv) {
+    if (mv != pressureGreenEnd && mv > 0) {
+        //pressureGreenEnd value must be between pressureGreenBegin and pressureValueMax
+        pressureGreenEnd = qMax(qMin(mv, this->pressureValueMax), this->pressureGreenBegin);
+        this->drawBottomPixmap();
+    }
 }
 
 /*
@@ -62,7 +114,7 @@ void EngineFuelP::createSettings(QGridLayout *layout) {
 void EngineFuelP::drawBottomPixmap() {
 
     int w,h; //width; height
-    float arcGauge = 0.45;
+    float arcGauge = 0.45; //distance ration between edge and arc
     w=qMin(this->width(), this -> height());
     h=w;
 
@@ -89,6 +141,8 @@ void EngineFuelP::drawBottomPixmap() {
 
     pa.save();
     //draw graduations
+    //arc amplitude is 120 degrees
+
     pen.setWidth(1+w/250); //pen width increase when w increase
     pen.setColor(QColor(200,200,200)); //grey color
     pa.setPen(pen);
@@ -134,14 +188,14 @@ void EngineFuelP::drawBottomPixmap() {
     pa.setPen(pen);
     pa.setBrush(brush);
 
-    double startAngle = (45)*16.0;
-    double endAngle = (75)*16.0;
+    double startAngle = (90 - this->value2Angle(this->pressureGreenBegin))*16.0;
+    double arcAngle = ( this->value2Angle(this->pressureGreenBegin) - this->value2Angle(this->pressureGreenEnd) )*16.0;
     int x,y,ww,hh;
     ww=w*arcGauge;
     hh=h*arcGauge;
     x = (w - ww)/2;
     y = (h - hh)/2;
-    pa.drawArc(x,y,ww,hh, startAngle, endAngle );
+    pa.drawArc(x,y,ww,hh, startAngle, arcAngle );
 
 }
 
@@ -215,5 +269,5 @@ void EngineFuelP::pressureChanged(QString name, QStringList values) {
             this->update();
         }
     }
-
 }
+

@@ -24,6 +24,9 @@ signals:
     public slots:
     void pressureChanged(QString name, QStringList values);
     void setEngineNumber(float val) { _engineNumber = (int)val; }
+    void setMaxValue(float mv);
+    void setGreenBeginValue(float mv);
+    void setGreenEndValue(float mv);
 
 private:
     void drawBottomPixmap();
@@ -35,6 +38,8 @@ private:
     float pressureValueMin;
     float pressureValueMax;
     float scaleFactor;
+    float pressureGreenBegin;
+    float pressureGreenEnd;
 
     ExtPlaneClient _client;
     const QImage bottomImage;
