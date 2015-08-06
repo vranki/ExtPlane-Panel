@@ -132,7 +132,8 @@ SOURCES += \
     dialogs/bindingcurvedialog.cpp \
     util/interpolation.cpp \
     hardware/nulloutputdevice.cpp \
-    panelitems/engine_fuel_p.cpp
+    panelitems/engine_fuel_p.cpp \
+    panelitems/tankleveler.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -198,7 +199,8 @@ HEADERS += \
     dialogs/bindingcurvedialog.h \
     util/interpolation.h \
     hardware/nulloutputdevice.h \
-    panelitems/engine_fuel_p.h
+    panelitems/engine_fuel_p.h \
+    panelitems/tankleveler.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
