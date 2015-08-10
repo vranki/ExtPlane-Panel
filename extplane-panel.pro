@@ -133,7 +133,8 @@ SOURCES += \
     util/interpolation.cpp \
     hardware/nulloutputdevice.cpp \
     panelitems/engine_fuel_p.cpp \
-    panelitems/tankleveler.cpp
+    panelitems/tankleveler.cpp \
+    panelitems/engine_battery.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -200,7 +201,8 @@ HEADERS += \
     util/interpolation.h \
     hardware/nulloutputdevice.h \
     panelitems/engine_fuel_p.h \
-    panelitems/tankleveler.h
+    panelitems/tankleveler.h \
+    panelitems/engine_battery.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
