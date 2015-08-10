@@ -144,12 +144,8 @@ void TankLeveler::quantityChanged(QString name, QStringList values){
 
 void TankLeveler::setTankNumber(float val) {
     if (_tankNumber != (int)val) {
-        //unregister
-        _client.unsubscribeDataRef("sim/cockpit2/fuel/fuel_quantity[" + QString::number(_tankNumber) + "]");
-        //setValue
+         //setValue
         _tankNumber = (int)val;
-        //and register
-        _client.subscribeDataRef("sim/cockpit2/fuel/fuel_quantity[" + QString::number(_tankNumber) + "]", 1.0);
     }
 }
 

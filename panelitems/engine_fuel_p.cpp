@@ -12,8 +12,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(EngineFuelP,"indicator/engine/pressure")
 
 EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
                  PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-                _pressureNumber(1),
-                _engineNumber(1),
+                _engineNumber(0),
                 pressureValue(0),
                 pressureValueMin(0),
                 pressureValueMax(400),
@@ -38,6 +37,7 @@ EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         //dimension the item with the default background image
         this->setSize(bottomImage.width(),bottomImage.height());
     }
+
 }
 
 EngineFuelP::~EngineFuelP() {
@@ -49,6 +49,7 @@ void EngineFuelP::storeSettings(QSettings &settings) {
     settings.setValue("maxvalue", QString::number(pressureValueMax));
     settings.setValue("greenBegin", QString::number(pressureGreenBegin));
     settings.setValue("greenEnd", QString::number(pressureGreenEnd));
+    settings.setValue("engineNumber", QString::number(_engineNumber));
 }
 
 void EngineFuelP::loadSettings(QSettings &settings) {
@@ -56,10 +57,19 @@ void EngineFuelP::loadSettings(QSettings &settings) {
     setMaxValue(settings.value("maxvalue",400).toInt());
     setGreenBeginValue(settings.value("greenBegin",100).toInt());
     setGreenEndValue(settings.value("greenEnd",350).toInt());
+    setEngineNumber(settings.value("engineNumber",0).toInt());
+
 
 }
 
 void EngineFuelP::createSettings(QGridLayout *layout) {
+
+    QLabel *label1 = new QLabel("Engine number [0-9] ", layout->parentWidget());
+    layout->addWidget(label1);
+    NumberInputLineEdit *EngineNumberEdit = new NumberInputLineEdit(layout->parentWidget());
+    EngineNumberEdit->setText(QString::number(_engineNumber));
+    layout->addWidget(EngineNumberEdit);
+    connect(EngineNumberEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setEngineNumber(float)));
 
     QLabel *maxPressure = new QLabel("Maximum psi range", layout->parentWidget());
     layout->addWidget(maxPressure);
@@ -166,7 +176,7 @@ void EngineFuelP::drawBottomPixmap() {
     pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
     pa.setPen(pen);
     pa.setBrush(brush);
-    QFont font("Verdana", 5* this->scaleFactor);
+    QFont font("Verdana", this->defaultFont.pointSizeF() /2.5f * this->scaleFactor);
     QFontMetrics fm(font);
     pa.setFont(font);
     pa.translate(w/2,h/2);
@@ -259,11 +269,16 @@ void EngineFuelP::itemSizeChanged(float w, float h) {
     this->drawBottomPixmap();
 }
 
+void EngineFuelP::setEngineNumber(float val) {
+    if (_engineNumber != (int)val) {
+        _engineNumber = (int)val;
+    }
+}
 
 void EngineFuelP::pressureChanged(QString name, QStringList values) {
     int val = 0;
-    if (! values.isEmpty()) {
-        val = values.first().toFloat();
+    if (values.size() > _engineNumber) {
+        val = values[_engineNumber].toFloat();
         if (val != this->pressureValue) {
             this->pressureValue=val;
             this->update();

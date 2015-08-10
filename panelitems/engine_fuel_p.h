@@ -23,7 +23,7 @@ signals:
     
     public slots:
     void pressureChanged(QString name, QStringList values);
-    void setEngineNumber(float val) { _engineNumber = (int)val; }
+    void setEngineNumber(float val);
     void setMaxValue(float mv);
     void setGreenBeginValue(float mv);
     void setGreenEndValue(float mv);
@@ -32,7 +32,6 @@ private:
     void drawBottomPixmap();
     float value2Angle(const float &p);
 
-    int _pressureNumber;
     int _engineNumber;
     float pressureValue;
     float pressureValueMin;
