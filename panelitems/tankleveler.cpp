@@ -10,7 +10,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(TankLeveler,"indicator/engine/tank")
 
 TankLeveler::TankLeveler(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-   _tankNumber(1),
+   _tankNumber(0),
    tankShortDesignation("C"),
    quantityValue(0),
    valueMax(110),
@@ -24,7 +24,7 @@ TankLeveler::TankLeveler(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
 
         //init
         //subscibe to dataref
-        _client.subscribeDataRef("sim/cockpit2/fuel/fuel_quantity[0]", 1.0);
+        _client.subscribeDataRef("sim/cockpit2/fuel/fuel_quantity", 1.0);
         connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(quantityChanged(QString,QStringList)));
 
         //set size
@@ -69,7 +69,7 @@ void TankLeveler::createSettings(QGridLayout *layout){
     layout->addWidget(ShortDesEdit);
     connect(ShortDesEdit, SIGNAL(textChanged(QString)), this, SLOT(setShortDesignation(QString)));
 
-    QLabel *label3 = new QLabel("full Quantity", layout->parentWidget());
+    QLabel *label3 = new QLabel("full capacity (kg)", layout->parentWidget());
     layout->addWidget(label3);
     NumberInputLineEdit *maxValueEdit = new NumberInputLineEdit(layout->parentWidget());
     maxValueEdit->setText(QString::number(valueMax));
@@ -81,7 +81,51 @@ void TankLeveler::createSettings(QGridLayout *layout){
 
 void TankLeveler::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 
+    painter->save();
+    //paint the background
+    painter->drawPixmap(QPoint(0,0), *bottomPixmap);
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setRenderHint(QPainter::SmoothPixmapTransform);
+
+    //paint the needle
+    int dimension;
+    dimension=qMin(this->width(), this -> height());
+    //paint the needle;
+    if ( ! needleImage.isNull()) {
+
+        int ww, hh;
+        ww = needleImage.width() * this->scaleFactor;
+        hh = needleImage.height() * this->scaleFactor;
+        //center of the needle image is center of width background image
+        //  and  12/19 of height
+        painter->translate((dimension-ww)/2, (dimension*12/19-hh/2));
+
+        int x,y,a;
+        a=this->value2Angle(this->quantityValue); // rotation degree
+
+        //make some math to rotate the picture needle by his center
+        float alpha = a*3.14159/180;
+        x = (cos(alpha)*ww + sin(alpha)*hh)/2;
+        y = (-sin(alpha)*ww + cos(alpha)*hh )/2;
+
+        x = x - ww/2;
+        y = y - hh/2;
+
+       painter->save();
+            painter->rotate(a);
+            painter->translate(x,y);
+            painter->scale(this->scaleFactor,this->scaleFactor);
+            painter->drawPixmap(0,0,needleImage);
+       painter->restore();
+
+
+    }
+
+
+    painter->restore();
+
     PanelItem::paint(painter, option, widget);
+
 }
 
 void TankLeveler::itemSizeChanged(float w, float h){
@@ -89,15 +133,29 @@ void TankLeveler::itemSizeChanged(float w, float h){
 }
 
 
-void TankLeveler::quantityChanged(QString name, QStringList values){}
+void TankLeveler::quantityChanged(QString name, QStringList values){
+    //qDebug() << " tank value  list changed, name =  " << name << " values " <<  values;
+    if (values.size() > _tankNumber) {
+        quantityValue = values[_tankNumber].toFloat();
+        this->update();
+    }
+}
 
 void TankLeveler::setTankNumber(float val) {
-    _tankNumber = (int)val;
-    //TODO:need to unregister and register again...
+    if (_tankNumber != (int)val) {
+        //unregister
+        _client.unsubscribeDataRef("sim/cockpit2/fuel/fuel_quantity[" + QString::number(_tankNumber) + "]");
+        //setValue
+        _tankNumber = (int)val;
+        //and register
+        _client.subscribeDataRef("sim/cockpit2/fuel/fuel_quantity[" + QString::number(_tankNumber) + "]", 1.0);
+    }
 }
 
 void TankLeveler::setMaxValue(float mv){
-    valueMax = (int)mv;
+    if (mv > 0 and mv != valueMax){
+        valueMax = (int)mv;
+    }
 }
 
 void TankLeveler::setShortDesignation(QString s) {
@@ -154,4 +212,35 @@ void TankLeveler::drawBottomPixmap(){
 
 }
 
-float TankLeveler::value2Angle(const float &p){}
+float TankLeveler::value2Angle(const float &p){
+    float rval = 0;
+    float qt = qMax(qMin(p, this->valueMax), 0.0f);
+    //gauge is not linear...
+    //for value beetwen half and full :
+    if ( valueMax/2 <= qt ) {
+        //angle is 35degree between half value and full value
+        float angleRange = 35;
+        //and begin 10 degree right
+        float angleBegin = 10;
+        rval = angleBegin + ( 2*qt - valueMax ) / valueMax * angleRange;
+
+    //value is more than 5 kg and less than half load
+    }else if ( 5 < qt ) {
+        //angle is 53 degree between half value and full value
+        float angleRange = 53;
+        //and begin 43 degree left
+        float angleBegin = -43;
+        rval = angleBegin + ( qt - 5) / ((valueMax/2) - 5) * angleRange;
+
+    //value is less than 5 kg
+    }else{
+        //angle is 24 degree between 5 kg and null
+        float angleRange = 24;
+        //and begin 67 degree left
+        float angleBegin = -67;
+        rval = angleBegin + ( qt / 5 ) * angleRange;
+
+    }
+
+    return rval;
+}
