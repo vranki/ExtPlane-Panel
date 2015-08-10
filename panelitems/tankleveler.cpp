@@ -32,6 +32,7 @@ TankLeveler::TankLeveler(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         //dimension the item with the default background image
         this->setSize(bottomImage.width(),bottomImage.height());
         }
+
     }
 
 
@@ -159,7 +160,8 @@ void TankLeveler::setMaxValue(float mv){
 }
 
 void TankLeveler::setShortDesignation(QString s) {
-    tankShortDesignation = s;
+    tankShortDesignation = s;    
+    this->drawBottomPixmap();
 }
 
 /*
@@ -190,21 +192,21 @@ void TankLeveler::drawBottomPixmap(){
     pa.drawImage(QPoint(0,0),bottomImage);
     pa.restore();
 
-    QPen pen;
-    QBrush brush;
 
     //add description
     pa.save();
-    pen.setColor(QColor(250,250,250)); //grey color
+    QPen pen;
+    QBrush brush;
+    pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
     pa.setPen(pen);
     pa.setBrush(brush);
-    QFont font("Verdana", 5* this->scaleFactor);
+    QFont font("Verdana", defaultFont.pointSizeF() * this->scaleFactor);
+    font.setItalic(true);
     QFontMetrics fm(font);
     pa.setFont(font);
 
-    pa.translate(w/2,h-h/6);
-
-    pa.drawText(w/2, h-h/5, w/4, h/6, Qt::AlignCenter || Qt::AlignJustify  , tankShortDesignation, 0);
+    pa.translate(w/2,4*h/5);
+    pa.drawText(-1*fm.width(tankShortDesignation)/2, 0, tankShortDesignation);
 
     pa.restore();
 

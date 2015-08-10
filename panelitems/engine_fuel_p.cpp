@@ -144,7 +144,7 @@ void EngineFuelP::drawBottomPixmap() {
     //arc amplitude is 120 degrees
 
     pen.setWidth(1+w/250); //pen width increase when w increase
-    pen.setColor(QColor(200,200,200)); //grey color
+    pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
     pa.setPen(pen);
     pa.setBrush(brush);
     pa.translate(w/2,h/2);
@@ -163,7 +163,7 @@ void EngineFuelP::drawBottomPixmap() {
 
     //draw text
     pa.save();
-    pen.setColor(QColor(250,250,250)); //grey color
+    pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
     pa.setPen(pen);
     pa.setBrush(brush);
     QFont font("Verdana", 5* this->scaleFactor);
