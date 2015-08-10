@@ -146,18 +146,24 @@ void TankLeveler::setTankNumber(float val) {
     if (_tankNumber != (int)val) {
          //setValue
         _tankNumber = (int)val;
+        //refresh subscription in order to call quantityChanged(xx)
+        _client.unsubscribeDataRef("sim/cockpit2/fuel/fuel_quantity");
+        _client.subscribeDataRef("sim/cockpit2/fuel/fuel_quantity", 1.0);
+
     }
 }
 
 void TankLeveler::setMaxValue(float mv){
     if (mv > 0 and mv != valueMax){
         valueMax = (int)mv;
+        this->update();
     }
 }
 
 void TankLeveler::setShortDesignation(QString s) {
     tankShortDesignation = s;    
     this->drawBottomPixmap();
+    this->update();
 }
 
 /*

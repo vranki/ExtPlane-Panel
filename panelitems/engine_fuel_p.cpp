@@ -28,7 +28,7 @@ EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
 
     //init
     //subscibe to dataref
-    _client.subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 15.0);
+    _client.subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 5.0);
     connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(pressureChanged(QString,QStringList)));
 
 
@@ -272,6 +272,10 @@ void EngineFuelP::itemSizeChanged(float w, float h) {
 void EngineFuelP::setEngineNumber(float val) {
     if (_engineNumber != (int)val) {
         _engineNumber = (int)val;
+        //refresh subscription in order to call pressureChanged(xx)
+        _client.unsubscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi");
+        _client.subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 5.0);
+
     }
 }
 
