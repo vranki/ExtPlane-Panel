@@ -116,7 +116,6 @@ void EngineBattery::itemSizeChanged(float w, float h){
 
 
 void EngineBattery::amperageChanged(QString name, QStringList values){
-    qDebug() << " tank value  list changed, name =  " << name << " values " <<  values;
     if (values.size() > _batteryNumber) {
         amperageValue = values[_batteryNumber].toFloat();
         this->update();
@@ -135,7 +134,6 @@ void EngineBattery::setBatteryNumber(float val) {
 
 void EngineBattery::setMinValue(float mv){
 
-    qDebug() << " set min value = " << mv;
     if ( mv != valueMin && mv < valueMax ){
         valueMin = (float)mv;
         this->update();
