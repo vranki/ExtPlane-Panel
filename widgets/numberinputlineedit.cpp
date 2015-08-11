@@ -9,7 +9,7 @@ NumberInputLineEdit::NumberInputLineEdit(QWidget *parent) :
 
 void NumberInputLineEdit::changed() {
     bool ok = false;
-    float val = text().toFloat(&ok);
+    float val = QLocale().toFloat(text(),&ok);
     if(ok)
         emit valueChangedFloat(val);
 }
