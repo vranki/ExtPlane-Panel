@@ -12,8 +12,8 @@ EngineBattery::EngineBattery(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
    _batteryNumber(0),
    amperageValue(0),
-   valueMin(-30),
-   valueMax(40),
+   valueMin(-5),
+   valueMax(1),
    scaleFactor(1),
    _client(this, typeName(), conn),
    bottomImage(":/images/DR400_Battery_Amp.png"),
@@ -46,8 +46,8 @@ void EngineBattery::storeSettings(QSettings &settings){
 
 void EngineBattery::loadSettings(QSettings &settings){
     PanelItem::loadSettings(settings);
-    setMinValue(settings.value("minvalue",-25).toInt());
-    setMaxValue(settings.value("maxvalue",+25).toInt());
+    setMinValue(settings.value("minvalue",-5).toFloat());
+    setMaxValue(settings.value("maxvalue",+2).toFloat());
     setBatteryNumber(settings.value("batteryNumber",0).toInt());
 }
 
@@ -59,14 +59,14 @@ void EngineBattery::createSettings(QGridLayout *layout){
     layout->addWidget(batteryNumberEdit);
     connect(batteryNumberEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setBatteryNumber(float)));
 
-    QLabel *label2 = new QLabel("max negative value on discharge", layout->parentWidget());
+    QLabel *label2 = new QLabel("max negative Amperage on discharge", layout->parentWidget());
     layout->addWidget(label2);
     NumberInputLineEdit *minEdit = new NumberInputLineEdit(layout->parentWidget());
     minEdit->setText(QString::number(valueMin));
     layout->addWidget(minEdit);
     connect(minEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMinValue(float)));
 
-    QLabel *label3 = new QLabel("max value on charge", layout->parentWidget());
+    QLabel *label3 = new QLabel("max Amperage on charge", layout->parentWidget());
     layout->addWidget(label3);
     NumberInputLineEdit *maxValueEdit = new NumberInputLineEdit(layout->parentWidget());
     maxValueEdit->setText(QString::number(valueMax));
@@ -95,49 +95,14 @@ void EngineBattery::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     pen.setColor(QColor(0xc0,0x45,0x28)); //orange color
     pen.setWidth(5+dimension/153); //pen width increase when dimension increase
 
-    painter->setClipping(true);
+    painter->setClipping(true); //draw only in this area, the bottom of the needle is hidden
     painter->setClipRect(0,0,dimension,dimension*89/153);
 
     painter->setPen(pen);
     painter->setBrush(brush);
     painter->translate(dimension/2,dimension*3/4);
-    painter->rotate(30);
+    painter->rotate(value2Angle(amperageValue));
     painter->drawLine(0,-1*dimension*1/2,0,0);
-    painter->rotate(-30);
-    painter->drawLine(0,-1*dimension*1/2,0,0);
-    painter->rotate(-30);
-    painter->drawLine(0,-1*dimension*1/2,0,0);
-
-//    if ( ! needleImage.isNull()) {
-
-//        int ww, hh;
-//        ww = needleImage.width() * this->scaleFactor;
-//        hh = needleImage.height() * this->scaleFactor;
-//        //center of the needle image is center of width background image
-//        //  and  12/19 of height
-//        painter->translate((dimension-ww)/2, (dimension*12/19-hh/2));
-
-//        int x,y,a;
-//        a=this->value2Angle(this->quantityValue); // rotation degree
-
-//        //make some math to rotate the picture needle by his center
-//        float alpha = a*3.14159/180;
-//        x = (cos(alpha)*ww + sin(alpha)*hh)/2;
-//        y = (-sin(alpha)*ww + cos(alpha)*hh )/2;
-
-//        x = x - ww/2;
-//        y = y - hh/2;
-
-//       painter->save();
-//            painter->rotate(a);
-//            painter->translate(x,y);
-//            painter->scale(this->scaleFactor,this->scaleFactor);
-//            painter->drawPixmap(0,0,needleImage);
-//       painter->restore();
-
-
-//    }
-
 
     painter->restore();
 
@@ -169,15 +134,17 @@ void EngineBattery::setBatteryNumber(float val) {
 }
 
 void EngineBattery::setMinValue(float mv){
+
+    qDebug() << " set min value = " << mv;
     if ( mv != valueMin && mv < valueMax ){
-        valueMax = (int)mv;
+        valueMin = (float)mv;
         this->update();
     }
 }
 
 void EngineBattery::setMaxValue(float mv){
     if (mv > 0 and mv != valueMax && mv > valueMin){
-        valueMax = (int)mv;
+        valueMax = (float)mv;
         this->update();
     }
 }
@@ -218,33 +185,22 @@ void EngineBattery::drawBottomPixmap(){
 
 float EngineBattery::value2Angle(const float &p){
     float rval = 0;
-    float qt = qMax(qMin(p, this->valueMax), 0.0f);
-    //gauge is not linear...
-    //for value beetwen half and full :
-    if ( valueMax/2 <= qt ) {
-        //angle is 35degree between half value and full value
-        float angleRange = 35;
+    float qt = qMax(qMin(p, this->valueMax), this->valueMin);
+    //from zero to maxValue, the needle is in Ok zone
+    if ( 0 < qt ) {
+        //angle is 48degree and gebin at -18degree
+        float angleRange = 48;
         //and begin 10 degree right
-        float angleBegin = 10;
-        rval = angleBegin + ( 2*qt - valueMax ) / valueMax * angleRange;
+        float angleBegin = -18;
+        rval = angleBegin +  qt / valueMax * angleRange;
 
-    //value is more than 5 kg and less than half load
-    }else if ( 5 < qt ) {
-        //angle is 53 degree between half value and full value
-        float angleRange = 53;
+    //value is less than zero
+    }else {
+        //angle is -12 degree and begin at -18
+        float angleRange = -12;
         //and begin 43 degree left
-        float angleBegin = -43;
-        rval = angleBegin + ( qt - 5) / ((valueMax/2) - 5) * angleRange;
-
-    //value is less than 5 kg
-    }else{
-        //angle is 24 degree between 5 kg and null
-        float angleRange = 24;
-        //and begin 67 degree left
-        float angleBegin = -67;
-        rval = angleBegin + ( qt / 5 ) * angleRange;
-
+        float angleBegin = -18;
+        rval = angleBegin + qt / (valueMin) * angleRange;
     }
-
     return rval;
 }
