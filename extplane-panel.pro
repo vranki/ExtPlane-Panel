@@ -134,7 +134,8 @@ SOURCES += \
     hardware/nulloutputdevice.cpp \
     panelitems/engine_fuel_p.cpp \
     panelitems/tankleveler.cpp \
-    panelitems/engine_battery.cpp
+    panelitems/engine_battery.cpp \
+    panelitems/genericlittlegauge.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -202,7 +203,8 @@ HEADERS += \
     hardware/nulloutputdevice.h \
     panelitems/engine_fuel_p.h \
     panelitems/tankleveler.h \
-    panelitems/engine_battery.h
+    panelitems/engine_battery.h \
+    panelitems/genericlittlegauge.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
