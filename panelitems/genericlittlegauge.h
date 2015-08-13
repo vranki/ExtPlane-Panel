@@ -26,10 +26,13 @@ signals:
     void setMinValue(float mv);
     void setGreenBeginValue(float mv);
     void setGreenEndValue(float mv);
+    void setGreenThickness(float mv);
     void setOrangeBeginValue(float mv);
     void setOrangeEndValue(float mv);
+    void setOrangeThickness(float mv);
     void setRedBeginValue(float mv);
     void setRedEndValue(float mv);
+    void setRedThickness(float mv);
     //strings to display on the gauge
     void setUpDesignation(QString s);
     void setDownDesignation(QString s);
@@ -48,6 +51,7 @@ private:
     Q_OBJECT
     void drawBottomPixmap();
     float value2Angle(const float &p);
+    void values2valuesArc(const float &begin, const float &end, int &returnStartAngle, int &returnSpanAngle, QRect *qrect);
 
     unsigned int _indexNumber;
     float value;
@@ -56,20 +60,26 @@ private:
     float scaleFactor;
     float greenBeginValue;
     float greenEndValue;
+    int greenThickness;
     float orangeBeginValue;
     float orangeEndValue;
+    int orangeThickness;
     float redBeginValue;
     float redEndValue;
+    int redThickness;
     QString upDesignation;
     QString downDesignation;
     bool isTableValues;
     QString dataRefsString;
     float accuracy;
     int nbBigGraduations;
-    int nbThinGraducations;
+    int nbThinGraduations;
     QString stringDisplayValues[5];
     bool isLogDisplayStyle;
 
+    bool updateBottomPixmap; // use to not draw bottomPixamp when loadSettings is call
+    int arcDegreeAmplitude; //the range where needle can move (120 °)
+    float arcRatioPosition; //ratio between this panel and his drawing arc
     ExtPlaneClient _client;
     const QImage bottomImage;
     QPixmap* bottomPixmap;
