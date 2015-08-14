@@ -25,6 +25,8 @@ TankLeveler::TankLeveler(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         //init
         //subscibe to dataref
         _client.subscribeDataRef("sim/cockpit2/fuel/fuel_quantity", 1.0);
+
+        conn->registerClient(&_client);
         connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(quantityChanged(QString,QStringList)));
 
         //set size

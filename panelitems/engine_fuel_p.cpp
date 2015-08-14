@@ -29,6 +29,8 @@ EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     //init
     //subscibe to dataref
     _client.subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 5.0);
+
+    conn->registerClient(&_client);
     connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(pressureChanged(QString,QStringList)));
 
 

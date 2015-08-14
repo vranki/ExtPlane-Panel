@@ -22,6 +22,8 @@ EngineBattery::EngineBattery(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         //init
         //subscibe to dataref
         _client.subscribeDataRef("sim/cockpit2/electrical/battery_amps", 0.1);
+
+        conn->registerClient(&_client);
         connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(amperageChanged(QString,QStringList)));
 
         //set size
