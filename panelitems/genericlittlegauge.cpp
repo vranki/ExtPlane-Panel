@@ -438,7 +438,7 @@ void GenericLittleGauge::drawBottomPixmap(){
 
             pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
             pa.setPen(pen);
-            QFont font("Verdana", this->defaultFont.pointSizeF() /1.5 * this->scaleFactor);
+            QFont font("Verdana", this->defaultFont.pointSizeF() /1.3 * this->scaleFactor);
             QFontMetrics fm(font);
             pa.setFont(font);
             pa.translate(w/2,h/2);

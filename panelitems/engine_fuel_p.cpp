@@ -22,7 +22,7 @@ EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
                 _client(this, typeName(), conn),
                 bottomImage(":/images/DR400_engine_FUELP.png"),
                 bottomPixmap(0),
-                needleImage(":/images/DR400_engine_FUELP_needle.png")
+                needleImage(":/images/DR400_engine_generic_needle.png")
                 {
 
 
@@ -178,7 +178,7 @@ void EngineFuelP::drawBottomPixmap() {
     pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
     pa.setPen(pen);
     pa.setBrush(brush);
-    QFont font("Verdana", this->defaultFont.pointSizeF() /2.5f * this->scaleFactor);
+    QFont font("Verdana", this->defaultFont.pointSizeF() /1.3f * this->scaleFactor);
     QFontMetrics fm(font);
     pa.setFont(font);
     pa.translate(w/2,h/2);
