@@ -43,8 +43,9 @@ signals:
     //manage graduations
     void setNbOfBigGraduations(float n);
     void setNbOfThinGraduations(float n);
-    void setStringDisplayValue(QString value, unsigned int index);
+    void setIsDisplayValue(bool yes);
     void setLogDisplayStyle(bool log);
+    void setArcValueAmplitudeDisplay(float mv);
 
 
 private:
@@ -74,7 +75,7 @@ private:
     float accuracy;
     int nbBigGraduations;
     int nbThinGraduations;
-    QString stringDisplayValues[5];
+    bool isDisplayValues;
     bool isLogDisplayStyle;
 
     bool updateBottomPixmap; // use to not draw bottomPixamp when loadSettings is call

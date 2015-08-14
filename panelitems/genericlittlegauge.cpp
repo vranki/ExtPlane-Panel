@@ -1,10 +1,11 @@
 #include "genericlittlegauge.h"
 
 #include <math.h>
-#include "../util/console.h"
 #include "extplaneclient.h"
+#include "../util/console.h"
 #include "../valueinterpolator.h"
 #include "../widgets/numberinputlineedit.h"
+#include "../util/interpolation.h"
 #include <QCheckBox>
 
 
@@ -14,29 +15,30 @@ GenericLittleGauge::GenericLittleGauge(ExtPlanePanel *panel, ExtPlaneConnection 
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
     _indexNumber(0),
     value(0),
-    valueMin(0),
-    valueMax(100),
+    valueMin(50),
+    valueMax(150),
     scaleFactor(1),
-    greenBeginValue(50),
-    greenEndValue(70),
-    greenThickness(2),
-    orangeBeginValue(70),
-    orangeEndValue(75),
+    greenBeginValue(60),
+    greenEndValue(120),
+    greenThickness(3),
+    orangeBeginValue(120),
+    orangeEndValue(130),
     orangeThickness(3),
-    redBeginValue(75),
-    redEndValue(100),
+    redBeginValue(130),
+    redEndValue(150),
     redThickness(4),
-    upDesignation("what"),
-    downDesignation("Generic"),
+    upDesignation("Temp°"),
+    downDesignation("OIL"),
     isTableValues(true),
-    dataRefsString("sim/cockpit2/engine/indicators/oil_temperature_deg_C"),
+    dataRefsString(""),
     accuracy(1),
     nbBigGraduations(3),
-    nbThinGraduations(6),
+    nbThinGraduations(7),
+    isDisplayValues(true),
     isLogDisplayStyle(false),
     updateBottomPixmap(true),
     arcDegreeAmplitude(120),
-    arcRatioPosition(0.65),
+    arcRatioPosition(0.5),
     _client(this, typeName(), conn),
     bottomImage(":/images/DR400_engine_generic.png"),
     bottomPixmap(0),
@@ -44,15 +46,13 @@ GenericLittleGauge::GenericLittleGauge(ExtPlanePanel *panel, ExtPlaneConnection 
 {
 
     //init
-    stringDisplayValues[0]="0";
-    stringDisplayValues[1]="50";
-    stringDisplayValues[2]="100";
-    stringDisplayValues[3]="";
-    stringDisplayValues[4]="";
 
     //subscibe to dataref
-    _client.subscribeDataRef(dataRefsString, accuracy);
+    setDataRefString("sim/cockpit2/engine/indicators/oil_temperature_deg_C");
+
+    conn->registerClient(&_client);
     connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(valueChanged(QString,QStringList)));
+    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
 
 
     //set size
@@ -89,12 +89,9 @@ void GenericLittleGauge::storeSettings(QSettings &settings){
     settings.setValue("accuracy", QString::number(accuracy));
     settings.setValue("nbBigGraduations", QString::number(nbBigGraduations));
     settings.setValue("nbThinGraducations", QString::number(nbThinGraduations));
-    settings.setValue("stringDisplayValues[0]",stringDisplayValues[0]);
-    settings.setValue("stringDisplayValues[1]",stringDisplayValues[1]);
-    settings.setValue("stringDisplayValues[2]",stringDisplayValues[2]);
-    settings.setValue("stringDisplayValues[3]",stringDisplayValues[3]);
-    settings.setValue("stringDisplayValues[4]",stringDisplayValues[4]);
+    settings.setValue("isDisplayValues", QString::number(isDisplayValues));
     settings.setValue("isLogDisplayStyle", QString::number(isLogDisplayStyle));
+    settings.setValue("arcDegreeAmplitude", QString::number(arcDegreeAmplitude));
 
 }
 
@@ -105,27 +102,27 @@ void GenericLittleGauge::loadSettings(QSettings &settings){
     PanelItem::loadSettings(settings);
 
     setIndexNumber(settings.value("indexNumber",0).toFloat());
-    setMinValue(settings.value("valueMin", 0).toFloat());
-    setMaxValue(settings.value("valueMax", 100).toFloat());
-    setGreenBeginValue(settings.value("greenBeginValue", 0).toFloat());
-    setGreenEndValue(settings.value("greenEndValue", 0).toFloat());
-    setOrangeBeginValue(settings.value("orangeBeginValue", 0).toFloat());
-    setOrangeEndValue(settings.value("orangeEndValue", 0).toFloat());
-    setRedBeginValue(settings.value("redBeginValue", 0).toFloat());
-    setRedEndValue(settings.value("redEndValue", 0).toFloat());
-    setUpDesignation(settings.value("upDesignation","upDesignation""").toString());
-    setDownDesignation(settings.value("downDesignation","downDesignation""").toString());
-    setIsTableValues(settings.value("isTableValues", 0).toBool());
-    setDataRefString(settings.value("dataRefsString", "").toString());
+    setMinValue(settings.value("valueMin", 50).toFloat());
+    setMaxValue(settings.value("valueMax", 150).toFloat());
+    setGreenBeginValue(settings.value("greenBeginValue", 60).toFloat());
+    setGreenEndValue(settings.value("greenEndValue", 120).toFloat());
+    setGreenThickness(settings.value("greenThickness", 3).toFloat());
+    setOrangeBeginValue(settings.value("orangeBeginValue", 120).toFloat());
+    setOrangeEndValue(settings.value("orangeEndValue", 130).toFloat());
+    setOrangeThickness(settings.value("orangeThickness", 3).toFloat());
+    setRedBeginValue(settings.value("redBeginValue", 130).toFloat());
+    setRedEndValue(settings.value("redEndValue", 150).toFloat());
+    setRedThickness(settings.value("redThickness", 3).toFloat());
+    setUpDesignation(settings.value("upDesignation","Temp").toString());
+    setDownDesignation(settings.value("downDesignation","OIL").toString());
+    setIsTableValues(settings.value("isTableValues", 1).toBool());
+    setDataRefString(settings.value("dataRefsString", "sim/cockpit2/engine/indicators/oil_temperature_deg_C").toString());
     setAccuracy(settings.value("accuracy", 1).toFloat());
-    setNbOfBigGraduations(settings.value("nbBigGraduations", 2).toInt());
-    setNbOfThinGraduations(settings.value("nbThinGraducations", 2).toInt());
-    setStringDisplayValue(settings.value("stringDisplayValues[0]","").toString(),0);
-    setStringDisplayValue(settings.value("stringDisplayValues[1]","").toString(),1);
-    setStringDisplayValue(settings.value("stringDisplayValues[2]","").toString(),2);
-    setStringDisplayValue(settings.value("stringDisplayValues[3]","").toString(),3);
-    setStringDisplayValue(settings.value("stringDisplayValues[4]","").toString(),4);
+    setNbOfBigGraduations(settings.value("nbBigGraduations", 3).toInt());
+    setNbOfThinGraduations(settings.value("nbThinGraducations", 7).toInt());
+    setIsDisplayValue(settings.value("isDisplayValues",1).toBool());
     setLogDisplayStyle(settings.value("isLogDisplayStyle", 0).toBool());
+    setArcValueAmplitudeDisplay(settings.value("arcDegreeAmplitude",120).toFloat());
 
 
     this->updateBottomPixmap = true;
@@ -157,23 +154,17 @@ void GenericLittleGauge::createSettings(QGridLayout *layout){
     layout->addWidget(accuracyEdit);
     connect(accuracyEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setAccuracy(float)));
 
-    layout->addWidget(new QLabel("is multiple values", layout->parentWidget()));
+    layout->addWidget(new QLabel("datarefs values are in table", layout->parentWidget()));
     QCheckBox *qcb1 = new QCheckBox(layout->parentWidget());
     qcb1->setChecked(isTableValues);
     layout->addWidget(qcb1);
     connect(qcb1, SIGNAL(clicked(bool)), this, SLOT(setIsTableValues(bool)));
 
-    layout->addWidget(new QLabel("show value [0-9]", layout->parentWidget()));
+    layout->addWidget(new QLabel("selected index for value", layout->parentWidget()));
     NumberInputLineEdit *indexNumberEdit = new NumberInputLineEdit(layout->parentWidget());
     indexNumberEdit->setText(QString::number(_indexNumber));
     layout->addWidget(indexNumberEdit);
     connect(indexNumberEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setIndexNumber(float)));
-
-    layout->addWidget(new QLabel("display Logarithmic scale", layout->parentWidget()));
-    QCheckBox *qcb2 = new QCheckBox(layout->parentWidget());
-    qcb2->setChecked(isLogDisplayStyle);
-    layout->addWidget(qcb2);
-    connect(qcb2, SIGNAL(clicked(bool)), this, SLOT(setLogDisplayStyle(bool)));
 
     layout->addWidget(new QLabel("value Min", layout->parentWidget()));
     NumberInputLineEdit *vminEdit = new NumberInputLineEdit(layout->parentWidget());
@@ -186,6 +177,42 @@ void GenericLittleGauge::createSettings(QGridLayout *layout){
     vmaxEdit->setText(QString::number(valueMax));
     layout->addWidget(vmaxEdit);
     connect(vmaxEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setMaxValue(float)));
+
+    layout->addWidget(new QLabel("arc amplitude to display", layout->parentWidget()));
+    NumberInputLineEdit *arcRangeEdit = new NumberInputLineEdit(layout->parentWidget());
+    arcRangeEdit->setText(QString::number(arcDegreeAmplitude));
+    layout->addWidget(arcRangeEdit);
+    connect(arcRangeEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setArcValueAmplitudeDisplay(float)));
+
+    layout->addWidget(new QLabel(" _________________ ", layout->parentWidget()));
+    layout->addWidget(new QLabel("graduations settings : ", layout->parentWidget()));
+
+    layout->addWidget(new QLabel("number of big graduations", layout->parentWidget()));
+    NumberInputLineEdit *nbBigEdit = new NumberInputLineEdit(layout->parentWidget());
+    nbBigEdit->setText(QString::number(nbBigGraduations));
+    layout->addWidget(nbBigEdit);
+    connect(nbBigEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNbOfBigGraduations(float)));
+
+    layout->addWidget(new QLabel("number of thingraduations", layout->parentWidget()));
+    NumberInputLineEdit *nbThinEdit = new NumberInputLineEdit(layout->parentWidget());
+    nbThinEdit->setText(QString::number(nbThinGraduations));
+    layout->addWidget(nbThinEdit);
+    connect(nbThinEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNbOfThinGraduations(float)));
+
+    layout->addWidget(new QLabel("display values", layout->parentWidget()));
+    QCheckBox *isValuesDisplayEdit = new QCheckBox(layout->parentWidget());
+    isValuesDisplayEdit->setChecked(isDisplayValues);
+    layout->addWidget(isValuesDisplayEdit);
+    connect(isValuesDisplayEdit, SIGNAL(clicked(bool)), this, SLOT(setIsDisplayValue(bool)));
+
+    layout->addWidget(new QLabel("display into Logarithmic scale", layout->parentWidget()));
+    QCheckBox *qcb2 = new QCheckBox(layout->parentWidget());
+    qcb2->setChecked(isLogDisplayStyle);
+    layout->addWidget(qcb2);
+    connect(qcb2, SIGNAL(clicked(bool)), this, SLOT(setLogDisplayStyle(bool)));
+
+    layout->addWidget(new QLabel(" _________________ ", layout->parentWidget()));
+    layout->addWidget(new QLabel("green arc settings : ", layout->parentWidget()));
 
     layout->addWidget(new QLabel("green arc value begins at", layout->parentWidget()));
     NumberInputLineEdit *greenMinNumberEdit = new NumberInputLineEdit(layout->parentWidget());
@@ -205,6 +232,9 @@ void GenericLittleGauge::createSettings(QGridLayout *layout){
     layout->addWidget(greenThickNumberEdit);
     connect(greenThickNumberEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setGreenThickness(float)));
 
+    layout->addWidget(new QLabel(" _________________ ", layout->parentWidget()));
+    layout->addWidget(new QLabel("orange arc settings : ", layout->parentWidget()));
+
     layout->addWidget(new QLabel("orange arc value begins at", layout->parentWidget()));
     NumberInputLineEdit *orangeMinNumberEdit = new NumberInputLineEdit(layout->parentWidget());
     orangeMinNumberEdit->setText(QString::number(orangeBeginValue));
@@ -222,6 +252,9 @@ void GenericLittleGauge::createSettings(QGridLayout *layout){
     orangeThickNumberEdit->setText(QString::number(orangeThickness));
     layout->addWidget(orangeThickNumberEdit);
     connect(orangeThickNumberEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setOrangeThickness(float)));
+
+    layout->addWidget(new QLabel(" _________________ ", layout->parentWidget()));
+    layout->addWidget(new QLabel("red arc settings : ", layout->parentWidget()));
 
     layout->addWidget(new QLabel("red arc value begins at", layout->parentWidget()));
     NumberInputLineEdit *redMinNumberEdit = new NumberInputLineEdit(layout->parentWidget());
@@ -241,25 +274,6 @@ void GenericLittleGauge::createSettings(QGridLayout *layout){
     layout->addWidget(redThickNumberEdit);
     connect(redThickNumberEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setRedThickness(float)));
 
-    layout->addWidget(new QLabel("number of big graduations", layout->parentWidget()));
-    NumberInputLineEdit *nbBigEdit = new NumberInputLineEdit(layout->parentWidget());
-    nbBigEdit->setText(QString::number(nbBigGraduations));
-    layout->addWidget(nbBigEdit);
-    connect(nbBigEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNbOfBigGraduations(float)));
-
-    layout->addWidget(new QLabel("number of thingraduations", layout->parentWidget()));
-    NumberInputLineEdit *nbThinEdit = new NumberInputLineEdit(layout->parentWidget());
-    nbThinEdit->setText(QString::number(nbThinGraduations));
-    layout->addWidget(nbThinEdit);
-    connect(nbThinEdit, SIGNAL(valueChangedFloat(float)), this, SLOT(setNbOfThinGraduations(float)));
-
-    layout->addWidget(new QLabel("String value 1 to display", layout->parentWidget()));
-    QLineEdit *stringValue1DisplayEdit = new QLineEdit(layout->parentWidget());
-    stringValue1DisplayEdit->setText(stringDisplayValues[0]);
-    layout->addWidget(stringValue1DisplayEdit);
-    connect(stringValue1DisplayEdit, SIGNAL(textChanged(QString)), this, SLOT(setStringDisplayValue(QString,uint=0)));
-
-
 }
 
 void GenericLittleGauge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
@@ -269,6 +283,38 @@ void GenericLittleGauge::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
+    //paint the needle;
+    if ( ! needleImage.isNull()) {
+        int w, h, ww, hh;
+        w=qMin(this->width(), this -> height());
+        h=w;
+        ww = needleImage.width() * this->scaleFactor;
+        hh = needleImage.height() * this->scaleFactor;
+        //center of the needle image is center of background image
+        painter->translate((w-ww)/2, (h-hh)/2);
+
+        int x,y,a;
+        a = qMax(qMin(value2Angle(value), value2Angle(valueMax)), value2Angle(valueMin)) ;
+        a = a - arcDegreeAmplitude/2;
+        a = a - value2Angle(valueMin); // rotation degree
+
+
+        float alpha = a*3.14159/180;
+        x = (cos(alpha)*ww + sin(alpha)*hh)/2;
+        y = (-sin(alpha)*ww + cos(alpha)*hh )/2;
+
+        x = x - ww/2;
+        y = y - hh/2;
+
+       painter->save();
+            painter->rotate(a);
+            painter->translate(x,y);
+            painter->scale(this->scaleFactor,this->scaleFactor);
+            painter->drawPixmap(0,0,needleImage);
+        painter->restore();
+
+
+    }
 
     painter->restore();
     PanelItem::paint(painter, option, widget);
@@ -308,15 +354,18 @@ void GenericLittleGauge::drawBottomPixmap(){
         pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
         pa.setPen(pen);
         pa.setBrush(brush);
-        QFont font("Verdana", defaultFont.pointSizeF() * this->scaleFactor);
+        QFont font("Verdana", defaultFont.pointSizeF() * 0.8 * this->scaleFactor);
         font.setItalic(true);
-        QFontMetrics fm(font);
+        QFontMetrics fm1(font);
         pa.setFont(font);
-
         pa.translate(w/2,2*h/5);
-        pa.drawText(-1*fm.width(upDesignation)/2, 0, upDesignation);
+        pa.drawText(-1*fm1.width(upDesignation)/2, 0, upDesignation);
+        //font size a little bit higher
+        font.setPointSizeF(defaultFont.pointSizeF() * this->scaleFactor);
+        pa.setFont(font);
+        QFontMetrics fm2(font);
         pa.translate(0,2*h/6);
-        pa.drawText(-1*fm.width(downDesignation)/2, 0, downDesignation);
+        pa.drawText(-1*fm2.width(downDesignation)/2, 0, downDesignation);
 
         pa.restore();
 
@@ -356,9 +405,12 @@ void GenericLittleGauge::drawBottomPixmap(){
         pa.setPen(pen);
         pa.translate(w/2,h/2);
         pa.rotate(-1 * (180 + arcDegreeAmplitude) / 2 );
-        for (int i=0; i<=  nbThinGraduations; i++) {
+        for (int i=0; i < nbThinGraduations; i++) {
+            float valueAtGrad= Interpolation::linear(0,nbThinGraduations -1,valueMin, valueMax, i );
+            pa.save();
+            pa.rotate(value2Angle(valueAtGrad) - value2Angle(valueMin));
             pa.drawLine( (w -  (5 * this->scaleFactor)) * arcRatioPosition/2, 0, w * arcRatioPosition/2, 0);
-            pa.rotate(value2Angle( (valueMax-valueMin)/nbThinGraduations ));
+            pa.restore();
         }
         pa.restore();
 
@@ -371,11 +423,46 @@ void GenericLittleGauge::drawBottomPixmap(){
         pa.setPen(pen);
         pa.translate(w/2,h/2);
         pa.rotate(-1 * (180 + arcDegreeAmplitude) / 2 );
-        for (int i=0; i<=  nbBigGraduations; i++) {
+        for (int i=0; i < nbBigGraduations; i++) {
+            float valueAtGrad= Interpolation::linear(0,nbBigGraduations -1,valueMin, valueMax, i );
+            pa.save();
+            pa.rotate(value2Angle(valueAtGrad) - value2Angle(valueMin));
             pa.drawLine( (w -  (10 * this->scaleFactor)) * arcRatioPosition/2, 0, ( w + ( 10 * this->scaleFactor)) * arcRatioPosition/2, 0);
-            pa.rotate(value2Angle( (valueMax-valueMin)/nbBigGraduations ));
+            pa.restore();
         }
         pa.restore();
+
+        //draw values of big graduations
+        if (isDisplayValues) {
+            pa.save();
+
+            pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
+            pa.setPen(pen);
+            QFont font("Verdana", this->defaultFont.pointSizeF() /1.5 * this->scaleFactor);
+            QFontMetrics fm(font);
+            pa.setFont(font);
+            pa.translate(w/2,h/2);
+            for (int i=0; i< nbBigGraduations; i++) {
+                float valueDisplay = Interpolation::linear(0,nbBigGraduations -1,valueMin, valueMax, i );
+                QString textDisplay = QString::number( (int)valueDisplay) ;
+                float x,y;
+                x =  cos(3.14159/180 * (value2Angle(valueDisplay) - value2Angle(valueMin) -  (180 + arcDegreeAmplitude) / 2) ) ;
+                x = x * (w*arcRatioPosition+8*scaleFactor)/2 ;
+                //if text is on the left side, make offset
+                if ( value2Angle(valueDisplay) < ( arcDegreeAmplitude / 2) ) {
+                    x = x - fm.width(textDisplay) ;
+                //else if text is on center of panel (+/- 1 degree) then make half offset
+                }else if (  abs ( (value2Angle(valueDisplay) - ( arcDegreeAmplitude / 2) ) )  < 1) {
+                    x = x - fm.width(textDisplay)/2 ;
+                }
+                y = sin(3.14159/180* ( value2Angle(valueDisplay) - value2Angle(valueMin) -  (180 + arcDegreeAmplitude) / 2 ) );
+                y = y *(w*arcRatioPosition+8*scaleFactor)/2;
+
+                pa.drawText( x, y , textDisplay);
+            }
+            pa.restore();
+
+        }
 
 
 
@@ -401,7 +488,7 @@ void GenericLittleGauge::values2valuesArc(const float &begin, const float &end, 
     returnStartAngle=0;
     returnSpanAngle=0;
 
-    float beginAbsoluteAngle = (180 - arcDegreeAmplitude) / 2 + arcDegreeAmplitude ;
+    float beginAbsoluteAngle = (180 - arcDegreeAmplitude) / 2 + arcDegreeAmplitude + value2Angle(valueMin) ;
 
     //set the returned rectangle
     if (qrect == 0) {
@@ -479,14 +566,14 @@ void GenericLittleGauge::setMinValue(float mv){
 }
 
 void GenericLittleGauge::setGreenBeginValue(float mv){
-    if (mv != greenBeginValue && mv <= greenEndValue ) {
+    if (mv != greenBeginValue ) {
         greenBeginValue = mv;
         this->drawBottomPixmap();
     }
 }
 
 void GenericLittleGauge::setGreenEndValue(float mv){
-    if (mv != greenEndValue && mv >= greenBeginValue) {
+    if (mv != greenEndValue ) {
         greenEndValue = mv;
         this->drawBottomPixmap();
     }
@@ -500,14 +587,14 @@ void GenericLittleGauge::setGreenThickness(float mv){
 }
 
 void GenericLittleGauge::setOrangeBeginValue(float mv){
-    if (mv != orangeBeginValue && mv <= orangeEndValue) {
+    if (mv != orangeBeginValue ) {
         orangeBeginValue = mv;
         this->drawBottomPixmap();
     }
 }
 
 void GenericLittleGauge::setOrangeEndValue(float mv){
-    if (mv != orangeEndValue && mv >= orangeBeginValue) {
+    if (mv != orangeEndValue ) {
         orangeEndValue = mv;
         this->drawBottomPixmap();
     }
@@ -521,14 +608,14 @@ void GenericLittleGauge::setOrangeThickness(float mv){
 }
 
 void GenericLittleGauge::setRedBeginValue(float mv){
-    if (mv != redBeginValue && mv <= redEndValue) {
+    if (mv != redBeginValue ) {
         redBeginValue = mv;
         this->drawBottomPixmap();
     }
 }
 
 void GenericLittleGauge::setRedEndValue(float mv){
-    if (mv != redEndValue && mv >= redBeginValue) {
+    if (mv != redEndValue ) {
         redEndValue = mv;
         this->drawBottomPixmap();
     }
@@ -556,7 +643,21 @@ void GenericLittleGauge::setIsTableValues(bool yes){
 }
 
 void GenericLittleGauge::setDataRefString(QString s){
-    dataRefsString = s;
+
+    if (QString::compare(s,dataRefsString) != 0 ) {
+
+        // Unsubscribe old
+        if (_client.isDataRefSubscribed(dataRefsString)) {
+            _client.unsubscribeDataRef(dataRefsString);
+        }
+
+        dataRefsString = s;
+        value = 0;
+
+        // Subscribe new
+        if(QString::compare("",s) != 0 ) _client.subscribeDataRef(s, accuracy);
+        update();
+    }
 }
 
 void GenericLittleGauge::setAccuracy(float f){
@@ -573,17 +674,23 @@ void GenericLittleGauge::setNbOfBigGraduations(float n){
 void GenericLittleGauge::setNbOfThinGraduations(float n){
     if (n != nbThinGraduations) {
         nbThinGraduations = (int)n;
+        this->drawBottomPixmap();
     }
 }
 
-void GenericLittleGauge::setStringDisplayValue(QString value, unsigned int index){
-    if ( index < (sizeof(stringDisplayValues)/sizeof(*stringDisplayValues)) ) {
-        stringDisplayValues[index] = value;
-    }
-
+void GenericLittleGauge::setIsDisplayValue(bool yes){
+    isDisplayValues = yes;
+    this->drawBottomPixmap();
 }
 
 void GenericLittleGauge::setLogDisplayStyle(bool log){
     isLogDisplayStyle=log;
+    this->drawBottomPixmap();
 }
 
+void GenericLittleGauge::setArcValueAmplitudeDisplay(float mv){
+    if ( (int)mv != arcDegreeAmplitude ) {
+        arcDegreeAmplitude = (int)mv;
+        this->drawBottomPixmap();
+    }
+}
