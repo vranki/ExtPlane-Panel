@@ -40,6 +40,7 @@ private:
     float pressureGreenBegin;
     float pressureGreenEnd;
 
+    bool allowUpdateBottomPixmap;
     ExtPlaneClient _client;
     const QImage bottomImage;
     QPixmap* bottomPixmap;

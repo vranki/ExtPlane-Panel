@@ -19,6 +19,7 @@ EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
                 scaleFactor(1),
                 pressureGreenBegin(100),
                 pressureGreenEnd(350),
+                allowUpdateBottomPixmap(true),
                 _client(this, typeName(), conn),
                 bottomImage(":/images/DR400_engine_FUELP.png"),
                 bottomPixmap(0),
@@ -56,12 +57,15 @@ void EngineFuelP::storeSettings(QSettings &settings) {
 
 void EngineFuelP::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
+
+    allowUpdateBottomPixmap = false;
+
     setMaxValue(settings.value("maxvalue",400).toInt());
     setGreenBeginValue(settings.value("greenBegin",100).toInt());
     setGreenEndValue(settings.value("greenEnd",350).toInt());
     setEngineNumber(settings.value("engineNumber",0).toInt());
 
-
+    allowUpdateBottomPixmap = true;
 }
 
 void EngineFuelP::createSettings(QGridLayout *layout) {
@@ -125,90 +129,92 @@ void EngineFuelP::setGreenEndValue(float mv) {
  */
 void EngineFuelP::drawBottomPixmap() {
 
-    int w,h; //width; height
-    float arcGauge = 0.45; //distance ration between edge and arc
-    w=qMin(this->width(), this -> height());
-    h=w;
+    if (allowUpdateBottomPixmap) {
+        int w,h; //width; height
+        float arcGauge = 0.45; //distance ration between edge and arc
+        w=qMin(this->width(), this -> height());
+        h=w;
 
-    //destroy last bottomPixmap
-    if ( ! (bottomPixmap == NULL) ) delete(bottomPixmap);
-    //and create a new with the good dimension
-    bottomPixmap = new QPixmap(w, h);
-    bottomPixmap->fill(Qt::black);
+        //destroy last bottomPixmap
+        if ( ! (bottomPixmap == NULL) ) delete(bottomPixmap);
+        //and create a new with the good dimension
+        bottomPixmap = new QPixmap(w, h);
+        bottomPixmap->fill(Qt::black);
 
 
-    //set  painter
-    QPainter pa(bottomPixmap);    
-    pa.setRenderHint(QPainter::Antialiasing);
+        //set  painter
+        QPainter pa(bottomPixmap);
+        pa.setRenderHint(QPainter::Antialiasing);
 
-    //resize image
-    this->scaleFactor = (float) w/bottomImage.width();
-    pa.save();
-    pa.scale(this->scaleFactor,this->scaleFactor);
-    pa.drawImage(QPoint(0,0),bottomImage);
-    pa.restore();
+        //resize image
+        this->scaleFactor = (float) w/bottomImage.width();
+        pa.save();
+        pa.scale(this->scaleFactor,this->scaleFactor);
+        pa.drawImage(QPoint(0,0),bottomImage);
+        pa.restore();
 
-    QPen pen;
-    QBrush brush;
+        QPen pen;
+        QBrush brush;
 
-    pa.save();
-    //draw graduations
-    //arc amplitude is 120 degrees
+        pa.save();
+        //draw graduations
+        //arc amplitude is 120 degrees
 
-    pen.setWidth(1+w/250); //pen width increase when w increase
-    pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
-    pa.setPen(pen);
-    pa.setBrush(brush);
-    pa.translate(w/2,h/2);
-    pa.rotate(-30);
-    for (int i=0; i< 9; i++) {
-        int l1 = 5;
-        int l2 = 0;
-        if ( i % 4 == 0 ) {
-            l1 = 10;
-            l2 = 10;
+        pen.setWidth(1+w/250); //pen width increase when w increase
+        pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
+        pa.setPen(pen);
+        pa.setBrush(brush);
+        pa.translate(w/2,h/2);
+        pa.rotate(-30);
+        for (int i=0; i< 9; i++) {
+            int l1 = 5;
+            int l2 = 0;
+            if ( i % 4 == 0 ) {
+                l1 = 10;
+                l2 = 10;
+            }
+            pa.drawLine( (w -  (l1 * this->scaleFactor)) * arcGauge/2, 0, (w + (l2 * this->scaleFactor))*arcGauge/2, 0);
+            pa.rotate(-15.0);
         }
-        pa.drawLine( (w -  (l1 * this->scaleFactor)) * arcGauge/2, 0, (w + (l2 * this->scaleFactor))*arcGauge/2, 0);
-        pa.rotate(-15.0);
+        pa.restore();
+
+        //draw text
+        pa.save();
+        pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
+        pa.setPen(pen);
+        pa.setBrush(brush);
+        QFont font("Verdana", this->defaultFont.pointSizeF() /1.3f * this->scaleFactor);
+        QFontMetrics fm(font);
+        pa.setFont(font);
+        pa.translate(w/2,h/2);
+        QString sMin, sMax, sMed;
+        sMin.setNum(pressureValueMin,'f',0);
+        sMed.setNum(pressureValueMax/2,'f',0);
+        sMax.setNum(pressureValueMax,'f',0);
+
+        pa.drawText(  cos(3.14159*150/180)*(w*arcGauge+8*scaleFactor)/-2 , sin(3.14159*150/180)*(w*arcGauge+8*scaleFactor)/-2 ,  sMax);
+        pa.drawText(  cos(3.14159* 90/180)*(w*arcGauge+8*scaleFactor)/-2 - fm.width(sMed)/2 , sin(3.14159* 90/180)*(w*arcGauge+8*scaleFactor)/-2 ,sMed);
+        pa.drawText(  cos(3.14159* 30/180)*(w*arcGauge+8*scaleFactor)/-2 - fm.width(sMin), sin(3.14159* 30/180)*(w*arcGauge+8*scaleFactor)/-2 ,sMin);
+
+        pa.restore();
+
+        //draw green arc
+        pen.setWidth(1+w/150); //pen width increase when w increase
+        pen.setColor(Qt::green);
+        brush.setColor(Qt::green);
+        pa.setPen(pen);
+        pa.setBrush(brush);
+
+        double startAngle = (90 - this->value2Angle(this->pressureGreenBegin))*16.0;
+        double arcAngle = ( this->value2Angle(this->pressureGreenBegin) - this->value2Angle(this->pressureGreenEnd) )*16.0;
+        int x,y,ww,hh;
+        ww=w*arcGauge;
+        hh=h*arcGauge;
+        x = (w - ww)/2;
+        y = (h - hh)/2;
+        pa.drawArc(x,y,ww,hh, startAngle, arcAngle );
+
     }
-    pa.restore();
-
-    //draw text
-    pa.save();
-    pen.setColor(QColor(0xb4,0xba,0xbd)); //grey color
-    pa.setPen(pen);
-    pa.setBrush(brush);
-    QFont font("Verdana", this->defaultFont.pointSizeF() /1.3f * this->scaleFactor);
-    QFontMetrics fm(font);
-    pa.setFont(font);
-    pa.translate(w/2,h/2);
-    QString sMin, sMax, sMed;
-    sMin.setNum(pressureValueMin,'f',0);
-    sMed.setNum(pressureValueMax/2,'f',0);
-    sMax.setNum(pressureValueMax,'f',0);
-
-    pa.drawText(  cos(3.14159*150/180)*(w*arcGauge+8*scaleFactor)/-2 , sin(3.14159*150/180)*(w*arcGauge+8*scaleFactor)/-2 ,  sMax);
-    pa.drawText(  cos(3.14159* 90/180)*(w*arcGauge+8*scaleFactor)/-2 - fm.width(sMed)/2 , sin(3.14159* 90/180)*(w*arcGauge+8*scaleFactor)/-2 ,sMed);
-    pa.drawText(  cos(3.14159* 30/180)*(w*arcGauge+8*scaleFactor)/-2 - fm.width(sMin), sin(3.14159* 30/180)*(w*arcGauge+8*scaleFactor)/-2 ,sMin);
-
-    pa.restore();
-
-    //draw green arc
-    pen.setWidth(1+w/150); //pen width increase when w increase
-    pen.setColor(Qt::green);
-    brush.setColor(Qt::green);
-    pa.setPen(pen);
-    pa.setBrush(brush);
-
-    double startAngle = (90 - this->value2Angle(this->pressureGreenBegin))*16.0;
-    double arcAngle = ( this->value2Angle(this->pressureGreenBegin) - this->value2Angle(this->pressureGreenEnd) )*16.0;
-    int x,y,ww,hh;
-    ww=w*arcGauge;
-    hh=h*arcGauge;
-    x = (w - ww)/2;
-    y = (h - hh)/2;
-    pa.drawArc(x,y,ww,hh, startAngle, arcAngle );
-
 }
 
 void EngineFuelP::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

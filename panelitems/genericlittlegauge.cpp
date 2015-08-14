@@ -36,7 +36,7 @@ GenericLittleGauge::GenericLittleGauge(ExtPlanePanel *panel, ExtPlaneConnection 
     nbThinGraduations(7),
     isDisplayValues(true),
     isLogDisplayStyle(false),
-    updateBottomPixmap(true),
+    allowUpdateBottomPixmap(true),
     arcDegreeAmplitude(120),
     arcRatioPosition(0.5),
     _client(this, typeName(), conn),
@@ -97,7 +97,7 @@ void GenericLittleGauge::storeSettings(QSettings &settings){
 
 void GenericLittleGauge::loadSettings(QSettings &settings){
 
-    this->updateBottomPixmap = false;
+    this->allowUpdateBottomPixmap = false;
 
     PanelItem::loadSettings(settings);
 
@@ -125,7 +125,7 @@ void GenericLittleGauge::loadSettings(QSettings &settings){
     setArcValueAmplitudeDisplay(settings.value("arcDegreeAmplitude",120).toFloat());
 
 
-    this->updateBottomPixmap = true;
+    this->allowUpdateBottomPixmap = true;
 }
 
 void GenericLittleGauge::createSettings(QGridLayout *layout){
@@ -322,7 +322,7 @@ void GenericLittleGauge::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
 void GenericLittleGauge::drawBottomPixmap(){
 
-    if (updateBottomPixmap) {
+    if (allowUpdateBottomPixmap) {
 
         int w,h; //width; height
         w=qMin(this->width(), this -> height());
@@ -449,10 +449,10 @@ void GenericLittleGauge::drawBottomPixmap(){
                 x =  cos(3.14159/180 * (value2Angle(valueDisplay) - value2Angle(valueMin) -  (180 + arcDegreeAmplitude) / 2) ) ;
                 x = x * (w*arcRatioPosition+8*scaleFactor)/2 ;
                 //if text is on the left side, make offset
-                if ( value2Angle(valueDisplay) < ( arcDegreeAmplitude / 2) ) {
+                if ( (value2Angle(valueDisplay) - value2Angle(valueMin)) < ( arcDegreeAmplitude / 2) ) {
                     x = x - fm.width(textDisplay) ;
                 //else if text is on center of panel (+/- 1 degree) then make half offset
-                }else if (  abs ( (value2Angle(valueDisplay) - ( arcDegreeAmplitude / 2) ) )  < 1) {
+                }else if (  abs ( ((value2Angle(valueDisplay) - value2Angle(valueMin)) - ( arcDegreeAmplitude / 2) ) )  < 1) {
                     x = x - fm.width(textDisplay)/2 ;
                 }
                 y = sin(3.14159/180* ( value2Angle(valueDisplay) - value2Angle(valueMin) -  (180 + arcDegreeAmplitude) / 2 ) );

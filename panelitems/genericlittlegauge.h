@@ -78,7 +78,7 @@ private:
     bool isDisplayValues;
     bool isLogDisplayStyle;
 
-    bool updateBottomPixmap; // use to not draw bottomPixamp when loadSettings is call
+    bool allowUpdateBottomPixmap; // use to not draw bottomPixamp when loadSettings is call
     int arcDegreeAmplitude; //the range where needle can move (120 °)
     float arcRatioPosition; //ratio between this panel and his drawing arc
     ExtPlaneClient _client;
