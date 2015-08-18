@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/DR400_engine_FUELP.png</file>
+        <file>images/DR400_engine_FUEL_Tank.png</file>
+        <file>images/DR400_engine_FUEL_Tank_needle.png</file>
+        <file>images/DR400_Battery_Amp.png</file>
+        <file>images/DR400_engine_generic.png</file>
+        <file>images/DR400_engine_generic_needle.png</file>
+    </qresource>
+</RCC>
