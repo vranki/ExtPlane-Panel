@@ -21,6 +21,11 @@ public slots:
     void speedChanged(QString name, double speed);
     void setUnit(VelocityUnit un);
     void setMaxValue(float mv);
+    void setVso(float mv);
+    void setVs(float mv);
+    void setVfe(float mv);
+    void setVno(float mv);
+    void setVne(float mv);
     virtual void tickTime(double dt, int total);
     virtual void setInterpolationEnabled(bool ie);
 private:
@@ -29,7 +34,7 @@ private:
     VelocityUnit units;
     double maxValue;
     // Always in m/s
-    double vne, yaStart, yaEnd, gaStart, gaEnd, waStart, waEnd;
+    double vne, vso, vs, vfe, vno;
     double yellowTriangle;
     ValueInterpolator interpolator;
 };
