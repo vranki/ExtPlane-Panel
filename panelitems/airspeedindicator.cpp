@@ -126,27 +126,54 @@ void AirspeedIndicator::setMaxValue(float mv) {
 
 void AirspeedIndicator::setVso(float mv) {
     vso = mv;
-    setScale(180, 0, 180+330, vso);
+    if (vso > maxValue) {
+      vso = maxValue;
+    }
+    setScale(180, 0, 180+330, maxValue);
 }
 
 void AirspeedIndicator::setVs(float mv) {
     vs = mv;
-    setScale(180, 0, 180+330, vs);
+    if (vs > maxValue) {
+      vs = maxValue;
+    }
+    if (vs < vso) {
+      vs = vso;
+    }
+    setScale(180, 0, 180+330, maxValue);
 }
 
 void AirspeedIndicator::setVfe(float mv) {
     vfe = mv;
-    setScale(180, 0, 180+330, vfe);
+    if (vfe > maxValue) {
+      vfe = maxValue;
+    }
+    if (vfe < vs) {
+      vfe = vs;
+    }
+    setScale(180, 0, 180+330, maxValue);
 }
 
 void AirspeedIndicator::setVno(float mv) {
     vno = mv;
-    setScale(180, 0, 180+330, vno);
+    if (vno > maxValue) {
+      vno = maxValue;
+    }
+    if (vno < vfe) {
+      vno = vfe;
+    }
+    setScale(180, 0, 180+330, maxValue);
 }
 
 void AirspeedIndicator::setVne(float mv) {
     vne = mv;
-    setScale(180, 0, 180 + 330, vno);
+    if (vne > maxValue) {
+      vne = maxValue;
+    }
+    if (vne < vno) {
+      vne = vno;
+    }
+    setScale(180, 0, 180+330, maxValue);
 }
 
 void AirspeedIndicator::createSettings(QGridLayout *layout) {
