@@ -447,25 +447,18 @@ void PanelWindow::setProfileSettings(QSettings *settings) {
 void PanelWindow::saveProfile() {
     // New or overwrite?
     if(profileSettings == NULL) {
-        QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), "", tr("Ini Files (*.ini)"));
-        if(!filename.isEmpty()) {
-            // Create new file and save
-            setProfileSettings(new QSettings(filename,QSettings::IniFormat,this));
-            saveProfile(profileSettings->fileName());
-
-            // Register this file as the last loaded...
-            appSettings->setValue("lastloadedprofile", profileSettings->fileName());
-        }
+        saveProfileAs();
     } else {
         saveProfile(profileSettings->fileName());
     }
 }
 
 void PanelWindow::saveProfileAs() {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), profileSettings->fileName(), tr("Ini Files (*.ini)"));
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save Profile"), profileSettings == NULL ? "" : profileSettings->fileName(), tr("Ini Files (*.ini)"));
     if(!filename.isEmpty()) {
         // Create new file and save
         setProfileSettings(new QSettings(filename,QSettings::IniFormat,this));
+        saveProfile(profileSettings->fileName());
 
         // Register this file as the last loaded...
         appSettings->setValue("lastloadedprofile", profileSettings->fileName());
@@ -748,4 +741,3 @@ void PanelWindow::clientDataRefChanged(QString name, double val) {
         currentPanel->hasAvionicsPower = val == 1;
     }
 }
-
