@@ -50,11 +50,10 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setScale(float zeroAngle, float zeroValue, float maxAngle, float maxValue);
     void setBars(float thick, float thin);
-    void setNumbers(float div);
-    void setNumberScale(float ns);
     void setLabel(QString text);
     virtual QString typeName() = 0;
     float value2Angle(float value);
+    virtual void createSettings(QGridLayout *layout);
 
     void addArc(Arc *arc);
     void clearArcs();
@@ -67,6 +66,10 @@ public:
 public slots:
     void setValue(float value);
     void setNeedle(Needle * newNeedle);
+    void setNumbers(float div);
+    void setNumberScale(float ns);
+    void setThickBars(float thick);
+    void setThinBars(float thin);
 
 protected:
     virtual void repaintPixmaps(); // Repaint bottom pixmap

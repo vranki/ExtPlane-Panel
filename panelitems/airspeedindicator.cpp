@@ -177,6 +177,7 @@ void AirspeedIndicator::setVne(float mv) {
 }
 
 void AirspeedIndicator::createSettings(QGridLayout *layout) {
+    NeedleInstrument::createSettings(layout);
     QLabel *unitsLabel = new QLabel("Unit", layout->parentWidget());
     layout->addWidget(unitsLabel, layout->rowCount(), 0);
     VelocityUnitComboBox *unitsCombo = new VelocityUnitComboBox(layout->parentWidget(), units);
