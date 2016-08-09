@@ -23,6 +23,8 @@ EngineDisplay::EngineDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _barLabels = 6;
     _engineCount = 0;
     _style = ENGINE_STYLE_GENERIC;
+    _autoMin = false;
+    _autoMax = false;
 
     _n1Enabled = true;
     _n1DatarefMinimum = 0.0;
@@ -127,6 +129,11 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
             for(int i = 0; i < qMin(_engineCount,_n1Values.count()); i++) {
                 // Grab value
                 double value = _n1Values.at(i).toDouble();
+                // Update min/max
+                if(_autoMax && value > _n1DatarefMaximum) {
+                    _n1DatarefMaximum = value;
+                    _n1RangeMaximum = value;
+                }
                 // Draw
                 drawVerticalBarGauge(painter,_n1Color,xx,yy,gaugeWidth,gaugeHeight,value,_n1DatarefMinimum,_n1DatarefMaximum,_n1RangeMinimum,_n1RangeMaximum,false,_barLabels);
                 xx += gaugeHSpacing;
@@ -140,6 +147,11 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
             for(int i = 0; i < qMin(_engineCount,_n2Values.count()); i++) {
                 // Grab value
                 double value = _n2Values.at(i).toDouble();
+                // Update min/max
+                if(_autoMax && value > _n2DatarefMaximum) {
+                    _n2DatarefMaximum = value;
+                    _n2RangeMaximum = value;
+                }
                 // Draw
                 drawVerticalBarGauge(painter,_n2Color,xx,yy,gaugeWidth,gaugeHeight,value,_n2DatarefMinimum,_n2DatarefMaximum,_n2RangeMinimum,_n2RangeMaximum,false,_barLabels);
                 xx += gaugeHSpacing;
@@ -153,6 +165,11 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
             for(int i = 0; i < qMin(_engineCount,_eprValues.count()); i++) {
                 // Grab value
                 double value = _eprValues.at(i).toDouble();
+                // Update min/max
+                if(_autoMax && value > _eprDatarefMaximum) {
+                    _eprDatarefMaximum = value;
+                    _eprRangeMaximum = value;
+                }
                 // Draw
                 drawVerticalBarGauge(painter,_eprColor,xx,yy,gaugeWidth,gaugeHeight,value,_eprDatarefMinimum,_eprDatarefMaximum,_eprRangeMinimum,_eprRangeMaximum,true,_barLabels);
                 xx += gaugeHSpacing;
@@ -166,6 +183,11 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
             for(int i = 0; i < qMin(_engineCount,_egtValues.count()); i++) {
                 // Grab value
                 double value = _egtValues.at(i).toDouble();
+                // Update min/max
+                if(_autoMax && value > _egtDatarefMaximum) {
+                    _egtDatarefMaximum = value;
+                    _egtRangeMaximum = value;
+                }
                 // Draw
                 drawVerticalBarGauge(painter,_egtColor,xx,yy,gaugeWidth,gaugeHeight,value,_egtDatarefMinimum,_egtDatarefMaximum,_egtRangeMinimum,_egtRangeMaximum,true,_barLabels);
                 xx += gaugeHSpacing;
@@ -179,6 +201,11 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
             for(int i = 0; i < qMin(_engineCount,_ffValues.count()); i++) {
                 // Grab value
                 double value = _ffValues.at(i).toDouble();
+                // Update min/max
+                if(_autoMax && value > _ffDatarefMaximum) {
+                    _ffDatarefMaximum = value;
+                    _ffRangeMaximum = value;
+                }
                 // Draw
                 drawVerticalBarGauge(painter,_ffColor,xx,yy,gaugeWidth,gaugeHeight,value,_ffDatarefMinimum,_ffDatarefMaximum,_ffRangeMinimum,_ffRangeMaximum,true,_barLabels);
                 xx += gaugeHSpacing;
@@ -196,6 +223,8 @@ void EngineDisplay::storeSettings(QSettings &settings) {
 
     settings.setValue("barLabels", _barLabels);
     settings.setValue("style", _style);
+    settings.setValue("automin",_autoMin);
+    settings.setValue("automax",_autoMax);
 
     settings.setValue("n1enabled",_n1Enabled);
     settings.setValue("n1datarefmin",_n1DatarefMinimum);
@@ -238,6 +267,8 @@ void EngineDisplay::loadSettings(QSettings &settings) {
 
     setBarLabels(settings.value("barLabels","6").toInt());
     setStyle(settings.value("style","0").toInt());
+    setAutoMin(settings.value("automin","false").toBool());
+    setAutoMax(settings.value("automax","false").toBool());
 
     setN1Enabled(settings.value("n1enabled","true").toBool());
     setN1DatarefMinimum(settings.value("n1datarefmin","0").toDouble());
@@ -291,6 +322,9 @@ void EngineDisplay::createSettings(QGridLayout *layout) {
     styles << "Generic" << "Boing";
     createComboBoxSetting(layout,"Style",_style,styles,SLOT(setStyle(int)));
     createSliderSetting(layout,"Number of Labels",0,11,_barLabels,SLOT(setBarLabels(int)));
+    createCheckboxSetting(layout,"Auto Min",_autoMin,SLOT(setAutoMin(bool)));
+    createCheckboxSetting(layout,"Auto Max",_autoMax,SLOT(setAutoMax(bool)));
+
     createGaugeSetSettings(layout,"N1",_n1Enabled,_n1DatarefMinimum,_n1DatarefMaximum,_n1RangeMinimum,_n1RangeMaximum,_n1Color);
     createGaugeSetSettings(layout,"N2",_n2Enabled,_n2DatarefMinimum,_n2DatarefMaximum,_n2RangeMinimum,_n2RangeMaximum,_n2Color);
     createGaugeSetSettings(layout,"EPR",_eprEnabled,_eprDatarefMinimum,_eprDatarefMaximum,_eprRangeMinimum,_eprRangeMaximum,_eprColor);
