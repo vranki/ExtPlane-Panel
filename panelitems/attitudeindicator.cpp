@@ -341,7 +341,7 @@ void AttitudeIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         // Rotate to roll and draw moving card
         painter->rotate(-_rollValue);
         double pitchPixelsY = pitch*(side*0.005f);
-                DEBUG << pitchPixelsY;
+        //DEBUG << pitchPixelsY;
         painter->drawPixmap(QPointF(-_card.width()/2.0,-_card.height()/2.0 + pitchPixelsY),_card);
 
         // Draw frame
