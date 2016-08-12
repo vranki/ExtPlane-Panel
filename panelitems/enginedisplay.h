@@ -4,7 +4,7 @@
 #include "displayinstrument.h"
 
 /**
- * Displays the engine N1, EPR and EGT for any number of engines.
+ * Displays the engine N1, EPR and EGT for any number of engines for Glass Cockpit.
  */
 class EngineDisplay : public DisplayInstrument
 {
@@ -17,6 +17,9 @@ public:
     virtual void loadSettings(QSettings &settings);
     virtual void createSettings(QGridLayout *layout);
     void createGaugeSetSettings(QGridLayout *layout, QString name, bool enabled, double dataRefMin, double dataRefMax, double rangeMin, double rangeMax, QColor color);
+
+private:
+    void drawVerticalBarGauge(QPainter *painter, double strokeWidth, QColor color, double x, double y, double width, double height, double hPadding, double value, double minValue, double maxValue, double rangeStart, double rangeEnd, bool decimalPrecision, int labelCount);
 
 signals:
     
