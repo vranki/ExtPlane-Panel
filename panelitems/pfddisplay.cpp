@@ -11,9 +11,7 @@
 REGISTER_WITH_PANEL_ITEM_FACTORY(PFDDisplay,"display/pfd")
 
 #define DATAREF_PITCH "sim/cockpit2/gauges/indicators/pitch_vacuum_deg_pilot"
-//#define DATAREF_PITCH "sim/cockpit2/gauges/indicators/pitch_electric_deg_pilot"
-//#define DATAREF_ROLL "sim/cockpit2/gauges/indicators/roll_vacuum_deg_pilot"
-#define DATAREF_ROLL "sim/cockpit2/gauges/indicators/heading_AHARS_deg_mag_pilot"
+#define DATAREF_ROLL "sim/cockpit2/gauges/indicators/roll_electric_deg_pilot"
 #define DATAREF_SLIP "sim/cockpit2/gauges/indicators/slip_deg"
 #define DATAREF_AIRSPEED_KTS "sim/cockpit2/gauges/indicators/airspeed_kts_pilot"
 #define DATAREF_ALTITUDE_FT "sim/cockpit2/gauges/indicators/altitude_ft_pilot"
@@ -42,6 +40,8 @@ PFDDisplay::PFDDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     // Init attitude
     _attitude_pitchValue = 10;
     _attitude_rollValue = -20;
+
+    // Connect
     _client.subscribeDataRef(DATAREF_PITCH,0.05);
     _client.subscribeDataRef(DATAREF_ROLL,0.05);
     _client.subscribeDataRef(DATAREF_SLIP,0.05);
@@ -50,14 +50,6 @@ PFDDisplay::PFDDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _client.subscribeDataRef(DATAREF_AIRSPEED_ACC_KTS,0.5);
     _client.subscribeDataRef(DATAREF_HEADING_DEG,0.5);
     _client.subscribeDataRef(DATAREF_VERTICALSPEED_FPM,0.05);
-
-    // Connect
-    //_client.subscribeDataRef(DATAREF_N1, 1.0);
-    //_client.subscribeDataRef(DATAREF_N2, 1.0);
-    //_client.subscribeDataRef(DATAREF_EPR, 0.01);
-    //_client.subscribeDataRef(DATAREF_EGT, 1.0);
-    //_client.subscribeDataRef(DATAREF_NUMENGINES, 0.0);
-    //_client.subscribeDataRef(DATAREF_FF, 0.0);
     connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(refChanged(QString,QStringList)));
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
 

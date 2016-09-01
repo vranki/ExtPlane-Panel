@@ -10,21 +10,17 @@
 #include "extplaneclient.h"
 
 DisplayInstrument::DisplayInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),
-    _client(this, typeName(), conn) {
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),_client(this, typeName(), conn) {
 
     // Init
-    _monitorFade = 80;
-    _displayStrength = 80;
+    _monitorFade = 93;
+    _displayStrength = 39;
     _resolution = 100;
     _lastRender.start();
     _refreshHerz = 30;
 
     // Make connection and register data refs
     conn->registerClient(&_client);
-    //TODO: avionics on/off dataref for powering instrument
-    //_client.subscribeDataRef(MAP_INSTRUMENT_HEADING_DATAREF, 0);
-    //connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(latlongChanged(QString,double)));
 
 }
 

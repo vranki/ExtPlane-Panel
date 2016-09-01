@@ -22,7 +22,7 @@ EngineDisplay::EngineDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     // Init
     _barLabels = 6;
     _engineCount = 0;
-    _style = ENGINE_STYLE_GENERIC;
+    _style = ENGINE_STYLE_BOEING;
     _autoMin = false;
     _autoMax = false;
 

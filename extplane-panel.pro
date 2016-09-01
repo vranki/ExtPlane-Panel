@@ -136,7 +136,8 @@ SOURCES += \
     panelitems/tankleveler.cpp \
     panelitems/engine_battery.cpp \
     panelitems/genericlittlegauge.cpp \
-    panelitems/pfddisplay.cpp
+    panelitems/pfddisplay.cpp \
+    panelitems/indicatordisplay.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -206,7 +207,8 @@ HEADERS += \
     panelitems/tankleveler.h \
     panelitems/engine_battery.h \
     panelitems/genericlittlegauge.h \
-    panelitems/pfddisplay.h
+    panelitems/pfddisplay.h \
+    panelitems/indicatordisplay.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
