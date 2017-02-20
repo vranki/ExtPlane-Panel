@@ -304,3 +304,5 @@ Original Author:
 Contributors:
 - Dan Krusi <dan.krusi@nerves.ch>
 - Bob Gates
+- Nicolas Montarnal
+

@@ -8,4 +8,4 @@ DEB_DH_STRIP_ARGS := --dbg-package=extplane-panel-dbg
 DH_ALWAYS_EXCLUDE=.git
 
 override_dh_strip:
-        $(overridden_command) --dbg-package=extplane-panel-dbg
+	$(overridden_command) --dbg-package=extplane-panel-dbg
