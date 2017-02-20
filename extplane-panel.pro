@@ -135,7 +135,9 @@ SOURCES += \
     panelitems/engine_fuel_p.cpp \
     panelitems/tankleveler.cpp \
     panelitems/engine_battery.cpp \
-    panelitems/genericlittlegauge.cpp
+    panelitems/genericlittlegauge.cpp \
+    panelitems/pfddisplay.cpp \
+    panelitems/indicatordisplay.cpp
 
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
@@ -204,7 +206,9 @@ HEADERS += \
     panelitems/engine_fuel_p.h \
     panelitems/tankleveler.h \
     panelitems/engine_battery.h \
-    panelitems/genericlittlegauge.h
+    panelitems/genericlittlegauge.h \
+    panelitems/pfddisplay.h \
+    panelitems/indicatordisplay.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
@@ -252,3 +256,14 @@ OTHER_FILES += README.md debian/rules debian/changelog debian/control debian/ext
 
 RESOURCES += \
     applicationresources.qrc
+
+DISTFILES += \
+    android/AndroidManifest.xml \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradlew \
+    android/res/values/libs.xml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew.bat
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

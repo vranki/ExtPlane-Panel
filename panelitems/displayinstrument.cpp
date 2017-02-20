@@ -10,21 +10,17 @@
 #include "extplaneclient.h"
 
 DisplayInstrument::DisplayInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),
-    _client(this, typeName(), conn) {
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),_client(this, typeName(), conn) {
 
     // Init
-    _monitorFade = 80;
-    _displayStrength = 80;
+    _monitorFade = 93;
+    _displayStrength = 39;
     _resolution = 100;
     _lastRender.start();
     _refreshHerz = 30;
 
     // Make connection and register data refs
     conn->registerClient(&_client);
-    //TODO: avionics on/off dataref for powering instrument
-    //_client.subscribeDataRef(MAP_INSTRUMENT_HEADING_DATAREF, 0);
-    //connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(latlongChanged(QString,double)));
 
 }
 
@@ -58,6 +54,8 @@ void DisplayInstrument::itemSizeChanged(float w, float h) {
     // Reload pixmaps
     _monitorImage = QPixmap(w,h);
     _monitorImage.fill(Qt::black);
+    _bufferImage = QPixmap(w,h);
+    //_bufferImage.fill(Qt::black);
 }
 
 void DisplayInstrument::tickTime(double dt, int total) {
@@ -78,11 +76,18 @@ void DisplayInstrument::tickTime(double dt, int total) {
 
         // Render display
         if(this->panel()->hasAvionicsPower) {
+            // Render to buffer
+            QPainter bufferPainter;
+            bufferPainter.begin(&_bufferImage);
+            bufferPainter.fillRect(_bufferImage.rect(),Qt::black);
+            setupPainter(&bufferPainter);
+            this->render(&bufferPainter, this->width(), this->height());
+            // Render to pixamp
             double displayStrengthPercent = _displayStrength/100.0;
             if(displayStrengthPercent != 1.0) {
                 pixmapPainter.setOpacity(displayStrengthPercent);
             }
-            this->render(&pixmapPainter, this->width(), this->height());
+            pixmapPainter.drawPixmap(0,0,_bufferImage);
         }
 
         // Call for repaint
@@ -119,88 +124,6 @@ void DisplayInstrument::createSettings(QGridLayout *layout) {
 
 }
 
-void DisplayInstrument::drawVerticalBarGauge(
-        QPainter *painter,
-        QColor color,
-        double x,
-        double y,
-        double width,
-        double height,
-        double value,
-        double minValue,
-        double maxValue,
-        double rangeStart,
-        double rangeEnd,
-        bool decimalPrecision,
-        int labelCount) {
 
-    // Init
-    double labelHeight = 20;
-    double valueHeight = 30;
-    double barHeight = height - valueHeight - labelHeight - labelHeight;
-    double strokeWidth = 2.0;
-    double percent = (value-minValue) / (maxValue-minValue);
-    if(percent < 0.0) percent = 0.0;
-    if(percent > 1.0) percent = 1.0;
-
-    // Draw bar outline
-    QPen pen(Qt::white,strokeWidth);
-    painter->setPen(pen);
-    painter->setBrush(Qt::transparent);
-    painter->drawRect(x,y+valueHeight+labelHeight/2,width,barHeight);
-
-    // Draw bar inner
-    painter->setPen(Qt::transparent);
-    painter->setBrush(color);
-    double barInnerHeight = barHeight-strokeWidth-strokeWidth;
-    double barInnerValue = barInnerHeight * percent;
-    painter->drawRect(x+strokeWidth,
-                      y+valueHeight+labelHeight/2+strokeWidth+(barInnerHeight - barInnerValue),
-                      width-strokeWidth-strokeWidth,
-                      barInnerValue);
-
-    // Draw labels
-    painter->setPen(Qt::white);
-    int labelCountLogical = labelCount-1;
-    for(int i = 0; i <= labelCountLogical; i++) {
-        double labelValuePercent = ((double)i/(double)labelCountLogical);
-        double labelValueRanged = rangeStart + (labelValuePercent*(rangeEnd-rangeStart));
-        QString text;
-        if(decimalPrecision) {
-            // Decimal precision
-            text = QString("%1").arg(labelValueRanged,0,'f',2);
-        } else {
-            // int precision
-            text = QString("%1").arg((int)labelValueRanged);
-        }
-        painter->setFont(this->defaultFont);
-        painter->drawText(x+width+labelHeight/3.0,
-                          y+valueHeight+barHeight-(i*(barHeight/(double)labelCountLogical)),
-                          labelHeight*3,
-                          labelHeight,
-                          Qt::AlignVCenter,
-                          text);
-    }
-
-    // Draw value
-    double valuePercent = (value-minValue) / (maxValue-minValue);
-    double valueRanged = rangeStart + (valuePercent*(rangeEnd-rangeStart));
-    QString valueText;
-    if(decimalPrecision) {
-        // Decimal precision
-        valueText = QString("%1").arg(valueRanged,0,'f',2);
-    } else {
-        // int precision
-        valueText = QString("%1").arg((int)valueRanged,3,10,QChar('0'));
-    }
-    painter->setFont(QFont(this->defaultFont.family(),this->defaultFont.pointSize()*2.0));
-    painter->drawText(x,
-                      y,
-                      valueHeight*3,
-                      valueHeight,
-                      Qt::AlignBottom,
-                      valueText);
-
-}
 
 

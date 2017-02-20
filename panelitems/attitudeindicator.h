@@ -34,9 +34,9 @@ private:
     void createGlass(float w, float h);
     void createBackground(float w, float h);
     void createBezel(void);
-    
     float value2Angle1(float value);
     float value2Angle2(float value);
+private:
     ExtPlaneClient _client;
     DistanceUnit units;
     PressureUnit baroUnits;
@@ -44,7 +44,6 @@ private:
     float _thickBars, _thinBars, _numbers;
     float _numbersScale;
     float _baroPressure;
-    
     float _rollValue;
     float _pitchValue;
     QString _pitchRef;

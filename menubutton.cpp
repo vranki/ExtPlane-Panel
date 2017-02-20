@@ -52,7 +52,9 @@ void MenuButton::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
 #endif
     menu->move(event->screenPos().x(), event->screenPos().y());
     QVBoxLayout *layout = new QVBoxLayout();
-
+#if defined(Q_OS_ANDROID)
+    layout->setSpacing(1); // Smaller spacing for small screens
+#endif
     QCheckBox *editModeCheck = new QCheckBox("Edit Panel", menu);
     editModeCheck->setChecked(editMode);
     connect(editModeCheck, SIGNAL(clicked(bool)), panelWindow, SLOT(setEditMode(bool)));

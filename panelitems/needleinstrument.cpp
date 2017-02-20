@@ -195,6 +195,16 @@ void NeedleInstrument::setBars(float thick, float thin) {
     repaintPixmaps();
 }
 
+void NeedleInstrument::setThickBars(float thick) {
+    _thickBars = (float)thick;
+    repaintPixmaps();
+}
+
+void NeedleInstrument::setThinBars(float thin) {
+    _thinBars = (float)thin;
+    repaintPixmaps();
+}
+
 float NeedleInstrument::value2Angle(float value) {
     return _zeroangle +  ((value - _zeroValue) / (_maxValue - _zeroValue)) * (_maxAngle - _zeroangle);
 }
@@ -227,4 +237,10 @@ void NeedleInstrument::setArcMin(int arcNumber, float value) {
 
 void NeedleInstrument::itemSizeChanged(float w, float h) {
     repaintPixmaps();
+}
+
+void NeedleInstrument::createSettings(QGridLayout *layout) {
+    createNumberInputSetting(layout,"Thin Bar Interval",_thinBars,SLOT(setThinBars(float)));
+    createNumberInputSetting(layout,"Thick Bar Interval",_thickBars,SLOT(setThickBars(float)));
+    createNumberInputSetting(layout,"Label Interval",_numbers,SLOT(setNumbers(float)));
 }

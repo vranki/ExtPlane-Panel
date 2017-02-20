@@ -29,7 +29,7 @@ public:
     virtual void createSettings(QGridLayout *layout);
 
 protected:
-    void drawVerticalBarGauge(QPainter *painter, QColor color, double x, double y, double width, double height, double value, double minValue, double maxValue, double rangeStart, double rangeEnd, bool decimalPrecision, int labelCount);
+
 
 signals:
     
@@ -44,6 +44,7 @@ protected:
     // Internal variables
     ExtPlaneClient  _client;
     QPixmap         _monitorImage;      // Image stores currently rendered image
+    QPixmap         _bufferImage;       // Image for a fresh render
     int             _monitorFade;       // 0.0 - 1.0
     int             _displayStrength;   // 0.0 - 1.0
     int             _resolution;        // 1.0 - 3.0

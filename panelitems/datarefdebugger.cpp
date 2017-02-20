@@ -85,7 +85,7 @@ void DataRefDebugger::createSettings(QGridLayout *layout) {
 
 void DataRefDebugger::setDataRefName(QString name) {
     // Unsubscribe old
-    if(_currentName != "") _client.unsubscribeDataRef(_currentName); //TODO: there seems to be something wrong with unsubscribing...
+    if(_currentName != "" && _client.isDataRefSubscribed(_currentName)) _client.unsubscribeDataRef(_currentName); //TODO: there seems to be something wrong with unsubscribing...
     _currentName = name;
     _currentValue = "";
 
