@@ -40,6 +40,7 @@ public slots:
     void setShowHeading(bool val) {_showHeading = val;}
     void setMapSource(int val) {_mapSource = val;}
     void setMapRange(int val) {_range = val;_googleMapsZoom=(int)((1.0-val/100.0)*16.0);}
+    void setGoogleMapsAPIKey(QString val) { _googleMapsAPIKey = val; }
 
 protected:
     void drawHeading(QPainter *painter, int x, int y);

@@ -23,7 +23,7 @@ MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _googleMapsMaximumUpdateRate = 1000;
     _googleMapsType = "";
     _googleMapsStyle = "feature:road.local|element:geometry|color:0x00ff00|weight:1|visibility:on&style=feature:landscape|element:geometry.fill|color:0x000000|visibility:on&style=feature:administrative|element:labels|weight:3.9|visibility:on|invert_lightness:true&style=feature:poi|visibility:simplified&style=feature:all|element:labels|visibility:off";
-    _googleMapsAPIKey = "AIzaSyAeKX4PzLEefpE21WRnDgZa84XItJ-mHcA";
+    _googleMapsAPIKey = "AIzaSyBrsi76jeAeAYJqHkPuxDn_feb_2g7eZQQ"; // Get your own API key at https://developers.google.com/maps/documentation/static-maps/
     _lastUpdateTime.restart();
 
     // Make connection and register data refs
@@ -72,16 +72,28 @@ void MapInstrument::loadSettings(QSettings &settings) {
 void MapInstrument::createSettings(QGridLayout *layout) {
     PanelItem::createSettings(layout);
 
+    // Heading
     createCheckboxSetting(layout,"Heading",_showHeading,SLOT(setShowHeading(bool)));
 
+    // Source dropdown
     layout->addWidget(new QLabel("Source", layout->parentWidget()));
     QComboBox *mapSourceCombobox = new QComboBox(layout->parentWidget());
     mapSourceCombobox->addItem("Google Maps");
-    //mapSourceCombobox->addItem("Radar"); //TODO
+    //mapSourceCombobox->addItem("Radar"); //TODO use bitmap data directly from x-plane
     mapSourceCombobox->setCurrentIndex(_mapSource);
     layout->addWidget(mapSourceCombobox);
     connect(mapSourceCombobox, SIGNAL(currentIndexChanged(int)), this, SLOT(setMapSource(int)));
 
+    // Api Key
+    createLineEditSetting(layout, "Google Maps API Key",_googleMapsAPIKey,SLOT(setGoogleMapsAPIKey(QString)));
+
+    // Note on api keys
+    layout->addWidget(new QLabel("", layout->parentWidget()));
+    QLabel *apiKeyNotes = new QLabel("The API key provided is for testing only and has a daily limit. You should get your own at https://developers.google.com/maps/documentation/static-maps/.", layout->parentWidget());
+    apiKeyNotes->setWordWrap(true);
+    layout->addWidget(apiKeyNotes);
+
+    // Range
     createSliderSetting(layout,"Range",0,100,_range,SLOT(setMapRange(int)));
 
 }
