@@ -17,6 +17,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(NavDisplay,"display/nav")
 //#define DATAREF_HEADING "sim/flightmodel/position/hpath"
 //#define DATAREF_HEADING "sim/cockpit/misc/compass_indicated"
 #define DATAREF_HEADING "sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot"
+#define DATAREF_EFIS_MAP_RANGE "sim/cockpit2/EFIS/map_range" // or "sim/cockpit/switches/EFIS_map_range_selector"
 
 NavDisplay::NavDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         DisplayInstrument(panel,conn) {
@@ -24,11 +25,14 @@ NavDisplay::NavDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _displayRange = 20000.0; //20km
     _displayHeading = 0.0;
     _dataSource = DATASOURCE_20KM;
+    _efisMapRange = 0; // Map range, 1->6, where 6 is the longest range.
+    _autoRange = false;
 
     // Connect
     _client.subscribeDataRef(DATAREF_LOCALX, 5.0);
     _client.subscribeDataRef(DATAREF_LOCALZ, 5.0);
     _client.subscribeDataRef(DATAREF_HEADING, 0.2);
+    _client.subscribeDataRef(DATAREF_EFIS_MAP_RANGE, 1.0);
     connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(refChanged(QString,QStringList)));
     connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(refChanged(QString,QString)));
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
@@ -39,6 +43,7 @@ void NavDisplay::refChanged(QString name, double value) {
     if(name == DATAREF_LOCALX) _planeLocalX = value;
     else if(name == DATAREF_LOCALZ) _planeLocalZ = value;
     else if(name == DATAREF_HEADING) _heading = value;
+    else if(name == DATAREF_EFIS_MAP_RANGE) { _efisMapRange = value; }
 }
 
 void NavDisplay::refChanged(QString name, QString value) {
@@ -82,6 +87,20 @@ void NavDisplay::render(QPainter *painter, int width, int height) {
         double radarYOffsetPixel = this->height()*radarYOffsetPercent;
         double radarRadiusPixel = radarYOffsetPixel-40;
         painter->translate(this->width()/2,radarYOffsetPixel);
+        float displayRangeToUse = _displayRange;
+        double crossBarMeters = 1000; // 1km
+        if(_autoRange == true) {
+            // "Map range, 1->6, where 6 is the longest range."
+            if(_efisMapRange == 1)      displayRangeToUse = 5000; // 5 km
+            else if(_efisMapRange == 2) displayRangeToUse = 10000; // 10 km
+            else if(_efisMapRange == 3) displayRangeToUse = 20000; // 20 km
+            else if(_efisMapRange == 4) displayRangeToUse = 50000; // 50 km
+            else if(_efisMapRange == 5) displayRangeToUse = 100000; // 100 km
+            else if(_efisMapRange == 6) displayRangeToUse = 200000; // 200 km
+        }
+        //if(displayRangeToUse > 50000) {
+        //    crossBarMeters = 10000; // 10 km
+        //}
 
         painter->save(); {
 
@@ -100,8 +119,8 @@ void NavDisplay::render(QPainter *painter, int width, int height) {
                     // Pixel coords
                     double rx = navAid->localX - _planeLocalX;
                     double rz = -(navAid->localZ - _planeLocalZ);
-                    double px = (rx/_displayRange) * this->height();
-                    double py = (rz/_displayRange) * this->height();
+                    double px = (rx/displayRangeToUse) * this->height();
+                    double py = (rz/displayRangeToUse) * this->height();
 
                     // Rotate
                     double theta = (_heading+_displayHeading) * M_PI / 180.0;
@@ -186,9 +205,15 @@ void NavDisplay::render(QPainter *painter, int width, int height) {
             // Pos guide and cross bars
             int guideTop = -radarRadiusPixel-10;
             painter->drawLine(0,-triangleSize/2-4,0,guideTop);
-            for(int i = 1; i < 4; i++) {
-                double yy = (radarRadiusPixel/4) * i;
-                painter->drawLine(-10,-yy,10,-yy);
+            int numCrossbars = (int)(displayRangeToUse/crossBarMeters);
+            for(int i = 1; i < numCrossbars; i++) {
+                //double yy = (radarRadiusPixel/4) * i;
+                double meters = (crossBarMeters)*i;
+                int crossBarWidth = 5;
+                if(((int)meters) % 10000 == 0) crossBarWidth = 10;
+                double yy = meters/displayRangeToUse * this->height();
+                if(yy > radarRadiusPixel) break;
+                painter->drawLine(-crossBarWidth,-yy,crossBarWidth,-yy);
             }
 
             // Heading box
@@ -232,6 +257,7 @@ void NavDisplay::storeSettings(QSettings &settings) {
     settings.setValue("datasource", _dataSource);
     settings.setValue("displayrange", _displayRange);
     settings.setValue("displayheading", _displayHeading);
+    settings.setValue("autorange", _autoRange);
 
 }
 
@@ -241,6 +267,7 @@ void NavDisplay::loadSettings(QSettings &settings) {
     setDataSource(settings.value("datasource","1").toInt());
     setDisplayRange(settings.value("displayrange","20000").toInt());
     setDisplayHeading(settings.value("displayheading","0").toInt());
+    setAutoRange(settings.value("autorange","0").toBool());
 
 }
 
@@ -248,6 +275,8 @@ void NavDisplay::createSettings(QGridLayout *layout) {
     DisplayInstrument::createSettings(layout);
 
     createSliderSetting(layout,"Range",100,200000,_displayRange,SLOT(setDisplayRange(int)));
+    createCheckboxSetting(layout,"Set Range from EFIS",_autoRange,SLOT(setAutoRange(bool)));
+
     createSliderSetting(layout,"Heading Offset",0,360,_displayHeading,SLOT(setDisplayHeading(int)));
 
     layout->addWidget(new QLabel("Data Source", layout->parentWidget()));

@@ -49,6 +49,7 @@ public slots:
     void refChanged(QString name, QString value);
     void setDisplayRange(int val) { _displayRange = val; }
     void setDisplayHeading(int val) { _displayHeading = val; }
+    void setAutoRange(bool val) { _autoRange = val; }
     void setDataSource(int val);
 
 protected:
@@ -56,10 +57,12 @@ protected:
     double _planeLocalX;
     double _planeLocalZ;
     double _heading;
+    double _efisMapRange;
 
     float _displayRange;      // meters
     float _displayHeading;      // degrees
     int _dataSource;
+    bool _autoRange;
 };
 
 
