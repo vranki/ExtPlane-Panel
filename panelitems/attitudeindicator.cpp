@@ -128,7 +128,7 @@ void AttitudeIndicator::createFrame(float w, float h){
     double targetH = targetW;
 
     // Create image
-    QImage _frameImage = QImage(QSize(targetW,targetH), QImage::Format_ARGB32);
+    QImage _frameImage = QImage(QSize(targetW, targetH), QImage::Format_ARGB32);
     _frameImage.fill(0x00ff0000);
 
     // Init painter and scale to the original drawing size at 600x600
@@ -138,13 +138,6 @@ void AttitudeIndicator::createFrame(float w, float h){
     double scale = targetW/origW;
     p.scale(scale,scale);
     p.translate(300, 300);
-
-    // Dimensions
-    uint midx, midy, width, height;
-    width = _frameImage.width();
-    midx = width/2;
-    height = _frameImage.height();
-    midy = height/2;
 
     // Shadow
     double shadowSize = 0.8;

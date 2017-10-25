@@ -361,7 +361,6 @@ void PFDDisplay::drawScaleIndicator(QPainter *painter, int screenWidth, int scre
         // The int is used for drawing labels, the float version for drawing
         int valueOffset = intValue % (int)valuePerTick;
         double valueOffsetFloat = valueOffset + value - intValue;
-        int pixelOffset = valueOffset * pixelsPerValue;
         double pixelOffsetFloat = valueOffsetFloat * pixelsPerValue;
 
         // Draw ticks
@@ -578,7 +577,6 @@ void PFDDisplay::drawVerticalSpeed(QPainter *painter, int screenWidth, int scree
         //TODO: Use a simulated needle instead (like on older boings)
 
         // Init
-        int intValue = (int)_verticalspeed_value;
         double ticks = 6;
         int valuePerTick = 500;
         int textEveryXValue = 1000;

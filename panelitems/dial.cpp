@@ -42,6 +42,7 @@ Dial::Dial(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
 void Dial::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     setupPainter(painter);
 
+    // @todo Unused variable - remove?
     static const QPoint plane[] = {
         QPoint(0, 70),
         QPoint(5, 60),

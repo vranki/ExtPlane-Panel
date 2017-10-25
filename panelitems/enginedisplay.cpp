@@ -114,7 +114,6 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
         double gaugeVSpacing = 0;
         double gaugeWidth = gaugeHSpacing * 0.4;
         double gaugeHeight = height;
-        double middleSpacing = 0;
         double xx = paddingLeft;
         double yy = 0;
         int barLabels = _barLabels;
