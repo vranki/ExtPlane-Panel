@@ -225,5 +225,5 @@ void DirectionIndicator::loadSettings(QSettings &settings) {
 }
 
 void DirectionIndicator::createSettings(QGridLayout *layout) {
-
+    Q_UNUSED(layout);
 }

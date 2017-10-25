@@ -33,7 +33,7 @@ public:
     virtual void createSettings(QGridLayout *layout);
 
 public slots:
-    virtual void tickTime(double dt, int total) {};
+    virtual void tickTime(double dt, int total) { Q_UNUSED(dt);Q_UNUSED(total); };
     void latlongChanged(QString name, double value);
     void updateMap();
     void mapTileDownloadFinished(QNetworkReply *reply);

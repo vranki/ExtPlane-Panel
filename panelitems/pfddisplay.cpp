@@ -76,7 +76,8 @@ void PFDDisplay::refChanged(QString name, double value) {
 }
 
 void PFDDisplay::refChanged(QString name, QStringList values) {
-
+    Q_UNUSED(name);
+    Q_UNUSED(values);
 }
 
 void PFDDisplay::itemSizeChanged(float w, float h) {
@@ -327,6 +328,8 @@ int roundUp(int numToRound, int multiple)
 }
 
 void PFDDisplay::drawScaleIndicator(QPainter *painter, int screenWidth, int screenHeight, int x, int y, int w, int h, double value, int type) {
+    Q_UNUSED(screenWidth);
+    Q_UNUSED(screenHeight);
     painter->save(); {
         // Init
         int intValue = (int)value;
@@ -522,6 +525,8 @@ void PFDDisplay::createCompassBackplate(int w, int h) {
 }
 
 void PFDDisplay::drawCompass(QPainter *painter, int screenWidth, int screenHeight, int x, int y, int w, int h) {
+    Q_UNUSED(screenWidth);
+    Q_UNUSED(screenHeight);
     painter->save(); {
 
         // Move to center and rotate
@@ -564,6 +569,8 @@ void PFDDisplay::drawCompass(QPainter *painter, int screenWidth, int screenHeigh
 }
 
 void PFDDisplay::drawVerticalSpeed(QPainter *painter, int screenWidth, int screenHeight, int x, int y, int w, int h) {
+    Q_UNUSED(screenWidth);
+    Q_UNUSED(screenHeight);
     painter->save(); {
 
         // Vertical speed is in feet per minute, usually every tick @ 500

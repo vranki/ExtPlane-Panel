@@ -247,9 +247,8 @@ void PanelWindow::editItem(PanelItem *item) { // Call with item 0 to destroy dia
 }
 
 void PanelWindow::panelItemChanged(PanelItem *item) {
-    if(!dirty) {
-        dirty = true;
-    }
+    Q_UNUSED(item);
+    dirty = true;
 }
 
 void PanelWindow::connectionMessage(QString txt) {

@@ -110,6 +110,7 @@ void DataRefDebugger::setDataRefAccuracy(float val) {
 }
 
 void DataRefDebugger::dataRefChanged(QString name, QString val) {
+    Q_UNUSED(name);
     _currentValue = val;
     update();
 }

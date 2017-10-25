@@ -274,6 +274,8 @@ float EngineFuelP::value2Angle(const float &p) {
 
 
 void EngineFuelP::itemSizeChanged(float w, float h) {
+    Q_UNUSED(w);
+    Q_UNUSED(h);
     this->drawBottomPixmap();
 }
 
@@ -288,6 +290,7 @@ void EngineFuelP::setEngineNumber(float val) {
 }
 
 void EngineFuelP::pressureChanged(QString name, QStringList values) {
+    Q_UNUSED(name);
     int val = 0;
     if (values.size() > _engineNumber) {
         val = values[_engineNumber].toFloat();

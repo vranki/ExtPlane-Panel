@@ -113,11 +113,14 @@ void EngineBattery::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 }
 
 void EngineBattery::itemSizeChanged(float w, float h){
+    Q_UNUSED(w);
+    Q_UNUSED(h);
     this->drawBottomPixmap();
 }
 
 
 void EngineBattery::amperageChanged(QString name, QStringList values){
+    Q_UNUSED(name);
     if (values.size() > _batteryNumber) {
         amperageValue = values[_batteryNumber].toFloat();
         this->update();

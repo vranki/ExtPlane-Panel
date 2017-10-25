@@ -25,6 +25,7 @@ Variometer::Variometer(ExtPlanePanel *panel, ExtPlaneConnection *conn) : NeedleI
 }
 
 void Variometer::velocityChanged(QString name, double speed) {
+    Q_UNUSED(name);
     if(isTotalEnergy) {
         setValue(Units::convertSpeed(VELOCITY_FPM, units, speed));
     } else {

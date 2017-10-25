@@ -518,6 +518,8 @@ void GenericLittleGauge::values2valuesArc(const float &begin, const float &end, 
 }
 
 void GenericLittleGauge::itemSizeChanged(float w, float h){
+    Q_UNUSED(w);
+    Q_UNUSED(h);
     this->drawBottomPixmap();
 }
 

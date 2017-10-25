@@ -38,6 +38,7 @@ int ServoBlasterOutputDevice::id()
 
 void ServoBlasterOutputDevice::outputValue(double value, int output, int speed)
 {
+    Q_UNUSED(speed);
     if(!enabled)
         return;
 

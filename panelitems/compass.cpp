@@ -32,6 +32,7 @@ void Compass::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 }
 
 void Compass::headingChanged(QString name, double hdg) {
+    Q_UNUSED(name);
     _heading = hdg;
     update();
 }

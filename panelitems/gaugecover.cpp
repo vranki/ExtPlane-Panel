@@ -8,6 +8,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(GaugeCover,"misc/cover/gauges");
 
 GaugeCover::GaugeCover(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     PanelItem(panel, PanelItemTypeCover, PanelItemShapeRectangular) {
+    Q_UNUSED(conn);
     // Init
     _gaugesSize = 100;
     _gaugesInset = 20;
@@ -34,6 +35,8 @@ void GaugeCover::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 }
 
 void GaugeCover::itemSizeChanged(float w, float h) {
+    Q_UNUSED(w);
+    Q_UNUSED(h);
     if(!isEditMode()) drawCoverImage();
     update();
 }

@@ -80,6 +80,7 @@ void PololuOutputDevice::setEnabled(bool e)
 
 void PololuOutputDevice::outputValue(double value, int output, int speed)
 {
+    Q_UNUSED(speed);
     if(!enabled)
         return;
 

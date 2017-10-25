@@ -132,11 +132,14 @@ void TankLeveler::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 }
 
 void TankLeveler::itemSizeChanged(float w, float h){
+    Q_UNUSED(w);
+    Q_UNUSED(h);
     this->drawBottomPixmap();
 }
 
 
 void TankLeveler::quantityChanged(QString name, QStringList values){
+    Q_UNUSED(name);
     //qDebug() << " tank value  list changed, name =  " << name << " values " <<  values;
     if (values.size() > _tankNumber) {
         quantityValue = values[_tankNumber].toFloat();

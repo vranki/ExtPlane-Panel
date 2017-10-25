@@ -50,7 +50,9 @@ void MapInstrument::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 }
 
 void MapInstrument::itemSizeChanged(float w, float h) {
-    _side = qMin(width(),height());
+    Q_UNUSED(w);
+    Q_UNUSED(h);
+    _side = qMin(width(), height());
 }
 
 void MapInstrument::storeSettings(QSettings &settings) {

@@ -86,6 +86,7 @@ void AirspeedIndicator::paintArc(QPainter *painter,QColor color, double start, d
 }
 
 void AirspeedIndicator::speedChanged(QString name, double speed) {
+    Q_UNUSED(name);
     setValue(Units::convertSpeed(VELOCITY_KTS, units, speed));
 }
 

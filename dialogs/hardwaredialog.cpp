@@ -36,6 +36,8 @@ HardwareDialog::~HardwareDialog()
 
 void HardwareDialog::deviceAvailable(int dev, bool avail)
 {
+    Q_UNUSED(dev);
+    Q_UNUSED(avail);
     updateUi();
 }
 

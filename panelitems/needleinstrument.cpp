@@ -22,7 +22,7 @@ void Arc::setMin(float value){
 }
 
 void Arc::setUse(bool use){
-
+    Q_UNUSED(use);
 }
 
 void Arc::setMax(float value){
@@ -42,7 +42,7 @@ void Arc::setOuter(float value){
 }
 
 void Arc::setColor(QString colorString){
-
+    Q_UNUSED(colorString);
 }
 
 
@@ -236,6 +236,8 @@ void NeedleInstrument::setArcMin(int arcNumber, float value) {
 }
 
 void NeedleInstrument::itemSizeChanged(float w, float h) {
+    Q_UNUSED(w);
+    Q_UNUSED(h);
     repaintPixmaps();
 }
 

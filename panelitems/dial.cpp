@@ -289,6 +289,7 @@ void Dial::valueChanged(QString ref, double newValue) {
 }
 
 void Dial::valueChanged(QString ref, QString newValue) {
+    Q_UNUSED(ref);
     _value = newValue;
     DEBUG << "value is changing to" << newValue << "with dialpos" << _dialPosition;
     if(_value == _positionValue1) _dialPosition = 1;

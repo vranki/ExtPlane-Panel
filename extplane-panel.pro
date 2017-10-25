@@ -1,3 +1,6 @@
+TEMPLATE = app
+TARGET = extplane-panel
+
 # Qt Modules
 QT += gui network widgets
 
@@ -53,11 +56,9 @@ android::DEFINES += MOBILE_DEVICE
 meego::DEFINES += MOBILE_DEVICE
 
 ICON = extplane-panel.icns
-TARGET = extplane-panel
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
-TEMPLATE = app
 
 target.path = /usr/bin
 

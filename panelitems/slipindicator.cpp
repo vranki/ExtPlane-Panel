@@ -46,6 +46,7 @@ void SlipIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 }
 
 void SlipIndicator::slipChanged(QString name, double slip) {
+    Q_UNUSED(name);
     _slip = slip;
     update();
 }

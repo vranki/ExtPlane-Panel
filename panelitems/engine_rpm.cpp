@@ -43,6 +43,7 @@ EngineRPM::EngineRPM(ExtPlanePanel *panel, ExtPlaneConnection *conn) : NeedleIns
 }
 
 void EngineRPM::rpmChanged(QString name, QStringList values) {
+    Q_UNUSED(name);
     //TODO: seems this is arbitrarily taking the first engine; we should add a setting for which value we want
     QString rpmStr = _engineNumber > values.count() ? "0" : values.at(_engineNumber-1);
     double rpm = rpmStr.toDouble();
@@ -53,6 +54,7 @@ void EngineRPM::rpmChanged(QString name, QStringList values) {
 }
 
 void EngineRPM::setUnit(VelocityUnit unit) {
+    Q_UNUSED(unit);
     setLabel("RPM");
 }
 

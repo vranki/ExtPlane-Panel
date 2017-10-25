@@ -383,9 +383,8 @@ void AttitudeIndicator::storeSettings(QSettings &settings) {
 }
 void AttitudeIndicator::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
-
 }
 
 void AttitudeIndicator::createSettings(QGridLayout *layout) {
-
+    Q_UNUSED(layout);
 }

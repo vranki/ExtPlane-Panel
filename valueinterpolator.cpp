@@ -21,6 +21,7 @@ void ValueInterpolator::valueChanged(QString name, double val) {
 }
 
 void ValueInterpolator::tickTime(double dt, int total) {
+    Q_UNUSED(total);
     if(!enabled) return;
 
     double lastValue = currentValue;

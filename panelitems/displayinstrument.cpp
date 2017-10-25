@@ -59,6 +59,8 @@ void DisplayInstrument::itemSizeChanged(float w, float h) {
 }
 
 void DisplayInstrument::tickTime(double dt, int total) {
+    Q_UNUSED(dt);
+    Q_UNUSED(total);
     // Is it time to redraw?
     if(_lastRender.elapsed() > 1000/_refreshHerz) {
         // Init painters

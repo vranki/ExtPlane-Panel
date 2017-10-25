@@ -33,6 +33,9 @@ PanelItem::~PanelItem() {
 }
 
 void PanelItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     if(isSelected()) {
         painter->setPen(Qt::yellow);
         painter->setBrush(Qt::NoBrush);
@@ -104,6 +107,7 @@ void PanelItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void PanelItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+    Q_UNUSED(event);
     emit editPanelItem(this);
 }
 
@@ -202,7 +206,9 @@ void PanelItem::setZValue(int z) {
     QGraphicsItem::setZValue(z);
 }
 
-void PanelItem::createSettings(QGridLayout *layout) {}
+void PanelItem::createSettings(QGridLayout *layout) {
+    Q_UNUSED(layout);
+}
 
 void PanelItem::setEditMode(bool em) {
     // Setup the graphics item for editing
@@ -306,9 +312,14 @@ void PanelItem::setItemShape(PanelItemShape shape) {
     _itemShape = shape;
 }
 
-void PanelItem::tickTime(double dt, int total) {}
+void PanelItem::tickTime(double dt, int total) {
+    Q_UNUSED(dt);
+    Q_UNUSED(total);
+}
 
-void PanelItem::setInterpolationEnabled(bool ie) {}
+void PanelItem::setInterpolationEnabled(bool ie) {
+    Q_UNUSED(ie);
+}
 
 void PanelItem::setAntialiasEnabled(bool ie) {
     _antialiasingEnabled = ie;

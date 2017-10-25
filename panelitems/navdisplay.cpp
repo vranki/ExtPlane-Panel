@@ -66,11 +66,13 @@ void NavDisplay::refChanged(QString name, QString value) {
 }
 
 void NavDisplay::refChanged(QString name, QStringList values) {
-
+    Q_UNUSED(name);
+    Q_UNUSED(values);
 }
 
 void NavDisplay::render(QPainter *painter, int width, int height) {
-
+    Q_UNUSED(width);
+    Q_UNUSED(height);
     painter->save(); {
 
         // Painter init

@@ -277,5 +277,7 @@ void Altimeter::setNumbersScale(float v) {
 }
 
 void Altimeter::itemSizeChanged(float w, float h) {
+    Q_UNUSED(w);
+    Q_UNUSED(h);
     repaintPixmap();
 }

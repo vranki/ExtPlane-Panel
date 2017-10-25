@@ -355,6 +355,7 @@ void TurnAndBank::createBall(void){
 }    
 
 void TurnAndBank::setNumbers(float div) {
+    Q_UNUSED(div);
     /*    _numbers = div;
      update();
      */
@@ -482,11 +483,10 @@ void TurnAndBank::storeSettings(QSettings &settings) {
 }
 void TurnAndBank::loadSettings(QSettings &settings) {
     PanelItem::loadSettings(settings);
-    
 }
 
 void TurnAndBank::createSettings(QGridLayout *layout) {
-    
+    Q_UNUSED(layout);
 }
 
 void TurnAndBank::setThickBars(float v){

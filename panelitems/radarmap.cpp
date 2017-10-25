@@ -35,7 +35,7 @@ void RadarMap::itemSizeChanged(float w, float h) {
 }
 
 void RadarMap::tickTime(double dt, int total) {
-
+    Q_UNUSED(total);
     // Update radar update position
     double sweepSpeed = (1.0-_radarSweepSpeed/100.0)*4.0;
     double degreesPerSecond = 360.0/sweepSpeed;

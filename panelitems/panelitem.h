@@ -67,7 +67,7 @@ public:
      * This is called whenever the panel item has changed size (including when first added to the scene).
      * Panel items which cache resources or pre-render complicated stuff should use this method for doing so.
      */
-    virtual void itemSizeChanged(float w, float h) {};
+    virtual void itemSizeChanged(float w, float h) { Q_UNUSED(w); Q_UNUSED(h) };
     bool isResizing();
     virtual void setEditMode(bool em);
     virtual void setPos(int x, int y);
