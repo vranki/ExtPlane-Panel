@@ -2,12 +2,13 @@
 
 ![Screenshot](http://s23.postimg.org/8xhypdei3/extplane_panel_screenshot_v2.png)
 
-An external, networked cockpit panel for the X-Plane flight simulator.
+An external, networked cockpit panel for flight simulators supported by
+ExtPlane, such as X-Plane and FlightGear.
 
 License: GNU GPLv3
 
 It is possible to run this panel on the same computer or another computer
-on the network to display cockpit instruments from remote X-Plane.
+on the network to display cockpit instruments from remote ExtPlane.
 
 Almost all instruments are drawn using scalable vector graphics for
 perfect scaling and high resolutions.
@@ -24,8 +25,6 @@ to build ExtPlane-Panel.
 Target hardware is:
 * Desktop PC's
 * Android
-* Nokia Maemo 4 & 5
-* MeeGo (Harmattan / Mer / Sailfish)
 * Raspberry Pi
 * anything that will run Qt!
 
@@ -186,11 +185,13 @@ a output device.
 
 ## Building ##
 
-ExtPlane-Panel uses the Qt Framework for graphics and cross-platform compatibility. Before building you'll need to setup Qt 4.5 or greater and Qt Mobility to compile. You'll also need to check out the ExtPlane plugin sources (https://github.com/vranki/ExtPlane) to the directory next to the ExtPlane-Panel directory.
+ExtPlane-Panel uses the Qt Framework for graphics and cross-platform compatibility. Before building you'll
+need to setup Qt 5 or greater and Qt Mobility to compile. You'll also need to check out the ExtPlane
+plugin sources (https://github.com/vranki/ExtPlane) to the directory next to the ExtPlane-Panel directory.
 
 The requirements for ExtPlane-Panel are as follows:
 * C++ Toolchain
-* Qt Framework 4.5+ (Qt 5.x is recommended)
+* Qt Framework 5
 * ExtPlane (contains the reusable client Qt code)
 
 ### Linux ###

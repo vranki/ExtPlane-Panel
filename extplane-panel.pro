@@ -4,14 +4,10 @@ TARGET = extplane-panel
 # Qt Modules
 QT += gui network widgets
 
-# Widgets only gives warning on Qt 4.x.
-
-# Qt Mobility
+# Qt Mobility, used to disable screensaver
 CONFIG += mobility
 MOBILITY += systeminfo
 
-# This doesn't seem to work; whines "Cannot find feature mobilityconfig"
-# load(mobilityconfig)
 contains(MOBILITY_VERSION, 1.1.1) {
     DEFINES += QTMOBILITY
 }
@@ -19,15 +15,16 @@ contains(MOBILITY_VERSION, 1.1.1) {
 # Place ExtPlane plugin to a directory next to or inside build directory, or
 # define the directory here:
 EXTPLANE_PLUGIN_PATH=../ExtPlane
-!exists($$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt) {
+!exists($$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt) {
 	EXTPLANE_PLUGIN_PATH=ExtPlane
-	!exists($$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt) {
+        !exists($$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt) {
 		error("You don't have ExtPlane checked out in directory next to this. Place it there or build will fail.")
 	}
 }
 
-EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/client/extplane-client-qt
+EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt
 INCLUDEPATH += $$EXTPLANE_CLIENT_PATH
+#INCLUDEPATH += $$EXTPLANE_PLUGIN_PATH/util
 
 CONFIG(debug, debug|release) {
     # Debug
@@ -70,6 +67,7 @@ desktop.path = /usr/share/applications
 unix: INSTALLS += desktop
 
 SOURCES += \
+    $$EXTPLANE_PLUGIN_PATH/util/basictcpclient.cpp \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.cpp \
     $$EXTPLANE_CLIENT_PATH/extplaneclient.cpp \
     $$EXTPLANE_CLIENT_PATH/clientdataref.cpp \
@@ -149,6 +147,7 @@ HEADERS += \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/fixedsimulateddataref.h \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/alternatingsimulateddataref.h \
     $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.h \
+    $$EXTPLANE_PLUGIN_PATH/util/basictcpclient.h \
     panelitems/panelitem.h \
     panelwindow.h \
     panelitems/airspeedindicator.h \
