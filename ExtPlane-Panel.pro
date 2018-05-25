@@ -37,7 +37,7 @@ OTHER_FILES += android/AndroidManifest.xml \
     android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
     android/version.xml
 
-OTHER_FILES += README.md debian/rules debian/changelog debian/control debian/extplane-panel.install debian/extplane-panel-dbg.install
+OTHER_FILES += README.md debian/rules debian/changelog debian/control debian/extplane-panel.install debian/extplane-panel-dbg.install .travis.yml
 
 DISTFILES += \
     android/AndroidManifest.xml \

@@ -6,6 +6,7 @@ QT += gui network widgets
 
 # Qt Mobility, used to disable screensaver
 CONFIG += mobility
+CONFIG += c++11
 MOBILITY += systeminfo
 
 contains(MOBILITY_VERSION, 1.1.1) {
