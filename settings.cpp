@@ -11,7 +11,7 @@ Settings::Settings(const QString &organization, const QString &application, QObj
 
     // Parse the command line, storing the values in parsedArguments
     QString key = QString::null;
-    foreach(QString arg, QCoreApplication::arguments()) {
+    for(QString arg : QCoreApplication::arguments()) {
         // Is this a new parameter?
         if(arg.startsWith("--")) {
             // Extract the key, and pre-emptively set as a flag
@@ -27,13 +27,12 @@ Settings::Settings(const QString &organization, const QString &application, QObj
     }
 
     // Show what happened
-    foreach(QString arg, parsedArguments.keys()) {
+    for(QString arg : parsedArguments.keys()) {
         qDebug() << "detected command line argument" << arg << "with value" << parsedArguments.value(arg);
     }
 }
 
 QVariant Settings::valueFromSettingsOrCommandLine(const QString &key, const QVariant &defaultValue) {
     // Is this a setting which is being overided by the command line arguments?
-    if(parsedArguments.contains(key))   return parsedArguments.value(key);
-    else                                return QSettings::value(key,defaultValue);
+    return parsedArguments.contains(key) ? parsedArguments.value(key) : QSettings::value(key,defaultValue);
 }

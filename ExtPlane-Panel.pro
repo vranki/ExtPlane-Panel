@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
  
-SUBDIRS = widgetui
+SUBDIRS = widgetui qmlui
 
 # Lot of files for Android build, ignore them if not used
 OTHER_FILES += android/AndroidManifest.xml \
