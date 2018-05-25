@@ -16,7 +16,7 @@ contains(MOBILITY_VERSION, 1.1.1) {
 # define the directory here:
 EXTPLANE_PLUGIN_PATH=../../ExtPlane
 !exists($$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt) {
-	EXTPLANE_PLUGIN_PATH=ExtPlane
+        EXTPLANE_PLUGIN_PATH=../ExtPlane
         !exists($$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt) {
 		error("You don't have ExtPlane checked out in directory next to this. Place it there or build will fail.")
 	}
