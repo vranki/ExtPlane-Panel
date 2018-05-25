@@ -6,7 +6,7 @@
 #define DIRECTIONINDICATOR_H
 
 #include "panelitem.h"
-#include "../units.h"
+#include "../util/units.h"
 
 #define DIRECTION_INDICATOR_PLANE_SCALE 0.88
 #define DIRECTION_INDICATOR_HEADING_SCALE 0.90

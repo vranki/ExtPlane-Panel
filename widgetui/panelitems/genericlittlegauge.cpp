@@ -3,7 +3,7 @@
 #include <math.h>
 #include "extplaneclient.h"
 #include "../util/console.h"
-#include "../valueinterpolator.h"
+#include "../util/valueinterpolator.h"
 #include "../widgets/numberinputlineedit.h"
 #include "../util/interpolation.h"
 #include <QCheckBox>

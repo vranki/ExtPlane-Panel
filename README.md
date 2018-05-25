@@ -3,7 +3,7 @@
 ![Screenshot](http://s23.postimg.org/8xhypdei3/extplane_panel_screenshot_v2.png)
 
 An external, networked cockpit panel for flight simulators supported by
-ExtPlane, such as X-Plane and FlightGear.
+ExtPlane, such as X-Plane, Condor and FlightGear.
 
 License: GNU GPLv3
 
@@ -295,7 +295,13 @@ platform dependent code, make sure to `#ifdef` the sections of code which will
 only work on a specific platform. You can use standard Qt defines, or additional
 defines such as `TERMIOS_AVAIALABLE` to help with this.
 
+## Widget UI vs QML ui ##
 
+Currently ExtPlane-Panel is written using Qt Widgets in c++. It would be
+better to change to QML based UI as it is far superior in many ways.
+
+* widgetui directory contains the current widget ui.
+* qmlui directory ontains the new QML based ui in progress.
 
 ## Contact / Feedback ##
 

@@ -2,7 +2,7 @@
 #define ATTITUDEINDICATOR_H
 
 #include "panelitem.h"
-#include "../units.h"
+#include "../util/units.h"
 
 #define GROUNDBROWN QColor(191,163,94)
 #define LIGHTGROUNDBROWN QColor(231,203,134)

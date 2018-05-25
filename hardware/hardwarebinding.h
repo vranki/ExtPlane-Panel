@@ -5,7 +5,7 @@
 #include <QString>
 #include <QSettings>
 #include <QList>
-#include "valueinterpolator.h"
+#include "../util/valueinterpolator.h"
 
 class ExtPlaneConnection;
 class ClientDataRef;

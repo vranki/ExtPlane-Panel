@@ -2,7 +2,7 @@
 #define PFDDISPLAY_H
 
 #include "displayinstrument.h"
-#include "../units.h"
+#include "../util/units.h"
 
 /**
  * Primary Flight Display for Glass Cockpit.

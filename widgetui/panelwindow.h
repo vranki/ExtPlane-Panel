@@ -11,7 +11,7 @@
 #include <QList>
 
 #include "panelitemfactory.h"
-#include "settings.h"
+#include "../settings.h"
 #include "panel.h"
 
 class PanelItem;

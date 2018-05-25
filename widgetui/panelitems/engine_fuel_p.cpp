@@ -3,7 +3,7 @@
 #include <math.h>
 #include "../util/console.h"
 #include "extplaneclient.h"
-#include "../valueinterpolator.h"
+#include "../util/valueinterpolator.h"
 #include "../widgets/numberinputlineedit.h"
 
 

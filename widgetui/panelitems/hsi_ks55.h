@@ -6,7 +6,7 @@
 #define HSI_H
 
 #include "panelitem.h"
-#include "../units.h"
+#include "../util/units.h"
 
 enum DataRefType {
     drFloat, drInt, drChar

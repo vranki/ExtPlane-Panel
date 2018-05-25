@@ -6,7 +6,7 @@
 #include <QLabel>
 #include "../widgets/distanceunitcombobox.h"
 #include "extplaneclient.h"
-#include "../units.h"
+#include "../util/units.h"
 #include "../widgets/numberinputlineedit.h"
 
 #define GROUNDBROWN QColor(191,163,94)

@@ -6,7 +6,7 @@
 #define ENGINERPM_H
 
 #include "needleinstrument.h"
-#include "../units.h"
+#include "../util/units.h"
 
 class EngineRPM : public NeedleInstrument
 {

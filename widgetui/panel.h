@@ -5,7 +5,7 @@
 #include <QList>
 #include <QDebug>
 
-#include "settings.h"
+#include "../settings.h"
 
 // Forward declarations
 class PanelItem;

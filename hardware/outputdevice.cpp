@@ -1,10 +1,12 @@
 #include "outputdevice.h"
 #include "../util/console.h"
 
-OutputDevice::OutputDevice(QObject *parent) :
-    QObject(parent), enabled(false), available(false), minValue(0), maxValue(1000)
-{
-}
+OutputDevice::OutputDevice(QObject *parent) : QObject(parent)
+  , minValue(0)
+  , maxValue(1000)
+  , enabled(false)
+  , available(false)
+{ }
 
 void OutputDevice::setEnabled(bool e) {
     enabled = e;

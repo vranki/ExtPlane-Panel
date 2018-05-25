@@ -1,7 +1,10 @@
 #include "valueinterpolator.h"
 
-ValueInterpolator::ValueInterpolator(QObject *parent, double spd) :
-    QObject(parent), speed(spd), currentValue(0), targetValue(0), enabled(false) {
+ValueInterpolator::ValueInterpolator(QObject *parent, double spd) : QObject(parent)
+  , currentValue(0)
+  , targetValue(0)
+  , speed(spd)
+  , enabled(false) {
 }
 
 void ValueInterpolator::valueChanged(QString name, double val) {

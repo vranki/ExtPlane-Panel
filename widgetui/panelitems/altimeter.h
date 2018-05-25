@@ -2,7 +2,7 @@
 #define ALTIMETER_H
 
 #include "panelitem.h"
-#include "../units.h"
+#include "../util/units.h"
 
 class Needle;
 

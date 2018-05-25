@@ -5,7 +5,7 @@
 #include <QComboBox>
 #include <qmath.h>
 
-#include "util/console.h"
+#include "../util/console.h"
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(NavDisplay,"display/nav")
 

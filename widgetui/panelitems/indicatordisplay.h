@@ -2,7 +2,7 @@
 #define INDICATORDISPLAY_H
 
 #include "displayinstrument.h"
-#include "../units.h"
+#include "../util/units.h"
 
 /**
  * Indicator/Label for Glass Cockpit.
@@ -18,11 +18,6 @@ public:
     virtual void loadSettings(QSettings &settings);
     virtual void createSettings(QGridLayout *layout);
     //virtual void itemSizeChanged(float w, float h);
-
-private:
-
-
-signals:
 
 public slots:
     void dataRefChanged(QString name, double val);
