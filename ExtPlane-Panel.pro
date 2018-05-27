@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
- 
+
 SUBDIRS = widgetui qmlui
 
 # Lot of files for Android build, ignore them if not used

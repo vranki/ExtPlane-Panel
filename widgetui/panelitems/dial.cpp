@@ -43,6 +43,7 @@ void Dial::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     setupPainter(painter);
 
     // @todo Unused variable - remove?
+    /*
     static const QPoint plane[] = {
         QPoint(0, 70),
         QPoint(5, 60),
@@ -67,9 +68,9 @@ void Dial::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         QPoint(-5, 30),
         QPoint(-5, 60),
     };
+    */
 
-
-    double side = qMin(this->width(),this->height());
+    double side = qMin(this->width(), this->height());
     QFont font = defaultFont;
     font.setPixelSize(side*0.08);
     painter->setFont(font);
@@ -77,7 +78,7 @@ void Dial::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->save(); {
 
         // Init
-        painter->translate(this->width()/2.0,this->height()/2.0);
+        painter->translate(this->width()/2.0, this->height()/2.0);
         double dialR = side*0.25;
         //double totalPositionDegrees = 120;
         double degreesPerPosition = 30.0;
@@ -275,11 +276,11 @@ void Dial::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
         if(_dialPosition > _dialPositions) _dialPosition = 1;
         if(_dataref) {
             //TODO: if there is a problem with the connection this will crash
-            if(_dialPosition == 1) _dataref->setValue(_positionValue1.toDouble());
-            if(_dialPosition == 2) _dataref->setValue(_positionValue2.toDouble());
-            if(_dialPosition == 3) _dataref->setValue(_positionValue3.toDouble());
-            if(_dialPosition == 4) _dataref->setValue(_positionValue4.toDouble());
-            if(_dialPosition == 5) _dataref->setValue(_positionValue5.toDouble());
+            if(_dialPosition == 1) _dataref->setValue(_positionValue1);
+            if(_dialPosition == 2) _dataref->setValue(_positionValue2);
+            if(_dialPosition == 3) _dataref->setValue(_positionValue3);
+            if(_dialPosition == 4) _dataref->setValue(_positionValue4);
+            if(_dialPosition == 5) _dataref->setValue(_positionValue5);
         }
         update();
     }

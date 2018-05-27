@@ -113,8 +113,7 @@ void RotaryKnob::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
         double changeAmount = (event->pos() - dragStartPoint).x();
         // DEBUG << event->pos() - dragStartPoint;
         _value = _valueStartPoint + changeAmount * _change;
-        if(_ref)
-            _ref->setValue(_value);
+        if(_ref) _ref->setValue(QString::number(_value));
         update();
     }
 }

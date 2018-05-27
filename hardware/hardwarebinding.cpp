@@ -268,10 +268,10 @@ void HardwareBinding::loadSettings(QSettings *panelSettings) {
 void HardwareBinding::refChanged(ClientDataRef *ref)
 {
     bool ok = true;
-    double value = ref->valueString().toDouble(&ok);
+    double value = ref->value().toDouble(&ok);
     if(ok) {
         interpolator_.valueChanged(ref->name(), value);
     } else {
-        DEBUG << Q_FUNC_INFO << "unable to convert ref value " << ref->valueString() << " to double";
+        DEBUG << Q_FUNC_INFO << "unable to convert ref value " << ref->value() << " to double";
     }
 }

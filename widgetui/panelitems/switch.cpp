@@ -113,7 +113,7 @@ void Switch::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
         PanelItem::mouseReleaseEvent(event);
     } else if(event->pos().x() < switchWidth) {
         _value = !_value;
-        if(_ref) _ref->setValue(_value ? 1 : 0);
+        if(_ref) _ref->setValue(_value ? "1" : "0");
         update();
     }
 }

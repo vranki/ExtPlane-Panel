@@ -397,7 +397,9 @@ void PanelWindow::setServerAddress(QString host) {
 
     // Disconnect and reconnect
     connection->disconnectFromHost();
-    connection->connectTo(hostport.value(0), port);
+    connection->setHostName(host);
+    connection->setPort(port);
+    connection->startConnection();
 }
 
 void PanelWindow::setInterpolationEnabled(bool enabled) {
