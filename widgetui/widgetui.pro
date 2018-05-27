@@ -1,31 +1,20 @@
 TEMPLATE = app
 TARGET = extplane-panel
 
+include(../common.pri)
+
 # Qt Modules
 QT += gui network widgets
 
 # Qt Mobility, used to disable screensaver
 CONFIG += mobility
-CONFIG += c++11
+
 MOBILITY += systeminfo
 
 contains(MOBILITY_VERSION, 1.1.1) {
     DEFINES += QTMOBILITY
 }
 
-# Place ExtPlane plugin to a directory next to or inside build directory, or
-# define the directory here:
-EXTPLANE_PLUGIN_PATH=../../ExtPlane
-!exists($$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt) {
-        EXTPLANE_PLUGIN_PATH=../ExtPlane
-        !exists($$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt) {
-		error("You don't have ExtPlane checked out in directory next to this. Place it there or build will fail.")
-	}
-}
-
-EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt
-INCLUDEPATH += $$EXTPLANE_CLIENT_PATH
-#INCLUDEPATH += $$EXTPLANE_PLUGIN_PATH/util
 
 CONFIG(debug, debug|release) {
     # Debug
@@ -56,15 +45,6 @@ desktop.path = /usr/share/applications
 unix: INSTALLS += desktop
 
 SOURCES += \
-    $$EXTPLANE_PLUGIN_PATH/util/basictcpclient.cpp \
-    $$EXTPLANE_CLIENT_PATH/extplaneconnection.cpp \
-    $$EXTPLANE_CLIENT_PATH/extplaneclient.cpp \
-    $$EXTPLANE_CLIENT_PATH/clientdataref.cpp \
-    $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.cpp \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.cpp \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/fixedsimulateddataref.cpp \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/alternatingsimulateddataref.cpp \
-    $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.cpp \
     main.cpp \
     panelitems/panelitem.cpp \
     panelwindow.cpp \
@@ -128,15 +108,6 @@ SOURCES += \
     panelitems/indicatordisplay.cpp
 
 HEADERS += \
-    $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
-    $$EXTPLANE_CLIENT_PATH/extplaneclient.h \
-    $$EXTPLANE_CLIENT_PATH/clientdataref.h \
-    $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.h \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.h \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/fixedsimulateddataref.h \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/alternatingsimulateddataref.h \
-    $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.h \
-    $$EXTPLANE_PLUGIN_PATH/util/basictcpclient.h \
     panelitems/panelitem.h \
     panelwindow.h \
     panelitems/airspeedindicator.h \

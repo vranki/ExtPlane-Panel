@@ -1,6 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include <extplaneconnection.h>
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -9,6 +11,8 @@ int main(int argc, char *argv[])
     app.setOrganizationName("vranki");
     app.setOrganizationDomain("extplane.org");
     app.setApplicationName("ExtPlane-panel");
+
+    qmlRegisterType<ExtPlaneConnection>("org.vranki.extplane", 1, 0, "ExtPlaneConnection");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
