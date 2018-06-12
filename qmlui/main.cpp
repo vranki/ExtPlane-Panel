@@ -20,6 +20,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<ExtPlaneClient>("org.vranki.extplane", 1, 0, "ExtPlaneClient");
     qmlRegisterType<ClientDataRef>("org.vranki.extplane", 1, 0, "ClientDataRef");
 
+    qmlRegisterType<ExtPlaneConnection>("org.vranki.extplane", 1, 0, "ExtPlaneConnection");
+
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
