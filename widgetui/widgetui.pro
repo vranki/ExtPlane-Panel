@@ -8,6 +8,7 @@ QT += gui network widgets
 
 # Qt Mobility, used to disable screensaver
 CONFIG += mobility
+CONFIG   -= debug_and_release
 
 MOBILITY += systeminfo
 

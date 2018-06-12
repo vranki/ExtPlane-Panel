@@ -1,26 +1,30 @@
 language: cpp
 compiler:
-  - gcc
+- gcc
 before_install:
- - sudo apt-get update -qq
- - sudo apt-get -yq install gnupg
- - sudo echo "deb http://pkg.mxe.cc/repos/apt/debian wheezy main" > /etc/apt/sources.list.d/mxeapt.list
- - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D43A795B73B16ABE9643FE1AFD8FFF16DB45C6AB
- - sudo apt-get update
- - sudo apt-get -yq dist-upgrade
- - sudo apt-get install -yq mxe-x86-64-w64-mingw32.static-qtbase mxe-x86-64-w64-mingw32.static-qtdeclarative
- - sudo apt-get install -qq qtbase5-dev qtdeclarative5-dev qt5-default
- - git clone git://github.com/vranki/ExtPlane.git ../ExtPlane
-script:
- - qmake
- - make
+- sudo apt-get update -qq
+- sudo apt-get -yq install gnupg
+- sudo echo "deb http://pkg.mxe.cc/repos/apt/debian wheezy main" > /etc/apt/sources.list.d/mxeapt.list
+- sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D43A795B73B16ABE9643FE1AFD8FFF16DB45C6AB
+- sudo apt-get update
+- sudo apt-get install -yq mxe-x86-64-w64-mingw32.static-qtbase mxe-x86-64-w64-mingw32.static-qtdeclarative
+- sudo apt-get install -qq qtbase5-dev qtdeclarative5-dev qt5-default
+- git clone git://github.com/vranki/ExtPlane.git ../ExtPlane
+script: "./scripts/ci-build.sh"
 branches:
   only:
-    - master
+  - master
 notifications:
   recipients:
-    - ville.ranki@iki.fi
-    - dan.krusi@nerves.ch
+  - ville.ranki@iki.fi
+  - dan.krusi@nerves.ch
   email:
     on_success: change
     on_failure: always
+deploy:
+  provider: releases
+  api_key:
+    secure: eWDl6+Wr4aeL74G1Xaid7sbwH59M7PW0Jdw2vU+7Erp7W29x3T6semta19xscYK/bJuZT6oV7j/0o1BOYdbvLkXs8KuCiwyGIBiOxGikpFKOaLpGWwKAm2BHZ/YXoeELPtvI2AUTGOPGJYuOmdo3vs4Wh621Hmc3UrdjRlnCkUo=
+  file: build/extplane-panel.zip
+  on:
+    repo: vranki/ExtPlane-Panel
