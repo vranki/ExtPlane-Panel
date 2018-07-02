@@ -44,6 +44,8 @@ Target hardware is:
 * OS-X 64bit, 15MB
     * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-OSX64.zip](http://goo.gl/8kLzJg)
 
+Windows users: If the panel fails to start due to missing MSVCR100.dll, install Microsoft Visual 
+C++ 2010 SP1 Redistributable Package from https://www.microsoft.com/en-us/download/details.aspx?id=13523
 
 
 ## Instruments ##
