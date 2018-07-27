@@ -11,7 +11,7 @@
 class AirspeedIndicator : public NeedleInstrument {
     Q_OBJECT
 public:
-    Q_INVOKABLE AirspeedIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE AirspeedIndicator(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -30,7 +30,7 @@ public slots:
     virtual void setInterpolationEnabled(bool ie);
 private:
     void paintArc(QPainter *painter,QColor color, double start, double end);
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     VelocityUnit units;
     double maxValue;
     // Always in m/s

@@ -3,12 +3,11 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Compass,"indicator/compass/basic");
 
-Compass::Compass(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+Compass::Compass(ExtPlanePanel *panel, ExtPlaneClient *client) :
         PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),
-        _client(this, typeName(), conn) {
-    conn->registerClient(&_client);
-    _client.subscribeDataRef("sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot", 1); // was sim/cockpit/misc/compass_indicated
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(headingChanged(QString,double)));
+        _client(client) {
+    _client->subscribeDataRef("sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot", 1); // was sim/cockpit/misc/compass_indicated
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(headingChanged(QString,double)));
     _heading = 0;
     setSize(50,30);
 

@@ -12,7 +12,7 @@
 // Not directly used by PanelItem, but included here to reduce
 // code amount in all subclasses
 #include "../util/units.h"
-#include "extplaneconnection.h"
+// #include "extplaneconnection.h"
 #include "extplaneclient.h"
 #include "../panelitemfactory.h"
 #include "../util/valueinterpolator.h"
@@ -43,11 +43,8 @@ enum PanelItemShape
 class ExtPlanePanel;
 
 class PanelItem : public QObject, public QGraphicsItem {
-
     Q_OBJECT
-    #if QT_VERSION >= 0x040600 // Doesn't work on 4.5
-        Q_INTERFACES(QGraphicsItem)
-    #endif
+    Q_INTERFACES(QGraphicsItem)
 
 public:
     explicit PanelItem(ExtPlanePanel *panel, PanelItemType type, PanelItemShape shape);
@@ -67,7 +64,7 @@ public:
      * This is called whenever the panel item has changed size (including when first added to the scene).
      * Panel items which cache resources or pre-render complicated stuff should use this method for doing so.
      */
-    virtual void itemSizeChanged(float w, float h) { Q_UNUSED(w); Q_UNUSED(h) };
+    virtual void itemSizeChanged(float w, float h) { Q_UNUSED(w); Q_UNUSED(h) }
     bool isResizing();
     virtual void setEditMode(bool em);
     virtual void setPos(int x, int y);
@@ -149,7 +146,7 @@ public slots:
     /**
      * Called when a setting has changed via the UI for settings created with the helper methods.
      */
-    virtual void settingChanged() {};
+    virtual void settingChanged() {}
 
 protected:
     void setItemType(PanelItemType type);

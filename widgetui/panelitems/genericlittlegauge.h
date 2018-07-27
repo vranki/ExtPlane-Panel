@@ -6,7 +6,7 @@
 class GenericLittleGauge : public PanelItem
 {
 public:
-    Q_INVOKABLE GenericLittleGauge(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE GenericLittleGauge(ExtPlanePanel *panel, ExtPlaneClient *client);
     ~GenericLittleGauge();
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
@@ -81,7 +81,7 @@ private:
     bool allowUpdateBottomPixmap; // use to not draw bottomPixamp when loadSettings is call
     int arcDegreeAmplitude; //the range where needle can move (120 °)
     float arcRatioPosition; //ratio between this panel and his drawing arc
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     const QImage bottomImage;
     QPixmap* bottomPixmap;
     QPixmap needleImage;

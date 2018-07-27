@@ -6,7 +6,7 @@
 class Switch : public PanelItem {
     Q_OBJECT
 public:
-    Q_INVOKABLE Switch(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE Switch(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);
@@ -24,7 +24,7 @@ public slots:
 private slots:
     void valueChanged(QString ref, double newValue);
 private:
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     int _buttonId;
     QString _label, _refname;
     bool _value;

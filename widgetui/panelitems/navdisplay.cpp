@@ -19,8 +19,8 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(NavDisplay,"display/nav")
 #define DATAREF_HEADING "sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot"
 #define DATAREF_EFIS_MAP_RANGE "sim/cockpit2/EFIS/map_range" // or "sim/cockpit/switches/EFIS_map_range_selector"
 
-NavDisplay::NavDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-        DisplayInstrument(panel,conn) {
+NavDisplay::NavDisplay(ExtPlanePanel *panel, ExtPlaneClient *client) :
+        DisplayInstrument(panel,client) {
     // Init
     _displayRange = 20000.0; //20km
     _displayHeading = 0.0;
@@ -29,13 +29,13 @@ NavDisplay::NavDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _autoRange = false;
 
     // Connect
-    _client.subscribeDataRef(DATAREF_LOCALX, 5.0);
-    _client.subscribeDataRef(DATAREF_LOCALZ, 5.0);
-    _client.subscribeDataRef(DATAREF_HEADING, 0.2);
-    _client.subscribeDataRef(DATAREF_EFIS_MAP_RANGE, 1.0);
-    connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(refChanged(QString,QStringList)));
-    connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(refChanged(QString,QString)));
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
+    _client->subscribeDataRef(DATAREF_LOCALX, 5.0);
+    _client->subscribeDataRef(DATAREF_LOCALZ, 5.0);
+    _client->subscribeDataRef(DATAREF_HEADING, 0.2);
+    _client->subscribeDataRef(DATAREF_EFIS_MAP_RANGE, 1.0);
+    connect(_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(refChanged(QString,QStringList)));
+    connect(_client, SIGNAL(refChanged(QString,QString)), this, SLOT(refChanged(QString,QString)));
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
 
 }
 
@@ -293,14 +293,14 @@ void NavDisplay::createSettings(QGridLayout *layout) {
 
 void NavDisplay::setDataSource(int val) {
     _dataSource = val;
-    if(_client.isDataRefSubscribed(DATAREF_NAVDATA_5KM)) _client.unsubscribeDataRef(DATAREF_NAVDATA_5KM);
-    if(_client.isDataRefSubscribed(DATAREF_NAVDATA_20KM)) _client.unsubscribeDataRef(DATAREF_NAVDATA_20KM);
-    if(_client.isDataRefSubscribed(DATAREF_NAVDATA_100KM)) _client.unsubscribeDataRef(DATAREF_NAVDATA_100KM);
+    if(_client->isDataRefSubscribed(DATAREF_NAVDATA_5KM)) _client->unsubscribeDataRef(DATAREF_NAVDATA_5KM);
+    if(_client->isDataRefSubscribed(DATAREF_NAVDATA_20KM)) _client->unsubscribeDataRef(DATAREF_NAVDATA_20KM);
+    if(_client->isDataRefSubscribed(DATAREF_NAVDATA_100KM)) _client->unsubscribeDataRef(DATAREF_NAVDATA_100KM);
     if(_dataSource == DATASOURCE_5KM) {
-        _client.subscribeDataRef(DATAREF_NAVDATA_5KM, 1000);
+        _client->subscribeDataRef(DATAREF_NAVDATA_5KM, 1000);
     } else if(_dataSource == DATASOURCE_20KM) {
-        _client.subscribeDataRef(DATAREF_NAVDATA_20KM, 1000);
+        _client->subscribeDataRef(DATAREF_NAVDATA_20KM, 1000);
     } else if(_dataSource == DATASOURCE_100KM) {
-        _client.subscribeDataRef(DATAREF_NAVDATA_100KM, 1000);
+        _client->subscribeDataRef(DATAREF_NAVDATA_100KM, 1000);
     }
 }

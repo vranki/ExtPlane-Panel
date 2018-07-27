@@ -12,7 +12,7 @@ class IndicatorLight : public PanelItem
     Q_OBJECT
 
 public:
-    Q_INVOKABLE IndicatorLight(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE IndicatorLight(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual ~IndicatorLight();
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
@@ -39,7 +39,7 @@ public slots:
 
 private:
     // Internal variables
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     double _datarefValue;
     bool _on;
     QGraphicsPixmapItem *_labelGlowItem;

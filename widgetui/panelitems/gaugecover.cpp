@@ -6,9 +6,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(GaugeCover,"misc/cover/gauges");
 
-GaugeCover::GaugeCover(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+GaugeCover::GaugeCover(ExtPlanePanel *panel, ExtPlaneClient *client) :
     PanelItem(panel, PanelItemTypeCover, PanelItemShapeRectangular) {
-    Q_UNUSED(conn);
+    Q_UNUSED(client)
     // Init
     _gaugesSize = 100;
     _gaugesInset = 20;

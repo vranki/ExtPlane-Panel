@@ -5,6 +5,7 @@
 #include <clientdataref.h>
 #include <extplaneconnection.h>
 #include <clientdatarefprovider.h>
+#include <paintedpanelitem.h>
 
 int main(int argc, char *argv[])
 {
@@ -14,13 +15,12 @@ int main(int argc, char *argv[])
     app.setOrganizationName("vranki");
     app.setOrganizationDomain("extplane.org");
     app.setApplicationName("ExtPlane-panel");
-// "ClientDataRefProvider"
+
     qmlRegisterInterface<ClientDataRefProvider>("ClientDataRefProvider");
     qmlRegisterType<ExtPlaneConnection>("org.vranki.extplane", 1, 0, "ExtPlaneConnection");
     qmlRegisterType<ExtPlaneClient>("org.vranki.extplane", 1, 0, "ExtPlaneClient");
     qmlRegisterType<ClientDataRef>("org.vranki.extplane", 1, 0, "ClientDataRef");
-
-    qmlRegisterType<ExtPlaneConnection>("org.vranki.extplane", 1, 0, "ExtPlaneConnection");
+    qmlRegisterType<PaintedPanelItem>("org.vranki.extplane", 1, 0, "PaintedPanelItem");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

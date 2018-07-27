@@ -11,7 +11,7 @@ class EngineFuelP: public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE EngineFuelP(ExtPlanePanel *panel, ExtPlaneClient *client);
     ~EngineFuelP();
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
@@ -41,7 +41,7 @@ private:
     float pressureGreenEnd;
 
     bool allowUpdateBottomPixmap;
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     const QImage bottomImage;
     QPixmap* bottomPixmap;
     QPixmap needleImage;

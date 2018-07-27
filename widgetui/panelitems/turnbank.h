@@ -15,7 +15,7 @@ class TurnAndBank : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE TurnAndBank(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE TurnAndBank(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

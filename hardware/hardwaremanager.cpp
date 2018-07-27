@@ -7,7 +7,7 @@
 #include "nulloutputdevice.h"
 #include "../util/console.h"
 
-HardwareManager::HardwareManager(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection_(conn) {
+HardwareManager::HardwareManager(QObject *parent, ClientDataRefProvider *drp) : QObject(parent), m_drp(drp) {
     NullOutputDevice *no = new NullOutputDevice(this);
     outputDevices.insert(no->id(), no);
     ServoBlasterOutputDevice *sbo = new ServoBlasterOutputDevice(this);
@@ -27,9 +27,9 @@ QMap<int, OutputDevice *> &HardwareManager::devices()
     return outputDevices;
 }
 
-ExtPlaneConnection *HardwareManager::connection()
+ClientDataRefProvider *HardwareManager::dataRefProvider()
 {
-    return connection_;
+    return m_drp;
 }
 
 void HardwareManager::addBinding(HardwareBinding *binding) {
@@ -72,7 +72,7 @@ void HardwareManager::loadSettings(QSettings *panelSettings) {
     int n = panelSettings->value("bindingCount").toInt();
     for(int i=0;i<n;i++) {
         panelSettings->beginGroup("binding-" + QString::number(i));
-        HardwareBinding *binding = new HardwareBinding(this, connection());
+        HardwareBinding *binding = new HardwareBinding(this, dataRefProvider());
         binding->loadSettings(panelSettings);
         panelSettings->endGroup();
         addBinding(binding);

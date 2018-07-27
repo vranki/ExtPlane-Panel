@@ -10,7 +10,7 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(EngineFuelP,"indicator/engine/pressure")
 
-EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneClient *client) :
                  PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
                 _engineNumber(0),
                 pressureValue(0),
@@ -20,7 +20,7 @@ EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
                 pressureGreenBegin(100),
                 pressureGreenEnd(350),
                 allowUpdateBottomPixmap(true),
-                _client(this, typeName(), conn),
+                _client(client),
                 bottomImage(":/images/DR400_engine_FUELP.png"),
                 bottomPixmap(0),
                 needleImage(":/images/DR400_engine_generic_needle.png")
@@ -29,10 +29,9 @@ EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
 
     //init
     //subscibe to dataref
-    _client.subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 5.0);
+    _client->subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 5.0);
 
-    conn->registerClient(&_client);
-    connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(pressureChanged(QString,QStringList)));
+    connect(_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(pressureChanged(QString,QStringList)));
 
 
     //set size
@@ -283,8 +282,8 @@ void EngineFuelP::setEngineNumber(float val) {
     if (_engineNumber != (int)val) {
         _engineNumber = (int)val;
         //refresh subscription in order to call pressureChanged(xx)
-        _client.unsubscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi");
-        _client.subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 5.0);
+        _client->unsubscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi");
+        _client->subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 5.0);
 
     }
 }

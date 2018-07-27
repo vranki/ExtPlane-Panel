@@ -14,7 +14,7 @@
 class Arc : public QObject {
     Q_OBJECT
 public:
-    explicit Arc(QObject *parent = 0, PanelItem *panel=0);
+    explicit Arc(QObject *parent = nullptr, PanelItem *panel=nullptr);
     void update(void);
 
     bool    _use;
@@ -46,7 +46,7 @@ private:
 class NeedleInstrument : public PanelItem {
     Q_OBJECT
 public:
-    explicit NeedleInstrument(ExtPlanePanel *panel = 0);
+    explicit NeedleInstrument(ExtPlanePanel *panel = nullptr);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setScale(float zeroAngle, float zeroValue, float maxAngle, float maxValue);
     void setBars(float thick, float thin);
@@ -73,7 +73,7 @@ public slots:
 
 protected:
     virtual void repaintPixmaps(); // Repaint bottom pixmap
-    virtual void paintTopPixmap() {}; // Repaint top pixmap (if needed)
+    virtual void paintTopPixmap() {} // Repaint top pixmap (if needed)
     float _thickBars, _thinBars;
     float _numbers;
     float _numberScale;

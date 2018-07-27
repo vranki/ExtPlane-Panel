@@ -23,7 +23,7 @@
 class MapInstrument : public PanelItem {
     Q_OBJECT
 public:
-    explicit MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    explicit MapInstrument(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual ~MapInstrument();
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void itemSizeChanged(float w, float h);
@@ -33,7 +33,7 @@ public:
     virtual void createSettings(QGridLayout *layout);
 
 public slots:
-    virtual void tickTime(double dt, int total) { Q_UNUSED(dt);Q_UNUSED(total); };
+    virtual void tickTime(double dt, int total) { Q_UNUSED(dt);Q_UNUSED(total); }
     void latlongChanged(QString name, double value);
     void updateMap();
     void mapTileDownloadFinished(QNetworkReply *reply);
@@ -48,7 +48,7 @@ protected:
 protected:
     // Internal variables
     QNetworkAccessManager *_netManager;
-    ExtPlaneClient  _client;
+    ExtPlaneClient  *_client;
     QPixmap         _mapImage;
     int             _side;
     int             _range;

@@ -10,11 +10,10 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Switch,"switches/generic");
 
-Switch::Switch(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+Switch::Switch(ExtPlanePanel *panel, ExtPlaneClient *client) :
         PanelItem(panel, PanelItemTypeSwitch, PanelItemShapeRectangular),
-        _client(this, typeName(), conn) {
-    conn->registerClient(&_client);
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
+        _client(client) {
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
     _value = false;
     _label = "Switch";
     _ref = 0;
@@ -85,7 +84,7 @@ void Switch::applySettings() {
         _ref = 0;
     }
     if(!_refname.isEmpty())
-        _ref = _client.subscribeDataRef(_refname, 0);
+        _ref = _client->subscribeDataRef(_refname, 0);
 }
 
 void Switch::setLabel(QString txt) {

@@ -6,17 +6,17 @@
 #include <QSettings>
 
 class HardwareBinding;
-class ExtPlaneConnection;
+class ClientDataRefProvider;
 class OutputDevice;
 
 class HardwareManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit HardwareManager(QObject *parent, ExtPlaneConnection *conn);
+    explicit HardwareManager(QObject *parent, ClientDataRefProvider *drp);
     QList<HardwareBinding*>& bindings();
     QMap<int, OutputDevice*>& devices();
-    ExtPlaneConnection *connection();
+    ClientDataRefProvider *dataRefProvider();
     void addBinding(HardwareBinding *binding);
     void deleteBinding(HardwareBinding *binding);
     void saveSettings(QSettings *panelSettings);
@@ -31,7 +31,7 @@ private slots:
 private:
     QList<HardwareBinding*> hwBindings;
     QMap<int, OutputDevice*> outputDevices;
-    ExtPlaneConnection *connection_;
+    ClientDataRefProvider *m_drp;
 };
 
 #endif // HARDWAREMANAGER_H

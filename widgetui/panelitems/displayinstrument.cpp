@@ -9,8 +9,8 @@
 #include "../util/console.h"
 #include "extplaneclient.h"
 
-DisplayInstrument::DisplayInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),_client(this, typeName(), conn) {
+DisplayInstrument::DisplayInstrument(ExtPlanePanel *panel, ExtPlaneClient *client) :
+    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),_client(client) {
 
     // Init
     _monitorFade = 93;
@@ -18,10 +18,6 @@ DisplayInstrument::DisplayInstrument(ExtPlanePanel *panel, ExtPlaneConnection *c
     _resolution = 100;
     _lastRender.start();
     _refreshHerz = 30;
-
-    // Make connection and register data refs
-    conn->registerClient(&_client);
-
 }
 
 DisplayInstrument::~DisplayInstrument() {

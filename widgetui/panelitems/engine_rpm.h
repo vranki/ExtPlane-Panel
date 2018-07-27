@@ -12,7 +12,7 @@ class EngineRPM : public NeedleInstrument
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE EngineRPM(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE EngineRPM(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual QString typeName();
@@ -27,7 +27,7 @@ signals:
     void setEngineNumber(float val) { _engineNumber = (int)val; }
 
 private:
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     VelocityUnit units;
     bool _setMaxValueAutomatically;
     int _engineNumber;

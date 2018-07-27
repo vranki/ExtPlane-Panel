@@ -11,7 +11,7 @@ class IndicatorDisplay : public DisplayInstrument
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE IndicatorDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE IndicatorDisplay(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void render(QPainter *painter, int width, int height);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);

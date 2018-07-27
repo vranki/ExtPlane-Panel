@@ -11,7 +11,7 @@ class RotaryKnob : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE RotaryKnob(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE RotaryKnob(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);
@@ -31,7 +31,7 @@ private slots:
     void valueChanged(QString ref, double newValue);
     void setChangeString(QString ch);
 private:
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     QString _refname;
     double _value, _change, _valueStartPoint;
     ClientDataRef* _ref;

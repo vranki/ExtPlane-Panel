@@ -7,36 +7,31 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(TankLeveler,"indicator/engine/tank")
 
-
-TankLeveler::TankLeveler(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+TankLeveler::TankLeveler(ExtPlanePanel *panel, ExtPlaneClient *client) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-   _tankNumber(0),
-   tankShortDesignation("C"),
-   quantityValue(0),
-   valueMax(110),
-   scaleFactor(1),
-   _client(this, typeName(), conn),
-   bottomImage(":/images/DR400_engine_FUEL_Tank.png"),
-   bottomPixmap(0),
-   needleImage(":/images/DR400_engine_FUEL_Tank_needle.png")
-   {
+    _tankNumber(0),
+    tankShortDesignation("C"),
+    quantityValue(0),
+    valueMax(110),
+    scaleFactor(1),
+    _client(client),
+    bottomImage(":/images/DR400_engine_FUEL_Tank.png"),
+    bottomPixmap(0),
+    needleImage(":/images/DR400_engine_FUEL_Tank_needle.png")
+{
+    //init
+    //subscibe to dataref
+    connect(_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(quantityChanged(QString,QStringList)));
+    _client->subscribeDataRef("sim/cockpit2/fuel/fuel_quantity", 1.0);
 
 
-        //init
-        //subscibe to dataref
-        _client.subscribeDataRef("sim/cockpit2/fuel/fuel_quantity", 1.0);
-
-        conn->registerClient(&_client);
-        connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(quantityChanged(QString,QStringList)));
-
-        //set size
-        if (! bottomImage.isNull()) {
+    //set size
+    if (! bottomImage.isNull()) {
         //dimension the item with the default background image
         this->setSize(bottomImage.width(),bottomImage.height());
-        }
-
     }
 
+}
 
 
 TankLeveler::~TankLeveler() {
@@ -114,12 +109,12 @@ void TankLeveler::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         x = x - ww/2;
         y = y - hh/2;
 
-       painter->save();
-            painter->rotate(a);
-            painter->translate(x,y);
-            painter->scale(this->scaleFactor,this->scaleFactor);
-            painter->drawPixmap(0,0,needleImage);
-       painter->restore();
+        painter->save();
+        painter->rotate(a);
+        painter->translate(x,y);
+        painter->scale(this->scaleFactor,this->scaleFactor);
+        painter->drawPixmap(0,0,needleImage);
+        painter->restore();
 
 
     }
@@ -149,11 +144,11 @@ void TankLeveler::quantityChanged(QString name, QStringList values){
 
 void TankLeveler::setTankNumber(float val) {
     if (_tankNumber != (int)val) {
-         //setValue
+        //setValue
         _tankNumber = (int)val;
         //refresh subscription in order to call quantityChanged(xx)
-        _client.unsubscribeDataRef("sim/cockpit2/fuel/fuel_quantity");
-        _client.subscribeDataRef("sim/cockpit2/fuel/fuel_quantity", 1.0);
+        _client->unsubscribeDataRef("sim/cockpit2/fuel/fuel_quantity");
+        _client->subscribeDataRef("sim/cockpit2/fuel/fuel_quantity", 1.0);
 
     }
 }
@@ -166,7 +161,7 @@ void TankLeveler::setMaxValue(float mv){
 }
 
 void TankLeveler::setShortDesignation(QString s) {
-    tankShortDesignation = s;    
+    tankShortDesignation = s;
     this->drawBottomPixmap();
     this->update();
 }
@@ -233,7 +228,7 @@ float TankLeveler::value2Angle(const float &p){
         float angleBegin = 10;
         rval = angleBegin + ( 2*qt - valueMax ) / valueMax * angleRange;
 
-    //value is more than 5 kg and less than half load
+        //value is more than 5 kg and less than half load
     }else if ( 5 < qt ) {
         //angle is 53 degree between half value and full value
         float angleRange = 53;
@@ -241,7 +236,7 @@ float TankLeveler::value2Angle(const float &p){
         float angleBegin = -43;
         rval = angleBegin + ( qt - 5) / ((valueMax/2) - 5) * angleRange;
 
-    //value is less than 5 kg
+        //value is less than 5 kg
     }else{
         //angle is 24 degree between 5 kg and null
         float angleRange = 24;

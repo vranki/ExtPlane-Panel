@@ -12,9 +12,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(IndicatorLight,"indicator/light/basic")
 
-IndicatorLight::IndicatorLight(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+IndicatorLight::IndicatorLight(ExtPlanePanel *panel, ExtPlaneClient *client) :
         PanelItem(panel, PanelItemTypeDisplay, PanelItemShapeRectangular),
-        _client(this, typeName(), conn) {
+        _client(client) {
 
     // Init
     _labelOn = "BRAKES";
@@ -28,9 +28,8 @@ IndicatorLight::IndicatorLight(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _labelGlowItem = NULL;
 
     // Make connection
-    conn->registerClient(&_client);
-    connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(dataRefChanged(QString,QString)));
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(dataRefChanged(QString,double)));
+    connect(_client, SIGNAL(refChanged(QString,QString)), this, SLOT(dataRefChanged(QString,QString)));
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(dataRefChanged(QString,double)));
 
     // Defaults
     setGlowStrength(80);
@@ -322,12 +321,12 @@ void IndicatorLight::loadPreset(int val) {
 void IndicatorLight::setDataRefName(QString name) {
 
     // Unsubscribe old
-    if(_datarefName != "" && _client.isDataRefSubscribed(_datarefName)) _client.unsubscribeDataRef(_datarefName); //TODO: there seems to be something wrong with unsubscribing...
+    if(_datarefName != "" && _client->isDataRefSubscribed(_datarefName)) _client->unsubscribeDataRef(_datarefName); //TODO: there seems to be something wrong with unsubscribing...
     _datarefName = name;
      _datarefValue = 0;
 
     // Subscribe new
-    _client.subscribeDataRef(name, 0);
+    _client->subscribeDataRef(name, 0);
     createLabel(width(),height());
 }
 

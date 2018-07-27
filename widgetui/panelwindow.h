@@ -51,7 +51,7 @@ public slots:
     void addItem(QString itemName);
     void panelRotationChanged(int r);
     void fullscreenChanged(bool fs);
-    void setServerAddress(QString host);
+    void setServerAddress(QString address);
     void disableBlanking();
 public slots:
     void setEditMode(bool em);
@@ -66,11 +66,12 @@ public slots:
     void showHardware();
     void showSettings();
     void showPanels();
-    void editItem(PanelItem *item=0);
-    void panelItemChanged(PanelItem *item=0); // Should be emitted by panel item when they become dirty
+    void editItem(PanelItem *item = nullptr);
+    void panelItemChanged(PanelItem *item = nullptr); // Should be emitted by panel item when they become dirty
     void quit();
     void clientDataRefChanged(QString name, QString val);
     void clientDataRefChanged(QString name, double val);
+
 private slots:
     QStringList getPanelGroupNames();
     QStringList getPanelNames();
@@ -91,13 +92,16 @@ private slots:
     void setAdjustPowerEnabled(bool enabled);
     void setPanelUpdateInterval(double newInterval);
     void setDefaultFontSize(double newFs);
+
 protected:
     virtual void resizeEvent(QResizeEvent *event);
     virtual void closeEvent(QCloseEvent *event);
+
 private:
     QList<PanelItem*> selectedGauges();
+
 private:
-    ExtPlaneConnection *connection; // The master connection which all panel item clients will use
+    //ExtPlaneConnection *connection; // The master connection which all panel item clients will use
     ExtPlanePanel *currentPanel; // Contains the panel items, exposed to panel items so they can know about each other (for example the covers)
     ExtPlaneClient *client; // Client for performing universal action such as automatically chaning the panel when aircraft changes, dimming lights, et cetera
     HardwareManager *hwManager;
@@ -117,9 +121,6 @@ private:
     QTime time, totalTime;
     bool interpolationEnabled, aaEnabled;
     double defaultFontSize;
-    #ifdef MAEMO
-        QTimer blankingTimer; // Disables blanking on Maemo
-    #endif
 };
 
 #endif // PANELWINDOW_H

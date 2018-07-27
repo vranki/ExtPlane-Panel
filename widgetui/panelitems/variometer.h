@@ -16,7 +16,7 @@ class Variometer : public NeedleInstrument
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE Variometer(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE Variometer(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual QString typeName();
@@ -31,7 +31,7 @@ public slots:
 protected:
     virtual void paintTopPixmap();
 private:
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     VelocityUnit units;
     float maxValue;
     float numberScale;

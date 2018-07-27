@@ -5,11 +5,10 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(RotaryKnob,"adjustment/rotary");
 
-RotaryKnob::RotaryKnob(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+RotaryKnob::RotaryKnob(ExtPlanePanel *panel, ExtPlaneClient *client) :
         PanelItem(panel, PanelItemTypeSwitch, PanelItemShapeCircular),
-        _client(this, typeName(), conn) {
-    conn->registerClient(&_client);
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
+        _client(client) {
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
     _value = 0;
     _change = 0;
     _valueStartPoint = 0;
@@ -63,10 +62,10 @@ void RotaryKnob::createSettings(QGridLayout *layout) {
 void RotaryKnob::applySettings() {
     if(_ref) {
         _ref->unsubscribe();
-        _ref = 0;
+        _ref = nullptr;
     }
     if(!_refname.isEmpty())
-        _ref = _client.subscribeDataRef(_refname, 0);
+        _ref = _client->subscribeDataRef(_refname, 0);
 }
 
 void RotaryKnob::setChange(double ch) {
@@ -84,7 +83,7 @@ void RotaryKnob::setChangeString(QString ch) {
 void RotaryKnob::setRef(QString txt) {
     if(_ref) {
         _ref->unsubscribe();
-        _ref = 0;
+        _ref = nullptr;
     }
     _refname = txt;
     update();

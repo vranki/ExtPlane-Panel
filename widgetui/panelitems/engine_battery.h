@@ -6,7 +6,7 @@
 class EngineBattery : public PanelItem
 {
 public:
-    Q_INVOKABLE EngineBattery(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE EngineBattery(ExtPlanePanel *panel, ExtPlaneClient *client);
     ~EngineBattery();
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
@@ -33,7 +33,7 @@ private:
     float valueMax;
     float scaleFactor;
 
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     const QImage bottomImage;
     QPixmap* bottomPixmap;
 

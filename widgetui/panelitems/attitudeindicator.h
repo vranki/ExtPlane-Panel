@@ -19,7 +19,7 @@ class AttitudeIndicator : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
@@ -37,7 +37,7 @@ private:
     float value2Angle1(float value);
     float value2Angle2(float value);
 private:
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     DistanceUnit units;
     PressureUnit baroUnits;
     float _range1, _range2, _value;

@@ -9,10 +9,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Button,"buttons/generic");
 
-Button::Button(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+Button::Button(ExtPlanePanel *panel, ExtPlaneClient *client) :
         PanelItem(panel, PanelItemTypeSwitch, PanelItemShapeRectangular),
-        _client(this, typeName(), conn) {
-    conn->registerClient(&_client);
+        _client(client) {
     _buttonId = 0;
     _label = "Button";
     _isKey = false;
@@ -92,9 +91,9 @@ void Button::mousePressEvent ( QGraphicsSceneMouseEvent * event ) {
     } else {
         _isHeld = true;
         if(_isKey) {
-            _client.keyPress(_buttonId);
+            _client->keyPress(_buttonId);
         } else {
-            _client.buttonPress(_buttonId);
+            _client->buttonPress(_buttonId);
         }
         update();
     }
@@ -106,7 +105,7 @@ void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     } else {
         _isHeld = false;
         if(!_isKey) {
-            _client.buttonRelease(_buttonId);
+            _client->buttonRelease(_buttonId);
         }
         update();
     }

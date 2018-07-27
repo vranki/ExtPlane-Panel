@@ -7,9 +7,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Altimeter,"indicator/altitude/basic");
 
-Altimeter::Altimeter(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+Altimeter::Altimeter(ExtPlanePanel *panel, ExtPlaneClient *client) :
         PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-        _client(this, typeName(), conn) {
+        _client(client) {
     // Init
     _value = 0;
     _thickBars = 50;
@@ -21,9 +21,9 @@ Altimeter::Altimeter(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _baroPressure = 1013.25;
     units = DISTANCE_M;
     baroUnits = PRESSURE_HPA;
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    _client.subscribeDataRef("sim/flightmodel/misc/h_ind", 1);
-    _client.subscribeDataRef("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot");
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
+    _client->subscribeDataRef("sim/flightmodel/misc/h_ind", 1);
+    _client->subscribeDataRef("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot");
     GABalancedNeedle *sn = new GABalancedNeedle(this);
     sn->setNeedleLength(0.6);
     shortNeedle = sn;

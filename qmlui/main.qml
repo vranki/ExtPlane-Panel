@@ -10,25 +10,33 @@ Window {
     color: "black"
     ExtPlaneClient {
         id: extplaneClient
-        datarefProvider: extplaneConnection
-    }
-    ExtPlaneConnection {
-        id: extplaneConnection
-        hostName: "localhost"
-        Component.onCompleted: startConnection()
+        simulated: true
     }
     Text {
-        color: extplaneConnection.connected ? "white" : "red"
-        text: (extplaneConnection.connected ? "Connected" : extplaneConnection.networkError)
+        color: extplaneClient.extplaneConnection.connected ? "white" : "red"
+        text: extplaneClient.connectionMessage + " " + (extplaneClient.extplaneConnection.connected ? "Connected" : extplaneClient.extplaneConnection.networkError)
     }
     Text {
-        anchors.centerIn: parent
-        text: hdgRef.value
+        text: "HDG: " + hdgRef.value
+        color: "white"
 
         ClientDataRef {
             id: hdgRef
             name: "sim/cockpit/misc/compass_indicated"
             client: extplaneClient
+        }
+        MouseArea {
+            anchors.fill: parent
+            drag.target: parent
+        }
+    }
+    PaintedPanelItem {
+        anchors.centerIn: parent
+        width: 300
+        height: 100
+        MouseArea {
+            anchors.fill: parent
+            drag.target: parent
         }
     }
 }

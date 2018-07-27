@@ -6,7 +6,7 @@
 class TankLeveler : public PanelItem
 {
 public:
-    Q_INVOKABLE TankLeveler(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE TankLeveler(ExtPlanePanel *panel, ExtPlaneClient *client);
     ~TankLeveler();
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
@@ -33,7 +33,7 @@ private:
     float valueMax;
     float scaleFactor;
 
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     const QImage bottomImage;
     QPixmap* bottomPixmap;
     QPixmap needleImage;

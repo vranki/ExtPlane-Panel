@@ -14,12 +14,11 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(Dial,"switches/dial");
 
-Dial::Dial(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+Dial::Dial(ExtPlanePanel *panel, ExtPlaneClient *client) :
         PanelItem(panel, PanelItemTypeSwitch, PanelItemShapeRectangular),
-        _client(this, typeName(), conn) {
-    conn->registerClient(&_client);
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
-    connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(valueChanged(QString,QString)));
+        _client(client) {
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
+    connect(_client, SIGNAL(refChanged(QString,QString)), this, SLOT(valueChanged(QString,QString)));
     _value = "";
     _label = "AUTOPILOT";
     _positionLabel1 = "OFF";
@@ -256,9 +255,9 @@ void Dial::setLabel(QString val) {
 
 void Dial::setDataRef(QString val) {
     if(val.isEmpty()) return;
-    if(_client.isDataRefSubscribed(_datarefName)) _client.unsubscribeDataRef(_datarefName);
+    if(_client->isDataRefSubscribed(_datarefName)) _client->unsubscribeDataRef(_datarefName);
     _datarefName = val;
-    _dataref = _client.subscribeDataRef(_datarefName, 0);
+    _dataref = _client->subscribeDataRef(_datarefName, 0);
     update();
 }
 

@@ -10,7 +10,7 @@ class ColorSelector : public QPushButton
 {
     Q_OBJECT
 public:
-    explicit ColorSelector(QWidget *parent = 0);
+    explicit ColorSelector(QWidget *parent = nullptr);
     ~ColorSelector();
     
 signals:

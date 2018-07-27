@@ -8,23 +8,22 @@
 REGISTER_WITH_PANEL_ITEM_FACTORY(EngineBattery,"indicator/engine/battery")
 
 
-EngineBattery::EngineBattery(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+EngineBattery::EngineBattery(ExtPlanePanel *panel, ExtPlaneClient *client) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
    _batteryNumber(0),
    amperageValue(0),
    valueMin(-5),
    valueMax(1),
    scaleFactor(1),
-   _client(this, typeName(), conn),
+   _client(client),
    bottomImage(":/images/DR400_Battery_Amp.png"),
    bottomPixmap(0)
    {
         //init
         //subscibe to dataref
-        _client.subscribeDataRef("sim/cockpit2/electrical/battery_amps", 0.1);
+        _client->subscribeDataRef("sim/cockpit2/electrical/battery_amps", 0.1);
 
-        conn->registerClient(&_client);
-        connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(amperageChanged(QString,QStringList)));
+        connect(_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(amperageChanged(QString,QStringList)));
 
         //set size
         if (! bottomImage.isNull()) {
@@ -132,8 +131,8 @@ void EngineBattery::setBatteryNumber(float val) {
          //setValue
         _batteryNumber = (int)val;
         //refresh subscription in order to call quantityChanged(xx)
-        _client.unsubscribeDataRef("sim/cockpit2/electrical/battery_amps");
-        _client.subscribeDataRef("sim/cockpit2/electrical/battery_amps", 0.1);
+        _client->unsubscribeDataRef("sim/cockpit2/electrical/battery_amps");
+        _client->subscribeDataRef("sim/cockpit2/electrical/battery_amps", 0.1);
     }
 }
 

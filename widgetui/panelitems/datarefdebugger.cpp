@@ -7,9 +7,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(DataRefDebugger,"misc/debugging/dataref")
 
-DataRefDebugger::DataRefDebugger(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+DataRefDebugger::DataRefDebugger(ExtPlanePanel *panel, ExtPlaneClient *client) :
         PanelItem(panel, PanelItemTypeDisplay, PanelItemShapeRectangular),
-        _client(this, typeName(), conn) {
+        _client(client) {
 
     // Init
     setSize(400,60);
@@ -20,10 +20,9 @@ DataRefDebugger::DataRefDebugger(ExtPlanePanel *panel, ExtPlaneConnection *conn)
     setDataRefName("sim/cockpit/misc/compass_indicated");
 
     // Make connection
-    conn->registerClient(&_client);
-    connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(dataRefChanged(QString,QString)));
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(dataRefChanged(QString,double)));
-    connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(dataRefChanged(QString,QStringList)));
+    connect(_client, SIGNAL(refChanged(QString,QString)), this, SLOT(dataRefChanged(QString,QString)));
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(dataRefChanged(QString,double)));
+    connect(_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(dataRefChanged(QString,QStringList)));
 
 }
 
@@ -85,12 +84,12 @@ void DataRefDebugger::createSettings(QGridLayout *layout) {
 
 void DataRefDebugger::setDataRefName(QString name) {
     // Unsubscribe old
-    if(_currentName != "" && _client.isDataRefSubscribed(_currentName)) _client.unsubscribeDataRef(_currentName); //TODO: there seems to be something wrong with unsubscribing...
+    if(_currentName != "" && _client->isDataRefSubscribed(_currentName)) _client->unsubscribeDataRef(_currentName); //TODO: there seems to be something wrong with unsubscribing...
     _currentName = name;
     _currentValue = "";
 
     // Subscribe new
-    if(name != "") _client.subscribeDataRef(name, _currentAccuracy);
+    if(name != "") _client->subscribeDataRef(name, _currentAccuracy);
     update();
 }
 

@@ -25,8 +25,8 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(PFDDisplay,"display/pfd")
 #define SCALE_INDICATOR_TYPE_AIRSPEED 1
 #define SCALE_INDICATOR_TYPE_ALTITUDE 2
 
-PFDDisplay::PFDDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-        DisplayInstrument(panel,conn) {
+PFDDisplay::PFDDisplay(ExtPlanePanel *panel, ExtPlaneClient *client) :
+        DisplayInstrument(panel,client) {
     // Init
     _style = ENGINE_STYLE_BOEING;
     _strokeSize = 2;
@@ -42,16 +42,16 @@ PFDDisplay::PFDDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _attitude_rollValue = -20;
 
     // Connect
-    _client.subscribeDataRef(DATAREF_PITCH,0.05);
-    _client.subscribeDataRef(DATAREF_ROLL,0.05);
-    _client.subscribeDataRef(DATAREF_SLIP,0.05);
-    _client.subscribeDataRef(DATAREF_AIRSPEED_KTS,0.5);
-    _client.subscribeDataRef(DATAREF_ALTITUDE_FT,0.5);
-    _client.subscribeDataRef(DATAREF_AIRSPEED_ACC_KTS,0.5);
-    _client.subscribeDataRef(DATAREF_HEADING_DEG,0.5);
-    _client.subscribeDataRef(DATAREF_VERTICALSPEED_FPM,0.05);
-    connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(refChanged(QString,QStringList)));
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
+    _client->subscribeDataRef(DATAREF_PITCH,0.05);
+    _client->subscribeDataRef(DATAREF_ROLL,0.05);
+    _client->subscribeDataRef(DATAREF_SLIP,0.05);
+    _client->subscribeDataRef(DATAREF_AIRSPEED_KTS,0.5);
+    _client->subscribeDataRef(DATAREF_ALTITUDE_FT,0.5);
+    _client->subscribeDataRef(DATAREF_AIRSPEED_ACC_KTS,0.5);
+    _client->subscribeDataRef(DATAREF_HEADING_DEG,0.5);
+    _client->subscribeDataRef(DATAREF_VERTICALSPEED_FPM,0.05);
+    connect(_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(refChanged(QString,QStringList)));
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
 
 }
 
