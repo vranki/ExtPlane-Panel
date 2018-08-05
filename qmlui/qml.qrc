@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>panelitems/PanelItem.qml</file>
+        <file>panelitems/CompassBasic.qml</file>
+        <file>panelitems/AttitudeIndicator.qml</file>
     </qresource>
 </RCC>

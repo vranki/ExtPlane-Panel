@@ -36,14 +36,14 @@ HEADERS += \
 
 SOURCES += \
      ../widgetui/panelitems/panelitem.cpp \
-     ../widgetui/panelitems/button.cpp \
+     ../widgetui/panelitems/attitudeindicator.cpp \
      ../widgetui/widgets/numberinputlineedit.cpp \
      ../widgetui/widgets/colorselector.cpp \
      ../widgetui/panelitemfactory.cpp
 
 HEADERS += \
      ../widgetui/panelitems/panelitem.h \
-     ../widgetui/panelitems/button.h \
+     ../widgetui/panelitems/attitudeindicator.h \
      ../widgetui/widgets/numberinputlineedit.h \
      ../widgetui/widgets/colorselector.h \
      ../widgetui/panelitemfactory.h

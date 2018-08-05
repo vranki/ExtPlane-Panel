@@ -1,6 +1,7 @@
 import QtQuick 2.6
 import QtQuick.Window 2.2
 import org.vranki.extplane 1.0
+import "panelitems"
 
 Window {
     visible: true
@@ -8,6 +9,29 @@ Window {
     height: 480
     title: qsTr("ExtPlane Panel")
     color: "black"
+
+    property bool editMode: false
+
+    MouseArea {
+        id: dragArea
+        property var dragItem: null
+        property var resizeItem: null
+        property int xOffset
+        property int yOffset
+        property bool busy: resizeItem || dragItem
+        anchors.fill: parent
+        enabled: dragItem || resizeItem
+        onPositionChanged: {
+            if(dragItem) {
+                dragItem.x = mouseX - xOffset
+                dragItem.y = mouseY - yOffset
+            } else if(resizeItem) {
+                resizeItem.width = mouseX - resizeItem.x + xOffset
+                resizeItem.height = mouseY - resizeItem.y + yOffset
+            }
+        }
+        onReleased: resizeItem = dragItem = null
+    }
     ExtPlaneClient {
         id: extplaneClient
         simulated: true
@@ -16,27 +40,21 @@ Window {
         color: extplaneClient.extplaneConnection.connected ? "white" : "red"
         text: extplaneClient.connectionMessage + " " + (extplaneClient.extplaneConnection.connected ? "Connected" : extplaneClient.extplaneConnection.networkError)
     }
-    Text {
-        text: "HDG: " + hdgRef.value
-        color: "white"
 
-        ClientDataRef {
-            id: hdgRef
-            name: "sim/cockpit/misc/compass_indicated"
-            client: extplaneClient
-        }
-        MouseArea {
-            anchors.fill: parent
-            drag.target: parent
-        }
+    AttitudeIndicator {
+        x: 100
+        y: 100
+        width: 100
+        height: 100
     }
-    PaintedPanelItem {
-        anchors.centerIn: parent
+    CompassBasic {
+        x: 300
+        y: 100
         width: 300
         height: 100
-        MouseArea {
-            anchors.fill: parent
-            drag.target: parent
-        }
+    }
+    Item {
+        focus: true
+        Keys.onSpacePressed: editMode = !editMode
     }
 }

@@ -5,7 +5,6 @@
 PanelItemFactory::PanelItemFactory() {}
 
 PanelItem *PanelItemFactory::itemForName(QString name, ExtPlanePanel *panel, ExtPlaneClient *client) {
-    Q_ASSERT(panel != NULL);
     if(classMapping()->contains(name)) {
         const QMetaObject *meta = classMapping()->find(name).value();
         PanelItem *newItem = qobject_cast<PanelItem*> (meta->newInstance(Q_ARG(ExtPlanePanel*,panel),Q_ARG(ExtPlaneClient*, client)));
@@ -16,7 +15,7 @@ PanelItem *PanelItemFactory::itemForName(QString name, ExtPlanePanel *panel, Ext
             return  nullptr;
         }
     }
-    qWarning() << Q_FUNC_INFO << "the panel item " << name << "is not recognized";
+    qWarning() << Q_FUNC_INFO << "the panel item " << name << "is not recognized! Known items are:" << itemNames();
     return nullptr;
 }
 
