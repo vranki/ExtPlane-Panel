@@ -106,6 +106,7 @@ public:
     inline PanelItemType itemType() { return _itemType; }
     inline PanelItemShape itemShape() { return _itemShape; }
     inline ExtPlanePanel* panel() { return _panel; }
+    void update(); // Override update, as it doesn't seem to work with QML
 
 protected:
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
@@ -133,6 +134,7 @@ signals:
      * going in and touching all the panel items...
      */
     void panelItemChanged(PanelItem *item);
+    void updateRequest();
 
 public slots:
     virtual void setPanelRotation(int angle);

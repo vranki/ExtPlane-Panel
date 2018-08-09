@@ -293,6 +293,10 @@ bool PanelItem::isResizing() {
 void PanelItem::applySettings() {
 }
 
+void PanelItem::update() {
+    emit updateRequest();
+}
+
 void PanelItem::setDefaultFontSize(double dfs) {
     _defaultFontSize = dfs;
     defaultFont.setPointSizeF(qMax(_defaultFontSize + _itemFontSize, 5.f)); // Limit font size to 5

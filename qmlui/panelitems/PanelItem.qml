@@ -2,6 +2,8 @@ import QtQuick 2.0
 
 Item {
     id: panelItem
+    objectName: "panelItem"
+    property var connection: extplaneClient.extplaneConnection
 
     Rectangle {
         id: highlightRect

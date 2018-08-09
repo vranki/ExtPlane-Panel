@@ -1,11 +1,13 @@
 #include "paintedpanelitem.h"
 #include <QPainter>
 #include <QBrush>
+#include "extplaneconnection.h"
 #include "../widgetui/panelitemfactory.h"
 #include "../widgetui/panelitems/attitudeindicator.h"
 
 PaintedPanelItem::PaintedPanelItem(QQuickItem *parent) : QQuickPaintedItem(parent)
   , m_panelItem(nullptr)
+  , m_client(nullptr)
 {}
 
 PaintedPanelItem::~PaintedPanelItem() {
@@ -32,17 +34,42 @@ QString PaintedPanelItem::itemName() const
     return m_itemName;
 }
 
+ExtPlaneClient *PaintedPanelItem::client() const
+{
+    return m_client;
+}
+
 void PaintedPanelItem::setItemName(QString itemName)
 {
     if (m_itemName == itemName)
         return;
 
     m_itemName = itemName;
-    if(m_panelItem) delete m_panelItem;
-
-    PanelItemFactory pif;
-    m_panelItem = pif.itemForName(itemName, nullptr, new ExtPlaneClient(true));
-    m_panelItem->setSize(width(), height());
-
+    createItemIfPossible();
     emit itemNameChanged(m_itemName);
+}
+
+void PaintedPanelItem::setClient(ExtPlaneClient *client)
+{
+    Q_ASSERT(!m_client); // Can't change client on the run yet..
+    if (m_client == client)
+        return;
+
+    m_client = client;
+    emit clientChanged(m_client);
+    createItemIfPossible();
+}
+
+void PaintedPanelItem::updateRequest() {
+    update();
+}
+
+void PaintedPanelItem::createItemIfPossible()
+{
+    if(!m_client || m_itemName.isEmpty()) return;
+    if(m_panelItem) delete m_panelItem;
+    PanelItemFactory pif;
+    m_panelItem = pif.itemForName(m_itemName, nullptr, m_client);
+    m_panelItem->setSize(width(), height());
+    connect(m_panelItem, &PanelItem::updateRequest, this, &PaintedPanelItem::updateRequest);
 }

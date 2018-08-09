@@ -4,7 +4,7 @@
 
 PanelItemSelectionDialog::PanelItemSelectionDialog(QWidget *parent) :
     QDialog(parent)
-  , ui(new Ui::PanelItemSelectionDialog), selectedPanelItem(0)
+  , ui(new Ui::PanelItemSelectionDialog), selectedPanelItem(nullptr)
   , simulatedClient(true)
 {
     // Init
@@ -37,7 +37,6 @@ void PanelItemSelectionDialog::itemAccepted() {
 }
 
 void PanelItemSelectionDialog::tickTime(double dt, int total) {
-    simulatedClient.tickTime(dt, total);
     if(selectedPanelItem)
         selectedPanelItem->tickTime(dt, total);
 }

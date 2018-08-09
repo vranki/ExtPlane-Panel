@@ -31,9 +31,9 @@ AttitudeIndicator::AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneClient *clien
     _rollRef = QString("sim/cockpit2/gauges/indicators/roll_vacuum_deg_pilot");
 
     // Subscribe refs
-    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    _client->subscribeDataRef(_pitchRef,0.05);
-    _client->subscribeDataRef(_rollRef,0.05);
+    connect(_client, SIGNAL(refChanged(QString, double)), this, SLOT(refChanged(QString, double)));
+    _client->subscribeDataRef(_pitchRef, 0.05);
+    _client->subscribeDataRef(_rollRef, 0.05);
 }
 
 void AttitudeIndicator::createCard(float w, float h){

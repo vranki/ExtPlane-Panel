@@ -7,5 +7,6 @@ PanelItem {
         itemName: "indicator/attitude/basic"
         z: -1
         anchors.fill: parent
+        client: extplaneClient
     }
 }

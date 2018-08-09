@@ -34,7 +34,9 @@ Window {
     }
     ExtPlaneClient {
         id: extplaneClient
+        objectName: "extplaneClient"
         simulated: true
+        Component.onCompleted: createClient()
     }
     Text {
         color: extplaneClient.extplaneConnection.connected ? "white" : "red"
