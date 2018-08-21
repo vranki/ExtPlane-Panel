@@ -1,16 +1,22 @@
 import QtQuick 2.0
 import org.vranki.extplane 1.0
-import "."
 
 PanelItem {
     Text {
-        text: "HDG: " + hdgRef.value
+        text: hdgRef.value
         color: "white"
+        font.pixelSize: parent.height * 0.75
+        anchors.centerIn: parent
 
-        ClientDataRef {
+        DataRef {
             id: hdgRef
             name: "sim/cockpit/misc/compass_indicated"
-            client: extplaneClient
         }
+    }
+    Rectangle {
+        anchors.fill: parent
+        radius: 5
+        border.color: "white"
+        color: "transparent"
     }
 }

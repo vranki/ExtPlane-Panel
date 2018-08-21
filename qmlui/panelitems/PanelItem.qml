@@ -2,8 +2,7 @@ import QtQuick 2.0
 
 Item {
     id: panelItem
-    objectName: "panelItem"
-    property var connection: extplaneClient.extplaneConnection
+    property bool editMode: false
 
     Rectangle {
         id: highlightRect
@@ -11,6 +10,7 @@ Item {
         border.color: "yellow"
         anchors.fill: parent
         visible: editMode
+        z: 100
     }
 
     MouseArea { // Dragging
@@ -32,6 +32,7 @@ Item {
         y: parent.height - height
         width: 20
         height: 20
+        z: 100
         visible: editMode
         MouseArea {
             anchors.fill: parent

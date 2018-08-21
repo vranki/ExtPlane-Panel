@@ -2,13 +2,16 @@
 #include <QPainter>
 #include <QBrush>
 #include "extplaneconnection.h"
+#include "extplaneclient.h"
 #include "../widgetui/panelitemfactory.h"
 #include "../widgetui/panelitems/attitudeindicator.h"
 
 PaintedPanelItem::PaintedPanelItem(QQuickItem *parent) : QQuickPaintedItem(parent)
   , m_panelItem(nullptr)
   , m_client(nullptr)
-{}
+{
+    m_client = &ExtPlaneClient::instance();
+}
 
 PaintedPanelItem::~PaintedPanelItem() {
     if(m_panelItem) delete m_panelItem;
