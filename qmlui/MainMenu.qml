@@ -1,19 +1,20 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
+import QtQuick.Dialogs 1.2
 
-Rectangle {
-    color: "gray"
-    opacity: 0.8
-    width: buttonColumn.width + 20
-    height: buttonColumn.height + 20
-    anchors.centerIn: parent
+Dialog {
+    title: "Main menu"
+    modality: Qt.NonModal
+    standardButtons: StandardButton.Close
+
     ColumnLayout {
         id: buttonColumn
-        anchors.centerIn: parent
+        width: parent.width
+
         Button {
             Layout.fillWidth: true
-            text: "Add item"
+            text: "Add item (a)"
             onClicked: addItemDialog.visible = true
         }
         Button {
@@ -23,11 +24,16 @@ Rectangle {
         }
         Button {
             Layout.fillWidth: true
-            text: "Quit (esc)"
+            text: "Save panel (s)"
+            onClicked: panelItemArea.savePanel()
+        }
+        Button {
+            Layout.fillWidth: true
+            text: "Quit"
             onClicked: Qt.quit()
         }
         Label {
-            text: "Press Tab to close"
+            text: "Press ESC to close or tab to open"
         }
     }
 }

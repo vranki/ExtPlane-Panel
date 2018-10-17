@@ -18,26 +18,26 @@ Window {
     }
 
     Item {
-        focus: true
+        focus: !mainMenu.visible
         Keys.onSpacePressed: panelItemArea.editMode = !panelItemArea.editMode
         Keys.onEscapePressed: Qt.quit()
         Keys.onTabPressed: mainMenu.visible = !mainMenu.visible
         Keys.onPressed: {
             if (event.text === 'f') window.toggleFullscreen()
+            if (event.text === 'a') addItemDialog.visible = !addItemDialog.visible
+            if (event.text === 's') panelItemArea.savePanel()
         }
+        Keys.onDeletePressed: panelItemArea.deleteSelectedItem()
     }
-
     PanelItemArea {
         id: panelItemArea
     }
     MainMenu {
         id: mainMenu
-        visible: true
     }
     AddItemDialog {
         id: addItemDialog
     }
-
     Settings {
         category: "mainwindow"
         property alias x: window.x
@@ -56,4 +56,5 @@ Window {
             window.showFullScreen()
         }
     }
+    Component.onCompleted: panelItemArea.loadPanel()
 }

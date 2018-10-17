@@ -1,8 +1,13 @@
 import QtQuick 2.0
+import Qt.labs.settings 1.0
 
 Item {
     id: panelItem
+    property int itemId: -1 // Index in item list
+    property int panelId: -1 // Panel id to save in
+    property string itemName: ""
     property bool editMode: false
+    property bool isSelectedItem: false
 
     Rectangle {
         id: highlightRect
@@ -11,6 +16,7 @@ Item {
         anchors.fill: parent
         visible: editMode
         z: 100
+        opacity: isSelectedItem ? 1 : 0.3
     }
 
     MouseArea { // Dragging
@@ -24,6 +30,7 @@ Item {
             mouse.accepted = false
         }
     }
+
     Rectangle {
         id: resizeHandle
         color: "transparent"
@@ -34,6 +41,7 @@ Item {
         height: 20
         z: 100
         visible: editMode
+        opacity: isSelectedItem ? 1 : 0.3
         MouseArea {
             anchors.fill: parent
             enabled: editMode && !dragArea.busy
@@ -44,5 +52,12 @@ Item {
                 mouse.accepted = false
             }
         }
+    }
+    Settings {
+        category: "panel-" + panelId + "-item-" + itemId
+        property alias x: panelItem.x
+        property alias y: panelItem.y
+        property alias width: panelItem.width
+        property alias height: panelItem.height
     }
 }
