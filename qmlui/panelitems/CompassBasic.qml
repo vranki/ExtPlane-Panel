@@ -3,7 +3,7 @@ import org.vranki.extplane 1.0
 
 PanelItem {
     Text {
-        text: hdgRef.value
+        text: Math.round(hdgRef.value)
         color: "white"
         font.pixelSize: parent.height * 0.75
         anchors.centerIn: parent

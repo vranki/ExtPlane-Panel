@@ -99,19 +99,22 @@ MouseArea {
         console.log("JSON data:", datastore)
     }
     function loadPanel() {
-        var panelsModel = JSON.parse(datastore)
-        var panelModel = panelsModel[panelId].panelItems
-        panelItemModel.clear()
-        for(var i=0;i<panelModel.length;i++) {
-            var item = panelModel[i]
-            console.log("Loading", i, item.itemName)
-            addItem(item.itemName, -1, -1, -1, -1)
+        if(datastore.length > 0) {
+            var panelsModel = JSON.parse(datastore)
+            var panelModel = panelsModel[panelId].panelItems
+            panelItemModel.clear()
+            for(var i=0;i<panelModel.length;i++) {
+                var item = panelModel[i]
+                console.log("Loading", i, item.itemName)
+                addItem(item.itemName, -1, -1, -1, -1)
+            }
+        } else {
+            mainMenu.visible = true
         }
     }
 
-    ListModel {
-        id: panelItemModel
-    }
+    ListModel { id: panelItemModel }
+
     ListView {
         width: parent.width/2
         height: parent.height

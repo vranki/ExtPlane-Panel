@@ -11,10 +11,10 @@ Window {
     title: qsTr("ExtPlane Panel")
     color: "black"
     property int panelId: 0
-
+    property bool simulatedConnection: true
     Text {
         color: extplaneClient.extplaneConnection.connected ? "white" : "red"
-        text: extplaneClient.connectionMessage + " " + (extplaneClient.extplaneConnection.connected ? "Connected" : extplaneClient.extplaneConnection.networkError)
+        text: extplaneClient.connectionMessage + " " + extplaneClient.extplaneConnection.networkError
     }
 
     Item {
@@ -49,6 +49,11 @@ Window {
         category: "panel/" + panelId
         property int itemCount: 0
     }
+    Settings {
+        id: applicationSettings
+        category: "application"
+        property alias simulatedConnection: window.simulatedConnection
+    }
     function toggleFullscreen() {
         if(window.visibility & Window.FullScreen) {
             window.showNormal()
@@ -56,5 +61,10 @@ Window {
             window.showFullScreen()
         }
     }
-    Component.onCompleted: panelItemArea.loadPanel()
+    Component.onCompleted: {
+        panelItemArea.loadPanel()
+        extplaneClient.simulated = simulatedConnection
+    }
+    onSimulatedConnectionChanged: extplaneClient.simulated = simulatedConnection
+
 }

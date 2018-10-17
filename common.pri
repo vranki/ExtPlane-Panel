@@ -18,7 +18,6 @@ EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt
 
 INCLUDEPATH += $$EXTPLANE_CLIENT_PATH
 
-
 SOURCES += \
     $$EXTPLANE_CLIENT_PATH/../../util/basictcpclient.cpp \
     $$EXTPLANE_CLIENT_PATH/extplaneclient.cpp \

@@ -27,6 +27,7 @@ void PaintedPanelItem::paint(QPainter *painter)
 
 void PaintedPanelItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
+    Q_UNUSED(oldGeometry);
     if(m_panelItem) {
         m_panelItem->setSize(newGeometry.width(), newGeometry.height());
     }
