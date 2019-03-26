@@ -33,16 +33,21 @@ Target hardware is:
 
 ### Ext-Plane Plugin + Panel ###
 
+Older Versions:
+
+
 * Linux 32bit, 15MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Linux32.zip](http://goo.gl/BNzoeZ)
+    * [https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-Linux32.zip](https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-Linux32.zip)
 * Linux 64bit, 15MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Linux64.zip](http://goo.gl/akBtl4)
+    * [https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-Linux64.zip](https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-Linux64.zip)
 * Windows 32bit, 12MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Win32.zip](http://goo.gl/Nupczn)
+    * [https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-Win32.zip](https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-Win32.zip)
 * Windows 64bit, 13MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Win64.zip](http://goo.gl/6EHtei)
+    * [https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-Win64.zip](https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-Win64.zip)
 * OS-X 64bit, 15MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-OSX64.zip](http://goo.gl/8kLzJg)
+    * [https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-OSX64.zip](https://github.com/dankrusi/ExtPlane-Panel/releases/download/v0.1/ExtPlane-Panel-v0.1-OSX64.zip)
+
+
 
 Windows users: If the panel fails to start due to missing MSVCR100.dll, install Microsoft Visual 
 C++ 2010 SP1 Redistributable Package from https://www.microsoft.com/en-us/download/details.aspx?id=13523
