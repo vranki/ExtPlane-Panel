@@ -122,7 +122,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
     tickTimer.setInterval(64);
     tickTimer.setSingleShot(false);
-    connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
+    // connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
 
     // Load the last loaded panel. If there is no last loaded panel, we will create a new default one.
     // Furthermore, if the command line specifies a filename flag (--filename x.ini), we will load that one instead

@@ -23,6 +23,7 @@ TurnAndBank::TurnAndBank(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
     _client(this, typeName(), conn)
 {
+    _client.createClient();
     _rollValue = 10;
     _slipValue = -20;
     

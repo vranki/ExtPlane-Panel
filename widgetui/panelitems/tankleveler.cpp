@@ -20,7 +20,7 @@ TankLeveler::TankLeveler(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
    bottomPixmap(0),
    needleImage(":/images/DR400_engine_FUEL_Tank_needle.png")
    {
-
+        _client.createClient();
 
         //init
         //subscibe to dataref

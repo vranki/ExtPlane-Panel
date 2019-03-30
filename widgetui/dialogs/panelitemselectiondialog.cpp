@@ -36,7 +36,6 @@ void PanelItemSelectionDialog::itemAccepted() {
 }
 
 void PanelItemSelectionDialog::tickTime(double dt, int total) {
-    simulatedConnection.tickTime(dt, total);
     if(selectedPanelItem)
         selectedPanelItem->tickTime(dt, total);
 }

@@ -11,7 +11,7 @@
 MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),
     _client(this, typeName(), conn) {
-
+    _client.createClient();
     // Init
     _mapSource = MAP_INSTRUMENT_SOURCE_GOOGLEMAPS;
     _mode = MAP_INSTRUMENT_MODE_DOWNLOAD_WAITING;

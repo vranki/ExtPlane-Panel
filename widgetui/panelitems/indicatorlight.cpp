@@ -15,7 +15,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(IndicatorLight,"indicator/light/basic")
 IndicatorLight::IndicatorLight(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         PanelItem(panel, PanelItemTypeDisplay, PanelItemShapeRectangular),
         _client(this, typeName(), conn) {
-
+    _client.createClient();
     // Init
     _labelOn = "BRAKES";
     _labelOff = "BRAKES";

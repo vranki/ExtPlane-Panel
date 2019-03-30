@@ -10,6 +10,7 @@
 REGISTER_WITH_PANEL_ITEM_FACTORY(EngineRPM,"indicator/enginerpm/round")
 
 EngineRPM::EngineRPM(ExtPlanePanel *panel, ExtPlaneConnection *conn) : NeedleInstrument(panel), _client(this, typeName(), conn) {
+    _client.createClient();
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/cockpit2/engine/indicators/engine_speed_rpm", 15.0);//, 10.0);
     connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(rpmChanged(QString,QStringList)));

@@ -9,29 +9,30 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(EngineBattery,"indicator/engine/battery")
 
 
 EngineBattery::EngineBattery(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-   _batteryNumber(0),
-   amperageValue(0),
-   valueMin(-5),
-   valueMax(1),
-   scaleFactor(1),
-   _client(this, typeName(), conn),
-   bottomImage(":/images/DR400_Battery_Amp.png"),
-   bottomPixmap(0)
-   {
-        //init
-        //subscibe to dataref
-        _client.subscribeDataRef("sim/cockpit2/electrical/battery_amps", 0.1);
+                                                                               PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
+                                                                               _batteryNumber(0),
+                                                                               amperageValue(0),
+                                                                               valueMin(-5),
+                                                                               valueMax(1),
+                                                                               scaleFactor(1),
+                                                                               _client(this, typeName(), conn),
+                                                                               bottomImage(":/images/DR400_Battery_Amp.png"),
+                                                                               bottomPixmap(0)
+{
+    _client.createClient();
+    //init
+    //subscibe to dataref
+    _client.subscribeDataRef("sim/cockpit2/electrical/battery_amps", 0.1);
 
-        conn->registerClient(&_client);
-        connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(amperageChanged(QString,QStringList)));
+    conn->registerClient(&_client);
+    connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(amperageChanged(QString,QStringList)));
 
-        //set size
-        if (! bottomImage.isNull()) {
+    //set size
+    if (! bottomImage.isNull()) {
         //dimension the item with the default background image
         this->setSize(bottomImage.width(),bottomImage.height());
-        }
     }
+}
 
 
 
@@ -129,7 +130,7 @@ void EngineBattery::amperageChanged(QString name, QStringList values){
 
 void EngineBattery::setBatteryNumber(float val) {
     if (_batteryNumber != (int)val) {
-         //setValue
+        //setValue
         _batteryNumber = (int)val;
         //refresh subscription in order to call quantityChanged(xx)
         _client.unsubscribeDataRef("sim/cockpit2/electrical/battery_amps");
@@ -197,7 +198,7 @@ float EngineBattery::value2Angle(const float &p){
         float angleBegin = -18;
         rval = angleBegin +  qt / valueMax * angleRange;
 
-    //value is less than zero
+        //value is less than zero
     }else {
         //angle is -12 degree and begin at -18
         float angleRange = -12;

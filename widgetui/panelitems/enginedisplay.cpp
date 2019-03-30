@@ -18,7 +18,8 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(EngineDisplay,"display/engines")
 #define ENGINE_STYLE_BOEING 1
 
 EngineDisplay::EngineDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-        DisplayInstrument(panel,conn) {
+                                                                               DisplayInstrument(panel,conn) {
+    _client.createClient();
     // Init
     _barLabels = 6;
     _engineCount = 0;
@@ -224,21 +225,21 @@ void EngineDisplay::render(QPainter *painter, int width, int height) {
 }
 
 void EngineDisplay::drawVerticalBarGauge(
-        QPainter *painter,
-        double strokeWidth,
-        QColor color,
-        double x,
-        double y,
-        double width,
-        double height,
-        double hPadding,
-        double value,
-        double minValue,
-        double maxValue,
-        double rangeStart,
-        double rangeEnd,
-        bool decimalPrecision,
-        int labelCount) {
+    QPainter *painter,
+    double strokeWidth,
+    QColor color,
+    double x,
+    double y,
+    double width,
+    double height,
+    double hPadding,
+    double value,
+    double minValue,
+    double maxValue,
+    double rangeStart,
+    double rangeEnd,
+    bool decimalPrecision,
+    int labelCount) {
 
     // Init
     double labelHeight = 20;

@@ -6,6 +6,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(Compass,"indicator/compass/basic");
 Compass::Compass(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),
         _client(this, typeName(), conn) {
+    _client.createClient();
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot", 1); // was sim/cockpit/misc/compass_indicated
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(headingChanged(QString,double)));

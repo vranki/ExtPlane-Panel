@@ -17,6 +17,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(Dial,"switches/dial");
 Dial::Dial(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         PanelItem(panel, PanelItemTypeSwitch, PanelItemShapeRectangular),
         _client(this, typeName(), conn) {
+    _client.createClient();
     conn->registerClient(&_client);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
     connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(valueChanged(QString,QString)));

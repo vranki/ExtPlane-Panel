@@ -8,6 +8,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(RotaryKnob,"adjustment/rotary");
 RotaryKnob::RotaryKnob(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         PanelItem(panel, PanelItemTypeSwitch, PanelItemShapeCircular),
         _client(this, typeName(), conn) {
+    _client.createClient();
     conn->registerClient(&_client);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
     _value = 0;

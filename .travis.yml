@@ -1,27 +1,23 @@
+sudo: required
+services:
+  - docker
 language: cpp
 compiler:
 - gcc
 before_install:
-- sudo apt-get update -qq
-- sudo apt-get -yq install gnupg
-- sudo echo "deb http://mirror.mxe.cc/repos/apt xenial main" | sudo tee /etc/apt/sources.list.d/mxeapt.list
-- sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D43A795B73B16ABE9643FE1AFD8FFF16DB45C6AB
-- sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
-- sudo apt-get update
-- sudo apt-get install -yq mxe-x86-64-w64-mingw32.static-qtbase mxe-x86-64-w64-mingw32.static-qtdeclarative
-- sudo apt-get install -qq qtbase5-dev qtdeclarative5-dev qt5-default
-- git clone git://github.com/vranki/ExtPlane.git ../ExtPlane
-script: "./scripts/ci-build.sh"
+ - docker build -t extplane-panel .
+script:
+ - docker run -it -v $PWD:/ExtPlane-Panel -w /ExtPlane-Panel extplane-panel ./scripts/ci-build.sh
 branches:
   only:
   - master
 notifications:
-  recipients:
-  - ville.ranki@iki.fi
-  - dan.krusi@nerves.ch
   email:
+    recipients:
+      - ville.ranki@iki.fi
+      - dan.krusi@nerves.ch
     on_success: change
-    on_failure: always
+    on_failure: change
 deploy:
   provider: releases
   api_key:

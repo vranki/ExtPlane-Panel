@@ -21,6 +21,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(NavDisplay,"display/nav")
 
 NavDisplay::NavDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         DisplayInstrument(panel,conn) {
+    _client.createClient();
     // Init
     _displayRange = 20000.0; //20km
     _displayHeading = 0.0;

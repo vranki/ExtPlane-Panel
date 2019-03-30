@@ -10,7 +10,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(DataRefDebugger,"misc/debugging/dataref")
 DataRefDebugger::DataRefDebugger(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         PanelItem(panel, PanelItemTypeDisplay, PanelItemShapeRectangular),
         _client(this, typeName(), conn) {
-
+    _client.createClient();
     // Init
     setSize(400,60);
     _currentValue = "";

@@ -8,6 +8,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(AirspeedIndicator,"indicator/airspeed/round");
 
 AirspeedIndicator::AirspeedIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn) : NeedleInstrument(panel),
     _client(this, typeName(), conn), interpolator(0, 5) {
+    _client.createClient();
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/cockpit2/gauges/indicators/airspeed_kts_pilot", 0.3);
     // _client.subscribeDataRef("simulated", 1);

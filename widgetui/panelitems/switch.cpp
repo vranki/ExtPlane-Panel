@@ -13,6 +13,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(Switch,"switches/generic");
 Switch::Switch(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         PanelItem(panel, PanelItemTypeSwitch, PanelItemShapeRectangular),
         _client(this, typeName(), conn) {
+    _client.createClient();
     conn->registerClient(&_client);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
     _value = false;

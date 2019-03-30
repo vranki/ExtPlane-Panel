@@ -11,21 +11,21 @@
 REGISTER_WITH_PANEL_ITEM_FACTORY(EngineFuelP,"indicator/engine/pressure")
 
 EngineFuelP::EngineFuelP(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-                 PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-                _engineNumber(0),
-                pressureValue(0),
-                pressureValueMin(0),
-                pressureValueMax(400),
-                scaleFactor(1),
-                pressureGreenBegin(100),
-                pressureGreenEnd(350),
-                allowUpdateBottomPixmap(true),
-                _client(this, typeName(), conn),
-                bottomImage(":/images/DR400_engine_FUELP.png"),
-                bottomPixmap(0),
-                needleImage(":/images/DR400_engine_generic_needle.png")
-                {
-
+                                                                           PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
+                                                                           _engineNumber(0),
+                                                                           pressureValue(0),
+                                                                           pressureValueMin(0),
+                                                                           pressureValueMax(400),
+                                                                           scaleFactor(1),
+                                                                           pressureGreenBegin(100),
+                                                                           pressureGreenEnd(350),
+                                                                           allowUpdateBottomPixmap(true),
+                                                                           _client(this, typeName(), conn),
+                                                                           bottomImage(":/images/DR400_engine_FUELP.png"),
+                                                                           bottomPixmap(0),
+                                                                           needleImage(":/images/DR400_engine_generic_needle.png")
+{
+        _client.createClient();
 
     //init
     //subscibe to dataref
@@ -249,11 +249,11 @@ void EngineFuelP::paint( QPainter *painter, const QStyleOptionGraphicsItem *opti
         x = x - ww/2;
         y = y - hh/2;
 
-       painter->save();
-            painter->rotate(a);
-            painter->translate(x,y);
-            painter->scale(this->scaleFactor,this->scaleFactor);
-            painter->drawPixmap(0,0,needleImage);
+        painter->save();
+        painter->rotate(a);
+        painter->translate(x,y);
+        painter->scale(this->scaleFactor,this->scaleFactor);
+        painter->drawPixmap(0,0,needleImage);
         painter->restore();
 
 

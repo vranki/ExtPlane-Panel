@@ -12,6 +12,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(Button,"buttons/generic");
 Button::Button(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         PanelItem(panel, PanelItemTypeSwitch, PanelItemShapeRectangular),
         _client(this, typeName(), conn) {
+    _client.createClient();
     conn->registerClient(&_client);
     _buttonId = 0;
     _label = "Button";

@@ -7,6 +7,7 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(SlipIndicator,"indicator/slip/basic");
 SlipIndicator::SlipIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
         PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
         _client(this, typeName(), conn) {
+    _client.createClient();
     conn->registerClient(&_client);
     _client.subscribeDataRef("sim/cockpit2/gauges/indicators/slip_deg", 0.1);
     connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(slipChanged(QString,double)));
