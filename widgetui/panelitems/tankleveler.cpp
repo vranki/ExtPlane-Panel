@@ -159,7 +159,7 @@ void TankLeveler::setTankNumber(float val) {
 }
 
 void TankLeveler::setMaxValue(float mv){
-    if (mv > 0 and mv != valueMax){
+    if (mv > 0 && mv != valueMax){
         valueMax = (int)mv;
         this->update();
     }

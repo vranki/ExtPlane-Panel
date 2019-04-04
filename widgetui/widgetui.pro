@@ -106,7 +106,8 @@ SOURCES += \
     panelitems/engine_battery.cpp \
     panelitems/genericlittlegauge.cpp \
     panelitems/pfddisplay.cpp \
-    panelitems/indicatordisplay.cpp
+    panelitems/indicatordisplay.cpp \
+	panelitems/slider.cpp
 
 HEADERS += \
     panelitems/panelitem.h \
@@ -169,7 +170,8 @@ HEADERS += \
     panelitems/engine_battery.h \
     panelitems/genericlittlegauge.h \
     panelitems/pfddisplay.h \
-    panelitems/indicatordisplay.h
+    panelitems/indicatordisplay.h \
+	panelitems/slider.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
