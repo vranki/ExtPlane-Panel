@@ -5,6 +5,7 @@
 #include <QDialog>
 #include <QListWidgetItem>
 #include <QGraphicsScene>
+#include <QScroller>
 #include "../panelitemfactory.h"
 #include "simulatedextplaneconnection.h"
 #include "extplaneconnection.h"

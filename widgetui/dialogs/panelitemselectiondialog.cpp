@@ -24,6 +24,15 @@ PanelItemSelectionDialog::PanelItemSelectionDialog(QWidget *parent) :
     QList<int> sizes;
     sizes << 50 << 50;
     ui->splitter->setSizes(sizes);
+
+    setGeometry(parent->x() + parent->width()/2 - parent->width()*0.35,
+        parent->y() + parent->height()/2 - parent->height()*0.35,
+        parent->width()*0.7, parent->height()*0.7);
+
+    ui->itemList->setAttribute(Qt::WA_AcceptTouchEvents,true);
+    ui->itemList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->itemList->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    QScroller::grabGesture(ui->itemList,QScroller::LeftMouseButtonGesture);
 }
 
 PanelItemSelectionDialog::~PanelItemSelectionDialog() {

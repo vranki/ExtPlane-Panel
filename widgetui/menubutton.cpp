@@ -18,7 +18,7 @@ MenuButton::MenuButton(QWidget *parent) : QObject(parent), side(20) {
     // Init
     panelWindow = parent;
     #ifdef MOBILE_DEVICE
-        side = 50;
+        side = 80;
     #endif
     editMode = false;
     currentMenu = NULL;
@@ -29,7 +29,7 @@ void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     Q_UNUSED(widget);
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setBrush(Qt::NoBrush);
-    painter->setPen(Qt::yellow);
+    painter->setPen(QPen(Qt::yellow,20));
     //painter->drawRect(0,0,side,side);
     painter->drawLine(0,side,side,0);
 }
