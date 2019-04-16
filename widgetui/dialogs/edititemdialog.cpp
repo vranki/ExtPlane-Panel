@@ -10,6 +10,10 @@ EditItemDialog::EditItemDialog(QWidget *parent) :
     currentItem = 0;
     connect(this, SIGNAL(finished(int)), this, SLOT(applySettings()));
     connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteItemClicked()));
+
+    setGeometry(parent->x() + parent->width()/2 - parent->width()*0.35,
+        parent->y() + parent->height()/2 - parent->height()*0.35,
+        parent->width()*0.7, parent->height()*0.7);
 }
 
 EditItemDialog::~EditItemDialog()

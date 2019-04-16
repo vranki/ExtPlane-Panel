@@ -17,6 +17,10 @@ SettingsDialog::SettingsDialog(QWidget *parent, Settings *appSettings) :
     connect(ui->autoPanelsCheckbox, SIGNAL(toggled(bool)), this, SIGNAL(setAutoPanelsEnabled(bool)));
     connect(ui->adjustPowerCheckbox, SIGNAL(toggled(bool)), this, SIGNAL(setAdjustPowerEnabled(bool)));
     connect(this, SIGNAL(finished(int)), this, SLOT(saveSettings()));
+
+    setGeometry(parent->x() + parent->width()/2 - parent->width()*0.35,
+        parent->y() + parent->height()/2 - parent->height()*0.35,
+        parent->width()*0.7, parent->height()*0.7);
 }
 
 SettingsDialog::~SettingsDialog() {

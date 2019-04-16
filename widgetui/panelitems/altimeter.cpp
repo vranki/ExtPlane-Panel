@@ -221,14 +221,14 @@ void Altimeter::createSettings(QGridLayout *layout) {
     DistanceUnitComboBox *unitsCombo = new DistanceUnitComboBox(layout->parentWidget(), units);
     connect(unitsCombo, SIGNAL(unitSelected(DistanceUnit)), this, SLOT(setUnit(DistanceUnit)));
     layout->addWidget(unitsCombo);
-    QLabel *range1Label = new QLabel("Range", layout->parentWidget());
+    QLabel *range1Label = new QLabel("Range big hand", layout->parentWidget());
     layout->addWidget(range1Label);
     NumberInputLineEdit *range1Edit = new NumberInputLineEdit(layout->parentWidget());
     range1Edit->setText(QString::number(_range1));
     layout->addWidget(range1Edit);
     connect(range1Edit, SIGNAL(valueChangedFloat(float)), this, SLOT(setRange1(float)));
 
-    QLabel *range2Label = new QLabel("Range 2", layout->parentWidget());
+    QLabel *range2Label = new QLabel("Range small hand", layout->parentWidget());
     layout->addWidget(range2Label);
     NumberInputLineEdit *range2Edit = new NumberInputLineEdit(layout->parentWidget());
     range2Edit->setText(QString::number(_range2));
