@@ -11,5 +11,6 @@
         <file>panelitems/Needle.qml</file>
         <file>panelitems/AirspeedIndicator.qml</file>
         <file>AddItemDialog.qml</file>
+        <file>PanelItemPropertiesDialog.qml</file>
     </qresource>
 </RCC>

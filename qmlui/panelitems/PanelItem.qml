@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Qt.labs.settings 1.0
+import ".."
 
 Item {
     id: panelItem
@@ -8,6 +9,7 @@ Item {
     property string itemName: ""
     property bool editMode: false
     property bool isSelectedItem: false
+    property PanelItemPropertiesDialog propertiesDialog: null
 
     Rectangle {
         id: highlightRect
@@ -53,6 +55,13 @@ Item {
             }
         }
     }
+
+    function showProperties() {
+        console.log('SP')
+        if(propertiesDialog)
+            propertiesDialog.visible = true
+    }
+
     Settings {
         category: "panel-" + panelId + "-item-" + itemId
         property alias x: panelItem.x

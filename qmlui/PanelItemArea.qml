@@ -33,6 +33,7 @@ MouseArea {
     onResizeItemChanged: if(resizeItem) selectItem(resizeItem)
     onReleased: resizeItem = dragItem = null
     onEditModeChanged: if(!editMode) selectItem(null)
+    onDoubleClicked: if(dragItem) dragItem.showProperties()
 
     Connections {
         target: addItemDialog
@@ -42,6 +43,11 @@ MouseArea {
     // x,y,width & height can be -1 for loading
     function addItem(itemName, x, y, width, height) {
         var component = Qt.createComponent("qrc:///panelitems/" + itemName + ".qml");
+        if (component.status === Component.Error) {
+            console.log("Component failed to load:", component.errorString() )
+            return
+        }
+
         var newItem = component.createObject(dragArea, {
                                                  "itemName": itemName,
                                                  "itemId": panelItemModel.count,

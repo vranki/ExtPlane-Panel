@@ -1,7 +1,14 @@
 import QtQuick 2.0
+import QtQuick.Controls 2.2
 import org.vranki.extplane 1.0
+import QtQuick.Layouts 1.3
+import Qt.labs.settings 1.0
+import ".." as Panel
 
 PanelItem {
+    propertiesDialog: propertiesDialog
+
+
     DataRef {
         id: airspeedRef
         name: "sim/cockpit2/gauges/indicators/airspeed_kts_pilot"
@@ -17,10 +24,10 @@ PanelItem {
 
         thickBars: true
         showValue: true
-        barValue: (vneRef.value > 200) ? 50 : 20
+        barValue: settings.thickBarValue
         valueMax: vneRef.value || 100
         CircularGaugeBars {
-            barValue: (vneRef.value > 200) ? 10 : 5
+            barValue: settings.thinBarValue
             valueMax: valueBars.valueMax
         }
         Needle {
@@ -28,5 +35,22 @@ PanelItem {
             y: parent.height / 2
             rotation: valueBars.value2Angle(airspeedRef.value)
         }
+    }
+    Panel.PanelItemPropertiesDialog {
+        id: propertiesDialog
+        propertyItems: [
+            Text { text: "Thick bars every" },
+            TextField { text: settings.thickBarValue; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.thickBarValue = text },
+
+            Text { text: "Thin bars every" },
+            TextField { text: settings.thinBarValue; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.thinBarValue = text }
+        ]
+    }
+
+    Settings {
+        id: settings
+        category: "panelitem-" + panelId + "/" + itemId
+        property int thickBarValue: 20
+        property int thinBarValue: 5
     }
 }

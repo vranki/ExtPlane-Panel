@@ -2,6 +2,7 @@ import QtQuick 2.6
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
 import org.vranki.extplane 1.0
+import QtQuick.Layouts 1.3
 
 Window {
     id: window
