@@ -107,7 +107,8 @@ SOURCES += \
     panelitems/genericlittlegauge.cpp \
     panelitems/pfddisplay.cpp \
     panelitems/indicatordisplay.cpp \
-	panelitems/slider.cpp
+    panelitems/slider.cpp \
+    panelitems/wheel.cpp
 
 HEADERS += \
     panelitems/panelitem.h \
@@ -171,7 +172,8 @@ HEADERS += \
     panelitems/genericlittlegauge.h \
     panelitems/pfddisplay.h \
     panelitems/indicatordisplay.h \
-	panelitems/slider.h
+    panelitems/slider.h \
+    panelitems/wheel.h
 
 FORMS += dialogs/settingsdialog.ui \
     dialogs/edititemdialog.ui \
