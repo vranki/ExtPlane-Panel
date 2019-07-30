@@ -2,6 +2,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QGraphicsSceneMouseEvent>
+#include <QtMath>
 #include "../util/console.h"
 
 #if defined(Q_OS_ANDROID)
@@ -274,7 +275,7 @@ void Wheel::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
             _value = _maximum;
         } else {
             double newoffset = (event->pos()-_dragStartPoint).y() / _stripDistance;
-            _draggedPixels = (newoffset - floor(newoffset)) * _stripDistance;
+            _draggedPixels = (newoffset - qFloor(newoffset)) * _stripDistance;
         }
         if(_ref) {
             if (_index1set) {
