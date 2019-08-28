@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     ExtPlaneClient epc(nullptr, "ExtPlaneClient", true);
+    epc.createClient();
     engine.rootContext()->setContextProperty("extplaneClient", &epc);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

@@ -1,8 +1,8 @@
 include(../common.pri)
 
 QT += quick widgets
-CONFIG   -= debug_and_release
-CONFIG += debug
+#CONFIG   -= debug_and_release
+#CONFIG += debug
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings

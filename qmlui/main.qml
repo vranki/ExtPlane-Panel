@@ -15,7 +15,7 @@ Window {
     property bool simulatedConnection: true
     Text {
         color: extplaneClient.extplaneConnection.connected ? "white" : "red"
-        text: extplaneClient.connectionMessage + " " + extplaneClient.extplaneConnection.networkError
+        text: extplaneClient.connectionMessage + (extplaneClient.simulated ? "" : " | " + extplaneClient.extplaneConnection.networkError)
     }
 
     Item {
@@ -54,6 +54,7 @@ Window {
         id: applicationSettings
         category: "application"
         property alias simulatedConnection: window.simulatedConnection
+        property alias panelId: panelItemArea.panelId
     }
     function toggleFullscreen() {
         if(window.visibility & Window.FullScreen) {
@@ -63,9 +64,7 @@ Window {
         }
     }
     Component.onCompleted: {
-        panelItemArea.loadPanel()
         extplaneClient.simulated = simulatedConnection
     }
     onSimulatedConnectionChanged: extplaneClient.simulated = simulatedConnection
-
 }

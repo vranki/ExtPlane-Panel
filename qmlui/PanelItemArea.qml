@@ -15,6 +15,7 @@ MouseArea {
     property int yOffset
     property bool busy: resizeItem || dragItem
     property string datastore: ""
+    property var panelsModel: [] // Contains all panels
 
     anchors.fill: parent
     enabled: dragItem || resizeItem
@@ -78,6 +79,7 @@ MouseArea {
         if(newItem) newItem.isSelectedItem = true
         selectedItem = newItem
     }
+
     function deleteSelectedItem() {
         if(selectedItem) {
             var deletedIndex = selectedItem.itemId
@@ -90,8 +92,8 @@ MouseArea {
             selectItem(null)
         }
     }
+
     function savePanel() {
-        var panelsModel = []
         var panelModel = []
 
         for(var i=0;i<panelItemModel.count;i++) {
@@ -100,22 +102,38 @@ MouseArea {
                                 "itemName": item.itemName
                             })
         }
-        panelsModel.push({ "panelId": panelId, "panelItems": panelModel })
+        panelsModel[panelId] = { "panelId": panelId, "panelItems": panelModel }
         datastore = JSON.stringify(panelsModel)
         console.log("JSON data:", datastore)
     }
-    function loadPanel() {
-        if(datastore.length > 0) {
-            var panelsModel = JSON.parse(datastore)
-            var panelModel = panelsModel[panelId].panelItems
-            panelItemModel.clear()
-            for(var i=0;i<panelModel.length;i++) {
-                var item = panelModel[i]
-                console.log("Loading", i, item.itemName)
-                addItem(item.itemName, -1, -1, -1, -1)
-            }
-        } else {
-            mainMenu.visible = true
+
+    function loadPanel(id) {
+        if(id === panelId && panelItemModel.count) return; // Panel already displayed
+        panelId = id || 0
+        if(!datastore.length) return; // Data store not initialized yet, delay loading
+        clearPanel()
+        console.log("Loading panel", panelId)
+        if(!panelsModel[panelId]) {
+            panelsModel[panelId] = { "panelId": panelId, "panelItems": [] } // New panel
+            console.log("New panel")
+        }
+
+        console.log("Panel data ", JSON.stringify(panelsModel[panelId]))
+        var panelModel = panelsModel[panelId].panelItems
+        for(var i=0;i<panelModel.length;i++) {
+            var item = panelModel[i]
+            console.log("Loading", i, item.itemName)
+            addItem(item.itemName, -1, -1, -1, -1)
+        }
+        if (!panelModel.length) mainMenu.visible = true
+    }
+
+    // Deletes all items from this panel
+    function clearPanel() {
+        while(panelItemModel.count) {
+            var item = panelItemModel.get(panelItemModel.count - 1).item
+            item.destroy()
+            panelItemModel.remove(panelItemModel.count - 1)
         }
     }
 
@@ -133,5 +151,12 @@ MouseArea {
     Settings {
         category: "panelitems"
         property alias datastore: dragArea.datastore
+        onDatastoreChanged: {
+            if(!panelsModel.length) { // Load only once on startup
+                panelsModel = JSON.parse(datastore)
+                // panelsModel = [] // To reset all
+                loadPanel(panelId)
+            }
+        }
     }
 }

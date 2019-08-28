@@ -2,12 +2,11 @@ import QtQuick 2.0
 import QtQuick.Controls 2.2
 import org.vranki.extplane 1.0
 import QtQuick.Layouts 1.3
-import Qt.labs.settings 1.0
+
 import ".." as Panel
 
 PanelItem {
     propertiesDialog: propertiesDialog
-
 
     DataRef {
         id: airspeedRef
@@ -47,9 +46,8 @@ PanelItem {
         ]
     }
 
-    Settings {
+    PanelItemSettings {
         id: settings
-        category: "panelitem-" + panelId + "/" + itemId
         property int thickBarValue: 20
         property int thinBarValue: 5
     }

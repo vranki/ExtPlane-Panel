@@ -19,4 +19,5 @@ PanelItem {
         border.color: "white"
         color: "transparent"
     }
+    Component.onDestruction: console.log("Destroying compass..")
 }

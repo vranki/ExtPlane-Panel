@@ -4,6 +4,7 @@ import ".."
 
 Item {
     id: panelItem
+    clip: true
     property int itemId: -1 // Index in item list
     property int panelId: -1 // Panel id to save in
     property string itemName: ""
@@ -57,7 +58,6 @@ Item {
     }
 
     function showProperties() {
-        console.log('SP')
         if(propertiesDialog)
             propertiesDialog.visible = true
     }

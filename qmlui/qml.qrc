@@ -12,5 +12,10 @@
         <file>panelitems/AirspeedIndicator.qml</file>
         <file>AddItemDialog.qml</file>
         <file>PanelItemPropertiesDialog.qml</file>
+        <file>panelitems/buttons/ButtonGeneric.qml</file>
+        <file>panelitems/PanelItemSettings.qml</file>
+        <file>panelitems/buttons/ToggleSwitch.qml</file>
+        <file>panelitems/buttons/switch-down.svg</file>
+        <file>panelitems/buttons/switch-up.svg</file>
     </qresource>
 </RCC>

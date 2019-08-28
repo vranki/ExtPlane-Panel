@@ -29,6 +29,23 @@ Dialog {
         }
         Button {
             Layout.fillWidth: true
+            text: "Export panel file"
+        }
+        Label {
+            text: "Panel number"
+        }
+        SpinBox {
+            from: 0
+            to: 42 // Should be enough for everybody
+            value: panelItemArea.panelId
+            onValueChanged: panelItemArea.loadPanel(value)
+        }
+        Button {
+            Layout.fillWidth: true
+            text: "Import panel file"
+        }
+        Button {
+            Layout.fillWidth: true
             text: "Quit"
             onClicked: Qt.quit()
         }

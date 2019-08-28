@@ -45,6 +45,7 @@ Dialog {
     }
     onAccepted: if(previewItem) addItem(previewItem)
 
+    // Todo: Auto-generate this list from the directory contents.
     ListModel {
         id: panelItemModel
         ListElement {
@@ -61,6 +62,16 @@ Dialog {
             name: "Attitude indicator"
             itemName: "AttitudeIndicator"
             description: "Generic attitude indicator"
+        }
+        ListElement {
+            name: "Button"
+            itemName: "buttons/ButtonGeneric"
+            description: "Generic button"
+        }
+        ListElement {
+            name: "Toggle Switch"
+            itemName: "buttons/ToggleSwitch"
+            description: "Generic toggle switch"
         }
     }
 }
