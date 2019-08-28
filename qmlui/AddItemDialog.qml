@@ -55,7 +55,7 @@ Dialog {
         }
         ListElement {
             name: "Airspeed indicator"
-            itemName: "AirspeedIndicator"
+            itemName: "needle/AirspeedIndicator"
             description: "Generic airspeed indicator"
         }
         ListElement {
@@ -70,8 +70,18 @@ Dialog {
         }
         ListElement {
             name: "Toggle Switch"
-            itemName: "buttons/ToggleSwitch"
+            itemName: "switches/ToggleSwitch"
             description: "Generic toggle switch"
+        }
+        ListElement {
+            name: "3-way Switch"
+            itemName: "switches/ThreeWaySwitch"
+            description: "Generic three-way switch"
+        }
+        ListElement {
+            name: "APU EGT temperature"
+            itemName: "needle/ApuEgt"
+            description: "Shows APU exhaust gas temperature in c"
         }
     }
 }

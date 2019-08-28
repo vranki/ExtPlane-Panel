@@ -8,11 +8,11 @@ Item { // Gets parent size
     property double barValue: 10 // Value of one bar
     property int barsAngleZero: -90 // Angle of zero value, 0=west
     property int barsAngle: 270 // Total angle of values
+    property double valueMultiplier: 1 // Multiplier of value labels
 
     readonly property int barCount: valueRange / barValue + 1
     readonly property double valueRange: valueMax - valueMin
     readonly property double barAngle: barsAngle / (barCount - 1)
-
 
     width: Math.min(parent.width, parent.height)
     height: width
@@ -37,6 +37,7 @@ Item { // Gets parent size
                     color: "white"
                     width: thickBars ? 50 : 25
                     height: thickBars ? 15 : 5
+                    antialiasing: true
                 }
                 Text {
                     x: 70
@@ -45,7 +46,7 @@ Item { // Gets parent size
                     font.pixelSize: 80
                     rotation: -barItem.rotation
                     anchors.verticalCenter: parent.verticalCenter
-                    text: Math.round(index * barValue + valueMin)
+                    text: Math.round((index * barValue + valueMin) / valueMultiplier)
                 }
             }
         }

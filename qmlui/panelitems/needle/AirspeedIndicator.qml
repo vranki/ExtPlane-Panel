@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.3
 
 import ".." as Panel
 
-PanelItem {
+Panel.PanelItem {
     propertiesDialog: propertiesDialog
 
     DataRef {

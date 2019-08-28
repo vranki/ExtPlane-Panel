@@ -5,17 +5,20 @@
         <file>panelitems/CompassBasic.qml</file>
         <file>panelitems/AttitudeIndicator.qml</file>
         <file>PanelItemArea.qml</file>
-        <file>panelitems/CircularGauge.qml</file>
-        <file>panelitems/CircularGaugeBars.qml</file>
+        <file>panelitems/needle/CircularGauge.qml</file>
+        <file>panelitems/needle/CircularGaugeBars.qml</file>
         <file>MainMenu.qml</file>
-        <file>panelitems/Needle.qml</file>
-        <file>panelitems/AirspeedIndicator.qml</file>
+        <file>panelitems/needle/Needle.qml</file>
+        <file>panelitems/needle/AirspeedIndicator.qml</file>
         <file>AddItemDialog.qml</file>
         <file>PanelItemPropertiesDialog.qml</file>
         <file>panelitems/buttons/ButtonGeneric.qml</file>
         <file>panelitems/PanelItemSettings.qml</file>
-        <file>panelitems/buttons/ToggleSwitch.qml</file>
-        <file>panelitems/buttons/switch-down.svg</file>
-        <file>panelitems/buttons/switch-up.svg</file>
+        <file>panelitems/switches/ToggleSwitch.qml</file>
+        <file>panelitems/switches/switch-up.svg</file>
+        <file>panelitems/switches/switch-center.svg</file>
+        <file>panelitems/switches/switch-down.svg</file>
+        <file>panelitems/switches/ThreeWaySwitch.qml</file>
+        <file>panelitems/needle/ApuEgt.qml</file>
     </qresource>
 </RCC>
