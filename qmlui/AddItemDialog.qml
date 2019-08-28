@@ -83,5 +83,10 @@ Dialog {
             itemName: "needle/ApuEgt"
             description: "Shows APU exhaust gas temperature in c"
         }
+        ListElement {
+            name: "Fuel temperature (x737)"
+            itemName: "needle/FuelTemp"
+            description: "Shows fuel temperature. Only available in x737."
+        }
     }
 }

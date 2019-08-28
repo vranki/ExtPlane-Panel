@@ -31,7 +31,7 @@ Item { // Gets parent size
                 width: barsItem.width
                 height: 15
                 anchors.centerIn: barsItem
-                rotation: index * barAngle + barsAngleZero
+                rotation: index * barAngle + barsAngleZero // TODO: valueMin vaikuttaa
                 transformOrigin: Item.Center
                 Rectangle {
                     color: "white"

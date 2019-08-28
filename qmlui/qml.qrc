@@ -20,5 +20,6 @@
         <file>panelitems/switches/switch-down.svg</file>
         <file>panelitems/switches/ThreeWaySwitch.qml</file>
         <file>panelitems/needle/ApuEgt.qml</file>
+        <file>panelitems/needle/FuelTemp.qml</file>
     </qresource>
 </RCC>

@@ -6,6 +6,7 @@ PanelItems.PanelItem {
     property double barValue: 10
     property double thinBarValue: 0
     property double barsAngleZero: 0
+    property double valueMin: 0
     property double valueMax: 100
     property string topLabel: ""
     property string bottomLabel: ""
@@ -19,6 +20,7 @@ PanelItems.PanelItem {
         showValue: true
         barValue: parent.barValue
         barsAngleZero: parent.barsAngleZero
+        valueMin: parent.valueMin
         valueMax: parent.valueMax
         valueMultiplier: parent.valueMultiplier
         Needle {
@@ -31,6 +33,7 @@ PanelItems.PanelItem {
         barValue: thinBarValue
         visible: thinBarValue
         barsAngleZero: parent.barsAngleZero
+        valueMin: parent.valueMin
         valueMax: parent.valueMax
         z: -10
     }
