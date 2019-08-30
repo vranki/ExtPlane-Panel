@@ -88,5 +88,10 @@ Dialog {
             itemName: "needle/FuelTemp"
             description: "Shows fuel temperature. Only available in x737."
         }
+        ListElement {
+            name: "Annunciator"
+            itemName: "annunciators/Annunciator"
+            description: "Generic annunciator"
+        }
     }
 }

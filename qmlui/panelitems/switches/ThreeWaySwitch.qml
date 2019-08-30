@@ -13,7 +13,7 @@ PanelItems.PanelItem {
 
     Image {
         property var positionImages: ["switch-up.svg", "switch-center.svg", "switch-down.svg"]
-        property int positionImageIndex: Math.max(Math.min(position, 2), 0)
+        property int positionImageIndex: limitValue(position, 0, positionImages.length - 1)
         id: switchImage
         source: positionImages[positionImageIndex]
         anchors.fill: parent

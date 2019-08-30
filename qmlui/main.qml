@@ -67,4 +67,11 @@ Window {
         extplaneClient.simulated = simulatedConnection
     }
     onSimulatedConnectionChanged: extplaneClient.simulated = simulatedConnection
+
+    // Utility functions (move to own file?)
+
+    // Limit value between min & max
+    function limitValue(value, min, max) {
+        return Math.max(Math.min(value, max), min)
+    }
 }
