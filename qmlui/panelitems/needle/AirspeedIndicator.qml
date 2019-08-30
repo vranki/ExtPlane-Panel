@@ -3,9 +3,10 @@ import QtQuick.Controls 2.2
 import org.vranki.extplane 1.0
 import QtQuick.Layouts 1.3
 
-import ".." as Panel
+import "../.." as Panel
+import ".." as PanelItems
 
-Panel.PanelItem {
+PanelItems.PanelItem {
     propertiesDialog: propertiesDialog
 
     DataRef {
@@ -30,8 +31,6 @@ Panel.PanelItem {
             valueMax: valueBars.valueMax
         }
         Needle {
-            transformOrigin: Item.Right
-            y: parent.height / 2
             rotation: valueBars.value2Angle(airspeedRef.value)
         }
     }
@@ -46,7 +45,7 @@ Panel.PanelItem {
         ]
     }
 
-    PanelItemSettings {
+    PanelItems.PanelItemSettings {
         id: settings
         property int thickBarValue: 20
         property int thinBarValue: 5

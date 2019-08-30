@@ -21,5 +21,6 @@
         <file>panelitems/switches/ThreeWaySwitch.qml</file>
         <file>panelitems/needle/ApuEgt.qml</file>
         <file>panelitems/needle/FuelTemp.qml</file>
+        <file>panelitems/needle/needle-0.svg</file>
     </qresource>
 </RCC>

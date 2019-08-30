@@ -24,8 +24,6 @@ PanelItems.PanelItem {
         valueMax: parent.valueMax
         valueMultiplier: parent.valueMultiplier
         Needle {
-            transformOrigin: Item.Right
-            y: parent.height / 2
             rotation: valueBars.value2Angle(gaugeValue)
         }
     }

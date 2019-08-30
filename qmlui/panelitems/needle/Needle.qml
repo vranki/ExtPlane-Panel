@@ -1,12 +1,10 @@
 import QtQuick 2.0
 
-Rectangle {
-    width: parent.width / 2
-    height: width / 40
-    color: "gray"
-    Rectangle {
-        color: "white"
-        width: parent.width / 5
-        height: parent.height
-    }
+Image {
+    source: "needle-0.svg"
+    width: parent.width
+    height: parent.height
+    transformOrigin: Item.Center
+    fillMode: Image.PreserveAspectFit
+    scale: 0.85
 }
