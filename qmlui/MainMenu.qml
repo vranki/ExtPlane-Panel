@@ -54,6 +54,11 @@ Dialog {
             checkState: window.simulatedConnection ? Qt.Checked : Qt.Unchecked
             onClicked: window.simulatedConnection = !window.simulatedConnection
         }
+        CheckBox {
+            text: "Snap to grid"
+            checkState: panelItemArea.snapToGrid ? Qt.Checked : Qt.Unchecked
+            onClicked: panelItemArea.snapToGrid = !panelItemArea.snapToGrid
+        }
         TextField {
             placeholderText: "ExtPlane IP address"
             onTextChanged: {

@@ -55,6 +55,7 @@ Window {
         category: "application"
         property alias simulatedConnection: window.simulatedConnection
         property alias panelId: panelItemArea.panelId
+        property alias snapToGrid: panelItemArea.snapToGrid
     }
     function toggleFullscreen() {
         if(window.visibility & Window.FullScreen) {

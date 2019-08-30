@@ -6,6 +6,8 @@ MouseArea {
     id: dragArea
     property bool editMode: false
     property int panelId: 0
+    property bool snapToGrid: true
+    property int gridSize: 5
 
     // Internal:
     property QtObject dragItem: null
@@ -22,11 +24,11 @@ MouseArea {
 
     onPositionChanged: {
         if(dragItem) {
-            dragItem.x = mouseX - xOffset
-            dragItem.y = mouseY - yOffset
+            dragItem.x = snapValue(mouseX - xOffset)
+            dragItem.y = snapValue(mouseY - yOffset)
         } else if(resizeItem) {
-            resizeItem.width = mouseX - resizeItem.x + xOffset
-            resizeItem.height = mouseY - resizeItem.y + yOffset
+            resizeItem.width = snapValue(mouseX - resizeItem.x + xOffset)
+            resizeItem.height = snapValue(mouseY - resizeItem.y + yOffset)
         }
     }
 
@@ -39,6 +41,14 @@ MouseArea {
     Connections {
         target: addItemDialog
         onAddItem: addItem(itemName, width/2, height/2, 200, 200)
+    }
+
+    function snapValue(value) {
+        if(snapToGrid) {
+            return Math.floor(value / gridSize) * gridSize
+        } else {
+            return value
+        }
     }
 
     // x,y,width & height can be -1 for loading
@@ -104,7 +114,6 @@ MouseArea {
         }
         panelsModel[panelId] = { "panelId": panelId, "panelItems": panelModel }
         datastore = JSON.stringify(panelsModel)
-        console.log("JSON data:", datastore)
     }
 
     function loadPanel(id) {
@@ -118,7 +127,6 @@ MouseArea {
             console.log("New panel")
         }
 
-        console.log("Panel data ", JSON.stringify(panelsModel[panelId]))
         var panelModel = panelsModel[panelId].panelItems
         for(var i=0;i<panelModel.length;i++) {
             var item = panelModel[i]
