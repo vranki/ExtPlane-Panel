@@ -7,10 +7,10 @@ import "../.." as Panel
 PanelItems.PanelItem {
     propertiesDialog: propertiesDialog
     property var colors: ['red', 'yellow', 'green', 'blue']
-    property color textColor: active ? "black" : "#494949"
+    property color textColor: settings.backgroundLights ? (active ? "black" : "#494949") : (active ? lightColor : "black")
     property color lightColor: colors[settings.annunciatorColor]
-    property bool active: annunciatorRef.value === "1"
-
+    property bool active: annunciatorRef.value !== "0"
+    property alias settings: settings
     readonly property bool twoLines: settings.bottomText.length
 
     DataRef {
@@ -20,7 +20,8 @@ PanelItems.PanelItem {
     Rectangle {
         anchors.fill: parent
         radius: 2
-        color: active ? colors[settings.annunciatorColor] : "black"
+        color: settings.backgroundLights ? (active ? colors[settings.annunciatorColor] : "black") : lightColor
+        opacity: settings.backgroundLights ? 1 : 0.1
         border.color: "#494949"
         border.width: 2
     }
@@ -69,6 +70,8 @@ PanelItems.PanelItem {
                 onValueChanged: settings.annunciatorColor = limitValue(value, 0, colors.length - 1)
                 background: Rectangle { color: lightColor; opacity: 0.5; anchors.fill: parent }
             },
+            Text { text: "Whole annunciator lights up (not just text)" },
+            CheckBox { checked: settings.backgroundLights ; onCheckedChanged: settings.backgroundLights = checked },
             Text { text: "Dataref" },
             TextField { text: settings.dataref; onTextChanged: settings.dataref = text }
         ]
@@ -80,5 +83,15 @@ PanelItems.PanelItem {
         property string bottomText: ""
         property int annunciatorColor: 0
         property string dataref: ""
+        property bool backgroundLights: false
+    }
+
+    function copySettings(other) {
+        console.log(other.settings)
+        settings.topText = other.settings.topText
+        settings.bottomText = other.settings.bottomText
+        settings.annunciatorColor = other.settings.annunciatorColor
+        settings.dataref = other.settings.dataref
+        settings.backgroundLights = other.settings.backgroundLights
     }
 }

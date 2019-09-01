@@ -6,7 +6,7 @@ Item { // Gets parent size
     property double valueMin: 0 // Minimum value to show
     property double valueMax: 100 // Maximum value to show
     property double barValue: 10 // Value of one bar
-    property int barsAngleZero: -90 // Angle of zero value, 0=west
+    property int barsAngleMin: -90 // Angle of minimum value, 0=west
     property int barsAngle: 270 // Total angle of values
     property double valueMultiplier: 1 // Multiplier of value labels
 
@@ -31,7 +31,7 @@ Item { // Gets parent size
                 width: barsItem.width
                 height: 15
                 anchors.centerIn: barsItem
-                rotation: index * barAngle + barsAngleZero // TODO: valueMin vaikuttaa
+                rotation: index * barAngle + barsAngleMin // TODO: valueMin vaikuttaa
                 transformOrigin: Item.Center
                 Rectangle {
                     color: "white"
@@ -52,6 +52,7 @@ Item { // Gets parent size
         }
     }
     function value2Angle(value) {
-        return barsAngleZero + ((value - valueMin) / valueRange) * barsAngle
+        return barsAngleMin - 90 + ((value - valueMin) / valueRange) * barsAngle
+        // return barsAngleMin + ((value - valueMin) / valueRange) * barsAngle
     }
 }

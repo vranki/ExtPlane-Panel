@@ -1,6 +1,8 @@
 include(../common.pri)
 
-QT += quick widgets
+QT += quick widgets xml svg
+QTPLUGIN += qsvg
+
 #CONFIG   -= debug_and_release
 #CONFIG += debug
 
@@ -16,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
+    extplaneutilities.cpp \
     paintedpanelitem.cpp
 
 RESOURCES += qml.qrc
@@ -32,6 +35,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    extplaneutilities.h \
     paintedpanelitem.h
 
 

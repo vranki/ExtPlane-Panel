@@ -11,8 +11,15 @@ Window {
     height: 480
     title: qsTr("ExtPlane Panel")
     color: "black"
+
     property int panelId: 0
     property bool simulatedConnection: true
+    property string extplaneHost: "127.0.0.1"
+
+    onExtplaneHostChanged: {
+        extplaneClient.extplaneConnection.hostName = extplaneHost
+    }
+
     Text {
         color: extplaneClient.extplaneConnection.connected ? "white" : "red"
         text: extplaneClient.connectionMessage + (extplaneClient.simulated ? "" : " | " + extplaneClient.extplaneConnection.networkError)
@@ -27,6 +34,7 @@ Window {
             if (event.text === 'f') window.toggleFullscreen()
             if (event.text === 'a') addItemDialog.visible = !addItemDialog.visible
             if (event.text === 's') panelItemArea.savePanel()
+            if (event.text === 'd') panelItemArea.duplicateSelectedItem()
         }
         Keys.onDeletePressed: panelItemArea.deleteSelectedItem()
     }
@@ -56,7 +64,10 @@ Window {
         property alias simulatedConnection: window.simulatedConnection
         property alias panelId: panelItemArea.panelId
         property alias snapToGrid: panelItemArea.snapToGrid
+        property alias extplaneHost: window.extplaneHost
     }
+    ExtplaneUtilities { id: extplaneUtilities }
+
     function toggleFullscreen() {
         if(window.visibility & Window.FullScreen) {
             window.showNormal()
@@ -66,6 +77,7 @@ Window {
     }
     Component.onCompleted: {
         extplaneClient.simulated = simulatedConnection
+        extplaneClient.extplaneConnection.hostName = extplaneHost
     }
     onSimulatedConnectionChanged: extplaneClient.simulated = simulatedConnection
 

@@ -11,7 +11,8 @@ PanelItems.PanelItem {
 
     DataRef {
         id: apuEgtRef
-        name: "sim/cockpit2/electrical/APU_EGT_c"
+        //name: "sim/cockpit2/electrical/APU_EGT_c"
+        name: "x737/ovh/APUGENPanel/APU_EGT"
         accuracy: 1
     }
 
@@ -20,7 +21,7 @@ PanelItems.PanelItem {
         gaugeValue: parseFloat(apuEgtRef.value)
         barValue: 100
         thinBarValue: 25
-        barsAngleZero: 200
+        barsAngleMin: 200
         valueMax: settings.maxValue
         topLabel: "EGT"
         bottomLabel: "°C x 100"

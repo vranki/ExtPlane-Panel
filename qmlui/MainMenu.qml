@@ -61,10 +61,10 @@ Dialog {
         }
         TextField {
             placeholderText: "ExtPlane IP address"
-            onTextChanged: {
-                extplaneClient.extplaneConnection.hostName = text.length > 0 ? text : "127.0.0.1"
-            }
+            onTextChanged: applicationSettings.extplaneHost = text
+            text: applicationSettings.extplaneHost
             inputMethodHints: Qt.ImhFormattedNumbersOnly
+            enabled: !simulatedConnection
         }
         Label {
             text: "Press ESC to close or tab to open"

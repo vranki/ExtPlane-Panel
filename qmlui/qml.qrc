@@ -23,5 +23,6 @@
         <file>panelitems/needle/FuelTemp.qml</file>
         <file>panelitems/needle/needle-0.svg</file>
         <file>panelitems/annunciators/Annunciator.qml</file>
+        <file>panelitems/decoration/Label.qml</file>
     </qresource>
 </RCC>

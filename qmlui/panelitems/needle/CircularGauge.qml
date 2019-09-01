@@ -5,7 +5,7 @@ PanelItems.PanelItem {
     property double gaugeValue: 0
     property double barValue: 10
     property double thinBarValue: 0
-    property double barsAngleZero: 0
+    property double barsAngleMin: 0
     property double valueMin: 0
     property double valueMax: 100
     property string topLabel: ""
@@ -19,7 +19,7 @@ PanelItems.PanelItem {
         thickBars: true
         showValue: true
         barValue: parent.barValue
-        barsAngleZero: parent.barsAngleZero
+        barsAngleMin: parent.barsAngleMin
         valueMin: parent.valueMin
         valueMax: parent.valueMax
         valueMultiplier: parent.valueMultiplier
@@ -30,7 +30,7 @@ PanelItems.PanelItem {
     CircularGaugeBars {
         barValue: thinBarValue
         visible: thinBarValue
-        barsAngleZero: parent.barsAngleZero
+        barsAngleMin: parent.barsAngleMin
         valueMin: parent.valueMin
         valueMax: parent.valueMax
         z: -10

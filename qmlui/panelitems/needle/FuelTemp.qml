@@ -18,7 +18,7 @@ PanelItems.PanelItem {
         gaugeValue: parseFloat(fuelTempRef.value)
         barValue: 20
         thinBarValue: 5
-        barsAngleZero: 0
+        barsAngleMin: -45
         valueMin: -60
         valueMax: 60
         topLabel: "FUEL TEMP"

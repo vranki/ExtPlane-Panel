@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Qt.labs.settings 1.0
+import org.vranki.extplane 1.0
 import "panelitems"
 
 MouseArea {
@@ -80,6 +81,7 @@ MouseArea {
         }
         panelItemModel.append( {"itemName": itemName, "item": newItem} )
         selectItem(newItem)
+        return newItem
     }
 
     function selectItem(newItem) {
@@ -145,6 +147,18 @@ MouseArea {
         }
     }
 
+    function duplicateSelectedItem() {
+        if(selectedItem) {
+            console.log("Adding ", selectedItem.itemName, selectedItem.x + snapValue, selectedItem.y + snapValue, selectedItem.width, selectedItem.height)
+            var oldItem = selectedItem
+            var newItem = addItem(selectedItem.itemName, selectedItem.x + gridSize, selectedItem.y + gridSize, selectedItem.width, selectedItem.height)
+            for(var i=0;i<oldItem.children.length;i++) {
+                // console.log("child:", oldItem.children[i])
+            }
+            if(newItem.copySettings) newItem.copySettings(oldItem)
+            // extplaneUtilities.copySettings(oldItem, newItem)
+        }
+    }
     ListModel { id: panelItemModel }
 
     ListView {

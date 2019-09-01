@@ -6,6 +6,7 @@
 #include <extplaneconnection.h>
 #include <clientdatarefprovider.h>
 #include <paintedpanelitem.h>
+#include <extplaneutilities.h>
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<ExtPlaneClient>("org.vranki.extplane", 1, 0, "ExtPlaneClient");
     qmlRegisterType<DataRef>("org.vranki.extplane", 1, 0, "DataRef");
     qmlRegisterType<PaintedPanelItem>("org.vranki.extplane", 1, 0, "PaintedPanelItem");
+    qmlRegisterType<ExtplaneUtilities>("org.vranki.extplane", 1, 0, "ExtplaneUtilities");
 
     QQmlApplicationEngine engine;
     ExtPlaneClient epc(nullptr, "ExtPlaneClient", true);

@@ -93,5 +93,10 @@ Dialog {
             itemName: "annunciators/Annunciator"
             description: "Generic annunciator"
         }
+        ListElement {
+            name: "Label"
+            itemName: "decoration/Label"
+            description: "Label, static text and/or dataref value"
+        }
     }
 }
