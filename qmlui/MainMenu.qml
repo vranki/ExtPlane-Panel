@@ -29,8 +29,13 @@ Dialog {
         }
         Button {
             Layout.fillWidth: true
+            text: "Clear panel"
+            onClicked: panelItemArea.clearPanel()
+        }/*
+        Button {
+            Layout.fillWidth: true
             text: "Export panel file"
-        }
+        }*/
         Label {
             text: "Panel number"
         }

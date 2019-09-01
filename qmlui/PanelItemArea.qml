@@ -41,7 +41,7 @@ MouseArea {
 
     Connections {
         target: addItemDialog
-        onAddItem: addItem(itemName, width/2, height/2, 200, 200)
+        onAddItem: addItem(itemName, undefined, width/2, height/2, 200, 200)
     }
 
     function snapValue(value) {
@@ -53,16 +53,19 @@ MouseArea {
     }
 
     // x,y,width & height can be -1 for loading
-    function addItem(itemName, x, y, width, height) {
+    function addItem(itemName, itemId, x, y, width, height) {
         var component = Qt.createComponent("qrc:///panelitems/" + itemName + ".qml");
         if (component.status === Component.Error) {
             console.log("Component failed to load:", component.errorString() )
             return
         }
-
+        if(!itemId) { // No itemId, assign new
+            itemId = settings.largestId
+            settings.largestId = settings.largestId + 1 // Just increase this
+        }
         var newItem = component.createObject(dragArea, {
                                                  "itemName": itemName,
-                                                 "itemId": panelItemModel.count,
+                                                 "itemId": itemId,
                                                  "panelId": panelId,
                                                  "editMode": Qt.binding(function() { return editMode })
                                              });
@@ -94,12 +97,11 @@ MouseArea {
 
     function deleteSelectedItem() {
         if(selectedItem) {
-            var deletedIndex = selectedItem.itemId
-            panelItemModel.remove(deletedIndex)
-            for(var i=deletedIndex;i<panelItemModel.count;i++) {
-                console.log("Setting item", panelItemModel.get(i).item.itemId, i)
-                panelItemModel.get(i).item.itemId = i
+            var deletedIndex = undefined
+            for(var i=0;i<panelItemModel.count;i++) {
+                if(panelItemModel.get(i).item === selectItem) deletedIndex = i
             }
+            panelItemModel.remove(deletedIndex)
             selectedItem.destroy()
             selectItem(null)
         }
@@ -111,7 +113,8 @@ MouseArea {
         for(var i=0;i<panelItemModel.count;i++) {
             var item = panelItemModel.get(i).item
             panelModel.push({
-                                "itemName": item.itemName
+                                "itemName": item.itemName,
+                                "itemId": item.itemId
                             })
         }
         panelsModel[panelId] = { "panelId": panelId, "panelItems": panelModel }
@@ -123,17 +126,19 @@ MouseArea {
         panelId = id || 0
         if(!datastore.length) return; // Data store not initialized yet, delay loading
         clearPanel()
-        console.log("Loading panel", panelId)
+
         if(!panelsModel[panelId]) {
             panelsModel[panelId] = { "panelId": panelId, "panelItems": [] } // New panel
-            console.log("New panel")
         }
 
         var panelModel = panelsModel[panelId].panelItems
         for(var i=0;i<panelModel.length;i++) {
             var item = panelModel[i]
-            console.log("Loading", i, item.itemName)
-            addItem(item.itemName, -1, -1, -1, -1)
+            addItem(item.itemName, item.itemId, -1, -1, -1, -1)
+            item.x = Math.max(0, item.x || 0)
+            item.y = Math.max(0, item.y || 0)
+            item.width = Math.max(5, item.width || 0)
+            item.height = Math.max(5, item.height || 0)
         }
         if (!panelModel.length) mainMenu.visible = true
     }
@@ -151,7 +156,7 @@ MouseArea {
         if(selectedItem) {
             console.log("Adding ", selectedItem.itemName, selectedItem.x + snapValue, selectedItem.y + snapValue, selectedItem.width, selectedItem.height)
             var oldItem = selectedItem
-            var newItem = addItem(selectedItem.itemName, selectedItem.x + gridSize, selectedItem.y + gridSize, selectedItem.width, selectedItem.height)
+            var newItem = addItem(selectedItem.itemName, undefined, selectedItem.x + gridSize, selectedItem.y + gridSize, selectedItem.width, selectedItem.height)
             for(var i=0;i<oldItem.children.length;i++) {
                 // console.log("child:", oldItem.children[i])
             }
@@ -165,17 +170,20 @@ MouseArea {
         width: parent.width/2
         height: parent.height
         model: panelItemModel
-        delegate: Text { text: index + ": " + itemName; color: item.isSelectedItem ?  "white" : "gray"}
+        delegate: Text { text: item.itemId + ": " + itemName; color: item.isSelectedItem ?  "white" : "gray"}
         interactive: false
         visible: editMode
     }
 
     Settings {
+        id: settings
         category: "panelitems"
         property alias datastore: dragArea.datastore
+        property int largestId: 0
         onDatastoreChanged: {
             if(!panelsModel.length) { // Load only once on startup
                 panelsModel = JSON.parse(datastore)
+                console.log(datastore)
                 // panelsModel = [] // To reset all
                 loadPanel(panelId)
             }
