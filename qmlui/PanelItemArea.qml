@@ -89,7 +89,7 @@ MouseArea {
 
     function selectItem(newItem) {
         for(var i=0;i<panelItemModel.count;i++) {
-            panelItemModel.get(i).item.isSelectedItem = false
+            panelItemModel.get(i).item.isSelectedItem = false // TODO: TypeError: Value is undefined and could not be converted to an object
         }
         if(newItem) newItem.isSelectedItem = true
         selectedItem = newItem

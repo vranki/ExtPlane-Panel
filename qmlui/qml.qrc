@@ -24,5 +24,6 @@
         <file>panelitems/needle/needle-0.svg</file>
         <file>panelitems/annunciators/Annunciator.qml</file>
         <file>panelitems/decoration/Label.qml</file>
+        <file>panelitems/efis/Cdu.qml</file>
     </qresource>
 </RCC>

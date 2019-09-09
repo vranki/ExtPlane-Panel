@@ -16,9 +16,7 @@ Window {
     property bool simulatedConnection: true
     property string extplaneHost: "127.0.0.1"
 
-    onExtplaneHostChanged: {
-        extplaneClient.extplaneConnection.hostName = extplaneHost
-    }
+    onExtplaneHostChanged: extplaneClient.extplaneConnection.hostName = extplaneHost
 
     Text {
         color: extplaneClient.extplaneConnection.connected ? "white" : "red"

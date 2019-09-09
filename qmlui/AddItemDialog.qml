@@ -98,5 +98,10 @@ Dialog {
             itemName: "decoration/Label"
             description: "Label, static text and/or dataref value"
         }
+        ListElement {
+            name: "CDU"
+            itemName: "efis/Cdu"
+            description: "Control Display Unit (CDU)"
+        }
     }
 }
