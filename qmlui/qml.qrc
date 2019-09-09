@@ -25,5 +25,9 @@
         <file>panelitems/annunciators/Annunciator.qml</file>
         <file>panelitems/decoration/Label.qml</file>
         <file>panelitems/efis/Cdu.qml</file>
+        <file>B612-Regular.ttf</file>
+        <file>panelitems/efis/GpsMap.qml</file>
+        <file>panelitems/hsi/HsiK55.qml</file>
+        <file>panelitems/needle/TurnBank.qml</file>
     </qresource>
 </RCC>

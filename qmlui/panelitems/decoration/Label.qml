@@ -16,6 +16,7 @@ PanelItems.PanelItem {
         text: settings.labelText + labelRef.value
         color: "white"
         font.pixelSize: parent.height * 0.75
+        font.family: b612.name
         anchors.centerIn: parent
     }
 

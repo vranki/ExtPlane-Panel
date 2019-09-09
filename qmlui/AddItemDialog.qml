@@ -103,5 +103,20 @@ Dialog {
             itemName: "efis/Cdu"
             description: "Control Display Unit (CDU)"
         }
+        ListElement {
+            name: "GPS Map"
+            itemName: "efis/GpsMap"
+            description: "Generic GPS map"
+        }
+        ListElement {
+            name: "HSI"
+            itemName: "hsi/HsiK55"
+            description: "HSI KS55"
+        }
+        ListElement {
+            name: "Turn & Bank indicator"
+            itemName: "needle/TurnBank"
+            description: "Generic turn & bank indicator"
+        }
     }
 }

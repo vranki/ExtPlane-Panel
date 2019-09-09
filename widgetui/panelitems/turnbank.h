@@ -40,7 +40,7 @@ private:
     
     float value2Angle1(float value);
     float value2Angle2(float value);
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     DistanceUnit units;
     PressureUnit baroUnits;
     float _range1, _range2, _value;

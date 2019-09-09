@@ -19,6 +19,7 @@ PanelItems.PanelItem {
         text: settings.buttonText.length ? settings.buttonText : "Button text"
         color: frontColor
         font.pixelSize: parent.height * 0.75
+        font.family: b612.name
         anchors.centerIn: parent
     }
 

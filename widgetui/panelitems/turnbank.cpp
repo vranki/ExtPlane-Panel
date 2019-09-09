@@ -20,8 +20,10 @@
 REGISTER_WITH_PANEL_ITEM_FACTORY(TurnAndBank,"indicator/turnbank/basic");
 
 TurnAndBank::TurnAndBank(ExtPlanePanel *panel, ExtPlaneClient *client) :
-    PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-    _client(client)
+                                                                         PanelItem(panel,
+                                                                                   PanelItemTypeGauge,
+                                                                                   PanelItemShapeCircular),
+                                                                         _client(client)
 {
     _rollValue = 10;
     _slipValue = -20;
@@ -39,9 +41,9 @@ TurnAndBank::TurnAndBank(ExtPlanePanel *panel, ExtPlaneClient *client) :
     createBall();
     //_bezel = QPixmap::fromImage(QImage(QString("../images/bezel_square_.png")), Qt::AutoColor);
     
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    _client.subscribeDataRef(_slipRef,0.02);
-    _client.subscribeDataRef(_rollRef,0.1);
+    connect(_client, SIGNAL(refChanged(QString, double)), this, SLOT(refChanged(QString,double)));
+    _client->subscribeDataRef(_slipRef,0.02);
+    _client->subscribeDataRef(_rollRef,0.1);
     
 }
 

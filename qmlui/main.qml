@@ -79,6 +79,8 @@ Window {
     }
     onSimulatedConnectionChanged: extplaneClient.simulated = simulatedConnection
 
+    FontLoader { id: b612; source: "qrc:/B612-Regular.ttf" }
+
     // Utility functions (move to own file?)
 
     // Limit value between min & max

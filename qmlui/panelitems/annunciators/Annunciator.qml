@@ -35,6 +35,7 @@ PanelItems.PanelItem {
         text: settings.topText.length ? settings.topText : "ANN TEXT"
         color: textColor
         font.pixelSize: parent.height * 0.3
+        font.family: b612.name
         anchors.centerIn: parent
         visible: !twoLines
     }
@@ -42,6 +43,7 @@ PanelItems.PanelItem {
         text: settings.topText.length ? settings.topText : "ANN TEXT"
         color: textColor
         font.pixelSize: parent.height * 0.3
+        font.family: b612.name
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: parent.height * 0.1
@@ -51,6 +53,7 @@ PanelItems.PanelItem {
         text: settings.bottomText
         color: textColor
         font.pixelSize: parent.height * 0.3
+        font.family: b612.name
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: parent.height * 0.1

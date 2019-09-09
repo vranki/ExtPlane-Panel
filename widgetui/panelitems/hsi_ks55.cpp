@@ -78,13 +78,13 @@ HSI::HSI(ExtPlanePanel *panel, ExtPlaneClient *client) :
 
 void HSI::refChanged(QString name, double value) {
     DataRefStruct   ref = _dataRefLookup[name];
+    if(ref.name.isEmpty()) return;
     if (*(float *)ref.value == value) return;
     *(float *)ref.value = value;
     update();
 }
 
 void HSI::createCard(float w, float h){
-
     // Create a new image for working with
     int side = qMin(w, h);
     QImage cardImage = QImage(QSize(side,side), QImage::Format_ARGB32);

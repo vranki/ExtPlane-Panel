@@ -1,4 +1,4 @@
-# ExtPlane-Panel #
+# ExtPlane-Panel 2 #
 
 ![Screenshot](http://s23.postimg.org/8xhypdei3/extplane_panel_screenshot_v2.png)
 
@@ -28,126 +28,102 @@ Target hardware is:
 * Raspberry Pi
 * anything that will run Qt!
 
-
 ## Download ##
 
 ### Ext-Plane Plugin + Panel ###
 
-* Linux 32bit, 15MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Linux32.zip](http://goo.gl/BNzoeZ)
-* Linux 64bit, 15MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Linux64.zip](http://goo.gl/akBtl4)
-* Windows 32bit, 12MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Win32.zip](http://goo.gl/Nupczn)
-* Windows 64bit, 13MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-Win64.zip](http://goo.gl/6EHtei)
-* OS-X 64bit, 15MB
-    * [http://dankrusi.com/downloads/ExtPlane-Panel-v0.1-OSX64.zip](http://goo.gl/8kLzJg)
-
-Windows users: If the panel fails to start due to missing MSVCR100.dll, install Microsoft Visual 
-C++ 2010 SP1 Redistributable Package from https://www.microsoft.com/en-us/download/details.aspx?id=13523
-
+TODO: Check travis builds
 
 ## Instruments ##
 
-There are currently a number of instruments available, including:
+### Instruments in ExtPlane-Panel 2.0
 
-- Basic compass
-- Direction indicator with the compass rose
-- Airspeed indicator
-- Altimeter
-- Attitude indicator
-- Variometer
-- RPM gauge
-- HSI
-- GPS/Radar map
-- Light indicator
-- Engine display
-- Navigation display
+* Annunciator
+* Button
+* CDU
+* GPS Map (Doesn't seem to work)
+* HSI
+* Generic Airspeed Indicator
+* APU EGT
+* Fuel Temperature
+* Turn & Bank indicator
+* Toggle switch (normal & 3-way)
+* Attitude Indicator
+* Compass
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
 debugging tools which can help when developing with the X-Plane API.
 
+### Compability with ExtPlane-Panel 1.x
 
+The whole UI has been changed in version 2 from oldschool widgets to QML for
+much quicker development. Some instruments have been rewritten in QML and
+some wrap the old widget code. Here's a list of panel items and their statuses.
 
-## Hardware Devices ##
+N = New rewrite in QML
+W = Wrapped in QML
+! = Not done, either rewrite or wrap
+? = Might get removed
 
-Currently supported output devices:
+! airspeedindicator
+W attitudeindicator -> AttitudeIndicator
+N compass -> CompassBasic
+? dial
+? displayinstrument
+? enginedisplay
+! engine_rpm
+? genericlittlegauge
+W hsi_ks55 -> HsiK55
+N indicatorlight -> Annunciator
+? navdisplay
+? radarmap.h
+! slipindicator
+! tankleveler
+! variometer
+! altimeter
+N button -> ButtonGeneric
+! datarefdebugger
+! di
+! engine_battery
+! engine_fuel_p
+! gaugecover
+W gpsmap -> GpsMap
+? indicatordisplay
+? mapinstrument
+! needleinstrument (CircularGauge?)
+! pfddisplay
+! rotaryknob
+N switch -> ToggleSwitch
+W turnbank -> TurnBank
 
-* Chroma USB Servo controller (http://electronics.chroma.se/usbsb.php) 
-* Raspberry Pi's ServoBlaster module which allows RPi's GPIO pins to output PWM
-* Pololu SSC04A (or compatible) serial servo controller
-
+If your favorite instrument is missing, don't upgrade yet. If you're a coder,
+please code it.
 
 ## Usage ##
 
-### Profiles and Panels ###
+Learn these keys:
 
-You can save your work when setting up your ExtPlane-Panel through the use of profiles. A profile
-is a file that can be saved to disk (ending with `.ini`). At first launch, ExtPlane-Panel will
-automatically create and load a profile in your documents folder called `ExtPlane-Panel-Default.ini`.
+* Tab - Show main menu
+* Space - toggle edit mode
+* s - save panels
+* f - go to fullscreen mode
+* a - Add new item
+* Delete - delete selected item
 
-Each profile may contain multiple panels, which can be switched using arrow keys, or through
-the panel manager, or automatically when changing aircraft (if enabled in app settings). Only a single
-panel is loaded at any time.
+### Panels ###
+
+You can have multiple panels numbered from 0 to 42.
+
+You can modify your panel freely. Changes are *not* saved
+automatically - you need to save the panel after editing.
+
+TODO: Panels can be exported to a .ini file to be copied to
+other computers or versioned.
 
 ### Command Line ###
 
-Command line arguments override application settings. This can be useful when you wish to launch
-multiple panels on multiple monitors, each panel using a preset configuration.
-
-* **--fullscreen**                forces the app to launch in fullscreen mode
-* **--screen {number}**           sets the panel to a specific monitor/screen
-* **--width {number}**            set the width in pixels of the panel (if not fullscreen)
-* **--height {number}**           set the height in pixels of the panel (if not fullscreen)
-* **--profile {filepath}**        loads the panel profile specified by filepath
-* **--hidden-gui {true|false}**   when true, removes any visible extra UI (such as the yellow tab for opening menu)
-* **--simulate {true|false}**     when true, simulates the ExtPlane connection
-* **--panelrotation {0-360}**     sets the global panel rotation
-* **--serveraddress {host:port}** sets the ExtPlane plugin host and port
-* **--interpolate {true|false}**  when true, enables value interpolation
-* **--antialias {true|false}**    when true, enables rendering antialias
-* **--autopanels {true|false}**    when true, a panel will automatically be loaded (or created) when the aircraft changes
-* **--adjustpower {true|false}**   when true, panel items will be dimmed or powered off when avionics or battery is off
-* **--fontsize {number}**          sets the default font size for all panel items
-* **--remembersizeandposition {true|false}**  when true, the panel window will always be positioned at the same place
-* **--panelupdateinterval {seconds}** sets the update interval in seconds
-
-### User Interface ###
-
-* Click inside the **yellow tab** at top left to open the main menu.
-
-* **Edit Panel** makes the instruments become selectable with a click.
-It is then possible to move the instruments around. Double-click on an
-instrument to see or modify its properties or delete it. Edit mode can
-be also toggled with space key.
-
-* **Add Item** allows new instruments to be added.
-
-* **Save Profile** saves all the panel profile settings to a file.
-
-* **Save Profile As...** saves a panel profile to a different file or location.
-
-* **Load Profile** loads any given panel profile from disk.
-
-* **New Profile** creates an empty new profile with a single panel.
-
-* **Manage Panels** allows you to remove, add, rename and copy panels.
-
-* **Hardware** opens the hardware window where you can configure various physical devices.
-
-* **App Settings** has various settings for the application:
- - IP address or hostname of the X-Plane machine
- - Fullscreen
- - Screen rotation
- - Simulated connection - use for testing new instruments without real X-Plane connection
- - Interpolate values - you can disable this on slow devices
- - ExtPlane update interval - time (in seconds) how often X-Plane should send updates at maximum
- - Panel update interval - time (in seconds) how often the panel should be redrawn
- - Default font size - affects all instruments
- - Automatically create and load panels - a panel will automatically be loaded (or created) when the aircraft changes
- - Adjust panel brightness and power - panel items will be dimmed or powered off when avionics or battery is off
+TODO: implement
 
 ### Keyboard Shortcuts ###
 
@@ -156,34 +132,6 @@ be also toggled with space key.
 * **Delete** deletes selected panel items
 * **Left** selects the previous panel (if any)
 * **Right** selects the next panel (if any)
-
-### Setting up hardware instruments ###
-
-Currently servo-like devices are supported. ExtPlane-panel has concept
-of output devices which contain one or more outputs (usually servo outputs)
-and bindings which contain mapping between X-Plane dataref and one output on
-a output device.
-
-**Example:** Making a servo that displays indicated airspeed with range of 0-200 knots.
-
- * Press hardware button. Enable the output device you want to use on Devices tab.
- * Open Bindings tab. Click "New".
- * Enter following details:
-   * Name: ASI
-   * Input dataref: sim/cockpit2/gauges/indicators/airspeed_kts_pilot
-   * Dateref accuracy: 0.5 (or as high value as possible)
-   * Input min: 0
-   * Input max: 200 (this sets the range of ASI in knots)
-   * Output device: the device you enabled
-   * Output num: Number of output on your device. Usually 0=first servo, 1=second servo..
-   * Open the output curve dialog and set:
-   * Output min: 45 (device dependent; set this to the value that moves servo to zero position)
-   * Output max: 250 (device dependent; set this to the value that moves servo to 200kt position)
-   * Interpolation speed: 3 (Makes the movement less jerky. Set to 0 for no interpolation)
- * Click Save changes. Servo should now start moving.
- * If you modify values, click Save changes again. Remember to save the panel to save these settings!
-
-
 
 ## Building ##
 
@@ -258,15 +206,9 @@ nmake
 # Visual Studio Express: http://www.microsoft.com/visualstudio/eng/downloads#d-2012-express
 ```
 
-
-
 ## Creating new Panel Items ##
 
-Adding items is really easy if you know some C++ programming. Subclass
-PanelItem class and implement painting and subscription to datarefs as needed.
-See Button class for a really simple example.
-If your instrument is round gauge with a needle, you might want to subclass
-NeedleInstrument class. See Airspeed or Variometer classes for example.
+TODO: Document
 
 Code should be reasonably well documented. If something is not clear, please
 report it.
@@ -280,31 +222,6 @@ Preferred way is to create a fork in github and send a pull request when
 you are finished. If you don't want to do this, we're happy with any
 other way to deliver the changes.
 
-
-
-## Coding Guidelines ##
-
-### Headers ###
-Always group headers in a meaningful format (ie all Qt headers should be grouped together,
-and all ExtPlane headers grouped together). In addition, make sure that headers
-are always fully relative (ie use `../util/header.h` instead of `util/header.h`).
-This is required to build across all platforms.
-
-### Platform-Dependent Code ###
-When writing code which uses new features currently not implemented, always make
-sure to first try to use Qt cross-platform classes and libraries. When using
-platform dependent code, make sure to `#ifdef` the sections of code which will
-only work on a specific platform. You can use standard Qt defines, or additional
-defines such as `TERMIOS_AVAIALABLE` to help with this.
-
-## Widget UI vs QML ui ##
-
-Currently ExtPlane-Panel is written using Qt Widgets in c++. It would be
-better to change to QML based UI as it is far superior in many ways.
-
-* widgetui directory contains the current widget ui.
-* qmlui directory ontains the new QML based ui in progress.
-
 ## Contact / Feedback ##
 
 Original Author:
@@ -315,3 +232,6 @@ Contributors:
 - Bob Gates
 - Nicolas Montarnal
 
+## Resources used
+
+* B612 font by Airbus - see details and license at https://b612-font.com/

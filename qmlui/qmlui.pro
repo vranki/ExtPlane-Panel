@@ -42,6 +42,11 @@ HEADERS += \
 SOURCES += \
      ../widgetui/panelitems/panelitem.cpp \
      ../widgetui/panelitems/attitudeindicator.cpp \
+     ../widgetui/panelitems/mapinstrument.cpp \
+     ../widgetui/panelitems/gpsmap.cpp \
+     ../widgetui/panelitems/hsi_ks55.cpp \
+     ../util/units.cpp \
+     ../widgetui/panelitems/turnbank.cpp \
      ../widgetui/widgets/numberinputlineedit.cpp \
      ../widgetui/widgets/colorselector.cpp \
      ../widgetui/panelitemfactory.cpp
@@ -49,6 +54,11 @@ SOURCES += \
 HEADERS += \
      ../widgetui/panelitems/panelitem.h \
      ../widgetui/panelitems/attitudeindicator.h \
+     ../widgetui/panelitems/mapinstrument.h \
+     ../widgetui/panelitems/gpsmap.h \
+     ../widgetui/panelitems/hsi_ks55.h \
+     ../util/units.h \
+     ../widgetui/panelitems/turnbank.h \
      ../widgetui/widgets/numberinputlineedit.h \
      ../widgetui/widgets/colorselector.h \
      ../widgetui/panelitemfactory.h

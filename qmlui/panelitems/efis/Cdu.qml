@@ -56,7 +56,7 @@ PanelItems.PanelItem {
                         origin.x: charText.width / 2
                         origin.y: charText.height / 2
                     }
-                    font.family: "Monospace"
+                    font.family: b612.name
                     color: charText.reverseVideo ? "black" : mainColor
 
                     Rectangle { // Underline bar
