@@ -13,12 +13,13 @@ Item {
         NoUnit,
         VelocityKnots,
         VelocityMS,
-        VelocityKMH
+        VelocityKMH,
+        VelocityFPM
     }
     // Conversion table from unit to SI standard unit
-    readonly property var unitTable: [1, 0.514444, 1, 0.277778]
+    readonly property var unitTable: [1, 0.514444, 1, 0.277778, 0.00508]
     // Unit names
-    readonly property var unitNames: ["No unit", "Knots", "m/s", "km/h"]
+    readonly property var unitNames: ["No unit", "Knots", "m/s", "km/h", "fpm"]
 
     function convertUnit(value) {
         return value * scaleFactor

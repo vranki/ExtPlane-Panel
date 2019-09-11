@@ -51,6 +51,7 @@ TODO: Check travis builds
 * Attitude Indicator
 * Compass
 * Airspeed indicator
+* Variometer
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
@@ -67,7 +68,7 @@ W = Wrapped in QML
 ! = Not done, either rewrite or wrap
 ? = Might get removed
 
-N airspeedindicator
+N airspeedindicator -> AirspeedIndicator
 W attitudeindicator -> AttitudeIndicator
 N compass -> CompassBasic
 ? dial
@@ -81,7 +82,7 @@ N indicatorlight -> Annunciator
 ? radarmap.h
 ! slipindicator
 ! tankleveler
-! variometer
+N variometer -> Variometer
 ! altimeter
 N button -> ButtonGeneric
 ! datarefdebugger

@@ -43,7 +43,7 @@ Item { // Gets parent size
                     x: 70
                     visible: showValue
                     color: "white"
-                    font.pixelSize: 50
+                    font.pixelSize: (barsItem.width / barCount) * 1.3
                     rotation: -barItem.rotation
                     anchors.verticalCenter: parent.verticalCenter
                     text: Math.round((index * barValue + valueMin) / valueMultiplier)

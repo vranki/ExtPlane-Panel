@@ -32,5 +32,7 @@
         <file>panelitems/needle/GaugeArc.qml</file>
         <file>panelitems/needle/needle-1.svg</file>
         <file>UnitConverter.qml</file>
+        <file>panelitems/needle/Variometer.qml</file>
+        <file>panelitems/needle/overlay-0.svg</file>
     </qresource>
 </RCC>

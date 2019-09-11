@@ -118,5 +118,10 @@ Dialog {
             itemName: "needle/TurnBank"
             description: "Generic turn & bank indicator"
         }
+        ListElement {
+            name: "Variometer"
+            itemName: "needle/Variometer"
+            description: "Generic variometer, with total energy support"
+        }
     }
 }
