@@ -1,7 +1,8 @@
 import QtQuick 2.0
 
 Image {
-    source: "needle-0.svg"
+    property int needleType: 0
+    source: "needle-" + needleType + ".svg"
     width: parent.width
     height: parent.height
     transformOrigin: Item.Center

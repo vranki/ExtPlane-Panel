@@ -29,5 +29,7 @@
         <file>panelitems/efis/GpsMap.qml</file>
         <file>panelitems/hsi/HsiK55.qml</file>
         <file>panelitems/needle/TurnBank.qml</file>
+        <file>panelitems/needle/GaugeArc.qml</file>
+        <file>panelitems/needle/needle-1.svg</file>
     </qresource>
 </RCC>

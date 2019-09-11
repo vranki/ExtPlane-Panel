@@ -50,6 +50,7 @@ TODO: Check travis builds
 * Toggle switch (normal & 3-way)
 * Attitude Indicator
 * Compass
+* Airspeed indicator
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
@@ -66,7 +67,7 @@ W = Wrapped in QML
 ! = Not done, either rewrite or wrap
 ? = Might get removed
 
-! airspeedindicator
+N airspeedindicator
 W attitudeindicator -> AttitudeIndicator
 N compass -> CompassBasic
 ? dial

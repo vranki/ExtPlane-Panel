@@ -8,6 +8,8 @@ import ".." as PanelItems
 
 PanelItems.PanelItem {
     propertiesDialog: propertiesDialog
+    clip: false
+    property real arcWidth: width * 0.03 // For main color arches
 
     DataRef {
         id: airspeedRef
@@ -18,6 +20,22 @@ PanelItems.PanelItem {
         id: vneRef
         name: "sim/aircraft/view/acf_Vne"
     }
+    DataRef {
+        id: vsRef
+        name: "sim/aircraft/view/acf_Vs"
+    }
+    DataRef {
+        id: vnoRef
+        name: "sim/aircraft/view/acf_Vno"
+    }
+    DataRef {
+        id: vsoRef
+        name: "sim/aircraft/view/acf_Vso"
+    }
+    DataRef {
+        id: vfeRef
+        name: "sim/aircraft/view/acf_Vfe"
+    }
 
     CircularGaugeBars {
         id: valueBars
@@ -26,11 +44,46 @@ PanelItems.PanelItem {
         showValue: true
         barValue: settings.thickBarValue
         valueMax: vneRef.value || 100
+
+        GaugeArc { // Vne bar
+            anchors.fill: parent
+            arcColor: "red"
+            z: -10
+            startAngle: valueBars.value2Angle(vneRef.value)
+            arcAngle: 0.3
+            arcWidth: width * 0.06
+        }
+        GaugeArc { // Yellow arc
+            anchors.fill: parent
+            arcColor: "yellow"
+            z: -20
+            startAngle: valueBars.value2Angle(vnoRef.value)
+            arcAngle: valueBars.value2Angle(vneRef.value) - startAngle
+            arcWidth: arcWidth
+        }
+        GaugeArc { // Vno arc
+            anchors.fill: parent
+            arcColor: "green"
+            z: -20
+            startAngle: valueBars.value2Angle(vsRef.value)
+            arcAngle: valueBars.value2Angle(vnoRef.value) -startAngle
+            arcWidth: arcWidth
+        }
+        GaugeArc { // White flap arc
+            anchors.fill: parent
+            radius: width / 2 - 2*arcWidth
+            arcColor: "white"
+            z: -30
+            startAngle: valueBars.value2Angle(vsoRef.value)
+            arcAngle: valueBars.value2Angle(vfeRef.value) - startAngle
+            arcWidth: arcWidth
+        }
         CircularGaugeBars {
             barValue: settings.thinBarValue
             valueMax: valueBars.valueMax
         }
         Needle {
+            needleType: 1
             rotation: valueBars.value2Angle(airspeedRef.value)
         }
     }
