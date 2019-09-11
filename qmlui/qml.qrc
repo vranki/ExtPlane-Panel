@@ -31,5 +31,6 @@
         <file>panelitems/needle/TurnBank.qml</file>
         <file>panelitems/needle/GaugeArc.qml</file>
         <file>panelitems/needle/needle-1.svg</file>
+        <file>UnitConverter.qml</file>
     </qresource>
 </RCC>

@@ -11,30 +11,42 @@ PanelItems.PanelItem {
     clip: false
     property real arcWidth: width * 0.03 // For main color arches
 
+    Panel.UnitConverter {
+        id: unitConverter
+        inUnit: Panel.UnitConverter.Unit.VelocityKnots
+        outUnit: settings.isKmh ? Panel.UnitConverter.Unit.VelocityKMH : Panel.UnitConverter.Unit.VelocityKnots
+    }
+
     DataRef {
         id: airspeedRef
         name: "sim/cockpit2/gauges/indicators/airspeed_kts_pilot"
+        scaleFactor: unitConverter.scaleFactor
     }
 
     DataRef {
         id: vneRef
         name: "sim/aircraft/view/acf_Vne"
+        scaleFactor: unitConverter.scaleFactor
     }
     DataRef {
         id: vsRef
         name: "sim/aircraft/view/acf_Vs"
+        scaleFactor: unitConverter.scaleFactor
     }
     DataRef {
         id: vnoRef
         name: "sim/aircraft/view/acf_Vno"
+        scaleFactor: unitConverter.scaleFactor
     }
     DataRef {
         id: vsoRef
         name: "sim/aircraft/view/acf_Vso"
+        scaleFactor: unitConverter.scaleFactor
     }
     DataRef {
         id: vfeRef
         name: "sim/aircraft/view/acf_Vfe"
+        scaleFactor: unitConverter.scaleFactor
     }
 
     CircularGaugeBars {
@@ -82,6 +94,14 @@ PanelItems.PanelItem {
             barValue: settings.thinBarValue
             valueMax: valueBars.valueMax
         }
+        Text {
+            text: unitConverter.outUnitName
+            color: "white"
+            font.pixelSize: parent.height * 0.08
+            font.family: b612.name
+            y: parent.height * 0.60
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
         Needle {
             needleType: 1
             rotation: valueBars.value2Angle(airspeedRef.value)
@@ -90,6 +110,9 @@ PanelItems.PanelItem {
     Panel.PanelItemPropertiesDialog {
         id: propertiesDialog
         propertyItems: [
+            Text { text: "In km/h, instead of knots" },
+            CheckBox { checked: settings.isKmh ; onCheckedChanged: settings.isKmh = checked },
+
             Text { text: "Thick bars every" },
             TextField { text: settings.thickBarValue; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.thickBarValue = text },
 
@@ -102,5 +125,6 @@ PanelItems.PanelItem {
         id: settings
         property int thickBarValue: 20
         property int thinBarValue: 5
+        property bool isKmh: false
     }
 }
