@@ -293,9 +293,9 @@ void NavDisplay::createSettings(QGridLayout *layout) {
 
 void NavDisplay::setDataSource(int val) {
     _dataSource = val;
-    if(_client->isDataRefSubscribed(DATAREF_NAVDATA_5KM)) _client->unsubscribeDataRef(DATAREF_NAVDATA_5KM);
-    if(_client->isDataRefSubscribed(DATAREF_NAVDATA_20KM)) _client->unsubscribeDataRef(DATAREF_NAVDATA_20KM);
-    if(_client->isDataRefSubscribed(DATAREF_NAVDATA_100KM)) _client->unsubscribeDataRef(DATAREF_NAVDATA_100KM);
+    if(_client->isDataRefSubscribed(DATAREF_NAVDATA_5KM)) _client->unsubscribeDataRefByName(DATAREF_NAVDATA_5KM);
+    if(_client->isDataRefSubscribed(DATAREF_NAVDATA_20KM)) _client->unsubscribeDataRefByName(DATAREF_NAVDATA_20KM);
+    if(_client->isDataRefSubscribed(DATAREF_NAVDATA_100KM)) _client->unsubscribeDataRefByName(DATAREF_NAVDATA_100KM);
     if(_dataSource == DATASOURCE_5KM) {
         _client->subscribeDataRef(DATAREF_NAVDATA_5KM, 1000);
     } else if(_dataSource == DATASOURCE_20KM) {

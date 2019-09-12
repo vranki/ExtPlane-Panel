@@ -261,7 +261,7 @@ void IndicatorDisplay::loadPreset(int val) {
 void IndicatorDisplay::setDataRefName(QString name) {
 
     // Unsubscribe old
-    if(_datarefName != "" && _client->isDataRefSubscribed(_datarefName)) _client->unsubscribeDataRef(_datarefName); //TODO: there seems to be something wrong with unsubscribing...
+    if(_datarefName != "" && _client->isDataRefSubscribed(_datarefName)) _client->unsubscribeDataRefByName(_datarefName); //TODO: there seems to be something wrong with unsubscribing...
     _datarefName = name;
     _datarefValue = "";
 

@@ -544,7 +544,7 @@ void GenericLittleGauge::setIndexNumber(float val){
     if (_indexNumber != (unsigned int)val) {
         _indexNumber = (unsigned int)val;
         //refresh subscription in order to call valueChanged(xx)
-        _client->unsubscribeDataRef(dataRefsString);
+        _client->unsubscribeDataRefByName(dataRefsString);
         _client->subscribeDataRef(dataRefsString, accuracy);
 
     }
@@ -649,7 +649,7 @@ void GenericLittleGauge::setDataRefString(QString s){
 
         // Unsubscribe old
         if (_client->isDataRefSubscribed(dataRefsString)) {
-            _client->unsubscribeDataRef(dataRefsString);
+            _client->unsubscribeDataRefByName(dataRefsString);
         }
 
         dataRefsString = s;

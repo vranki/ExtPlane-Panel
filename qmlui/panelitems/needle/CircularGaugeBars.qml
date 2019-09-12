@@ -3,6 +3,8 @@ import QtQuick 2.0
 Item { // Gets parent size
     property bool thickBars: false // Thick or thin bars
     property bool showValue: false // Show values as numbers
+    property bool showLastValue: true // Can be used to hide last value (for 360 degree gauges)
+    property bool limitAngle: false // Limit value2angle between min & max values
     property double valueMin: 0 // Minimum value to show
     property double valueMax: 100 // Maximum value to show
     property double barValue: 10 // Value of one bar
@@ -41,9 +43,9 @@ Item { // Gets parent size
                 }
                 Text {
                     x: 70
-                    visible: showValue
+                    visible: showValue && (showLastValue || index < barCount - 1)
                     color: "white"
-                    font.pixelSize: (barsItem.width / barCount) * 1.3
+                    font.pixelSize: Math.min((barsItem.width / barCount) * 1.1, 100)
                     rotation: -barItem.rotation
                     anchors.verticalCenter: parent.verticalCenter
                     text: Math.round((index * barValue + valueMin) / valueMultiplier)
@@ -52,7 +54,9 @@ Item { // Gets parent size
         }
     }
     function value2Angle(value) {
+        if(limitAngle) {
+            value = limitValue(value, valueMin, valueMax)
+        }
         return barsAngleMin - 90 + ((value - valueMin) / valueRange) * barsAngle
-        // return barsAngleMin + ((value - valueMin) / valueRange) * barsAngle
     }
 }

@@ -34,5 +34,11 @@
         <file>UnitConverter.qml</file>
         <file>panelitems/needle/Variometer.qml</file>
         <file>panelitems/needle/overlay-0.svg</file>
+        <file>panelitems/needle/Altimeter.qml</file>
+        <file>panelitems/needle/needle-2.svg</file>
+        <file>panelitems/SlipIndicator.qml</file>
+        <file>panelitems/TurnAndSlip.qml</file>
+        <file>panelitems/turnslip-mark.svg</file>
+        <file>panelitems/needle/needle-3.svg</file>
     </qresource>
 </RCC>

@@ -147,7 +147,7 @@ void TankLeveler::setTankNumber(float val) {
         //setValue
         _tankNumber = (int)val;
         //refresh subscription in order to call quantityChanged(xx)
-        _client->unsubscribeDataRef("sim/cockpit2/fuel/fuel_quantity");
+        _client->unsubscribeDataRefByName("sim/cockpit2/fuel/fuel_quantity");
         _client->subscribeDataRef("sim/cockpit2/fuel/fuel_quantity", 1.0);
 
     }

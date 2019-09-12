@@ -409,13 +409,17 @@ void PanelWindow::setAntialiasEnabled(bool enabled) {
 }
 
 void PanelWindow::setAutoPanelsEnabled(bool enabled) {
+    /*
     if(client && enabled && !client->isDataRefSubscribed(AUTO_PANEL_DATAREF)) client->subscribeDataRef(AUTO_PANEL_DATAREF);
     else if(client && !enabled && client->isDataRefSubscribed(AUTO_PANEL_DATAREF)) client->unsubscribeDataRef(AUTO_PANEL_DATAREF);
+*/
 }
 
 void PanelWindow::setAdjustPowerEnabled(bool enabled) {
+    /*
     if(client && enabled && !client->isDataRefSubscribed(ADJUST_POWER_DATAREF)) client->subscribeDataRef(ADJUST_POWER_DATAREF);
     else if(client && !enabled && client->isDataRefSubscribed(ADJUST_POWER_DATAREF)) client->unsubscribeDataRef(ADJUST_POWER_DATAREF);
+*/
 }
 
 void PanelWindow::setPanelUpdateInterval(double newInterval) {

@@ -282,7 +282,7 @@ void EngineFuelP::setEngineNumber(float val) {
     if (_engineNumber != (int)val) {
         _engineNumber = (int)val;
         //refresh subscription in order to call pressureChanged(xx)
-        _client->unsubscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi");
+        _client->unsubscribeDataRefByName("sim/cockpit2/engine/indicators/fuel_pressure_psi");
         _client->subscribeDataRef("sim/cockpit2/engine/indicators/fuel_pressure_psi", 5.0);
 
     }

@@ -131,7 +131,7 @@ void EngineBattery::setBatteryNumber(float val) {
          //setValue
         _batteryNumber = (int)val;
         //refresh subscription in order to call quantityChanged(xx)
-        _client->unsubscribeDataRef("sim/cockpit2/electrical/battery_amps");
+        _client->unsubscribeDataRefByName("sim/cockpit2/electrical/battery_amps");
         _client->subscribeDataRef("sim/cockpit2/electrical/battery_amps", 0.1);
     }
 }

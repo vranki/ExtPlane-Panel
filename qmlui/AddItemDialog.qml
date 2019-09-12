@@ -6,7 +6,7 @@ import QtQuick.Dialogs 1.2
 Dialog {
     id: addItemDialog
     modality: Qt.NonModal
-    property string previewItem: ""
+    property string previewItem: null
     signal addItem(string itemName)
     standardButtons: StandardButton.Cancel | StandardButton.Ok
     width: 600
@@ -40,10 +40,19 @@ Dialog {
                 width: parent.width * 0.8
                 height: parent.height * 0.8
                 anchors.centerIn: parent
+                onStatusChanged: console.log("Loader state", status)
             }
         }
     }
-    onAccepted: if(previewItem) addItem(previewItem)
+    onAccepted: {
+        if(previewItem) {
+            // Destroy the preview before adding
+            var newItem = previewItem
+            previewItem = null
+            addItem(newItem)
+        }
+    }
+    onVisibleChanged: previewItem = null
 
     // Todo: Auto-generate this list from the directory contents.
     ListModel {
@@ -122,6 +131,21 @@ Dialog {
             name: "Variometer"
             itemName: "needle/Variometer"
             description: "Generic variometer, with total energy support"
+        }
+        ListElement {
+            name: "Altimeter"
+            itemName: "needle/Altimeter"
+            description: "Generic altimeter, in feet or meters"
+        }
+        ListElement {
+            name: "Slip indicator"
+            itemName: "SlipIndicator"
+            description: "Generic slip indicator. Ball in a tube."
+        }
+        ListElement {
+            name: "Turn & Slip indicator"
+            itemName: "TurnAndSlip"
+            description: "Turn and slip indicator."
         }
     }
 }

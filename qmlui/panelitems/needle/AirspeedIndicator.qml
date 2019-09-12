@@ -20,6 +20,7 @@ PanelItems.PanelItem {
     DataRef {
         id: airspeedRef
         name: "sim/cockpit2/gauges/indicators/airspeed_kts_pilot"
+        accuracy: 0.1
         scaleFactor: unitConverter.scaleFactor
     }
 
@@ -82,6 +83,8 @@ PanelItems.PanelItem {
             arcWidth: arcWidth
         }
         GaugeArc { // White flap arc
+            // At least ASK-21 has vfe > vne
+            visible: parseInt(vfeRef.value) < parseInt(vneRef.value)
             anchors.fill: parent
             radius: width / 2 - 2*arcWidth
             arcColor: "white"
@@ -105,6 +108,11 @@ PanelItems.PanelItem {
         Needle {
             needleType: 1
             rotation: valueBars.value2Angle(airspeedRef.value)
+            Behavior on rotation { PropertyAnimation {
+                    easing.type: Easing.InOutQuad
+                    duration: 250
+                }
+            }
         }
     }
     Panel.PanelItemPropertiesDialog {

@@ -255,7 +255,7 @@ void Dial::setLabel(QString val) {
 
 void Dial::setDataRef(QString val) {
     if(val.isEmpty()) return;
-    if(_client->isDataRefSubscribed(_datarefName)) _client->unsubscribeDataRef(_datarefName);
+    if(_client->isDataRefSubscribed(_datarefName)) _client->unsubscribeDataRefByName(_datarefName);
     _datarefName = val;
     _dataref = _client->subscribeDataRef(_datarefName, 0);
     update();

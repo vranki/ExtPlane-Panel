@@ -9,7 +9,7 @@ Window {
     visible: true
     width: 640
     height: 480
-    title: qsTr("ExtPlane Panel")
+    title: qsTr("ExtPlane Panel 2")
     color: "black"
 
     property int panelId: 0
@@ -20,7 +20,7 @@ Window {
 
     Text {
         color: extplaneClient.extplaneConnection.connected ? "white" : "red"
-        text: extplaneClient.connectionMessage + (extplaneClient.simulated ? "" : " | " + extplaneClient.extplaneConnection.networkError)
+        text: extplaneClient.connectionMessage + " " + extplaneClient.extplaneConnection.networkError
     }
 
     Item {
@@ -77,10 +77,17 @@ Window {
         extplaneClient.simulated = simulatedConnection
         extplaneClient.extplaneConnection.hostName = extplaneHost
     }
-    onSimulatedConnectionChanged: extplaneClient.simulated = simulatedConnection
+    onSimulatedConnectionChanged: {
+        extplaneClient.simulated = simulatedConnection
+        extplaneClient.extplaneConnection.hostName = extplaneHost
+    }
 
     FontLoader { id: b612; source: "qrc:/B612-Regular.ttf" }
 
+    Connections {
+        target: extplaneClient
+        onExtplaneWarning: console.log("Extplane-Warning:", message)
+    }
     // Utility functions (move to own file?)
 
     // Limit value between min & max

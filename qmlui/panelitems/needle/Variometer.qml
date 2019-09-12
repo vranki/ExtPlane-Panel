@@ -18,13 +18,15 @@ PanelItems.PanelItem {
 
     DataRef {
         id: variometerRef
-        name: "sim/flightmodel/position/vh_ind_fpm"
+        name: settings.isTotalEnergy ? "" : "sim/flightmodel/position/vh_ind_fpm"
+        accuracy: 10
         scaleFactor: unitConverter.scaleFactor
     }
 
     DataRef {
         id: totalEnergyRef
-        name: "sim/cockpit2/gauges/indicators/total_energy_fpm"
+        accuracy: 10 // Todo: there's laminar/ask21/vvi_ms_compensated
+        name: settings.isTotalEnergy ? "sim/cockpit2/gauges/indicators/total_energy_fpm" : ""
         scaleFactor: unitConverter.scaleFactor
     }
 
@@ -37,6 +39,7 @@ PanelItems.PanelItem {
         valueMax: settings.isMs ? 5 : 1000
         valueMin: -valueMax
         barsAngleMin: -135
+        limitAngle: true
 
         Text {
             text: unitConverter.outUnitName
@@ -48,6 +51,11 @@ PanelItems.PanelItem {
         }
         Needle {
             rotation: valueBars.value2Angle(settings.isTotalEnergy ? totalEnergyRef.value : variometerRef.value)
+            Behavior on rotation { PropertyAnimation {
+                    easing.type: Easing.Linear
+                    duration: 16
+                }
+            }
         }
         Image {
             source: "overlay-0.svg"

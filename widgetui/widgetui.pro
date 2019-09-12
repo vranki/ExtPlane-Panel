@@ -49,7 +49,6 @@ SOURCES += \
     main.cpp \
     panelitems/panelitem.cpp \
     panelwindow.cpp \
-    panelitems/airspeedindicator.cpp \
     menubutton.cpp \
     panelitems/needleinstrument.cpp \
     panelitems/compass.cpp \
@@ -57,8 +56,6 @@ SOURCES += \
     dialogs/edititemdialog.cpp \
     widgets/velocityunitcombobox.cpp \
     widgets/numberinputlineedit.cpp \
-    panelitems/variometer.cpp \
-    panelitems/altimeter.cpp \
     panelitems/di.cpp \
     panelitems/attitudeindicator.cpp \
     panelitems/turnbank.cpp \
@@ -73,7 +70,6 @@ SOURCES += \
     needles/triangleneedle.cpp \
     needles/gabalancedneedle.cpp \
     dialogs/panelitemselectiondialog.cpp \
-    panelitems/slipindicator.cpp \
     dialogs/hardwaredialog.cpp \
     panelitems/gpsmap.cpp \
     panelitems/radarmap.cpp \
@@ -81,7 +77,6 @@ SOURCES += \
     panelitems/datarefdebugger.cpp \
     panelitems/gaugecover.cpp \
     panel.cpp \
-    panelitems/indicatorlight.cpp \
     widgets/colorselector.cpp \
     panelitems/enginedisplay.cpp \
     panelitems/displayinstrument.cpp \
@@ -111,7 +106,6 @@ SOURCES += \
 HEADERS += \
     panelitems/panelitem.h \
     panelwindow.h \
-    panelitems/airspeedindicator.h \
     menubutton.h \
     panelitems/needleinstrument.h \
     panelitems/compass.h \
@@ -119,8 +113,6 @@ HEADERS += \
     dialogs/edititemdialog.h \
     widgets/velocityunitcombobox.h \
     widgets/numberinputlineedit.h \
-    panelitems/variometer.h \
-    panelitems/altimeter.h \
     panelitems/di.h \
     panelitems/attitudeindicator.h \
     panelitems/turnbank.h \
@@ -135,7 +127,6 @@ HEADERS += \
     needles/triangleneedle.h \
     needles/gabalancedneedle.h \
     dialogs/panelitemselectiondialog.h \
-    panelitems/slipindicator.h \
     dialogs/hardwaredialog.h \
     panelitems/gpsmap.h \
     panelitems/radarmap.h \
@@ -143,7 +134,6 @@ HEADERS += \
     panelitems/datarefdebugger.h \
     panelitems/gaugecover.h \
     panel.h \
-    panelitems/indicatorlight.h \
     widgets/colorselector.h \
     panelitems/enginedisplay.h \
     panelitems/displayinstrument.h \

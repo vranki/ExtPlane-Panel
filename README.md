@@ -52,6 +52,9 @@ TODO: Check travis builds
 * Compass
 * Airspeed indicator
 * Variometer
+* Altimeter
+* Turn & Slip indicator
+* Slip indicator
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
@@ -83,7 +86,7 @@ N indicatorlight -> Annunciator
 ! slipindicator
 ! tankleveler
 N variometer -> Variometer
-! altimeter
+N altimeter -> Altimeter
 N button -> ButtonGeneric
 ! datarefdebugger
 ! di
@@ -112,6 +115,10 @@ Learn these keys:
 * f - go to fullscreen mode
 * a - Add new item
 * Delete - delete selected item
+
+In edit mode you can drag and resize panel items.
+
+Double click on item to open it's settings (if any available).
 
 ### Panels ###
 
