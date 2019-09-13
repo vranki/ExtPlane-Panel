@@ -15,6 +15,7 @@ PanelItems.PanelItem {
 
     CircularGauge {
         id: gauge
+        anchors.fill: parent
         gaugeValue: parseFloat(fuelTempRef.value)
         barValue: 20
         thinBarValue: 5

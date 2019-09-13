@@ -45,6 +45,12 @@ SOURCES += \
      ../widgetui/panelitems/mapinstrument.cpp \
      ../widgetui/panelitems/gpsmap.cpp \
      ../widgetui/panelitems/hsi_ks55.cpp \
+     ../widgetui/panelitems/di.cpp \
+     ../widgetui/panelitems/displayinstrument.cpp \
+     ../widgetui/panelitems/enginedisplay.cpp \
+     ../widgetui/panelitems/navdisplay.cpp \
+     ../widgetui/panelitems/pfddisplay.cpp \
+     ../widgetui/panelitems/radarmap.cpp \
      ../util/units.cpp \
      ../widgetui/panelitems/turnbank.cpp \
      ../widgetui/widgets/numberinputlineedit.cpp \
@@ -57,6 +63,12 @@ HEADERS += \
      ../widgetui/panelitems/mapinstrument.h \
      ../widgetui/panelitems/gpsmap.h \
      ../widgetui/panelitems/hsi_ks55.h \
+     ../widgetui/panelitems/di.h \
+     ../widgetui/panelitems/displayinstrument.h \
+     ../widgetui/panelitems/enginedisplay.h \
+     ../widgetui/panelitems/navdisplay.h \
+     ../widgetui/panelitems/pfddisplay.h \
+     ../widgetui/panelitems/radarmap.h \
      ../util/units.h \
      ../widgetui/panelitems/turnbank.h \
      ../widgetui/widgets/numberinputlineedit.h \

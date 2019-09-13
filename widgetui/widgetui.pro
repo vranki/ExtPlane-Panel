@@ -60,10 +60,8 @@ SOURCES += \
     panelitems/attitudeindicator.cpp \
     panelitems/turnbank.cpp \
     panelitems/hsi_ks55.cpp \
-    panelitems/engine_rpm.cpp \
     widgets/distanceunitcombobox.cpp \
     panelitems/button.cpp \
-    panelitems/switch.cpp \
     panelitems/rotaryknob.cpp \
     panelitemfactory.cpp \
     needles/needle.cpp \
@@ -116,11 +114,9 @@ HEADERS += \
     panelitems/di.h \
     panelitems/attitudeindicator.h \
     panelitems/turnbank.h \
-    panelitems/engine_rpm.h \
     panelitems/hsi_ks55.h \
     widgets/distanceunitcombobox.h \
     panelitems/button.h \
-    panelitems/switch.h \
     panelitems/rotaryknob.h \
     panelitemfactory.h \
     needles/needle.h \

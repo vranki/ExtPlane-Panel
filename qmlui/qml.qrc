@@ -40,5 +40,11 @@
         <file>panelitems/TurnAndSlip.qml</file>
         <file>panelitems/turnslip-mark.svg</file>
         <file>panelitems/needle/needle-3.svg</file>
+        <file>panelitems/hsi/DirectionIndicator.qml</file>
+        <file>panelitems/efis/EngineDisplay.qml</file>
+        <file>panelitems/needle/EngineRpm.qml</file>
+        <file>panelitems/efis/NavDisplay.qml</file>
+        <file>panelitems/efis/RadarMap.qml</file>
+        <file>panelitems/efis/Pfd.qml</file>
     </qresource>
 </RCC>

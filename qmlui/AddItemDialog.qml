@@ -147,5 +147,35 @@ Dialog {
             itemName: "TurnAndSlip"
             description: "Turn and slip indicator."
         }
+        ListElement {
+            name: "Direction indicator"
+            itemName: "hsi/DirectionIndicator"
+            description: "Generic direction indicator."
+        }
+        ListElement {
+            name: "Engine display"
+            itemName: "efis/EngineDisplay"
+            description: "Displays the engine N1, EPR and EGT for any number of engines for Glass Cockpit."
+        }
+        ListElement {
+            name: "Engine RPM"
+            itemName: "needle/EngineRpm"
+            description: "Engine RPM gauge."
+        }
+        ListElement {
+            name: "Navigation display"
+            itemName: "efis/NavDisplay"
+            description: "Navigation display."
+        }
+        ListElement {
+            name: "Radar map"
+            itemName: "efis/RadarMap"
+            description: "Radar map."
+        }
+        ListElement {
+            name: "Primary Flight Display (PFD)"
+            itemName: "efis/Pfd"
+            description: "EFIS-style Primary Flight Display (PFD)."
+        }
     }
 }

@@ -89,7 +89,7 @@ MouseArea {
 
     function selectItem(newItem) {
         for(var i=0;i<panelItemModel.count;i++) {
-            if(!panelItemModel.get(i)) {
+            if(!panelItemModel.get(i).item) {
                 console.log("WTF, panel item at", i, " doesn't exist!")
             }
             panelItemModel.get(i).item.isSelectedItem = false // TODO: TypeError: Value is undefined and could not be converted to an object
@@ -102,8 +102,9 @@ MouseArea {
         if(selectedItem) {
             var deletedIndex = undefined
             for(var i=0;i<panelItemModel.count;i++) {
-                if(panelItemModel.get(i).item === selectItem) deletedIndex = i
+                if(panelItemModel.get(i).item === selectedItem) deletedIndex = i
             }
+            console.log("Deleting item", deletedIndex, " from model")
             panelItemModel.remove(deletedIndex)
             selectedItem.destroy()
             selectItem(null)

@@ -51,4 +51,5 @@ PanelItems.PanelItem {
         anchors.bottomMargin: valueBars.height / 3
         z: -5
     }
+    function value2Angle(value) { return valueBars.value2Angle(value) }
 }

@@ -55,6 +55,8 @@ TODO: Check travis builds
 * Altimeter
 * Turn & Slip indicator
 * Slip indicator
+* Direction indicator
+* Engine RPM
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
@@ -74,30 +76,27 @@ W = Wrapped in QML
 N airspeedindicator -> AirspeedIndicator
 W attitudeindicator -> AttitudeIndicator
 N compass -> CompassBasic
-? dial
-? displayinstrument
-? enginedisplay
-! engine_rpm
-? genericlittlegauge
+? dial (Needs rewrite)
+W enginedisplay (Does not work)
+N engine_rpm -> EngineRpm
+? genericlittlegauge (Needs rewrite)
 W hsi_ks55 -> HsiK55
 N indicatorlight -> Annunciator
-? navdisplay
-? radarmap.h
-! slipindicator
-! tankleveler
+W navdisplay (Does not work)
+W radarmap.h (Does not work)
+N slipindicator -> SlipIndicator
+! tankleveler (Needs rewrite)
 N variometer -> Variometer
 N altimeter -> Altimeter
 N button -> ButtonGeneric
-! datarefdebugger
-! di
+! datarefdebugger (Needs rewrite)
+W di
 ! engine_battery
 ! engine_fuel_p
 ! gaugecover
 W gpsmap -> GpsMap
-? indicatordisplay
-? mapinstrument
-! needleinstrument (CircularGauge?)
-! pfddisplay
+N indicatordisplay -> Annunciator
+W pfddisplay (Does not work)
 ! rotaryknob
 N switch -> ToggleSwitch
 W turnbank -> TurnBank
