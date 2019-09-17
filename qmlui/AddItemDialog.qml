@@ -177,5 +177,10 @@ Dialog {
             itemName: "efis/Pfd"
             description: "EFIS-style Primary Flight Display (PFD)."
         }
+        ListElement {
+            name: "Dial"
+            itemName: "switches/Dial"
+            description: "Multi-position dial. Can be freely configured."
+        }
     }
 }

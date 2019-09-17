@@ -6,33 +6,43 @@ import QtQuick.Layouts 1.3
 Window {
     id: itemPropertiesWindow
     flags: Qt.Dialog
-    width: 600
-    height: 400
+    width: 800
+    height: 600
     property alias propertyItems: propertyContainer.children
     property alias helpText: helpContainer.text
     Flickable {
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height
+        flickableDirection: Flickable.VerticalFlick
+
+        contentWidth: columnLayout.width
+        contentHeight: columnLayout.height
+
+        ScrollBar.vertical: ScrollBar { }
+
         ColumnLayout {
-            anchors.fill: parent
+            id: columnLayout
+            Layout.bottomMargin: 20
+            Layout.topMargin: 5
+            Layout.fillWidth: true
             TextArea {
                 id: helpContainer
-                Layout.fillWidth: true
                 wrapMode: TextArea.WordWrap
                 readOnly: true
                 textFormat: TextEdit.AutoText
                 onLinkActivated: Qt.openUrlExternally(link)
+                text: helpText
             }
+
             GridLayout {
                 id: propertyContainer
                 columns: 2
-                columnSpacing: 30
-                rowSpacing: 30
+                columnSpacing: 20
+                rowSpacing: 20
+                Layout.fillWidth: true
                 Layout.leftMargin: 10
-                Layout.rightMargin: 10
-                Layout.topMargin: 10
-                Layout.bottomMargin: 10
-                Layout.preferredHeight: 1
             }
+
             Item {
                 width: itemPropertiesWindow.width
                 height: okButton.height

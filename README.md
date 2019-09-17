@@ -57,6 +57,7 @@ TODO: Check travis builds
 * Slip indicator
 * Direction indicator
 * Engine RPM
+* Multi-positon dial
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
@@ -76,7 +77,7 @@ W = Wrapped in QML
 N airspeedindicator -> AirspeedIndicator
 W attitudeindicator -> AttitudeIndicator
 N compass -> CompassBasic
-? dial (Needs rewrite)
+N dial -> Dial
 W enginedisplay (Does not work)
 N engine_rpm -> EngineRpm
 ? genericlittlegauge (Needs rewrite)

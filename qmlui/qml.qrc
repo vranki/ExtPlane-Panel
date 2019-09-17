@@ -46,5 +46,8 @@
         <file>panelitems/efis/NavDisplay.qml</file>
         <file>panelitems/efis/RadarMap.qml</file>
         <file>panelitems/efis/Pfd.qml</file>
+        <file>panelitems/switches/Dial.qml</file>
+        <file>panelitems/switches/dialknob.svg</file>
+        <file>panelitems/settingsui/IntField.qml</file>
     </qresource>
 </RCC>
