@@ -182,5 +182,10 @@ Dialog {
             itemName: "switches/Dial"
             description: "Multi-position dial. Can be freely configured."
         }
+        ListElement {
+            name: "G Meter"
+            itemName: "needle/GMeter"
+            description: "G Meter, needle type"
+        }
     }
 }

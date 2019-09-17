@@ -49,5 +49,6 @@
         <file>panelitems/switches/Dial.qml</file>
         <file>panelitems/switches/dialknob.svg</file>
         <file>panelitems/settingsui/IntField.qml</file>
+        <file>panelitems/needle/GMeter.qml</file>
     </qresource>
 </RCC>

@@ -11,6 +11,8 @@ PanelItems.PanelItem {
     property string topLabel: ""
     property string bottomLabel: ""
     property double valueMultiplier: 1
+    property int needleType: 0
+    readonly property double barAngle: valueBars.barAngle
 
     width: Math.min(parent.width, parent.height)
 
@@ -24,7 +26,13 @@ PanelItems.PanelItem {
         valueMax: parent.valueMax
         valueMultiplier: parent.valueMultiplier
         Needle {
+            needleType: parent.parent.needleType
             rotation: valueBars.value2Angle(gaugeValue)
+            Behavior on rotation { PropertyAnimation {
+                    easing.type: Easing.InOutQuad
+                    duration: 150
+                }
+            }
         }
     }
     CircularGaugeBars {

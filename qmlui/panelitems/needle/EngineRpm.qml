@@ -39,7 +39,7 @@ PanelItems.PanelItem {
         topLabel: "RPM"
         bottomLabel: "x " + valueMultiplier
 
-        GaugeArc { // Vne bar
+        GaugeArc { // Max rpm bar
             anchors.fill: parent
             arcColor: "red"
             z: -10

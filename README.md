@@ -58,6 +58,7 @@ TODO: Check travis builds
 * Direction indicator
 * Engine RPM
 * Multi-positon dial
+* G Meter
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
@@ -111,10 +112,11 @@ Learn these keys:
 
 * Tab - Show main menu
 * Space - toggle edit mode
-* s - save panels
-* f - go to fullscreen mode
+* s - save all panels
+* f - toggle fullscreen mode
 * a - Add new item
 * Delete - delete selected item
+* d - duplicate selected item (settings not copied yet)
 
 In edit mode you can drag and resize panel items.
 
