@@ -5,16 +5,16 @@ Item { // Gets parent size
     property bool showValue: false // Show values as numbers
     property bool showLastValue: true // Can be used to hide last value (for 360 degree gauges)
     property bool limitAngle: false // Limit value2angle between min & max values
-    property double valueMin: 0 // Minimum value to show
-    property double valueMax: 100 // Maximum value to show
-    property double barValue: 10 // Value of one bar
+    property real valueMin: 0 // Minimum value to show
+    property real valueMax: 100 // Maximum value to show
+    property real barValue: 10 // Value of one bar
     property int barsAngleMin: -90 // Angle of minimum value, 0=west
     property int barsAngle: 270 // Total angle of values
-    property double valueMultiplier: 1 // Multiplier of value labels
+    property real valueMultiplier: 1 // Multiplier of value labels
 
     readonly property int barCount: valueRange / barValue + 1
-    readonly property double valueRange: valueMax - valueMin
-    readonly property double barAngle: barsAngle / (barCount - 1)
+    readonly property real valueRange: valueMax - valueMin
+    readonly property real barAngle: barsAngle / (barCount - 1)
 
     width: Math.min(parent.width, parent.height)
     height: width

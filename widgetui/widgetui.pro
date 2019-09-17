@@ -95,7 +95,6 @@ SOURCES += \
     ../hardware/hardwarebinding.cpp \
     ../hardware/hardwaremanager.cpp \
     panelitems/engine_fuel_p.cpp \
-    panelitems/tankleveler.cpp \
     panelitems/engine_battery.cpp \
     panelitems/genericlittlegauge.cpp \
     panelitems/pfddisplay.cpp \
@@ -151,7 +150,6 @@ HEADERS += \
     ../hardware/hardwarebinding.h \
     ../hardware/hardwaremanager.h \
     panelitems/engine_fuel_p.h \
-    panelitems/tankleveler.h \
     panelitems/engine_battery.h \
     panelitems/genericlittlegauge.h \
     panelitems/pfddisplay.h \

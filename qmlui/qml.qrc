@@ -50,5 +50,6 @@
         <file>panelitems/switches/dialknob.svg</file>
         <file>panelitems/settingsui/IntField.qml</file>
         <file>panelitems/needle/GMeter.qml</file>
+        <file>panelitems/needle/FuelGauge.qml</file>
     </qresource>
 </RCC>

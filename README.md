@@ -59,6 +59,7 @@ TODO: Check travis builds
 * Engine RPM
 * Multi-positon dial
 * G Meter
+* Fuel gauge
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
@@ -87,7 +88,7 @@ N indicatorlight -> Annunciator
 W navdisplay (Does not work)
 W radarmap.h (Does not work)
 N slipindicator -> SlipIndicator
-! tankleveler (Needs rewrite)
+N tankleveler -> FuelGauge
 N variometer -> Variometer
 N altimeter -> Altimeter
 N button -> ButtonGeneric
@@ -116,7 +117,7 @@ Learn these keys:
 * f - toggle fullscreen mode
 * a - Add new item
 * Delete - delete selected item
-* d - duplicate selected item (settings not copied yet)
+* d - duplicate selected item (settings not copied yet yet)
 
 In edit mode you can drag and resize panel items.
 

@@ -2,17 +2,18 @@ import QtQuick 2.0
 import ".." as PanelItems
 
 PanelItems.PanelItem {
-    property double gaugeValue: 0
-    property double barValue: 10
-    property double thinBarValue: 0
-    property double barsAngleMin: 0
-    property double valueMin: 0
-    property double valueMax: 100
+    property real gaugeValue: 0
+    property real barValue: 10
+    property real thinBarValue: 0
+    property real barsAngle: 270
+    property real barsAngleMin: 0
+    property real valueMin: 0
+    property real valueMax: 100
     property string topLabel: ""
     property string bottomLabel: ""
-    property double valueMultiplier: 1
+    property real valueMultiplier: 1
     property int needleType: 0
-    readonly property double barAngle: valueBars.barAngle
+    readonly property real barAngle: valueBars.barAngle
 
     width: Math.min(parent.width, parent.height)
 
@@ -21,6 +22,7 @@ PanelItems.PanelItem {
         thickBars: true
         showValue: true
         barValue: parent.barValue
+        barsAngle: parent.barsAngle
         barsAngleMin: parent.barsAngleMin
         valueMin: parent.valueMin
         valueMax: parent.valueMax
@@ -38,6 +40,7 @@ PanelItems.PanelItem {
     CircularGaugeBars {
         barValue: thinBarValue
         visible: thinBarValue
+        barsAngle: parent.barsAngle
         barsAngleMin: parent.barsAngleMin
         valueMin: parent.valueMin
         valueMax: parent.valueMax

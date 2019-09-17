@@ -187,5 +187,10 @@ Dialog {
             itemName: "needle/GMeter"
             description: "G Meter, needle type"
         }
+        ListElement {
+            name: "Fuel gauge"
+            itemName: "needle/FuelGauge"
+            description: "Shows fuel capacity in selected tank in %"
+        }
     }
 }
