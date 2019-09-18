@@ -24,9 +24,8 @@ make clean distclean
 ./scripts/cross-compile-win64-from-lin.sh
 
 # Zip the results for release
-cp widgetui/bin/extplane-panel.exe qmlui/qmlui.exe build
+cp qmlui/release/qmlui.exe build
 
 pushd build
-zip -r extplane-panel.zip qmlui qmlui.exe extplane-panel extplane-panel.exe
+zip -r extplane-panel.zip qmlui qmlui.exe
 popd
-

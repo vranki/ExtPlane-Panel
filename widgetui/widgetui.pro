@@ -51,7 +51,6 @@ SOURCES += \
     panelwindow.cpp \
     menubutton.cpp \
     panelitems/needleinstrument.cpp \
-    panelitems/compass.cpp \
     dialogs/settingsdialog.cpp \
     dialogs/edititemdialog.cpp \
     widgets/velocityunitcombobox.cpp \
@@ -61,7 +60,6 @@ SOURCES += \
     panelitems/turnbank.cpp \
     panelitems/hsi_ks55.cpp \
     widgets/distanceunitcombobox.cpp \
-    panelitems/button.cpp \
     panelitemfactory.cpp \
     needles/needle.cpp \
     needles/triangleneedle.cpp \
@@ -71,7 +69,6 @@ SOURCES += \
     panelitems/gpsmap.cpp \
     panelitems/radarmap.cpp \
     panelitems/mapinstrument.cpp \
-    panelitems/datarefdebugger.cpp \
     panelitems/gaugecover.cpp \
     panel.cpp \
     widgets/colorselector.cpp \
@@ -79,7 +76,6 @@ SOURCES += \
     panelitems/displayinstrument.cpp \
     panelitems/navdisplay.cpp \
     dialogs/panelsdialog.cpp \
-    panelitems/dial.cpp \
     dialogs/bindingcurvedialog.cpp \
     ../settings.cpp \
     ../util/units.cpp \
@@ -104,7 +100,6 @@ HEADERS += \
     panelwindow.h \
     menubutton.h \
     panelitems/needleinstrument.h \
-    panelitems/compass.h \
     dialogs/settingsdialog.h \
     dialogs/edititemdialog.h \
     widgets/velocityunitcombobox.h \
@@ -114,7 +109,6 @@ HEADERS += \
     panelitems/turnbank.h \
     panelitems/hsi_ks55.h \
     widgets/distanceunitcombobox.h \
-    panelitems/button.h \
     panelitemfactory.h \
     needles/needle.h \
     needles/triangleneedle.h \
@@ -124,7 +118,6 @@ HEADERS += \
     panelitems/gpsmap.h \
     panelitems/radarmap.h \
     panelitems/mapinstrument.h \
-    panelitems/datarefdebugger.h \
     panelitems/gaugecover.h \
     panel.h \
     widgets/colorselector.h \
@@ -132,7 +125,6 @@ HEADERS += \
     panelitems/displayinstrument.h \
     panelitems/navdisplay.h \
     dialogs/panelsdialog.h \
-    panelitems/dial.h \
     dialogs/bindingcurvedialog.h \
     ../settings.h \
     ../util/valueinterpolator.h \

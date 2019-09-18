@@ -24,7 +24,7 @@ AttitudeIndicator::AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneClient *clien
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
     _client(client)
 {
-    _client.createClient();
+    _client->createClient();
     // Init
     _pitchValue = 10;
     _rollValue = -20;

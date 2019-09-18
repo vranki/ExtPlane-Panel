@@ -16,7 +16,7 @@ DirectionIndicator::DirectionIndicator(ExtPlanePanel *panel, ExtPlaneClient *cli
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
     _client(client)
 {
-    _client.createClient();
+    _client->createClient();
     _value = 0;
     _range1 = 360;
     _range2 = 360;

@@ -12,7 +12,7 @@ HSI::HSI(ExtPlanePanel *panel, ExtPlaneClient *client) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
     _client(client)
 {
-    _client.createClient();
+    _client->createClient();
     // Init
     _thickBars = 10;
     _thinBars = 5;
