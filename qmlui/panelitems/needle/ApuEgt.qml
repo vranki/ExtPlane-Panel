@@ -11,8 +11,7 @@ PanelItems.PanelItem {
 
     DataRef {
         id: apuEgtRef
-        //name: "sim/cockpit2/electrical/APU_EGT_c"
-        name: "x737/ovh/APUGENPanel/APU_EGT"
+        name: settings.x737 ? "x737/ovh/APUGENPanel/APU_EGT" : "sim/cockpit2/electrical/APU_EGT_c"
         accuracy: 1
     }
 
@@ -32,12 +31,15 @@ PanelItems.PanelItem {
         id: propertiesDialog
         propertyItems: [
             Text { text: "Max value" },
-            TextField { text: settings.maxValue; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.maxValue = text }
+            TextField { text: settings.maxValue; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.maxValue = text },
+            Text { text: "Use x737 dataref instead of standard" },
+            CheckBox { checked: settings.x737 ; onCheckedChanged: settings.x737 = checked }
         ]
     }
 
     PanelItems.PanelItemSettings {
         id: settings
         property int maxValue: 1000
+        property bool x737: false
     }
 }

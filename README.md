@@ -61,6 +61,8 @@ TODO: Check travis builds
 * G Meter
 * Fuel gauge
 * Rotary knob
+* Battery voltage
+* Fuel pressure
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
@@ -93,10 +95,10 @@ N tankleveler -> FuelGauge
 N variometer -> Variometer
 N altimeter -> Altimeter
 N button -> ButtonGeneric
-! datarefdebugger (Needs rewrite)
+N datarefdebugger -> Label (can show dr value)
 W di
-! engine_battery
-! engine_fuel_p
+N engine_battery -> BatteryVoltage
+N engine_fuel_p -> FuelPressure
 ! gaugecover
 W gpsmap -> GpsMap
 N indicatordisplay -> Annunciator

@@ -52,5 +52,8 @@
         <file>panelitems/needle/GMeter.qml</file>
         <file>panelitems/needle/FuelGauge.qml</file>
         <file>panelitems/switches/RotaryKnob.qml</file>
+        <file>panelitems/needle/BatteryVoltage.qml</file>
+        <file>panelitems/needle/FuelPressure.qml</file>
+        <file>panelitems/needle/ElectricGauge.qml</file>
     </qresource>
 </RCC>

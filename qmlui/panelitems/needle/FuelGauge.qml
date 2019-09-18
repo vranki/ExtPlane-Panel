@@ -7,27 +7,18 @@ import "../.." as Panel
 import ".." as PanelItems
 import "../settingsui" as SettingsUi
 
-PanelItems.PanelItem {
+
+ElectricGauge {
     propertiesDialog: propertiesDialog
+    value: (parseFloat(fuelRef.values[settings.tankNumber]) / settings.tankCapacity)
+    label: "FUEL QTY"
+    labels: ['E', '1/4', '1/2', '3/4', 'F']
 
     DataRef {
         id: fuelRef
         name: "sim/cockpit2/fuel/fuel_quantity"
         accuracy: 1
     }
-
-    CircularGauge {
-        id: gauge
-        anchors.fill: parent
-        gaugeValue: (parseFloat(fuelRef.values[settings.tankNumber]) / settings.tankCapacity) * 100.0 // Convert to %
-        barValue: 20
-        thinBarValue: 10
-        barsAngleMin: 45
-        barsAngle: 90
-        valueMax: settings.tankCapacity
-        topLabel: "FUEL QTY %"
-    }
-
 
     Panel.PanelItemPropertiesDialog {
         id: propertiesDialog

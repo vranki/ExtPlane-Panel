@@ -192,11 +192,20 @@ Dialog {
             itemName: "needle/FuelGauge"
             description: "Shows fuel capacity in selected tank in %"
         }
-
         ListElement {
             name: "Rotary knob"
             itemName: "switches/RotaryKnob"
             description: "Generic knob you can rotate to change a dataref."
+        }
+        ListElement {
+            name: "Battery voltage"
+            itemName: "needle/BatteryVoltage"
+            description: "Shows battery voltage for selected battery."
+        }
+        ListElement {
+            name: "Fuel pressure"
+            itemName: "needle/FuelPressure"
+            description: "Shows fuel pressure."
         }
     }
 }

@@ -51,11 +51,7 @@ PanelItems.PanelItem {
         }
         Needle {
             rotation: valueBars.value2Angle(settings.isTotalEnergy ? totalEnergyRef.value : variometerRef.value)
-            Behavior on rotation { PropertyAnimation {
-                    easing.type: Easing.Linear
-                    duration: 16
-                }
-            }
+            movementDuration: 16
         }
         Image {
             source: "overlay-0.svg"

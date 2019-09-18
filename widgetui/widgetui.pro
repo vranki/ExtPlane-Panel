@@ -93,8 +93,6 @@ SOURCES += \
     ../hardware/pololuoutputdevice.cpp \
     ../hardware/hardwarebinding.cpp \
     ../hardware/hardwaremanager.cpp \
-    panelitems/engine_fuel_p.cpp \
-    panelitems/engine_battery.cpp \
     panelitems/genericlittlegauge.cpp \
     panelitems/pfddisplay.cpp \
     panelitems/indicatordisplay.cpp
@@ -147,8 +145,6 @@ HEADERS += \
     ../hardware/pololuoutputdevice.h \
     ../hardware/hardwarebinding.h \
     ../hardware/hardwaremanager.h \
-    panelitems/engine_fuel_p.h \
-    panelitems/engine_battery.h \
     panelitems/genericlittlegauge.h \
     panelitems/pfddisplay.h \
     panelitems/indicatordisplay.h

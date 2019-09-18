@@ -30,11 +30,6 @@ PanelItems.PanelItem {
         Needle {
             needleType: parent.parent.needleType
             rotation: valueBars.value2Angle(gaugeValue)
-            Behavior on rotation { PropertyAnimation {
-                    easing.type: Easing.InOutQuad
-                    duration: 150
-                }
-            }
         }
     }
     CircularGaugeBars {
@@ -53,6 +48,8 @@ PanelItems.PanelItem {
         anchors.top: valueBars.top
         anchors.topMargin: valueBars.height / 3
         z: -5
+        font.pixelSize: parent.height * 0.05
+        font.family: b612.name
     }
     Text {
         text: bottomLabel
@@ -61,6 +58,8 @@ PanelItems.PanelItem {
         anchors.bottom: valueBars.bottom
         anchors.bottomMargin: valueBars.height / 3
         z: -5
+        font.pixelSize: parent.height * 0.05
+        font.family: b612.name
     }
     function value2Angle(value) { return valueBars.value2Angle(value) }
 }

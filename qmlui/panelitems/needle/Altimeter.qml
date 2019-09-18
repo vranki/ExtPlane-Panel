@@ -69,11 +69,7 @@ PanelItems.PanelItem {
         Needle {
             needleType: 1
             rotation: valueBars.value2Angle(altitudeRef.value * 10)
-            Behavior on rotation { PropertyAnimation {
-                    easing.type: Easing.Linear
-                    duration: 500
-                }
-            }
+            movementDuration: 250
         }
     }
     Panel.PanelItemPropertiesDialog {

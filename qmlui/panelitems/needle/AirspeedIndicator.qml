@@ -108,11 +108,6 @@ PanelItems.PanelItem {
         Needle {
             needleType: 1
             rotation: valueBars.value2Angle(airspeedRef.value)
-            Behavior on rotation { PropertyAnimation {
-                    easing.type: Easing.InOutQuad
-                    duration: 250
-                }
-            }
         }
     }
     Panel.PanelItemPropertiesDialog {
