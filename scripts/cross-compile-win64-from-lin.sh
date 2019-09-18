@@ -25,7 +25,7 @@ if [ -d ../mxe ] ; then
   MXEDIR=`pwd`/../mxe
 else
   if [ -d /usr/lib/mxe ] ; then
-     MXEDIR = /usr/lib/mxe
+     MXEDIR=/usr/lib/mxe
   fi
 fi
 
