@@ -24,17 +24,29 @@ Dialog {
         }
         Button {
             Layout.fillWidth: true
-            text: "Save panel (s)"
+            text: "Save panels (s)"
             onClicked: panelItemArea.savePanel()
         }
         Button {
             Layout.fillWidth: true
             text: "Clear panel"
             onClicked: panelItemArea.clearPanel()
-        }/*
+        }
+        Button {
+            Layout.fillWidth: true
+            text: "Warning log"
+            onClicked: warningLogWindow.open()
+        }
+        Item { width: 1; height: 1  }
+        /*
         Button {
             Layout.fillWidth: true
             text: "Export panel file"
+        }
+
+        Button {
+            Layout.fillWidth: true
+            text: "Import panel file"
         }*/
         Label {
             text: "Panel number"
@@ -45,24 +57,10 @@ Dialog {
             value: panelItemArea.panelId
             onValueChanged: panelItemArea.loadPanel(value)
         }
-        Button {
-            Layout.fillWidth: true
-            text: "Import panel file"
-        }
-        Button {
-            Layout.fillWidth: true
-            text: "Quit"
-            onClicked: Qt.quit()
-        }
         CheckBox {
-            text: "Simulated connection"
+            text: "Simulated connection (needs restart)"
             checkState: window.simulatedConnection ? Qt.Checked : Qt.Unchecked
             onClicked: window.simulatedConnection = !window.simulatedConnection
-        }
-        CheckBox {
-            text: "Snap to grid"
-            checkState: panelItemArea.snapToGrid ? Qt.Checked : Qt.Unchecked
-            onClicked: panelItemArea.snapToGrid = !panelItemArea.snapToGrid
         }
         TextField {
             placeholderText: "ExtPlane IP address"
@@ -70,6 +68,16 @@ Dialog {
             text: applicationSettings.extplaneHost
             inputMethodHints: Qt.ImhFormattedNumbersOnly
             enabled: !simulatedConnection
+        }
+        CheckBox {
+            text: "Snap to grid"
+            checkState: panelItemArea.snapToGrid ? Qt.Checked : Qt.Unchecked
+            onClicked: panelItemArea.snapToGrid = !panelItemArea.snapToGrid
+        }
+        Button {
+            Layout.fillWidth: true
+            text: "Quit"
+            onClicked: Qt.quit()
         }
         Label {
             text: "Press ESC to close or tab to open"

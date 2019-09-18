@@ -28,15 +28,15 @@ Target hardware is:
 * Raspberry Pi
 * anything that will run Qt!
 
-## Download ##
+## Download
 
-### Ext-Plane Plugin + Panel ###
+### Ext-Plane Plugin + Panel
 
 TODO: Check travis builds
 
-## Instruments ##
+## Instruments
 
-### Instruments in ExtPlane-Panel 2.0
+### Instruments in ExtPlane-Panel 2
 
 * Annunciator
 * Button
@@ -65,8 +65,7 @@ TODO: Check travis builds
 * Fuel pressure
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
-You can also add and customize covers for your instruments. In addition, there are also
-debugging tools which can help when developing with the X-Plane API.
+Some can be used with airliners and some are specifically for x737.
 
 ### Compability with ExtPlane-Panel 1.x
 
@@ -75,42 +74,42 @@ much quicker development. Some instruments have been rewritten in QML and
 some wrap the old widget code. Here's a list of panel items and their statuses.
 
 N = New rewrite in QML
+
 W = Wrapped in QML
+
 ! = Not done, either rewrite or wrap
+
 ? = Might get removed
 
-N airspeedindicator -> AirspeedIndicator
-W attitudeindicator -> AttitudeIndicator
-N compass -> CompassBasic
-N dial -> Dial
-W enginedisplay (Does not work)
-N engine_rpm -> EngineRpm
-? genericlittlegauge (Needs rewrite)
-W hsi_ks55 -> HsiK55
-N indicatorlight -> Annunciator
-W navdisplay (Does not work)
-W radarmap.h (Does not work)
-N slipindicator -> SlipIndicator
-N tankleveler -> FuelGauge
-N variometer -> Variometer
-N altimeter -> Altimeter
-N button -> ButtonGeneric
-N datarefdebugger -> Label (can show dr value)
-W di
-N engine_battery -> BatteryVoltage
-N engine_fuel_p -> FuelPressure
-! gaugecover
-W gpsmap -> GpsMap
-N indicatordisplay -> Annunciator
-W pfddisplay (Does not work)
-N rotaryknob -> RotaryKnob
-N switch -> ToggleSwitch
-W turnbank -> TurnBank
+* N airspeedindicator -> AirspeedIndicator
+* W attitudeindicator -> AttitudeIndicator
+* N compass -> CompassBasic
+* N dial -> Dial
+* W enginedisplay (Does not work)
+* N engine_rpm -> EngineRpm
+* ? genericlittlegauge (Needs rewrite)
+* W hsi_ks55 -> HsiK55
+* N indicatorlight -> Annunciator
+* W navdisplay (Does not work)
+* W radarmap.h (Does not work)
+* N slipindicator -> SlipIndicator
+* N tankleveler -> FuelGauge
+* N variometer -> Variometer
+* N altimeter -> Altimeter
+* N button -> ButtonGeneric
+* N datarefdebugger -> Label (can show dr value)
+* W di
+* N engine_battery -> BatteryVoltage
+* N engine_fuel_p -> FuelPressure
+* ! gaugecover  (Needs rewrite)
+* W gpsmap -> GpsMap
+* N indicatordisplay -> Annunciator
+* W pfddisplay (Does not work)
+* N rotaryknob -> RotaryKnob
+* N switch -> ToggleSwitch
+* W turnbank -> TurnBank
 
-If your favorite instrument is missing, don't upgrade yet. If you're a coder,
-please code it.
-
-## Usage ##
+## Usage
 
 Learn these keys:
 
@@ -122,11 +121,13 @@ Learn these keys:
 * Delete - delete selected item
 * d - duplicate selected item (settings not copied yet yet)
 
-In edit mode you can drag and resize panel items.
+### Edit mode
+
+In edit mode you can drag and resize panel items with mouse.
 
 Double click on item to open it's settings (if any available).
 
-### Panels ###
+### Panels
 
 You can have multiple panels numbered from 0 to 42.
 
@@ -136,19 +137,11 @@ automatically - you need to save the panel after editing.
 TODO: Panels can be exported to a .ini file to be copied to
 other computers or versioned.
 
-### Command Line ###
+### Command Line
 
-TODO: implement
+Nothing yet.
 
-### Keyboard Shortcuts ###
-
-* **Space** toggles edit mode
-* **F** sets fullscreen mode
-* **Delete** deletes selected panel items
-* **Left** selects the previous panel (if any)
-* **Right** selects the next panel (if any)
-
-## Building ##
+## Building
 
 ExtPlane-Panel uses the Qt Framework for graphics and cross-platform compatibility. Before building you'll
 need to setup Qt 5 or greater and Qt Mobility to compile. You'll also need to check out the ExtPlane
@@ -159,7 +152,7 @@ The requirements for ExtPlane-Panel are as follows:
 * Qt Framework 5
 * ExtPlane (contains the reusable client Qt code)
 
-### Linux ###
+### Linux
 
 ```bash
 # 1: (Debian/Ubuntu) Install required libraries and tools
@@ -180,7 +173,7 @@ make
 
 ```
 
-### OS X ###
+### OS X
 ```bash
 # 1: Install required libraries and tools
 # Download and install X-Code and Developer Tools from http://developer.apple.com
@@ -199,7 +192,7 @@ make
 # export.
 ```
 
-### Windows ###
+### Windows
 ```bash
 # 1: Install required libraries and tools
 # Download and install Qt5 from http://qt-project.org/downloads
@@ -221,9 +214,11 @@ nmake
 # Visual Studio Express: http://www.microsoft.com/visualstudio/eng/downloads#d-2012-express
 ```
 
-## Creating new Panel Items ##
+## Creating new Panel Items
 
-TODO: Document
+See wiki page at:
+
+https://github.com/vranki/ExtPlane-Panel/wiki/Implementing-Panel-Items
 
 Code should be reasonably well documented. If something is not clear, please
 report it.
@@ -237,7 +232,7 @@ Preferred way is to create a fork in github and send a pull request when
 you are finished. If you don't want to do this, we're happy with any
 other way to deliver the changes.
 
-## Contact / Feedback ##
+## Contact / Feedback
 
 Original Author:
 - Ville Ranki <ville.ranki@iki.fi>

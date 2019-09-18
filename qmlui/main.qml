@@ -45,6 +45,9 @@ Window {
     AddItemDialog {
         id: addItemDialog
     }
+    WarningLogWindow {
+        id: warningLogWindow
+    }
     Settings {
         category: "mainwindow"
         property alias x: window.x
@@ -84,10 +87,6 @@ Window {
 
     FontLoader { id: b612; source: "qrc:/B612-Regular.ttf" }
 
-    Connections {
-        target: extplaneClient
-        onExtplaneWarning: console.log("Extplane-Warning:", message)
-    }
     // Utility functions (move to own file?)
 
     // Limit value between min & max

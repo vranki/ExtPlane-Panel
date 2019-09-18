@@ -55,5 +55,6 @@
         <file>panelitems/needle/BatteryVoltage.qml</file>
         <file>panelitems/needle/FuelPressure.qml</file>
         <file>panelitems/needle/ElectricGauge.qml</file>
+        <file>WarningLogWindow.qml</file>
     </qresource>
 </RCC>
