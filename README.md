@@ -1,9 +1,11 @@
-# ExtPlane-Panel 2 #
-
-![Screenshot](http://s23.postimg.org/8xhypdei3/extplane_panel_screenshot_v2.png)
+# ExtPlane-Panel 2
 
 An external, networked cockpit panel for flight simulators supported by
 ExtPlane, such as X-Plane, Condor and FlightGear.
+
+![Screenshot](/screenshots/extplane-panel.png?raw=true)
+
+![CDU](/screenshots/737-cdu.jpg?raw=true)
 
 License: GNU GPLv3
 

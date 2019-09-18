@@ -8,6 +8,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
 RUN add-apt-repository -y ppa:beineri/opt-qt-5.11.0-xenial
 RUN apt update -qq
 RUN apt install -yq mxe-x86-64-w64-mingw32.static-qtbase mxe-x86-64-w64-mingw32.static-qtdeclarative
-RUN apt install -yq qtbase5-dev qtdeclarative5-dev qt5-default build-essential
+RUN apt install -yq qtbase5-dev qtdeclarative5-dev libqt5svg5-dev qt5-default build-essential
 RUN git clone https://github.com/vranki/ExtPlane.git
 

@@ -39,7 +39,7 @@ OTHER_FILES += android/AndroidManifest.xml \
 
 OTHER_FILES += README.md debian/rules debian/changelog debian/control debian/extplane-panel.install debian/extplane-panel-dbg.install .travis.yml
 
-OTHER_FILES += scripts/*
+OTHER_FILES += scripts/* Dockerfile
 
 DISTFILES += \
     android/AndroidManifest.xml \
