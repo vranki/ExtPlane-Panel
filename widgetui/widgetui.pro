@@ -62,7 +62,6 @@ SOURCES += \
     panelitems/hsi_ks55.cpp \
     widgets/distanceunitcombobox.cpp \
     panelitems/button.cpp \
-    panelitems/rotaryknob.cpp \
     panelitemfactory.cpp \
     needles/needle.cpp \
     needles/triangleneedle.cpp \
@@ -116,7 +115,6 @@ HEADERS += \
     panelitems/hsi_ks55.h \
     widgets/distanceunitcombobox.h \
     panelitems/button.h \
-    panelitems/rotaryknob.h \
     panelitemfactory.h \
     needles/needle.h \
     needles/triangleneedle.h \

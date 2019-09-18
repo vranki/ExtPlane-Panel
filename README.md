@@ -60,6 +60,7 @@ TODO: Check travis builds
 * Multi-positon dial
 * G Meter
 * Fuel gauge
+* Rotary knob
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 You can also add and customize covers for your instruments. In addition, there are also
@@ -100,7 +101,7 @@ W di
 W gpsmap -> GpsMap
 N indicatordisplay -> Annunciator
 W pfddisplay (Does not work)
-! rotaryknob
+N rotaryknob -> RotaryKnob
 N switch -> ToggleSwitch
 W turnbank -> TurnBank
 
