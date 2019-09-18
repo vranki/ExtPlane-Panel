@@ -8,10 +8,9 @@
 #include "../util/console.h"
 #include "extplaneclient.h"
 
-MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneClient *client) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeRectangular),
-    _client(this, typeName(), conn) {
-    _client.createClient();
+    _client(client) {
     // Init
     _mapSource = MAP_INSTRUMENT_SOURCE_GOOGLEMAPS;
     _mode = MAP_INSTRUMENT_MODE_DOWNLOAD_WAITING;
@@ -27,11 +26,10 @@ MapInstrument::MapInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _lastUpdateTime.restart();
 
     // Make connection and register data refs
-    conn->registerClient(&_client);
-    _client.subscribeDataRef("sim/flightmodel/position/latitude", 0);
-    _client.subscribeDataRef("sim/flightmodel/position/longitude", 0);
-    _client.subscribeDataRef(MAP_INSTRUMENT_HEADING_DATAREF, 0);
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(latlongChanged(QString,double)));
+    _client->subscribeDataRef("sim/flightmodel/position/latitude", 0);
+    _client->subscribeDataRef("sim/flightmodel/position/longitude", 0);
+    _client->subscribeDataRef(MAP_INSTRUMENT_HEADING_DATAREF, 0);
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(latlongChanged(QString,double)));
 
     // Setup network manager
     _netManager = new QNetworkAccessManager(this);

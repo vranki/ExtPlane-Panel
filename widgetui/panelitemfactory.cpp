@@ -1,19 +1,22 @@
 #include "panelitemfactory.h"
-
 #include <QDebug>
+#include "panelitems/panelitem.h"
 
-PanelItemFactory::PanelItemFactory() {
-}
+PanelItemFactory::PanelItemFactory() {}
 
-PanelItem *PanelItemFactory::itemForName(QString name, ExtPlanePanel *panel, ExtPlaneConnection *conn) {
-    Q_ASSERT(panel != NULL);
+PanelItem *PanelItemFactory::itemForName(QString name, ExtPlanePanel *panel, ExtPlaneClient *client) {
     if(classMapping()->contains(name)) {
         const QMetaObject *meta = classMapping()->find(name).value();
-        return (PanelItem*) (meta->newInstance(Q_ARG(ExtPlanePanel*,panel),Q_ARG(ExtPlaneConnection*,conn)));
-    } else {
-        qWarning() << Q_FUNC_INFO << "the panel item " << name << "is not recognized";
-        return NULL;
+        PanelItem *newItem = qobject_cast<PanelItem*> (meta->newInstance(Q_ARG(ExtPlanePanel*,panel),Q_ARG(ExtPlaneClient*, client)));
+        if(newItem) {
+            return  newItem;
+        } else {
+            qWarning() << Q_FUNC_INFO << "the panel item " << name << " cannot be created!";
+            return  nullptr;
+        }
     }
+    qWarning() << Q_FUNC_INFO << "the panel item " << name << "is not recognized! Known items are:" << itemNames();
+    return nullptr;
 }
 
 QStringList PanelItemFactory::itemNames() {

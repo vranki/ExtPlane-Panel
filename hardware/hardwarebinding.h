@@ -7,7 +7,7 @@
 #include <QList>
 #include "../util/valueinterpolator.h"
 
-class ExtPlaneConnection;
+class ClientDataRefProvider;
 class ClientDataRef;
 
 #define OUTPUT_CURVE_SIZE 10
@@ -16,7 +16,7 @@ class HardwareBinding : public QObject
 {
     Q_OBJECT
 public:
-    explicit HardwareBinding(QObject *parent, ExtPlaneConnection *conn);
+    explicit HardwareBinding(QObject *parent, ClientDataRefProvider *drp);
     ~HardwareBinding();
     void activate();
     void storeSettings(QSettings *panelSettings);
@@ -65,7 +65,7 @@ private slots:
     void refDeleted();
 
 private:
-    ExtPlaneConnection *connection;
+    ClientDataRefProvider *dataRefProvider;
     ClientDataRef *clientDataRef;
     QString name_, refName_;
     int device_, output_;

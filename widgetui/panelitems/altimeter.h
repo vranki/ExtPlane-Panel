@@ -10,7 +10,7 @@ class Altimeter : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE Altimeter(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE Altimeter(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -32,7 +32,7 @@ private:
     void repaintPixmap();
     float value2Angle1(float value);
     float value2Angle2(float value);
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     DistanceUnit units;
     PressureUnit baroUnits;
     float _range1, _range2, _value;

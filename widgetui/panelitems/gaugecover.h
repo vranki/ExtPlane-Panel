@@ -15,7 +15,7 @@ class GaugeCover : public PanelItem {
     Q_OBJECT
 
 public:
-    Q_INVOKABLE GaugeCover(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE GaugeCover(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void itemSizeChanged(float w, float h);
     virtual void setEditMode(bool em);

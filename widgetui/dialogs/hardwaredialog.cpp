@@ -63,7 +63,7 @@ void HardwareDialog::changeEvent(QEvent *e)
 }
 
 void HardwareDialog::newBinding() {
-    currentBinding = new HardwareBinding(hwManager, hwManager->connection());
+    currentBinding = new HardwareBinding(hwManager, hwManager->dataRefProvider());
     int num = ui->bindingListWidget->count();
     currentBinding->setName(QString("Binding %0").arg(num));
     hwManager->addBinding(currentBinding);

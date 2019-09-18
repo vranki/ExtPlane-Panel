@@ -12,8 +12,8 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(IndicatorDisplay,"display/indicator")
 #define COLOR_BLUE QColor(0,161,255)
 #define COLOR_GREEN QColor(110,254,2)
 
-IndicatorDisplay::IndicatorDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-        DisplayInstrument(panel,conn) {
+IndicatorDisplay::IndicatorDisplay(ExtPlanePanel *panel, ExtPlaneClient *client) :
+        DisplayInstrument(panel,client) {
     // Init
     _labelOn = "BRAKES";
     _labelOff = "BRAKES";
@@ -28,8 +28,8 @@ IndicatorDisplay::IndicatorDisplay(ExtPlanePanel *panel, ExtPlaneConnection *con
 
     // Make connection
     //conn->registerClient(&_client);
-    connect(&_client, SIGNAL(refChanged(QString,QString)), this, SLOT(dataRefChanged(QString,QString)));
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(dataRefChanged(QString,double)));
+    connect(_client, SIGNAL(refChanged(QString,QString)), this, SLOT(dataRefChanged(QString,QString)));
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(dataRefChanged(QString,double)));
 
     // Defaults
     setDataRefName("sim/flightmodel/controls/parkbrake");
@@ -261,12 +261,12 @@ void IndicatorDisplay::loadPreset(int val) {
 void IndicatorDisplay::setDataRefName(QString name) {
 
     // Unsubscribe old
-    if(_datarefName != "" && _client.isDataRefSubscribed(_datarefName)) _client.unsubscribeDataRef(_datarefName); //TODO: there seems to be something wrong with unsubscribing...
+    if(_datarefName != "" && _client->isDataRefSubscribed(_datarefName)) _client->unsubscribeDataRefByName(_datarefName); //TODO: there seems to be something wrong with unsubscribing...
     _datarefName = name;
     _datarefValue = "";
 
     // Subscribe new
-    _client.subscribeDataRef(name, 0);
+    _client->subscribeDataRef(name, 0);
 }
 
 void IndicatorDisplay::dataRefChanged(QString name, QString val) {
@@ -336,7 +336,3 @@ void IndicatorDisplay::render(QPainter *painter, int width, int height) {
     } painter->restore();
 
 }
-
-
-
-

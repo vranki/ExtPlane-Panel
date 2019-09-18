@@ -7,7 +7,7 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(RadarMap,"map/radar")
 
-RadarMap::RadarMap(ExtPlanePanel *panel, ExtPlaneConnection *conn) : MapInstrument(panel,conn)
+RadarMap::RadarMap(ExtPlanePanel *panel, ExtPlaneClient *client) : MapInstrument(panel, client)
 {
     // Init
     setItemShape(PanelItemShapeCircular);

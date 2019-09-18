@@ -20,9 +20,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(AttitudeIndicator,"indicator/attitude/basic");
 
-AttitudeIndicator::AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+AttitudeIndicator::AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneClient *client) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-    _client(this, typeName(), conn)
+    _client(client)
 {
     _client.createClient();
     // Init
@@ -32,9 +32,9 @@ AttitudeIndicator::AttitudeIndicator(ExtPlanePanel *panel, ExtPlaneConnection *c
     _rollRef = QString("sim/cockpit2/gauges/indicators/roll_vacuum_deg_pilot");
 
     // Subscribe refs
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    _client.subscribeDataRef(_pitchRef,0.05);
-    _client.subscribeDataRef(_rollRef,0.05);
+    connect(_client, SIGNAL(refChanged(QString, double)), this, SLOT(refChanged(QString, double)));
+    _client->subscribeDataRef(_pitchRef, 0.05);
+    _client->subscribeDataRef(_rollRef, 0.05);
 }
 
 void AttitudeIndicator::createCard(float w, float h){

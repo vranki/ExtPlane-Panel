@@ -4,7 +4,12 @@
 #include "../util/console.h"
 #include "../util/interpolation.h"
 
-HardwareBinding::HardwareBinding(QObject *parent, ExtPlaneConnection *conn) : QObject(parent), connection(conn), clientDataRef(0), interpolator_(0,0) {
+HardwareBinding::HardwareBinding(QObject *parent, ClientDataRefProvider *drp) :
+    QObject(parent)
+  , dataRefProvider(drp)
+  , clientDataRef(nullptr)
+  , interpolator_(nullptr,0)
+{
     inputMin_ = 0;
     inputMax_ = 100;
     accuracy_ = interpolationSpeed_ = 0;
@@ -36,7 +41,7 @@ void HardwareBinding::activate() {
         clientDataRef = 0;
     }
     if(!refName().isEmpty()) {
-        clientDataRef = connection->subscribeDataRef(refName(), accuracy());
+        clientDataRef = dataRefProvider->subscribeDataRef(refName(), accuracy());
         connect(clientDataRef, SIGNAL(changed(ClientDataRef*)), this, SLOT(refChanged(ClientDataRef*)));
         connect(&interpolator_, SIGNAL(interpolatedValueChanged(QString,double)), this, SLOT(refValueChanged(QString,double)));
         connect(clientDataRef, SIGNAL(destroyed()), this, SLOT(refDeleted()));

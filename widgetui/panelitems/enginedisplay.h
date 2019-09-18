@@ -10,7 +10,7 @@ class EngineDisplay : public DisplayInstrument
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE EngineDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE EngineDisplay(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void render(QPainter *painter, int width, int height);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);

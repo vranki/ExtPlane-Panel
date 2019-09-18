@@ -12,9 +12,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(DirectionIndicator,"indicator/heading/basic");
 
-DirectionIndicator::DirectionIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+DirectionIndicator::DirectionIndicator(ExtPlanePanel *panel, ExtPlaneClient *client) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-    _client(this, typeName(), conn)
+    _client(client)
 {
     _client.createClient();
     _value = 0;
@@ -27,8 +27,8 @@ DirectionIndicator::DirectionIndicator(ExtPlanePanel *panel, ExtPlaneConnection 
     // sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot
     // sim/cockpit2/gauges/indicators/compass_heading_deg_mag
     _dataRef = QString("sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot");
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
-    _client.subscribeDataRef(_dataRef,0.1);
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
+    _client->subscribeDataRef(_dataRef,0.1);
 }
 
 void DirectionIndicator::createCard(float w, float h){

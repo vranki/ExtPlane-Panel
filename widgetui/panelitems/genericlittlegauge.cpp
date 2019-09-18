@@ -11,7 +11,7 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(GenericLittleGauge,"indicator/engine/generic_little_gauge")
 
-GenericLittleGauge::GenericLittleGauge(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+GenericLittleGauge::GenericLittleGauge(ExtPlanePanel *panel, ExtPlaneClient *client) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
     _indexNumber(0),
     value(0),
@@ -39,7 +39,7 @@ GenericLittleGauge::GenericLittleGauge(ExtPlanePanel *panel, ExtPlaneConnection 
     allowUpdateBottomPixmap(true),
     arcDegreeAmplitude(120),
     arcRatioPosition(0.5),
-    _client(this, typeName(), conn),
+    _client(client),
     bottomImage(":/images/DR400_engine_generic.png"),
     bottomPixmap(0),
     needleImage(":/images/DR400_engine_generic_needle.png")
@@ -50,9 +50,8 @@ GenericLittleGauge::GenericLittleGauge(ExtPlanePanel *panel, ExtPlaneConnection 
     //subscibe to dataref
     setDataRefString("sim/cockpit2/engine/indicators/oil_temperature_deg_C");
 
-    conn->registerClient(&_client);
-    connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(valueChanged(QString,QStringList)));
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
+    connect(_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(valueChanged(QString,QStringList)));
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(valueChanged(QString,double)));
 
 
     //set size
@@ -545,8 +544,8 @@ void GenericLittleGauge::setIndexNumber(float val){
     if (_indexNumber != (unsigned int)val) {
         _indexNumber = (unsigned int)val;
         //refresh subscription in order to call valueChanged(xx)
-        _client.unsubscribeDataRef(dataRefsString);
-        _client.subscribeDataRef(dataRefsString, accuracy);
+        _client->unsubscribeDataRefByName(dataRefsString);
+        _client->subscribeDataRef(dataRefsString, accuracy);
 
     }
 }
@@ -649,15 +648,15 @@ void GenericLittleGauge::setDataRefString(QString s){
     if (QString::compare(s,dataRefsString) != 0 ) {
 
         // Unsubscribe old
-        if (_client.isDataRefSubscribed(dataRefsString)) {
-            _client.unsubscribeDataRef(dataRefsString);
+        if (_client->isDataRefSubscribed(dataRefsString)) {
+            _client->unsubscribeDataRefByName(dataRefsString);
         }
 
         dataRefsString = s;
         value = 0;
 
         // Subscribe new
-        if(QString::compare("",s) != 0 ) _client.subscribeDataRef(s, accuracy);
+        if(QString::compare("",s) != 0 ) _client->subscribeDataRef(s, accuracy);
         update();
     }
 }

@@ -60,16 +60,14 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     // Create panel object
     currentPanel = new ExtPlanePanel(appSettings,this);
 
-    // Create connection and item factory
-    connection = appSettings->valueFromSettingsOrCommandLine("simulate", false).toBool() ? new SimulatedExtPlaneConnection() : new ExtPlaneConnection();
-    hwManager = new HardwareManager(this, connection);
-    connect(this, SIGNAL(tickTime(double,int)), hwManager, SLOT(tickTime(double,int)));
-
     // Create our panel window client
-    client = new ExtPlaneClient(this,"PanelWindow",connection);
-    connection->registerClient(client);
+    client = new ExtPlaneClient(this, "PanelWindow", appSettings->valueFromSettingsOrCommandLine("simulate", false).toBool());
     connect(client, SIGNAL(refChanged(QString,QString)), this, SLOT(clientDataRefChanged(QString,QString)));
     connect(client, SIGNAL(refChanged(QString,double)), this, SLOT(clientDataRefChanged(QString,double)));
+
+    // Create connection and item factory
+    hwManager = new HardwareManager(this, client->datarefProvider());
+    connect(this, SIGNAL(tickTime(double,int)), hwManager, SLOT(tickTime(double,int)));
 
     // Setup window
     setScene(&scene);
@@ -84,7 +82,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(settingsDialog, SIGNAL(rotationChanged(int)), this, SLOT(panelRotationChanged(int)));
     connect(settingsDialog, SIGNAL(fullscreenChanged(bool)), this, SLOT(fullscreenChanged(bool)));
     connect(settingsDialog, SIGNAL(setServerAddress(QString)), this, SLOT(setServerAddress(QString)));
-    connect(settingsDialog, SIGNAL(setUpdateInterval(double)), connection, SLOT(setUpdateInterval(double)));
+    connect(settingsDialog, SIGNAL(setUpdateInterval(double)), client, SLOT(setUpdateInterval(double)));
     connect(settingsDialog, SIGNAL(setPanelUpdateInterval(double)), this, SLOT(setPanelUpdateInterval(double)));
     connect(settingsDialog, SIGNAL(setInterpolationEnabled(bool)), this, SLOT(setInterpolationEnabled(bool)));
     connect(settingsDialog, SIGNAL(setAntialiasEnabled(bool)), this, SLOT(setAntialiasEnabled(bool)));
@@ -106,7 +104,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     scene.addItem(menuButton);
 
     // Status message
-    connect(connection, SIGNAL(connectionMessage(QString)), this, SLOT(connectionMessage(QString)));
+    connect(client, SIGNAL(connectionMessage(QString)), this, SLOT(connectionMessage(QString)));
     statusMessage.setZValue(PANEL_PANELINFO_ZVALUE);
     statusMessage.setDefaultTextColor(Qt::red);
     statusMessage.setPos(0,20);
@@ -122,7 +120,7 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
     connect(&tickTimer, SIGNAL(timeout()), this, SLOT(tick()));
     tickTimer.setInterval(64);
     tickTimer.setSingleShot(false);
-    // connect(this, SIGNAL(tickTime(double,int)), connection, SLOT(tickTime(double,int)));
+    connect(this, SIGNAL(tickTime(double,int)), client, SLOT(tickTime(double,int)));
 
     // Load the last loaded panel. If there is no last loaded panel, we will create a new default one.
     // Furthermore, if the command line specifies a filename flag (--filename x.ini), we will load that one instead
@@ -185,10 +183,9 @@ PanelWindow::PanelWindow() : QGraphicsView(), scene(), statusMessage() {
 PanelWindow::~PanelWindow() {
     while(!currentPanel->items()->isEmpty())
         delete currentPanel->items()->first(); // Calls itemDeleted() and removes itself from list
-    if(connection) delete connection;
+    if(client) delete client;
     if(appSettings) delete appSettings;
     if(currentPanel) delete currentPanel;
-    if(client) delete client;
 }
 
 // -------------------------------------------------------------------------------------
@@ -214,7 +211,7 @@ void PanelWindow::showPanels() {
         panelsDialog = new PanelsDialog(this, this->appSettings);
         panelsDialog->profileSettings = this->profileSettings;
         panelsDialog->refreshPanelList();
-        connect(this,SIGNAL(panelsChanged()),panelsDialog,SLOT(refreshPanelList()));
+        connect(this, SIGNAL(panelsChanged()), panelsDialog, SLOT(refreshPanelList()));
         connect(panelsDialog,SIGNAL(newPanel()),this,SLOT(newPanel()));
         connect(panelsDialog,SIGNAL(copyPanel(QString)),this,SLOT(copyPanel(QString)));
         connect(panelsDialog,SIGNAL(removePanel(QString)),this,SLOT(removePanel(QString)));
@@ -288,7 +285,7 @@ void PanelWindow::addItem(PanelItem *newItem) {
 }
 
 void PanelWindow::addItem(QString itemName) {
-    addItem(itemFactory.itemForName(itemName,currentPanel,connection));
+    addItem(itemFactory.itemForName(itemName, currentPanel, client));
 }
 
 void PanelWindow::tick() {
@@ -324,10 +321,6 @@ QList<PanelItem*> PanelWindow::selectedGauges() {
 // -------------------------------------------------------------------------------------
 
 void PanelWindow::disableBlanking() {
-#ifdef MAEMO
-    QDBusConnection::systemBus().call(QDBusMessage::createMethodCall(MCE_SERVICE, MCE_REQUEST_PATH,MCE_REQUEST_IF, MCE_PREVENT_BLANK_REQ));
-    blankingTimer.start(30000);
-#endif
 }
 
 void PanelWindow::keyPressEvent(QKeyEvent *event) {
@@ -387,19 +380,24 @@ void PanelWindow::fullscreenChanged(bool fs) {
     }
 }
 
-void PanelWindow::setServerAddress(QString host) {
+void PanelWindow::setServerAddress(QString address) {
     // Extract address and port
     unsigned int port = 0;
-    QStringList hostport = host.split(":");
-    if(hostport.length()==2) port = hostport.value(1).toUInt(NULL);
+    QString host;
+    QStringList hostport = address.split(":");
+    if(hostport.length()==2) {
+        host = hostport.value(0);
+        port = hostport.value(1).toUInt(nullptr);
+    }
     if(port==0) port = 51000;
-    INFO << "Connecting to" << hostport.value(0) << "on port" << port;
+
+    INFO << "Connecting to" << host << "on port" << port;
 
     // Disconnect and reconnect
-    connection->disconnectFromHost();
-    connection->setHostName(host);
-    connection->setPort(port);
-    connection->startConnection();
+    client->extplaneConnection()->disconnectFromHost();
+    client->extplaneConnection()->setHostName(host);
+    client->extplaneConnection()->setPort(port);
+    client->extplaneConnection()->startConnection();
 }
 
 void PanelWindow::setInterpolationEnabled(bool enabled) {
@@ -411,13 +409,17 @@ void PanelWindow::setAntialiasEnabled(bool enabled) {
 }
 
 void PanelWindow::setAutoPanelsEnabled(bool enabled) {
+    /*
     if(client && enabled && !client->isDataRefSubscribed(AUTO_PANEL_DATAREF)) client->subscribeDataRef(AUTO_PANEL_DATAREF);
     else if(client && !enabled && client->isDataRefSubscribed(AUTO_PANEL_DATAREF)) client->unsubscribeDataRef(AUTO_PANEL_DATAREF);
+*/
 }
 
 void PanelWindow::setAdjustPowerEnabled(bool enabled) {
+    /*
     if(client && enabled && !client->isDataRefSubscribed(ADJUST_POWER_DATAREF)) client->subscribeDataRef(ADJUST_POWER_DATAREF);
     else if(client && !enabled && client->isDataRefSubscribed(ADJUST_POWER_DATAREF)) client->unsubscribeDataRef(ADJUST_POWER_DATAREF);
+*/
 }
 
 void PanelWindow::setPanelUpdateInterval(double newInterval) {
@@ -601,7 +603,7 @@ void PanelWindow::loadPanel(QString name) {
             int gc = profileSettings->value("gaugecount", 0).toInt();
             for(int gn=0;gn<gc;gn++) {
                 profileSettings->beginGroup("gauge-" + QString::number(gn));
-                PanelItem *g = itemFactory.itemForName(profileSettings->value("type").toString(), currentPanel, connection);
+                PanelItem *g = itemFactory.itemForName(profileSettings->value("type").toString(), currentPanel, client);
                 if(g) {
                     addItem(g);
                     g->loadSettings(*profileSettings);

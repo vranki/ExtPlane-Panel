@@ -17,9 +17,8 @@ REGISTER_WITH_PANEL_ITEM_FACTORY(EngineDisplay,"display/engines")
 #define ENGINE_STYLE_GENERIC 0
 #define ENGINE_STYLE_BOEING 1
 
-EngineDisplay::EngineDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
-                                                                               DisplayInstrument(panel,conn) {
-    _client.createClient();
+EngineDisplay::EngineDisplay(ExtPlanePanel *panel, ExtPlaneClient *client) :
+        DisplayInstrument(panel, client) {
     // Init
     _barLabels = 6;
     _engineCount = 0;
@@ -63,14 +62,14 @@ EngineDisplay::EngineDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     _ffColor = Qt::white;
 
     // Connect
-    _client.subscribeDataRef(DATAREF_N1, 1.0);
-    _client.subscribeDataRef(DATAREF_N2, 1.0);
-    _client.subscribeDataRef(DATAREF_EPR, 0.01);
-    _client.subscribeDataRef(DATAREF_EGT, 1.0);
-    _client.subscribeDataRef(DATAREF_NUMENGINES, 0.0);
-    _client.subscribeDataRef(DATAREF_FF, 0.0);
-    connect(&_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(refChanged(QString,QStringList)));
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
+    _client->subscribeDataRef(DATAREF_N1, 1.0);
+    _client->subscribeDataRef(DATAREF_N2, 1.0);
+    _client->subscribeDataRef(DATAREF_EPR, 0.01);
+    _client->subscribeDataRef(DATAREF_EGT, 1.0);
+    _client->subscribeDataRef(DATAREF_NUMENGINES, 0.0);
+    _client->subscribeDataRef(DATAREF_FF, 0.0);
+    connect(_client, SIGNAL(refChanged(QString,QStringList)), this, SLOT(refChanged(QString,QStringList)));
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
 
 }
 

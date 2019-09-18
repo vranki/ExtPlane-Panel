@@ -8,9 +8,9 @@
 
 REGISTER_WITH_PANEL_ITEM_FACTORY(HSI,"indicator/heading/hsi_ks5");
 
-HSI::HSI(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
+HSI::HSI(ExtPlanePanel *panel, ExtPlaneClient *client) :
     PanelItem(panel, PanelItemTypeGauge, PanelItemShapeCircular),
-    _client(this, typeName(), conn)
+    _client(client)
 {
     _client.createClient();
     // Init
@@ -66,25 +66,25 @@ HSI::HSI(ExtPlanePanel *panel, ExtPlaneConnection *conn) :
     };
 
     // Connect and subscribe
-    connect(&_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
+    connect(_client, SIGNAL(refChanged(QString,double)), this, SLOT(refChanged(QString,double)));
     int nDataRefs = 12;
     for (int i=0;i<nDataRefs;i++){
         if(dataRefs[i].enabled) {
             _dataRefLookup.insert(dataRefs[i].name, dataRefs[i]);//.value);
-            _client.subscribeDataRef(dataRefs[i].name, dataRefs[i].tolerance);
+            _client->subscribeDataRef(dataRefs[i].name, dataRefs[i].tolerance);
         }
     }
 }
 
 void HSI::refChanged(QString name, double value) {
     DataRefStruct   ref = _dataRefLookup[name];
+    if(ref.name.isEmpty()) return;
     if (*(float *)ref.value == value) return;
     *(float *)ref.value = value;
     update();
 }
 
 void HSI::createCard(float w, float h){
-
     // Create a new image for working with
     int side = qMin(w, h);
     QImage cardImage = QImage(QSize(side,side), QImage::Format_ARGB32);

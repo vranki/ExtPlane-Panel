@@ -1,7 +1,10 @@
 include(../common.pri)
 
-QT += quick
-CONFIG   -= debug_and_release
+QT += quick widgets xml svg
+QTPLUGIN += qsvg
+
+#CONFIG   -= debug_and_release
+#CONFIG += debug
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -14,8 +17,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += \
-        main.cpp
+SOURCES += main.cpp \
+    extplaneutilities.cpp \
+    paintedpanelitem.cpp
 
 RESOURCES += qml.qrc
 
@@ -30,3 +34,43 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+HEADERS += \
+    extplaneutilities.h \
+    paintedpanelitem.h
+
+
+SOURCES += \
+     ../widgetui/panelitems/panelitem.cpp \
+     ../widgetui/panelitems/attitudeindicator.cpp \
+     ../widgetui/panelitems/mapinstrument.cpp \
+     ../widgetui/panelitems/gpsmap.cpp \
+     ../widgetui/panelitems/hsi_ks55.cpp \
+     ../widgetui/panelitems/di.cpp \
+     ../widgetui/panelitems/displayinstrument.cpp \
+     ../widgetui/panelitems/enginedisplay.cpp \
+     ../widgetui/panelitems/navdisplay.cpp \
+     ../widgetui/panelitems/pfddisplay.cpp \
+     ../widgetui/panelitems/radarmap.cpp \
+     ../util/units.cpp \
+     ../widgetui/panelitems/turnbank.cpp \
+     ../widgetui/widgets/numberinputlineedit.cpp \
+     ../widgetui/widgets/colorselector.cpp \
+     ../widgetui/panelitemfactory.cpp
+
+HEADERS += \
+     ../widgetui/panelitems/panelitem.h \
+     ../widgetui/panelitems/attitudeindicator.h \
+     ../widgetui/panelitems/mapinstrument.h \
+     ../widgetui/panelitems/gpsmap.h \
+     ../widgetui/panelitems/hsi_ks55.h \
+     ../widgetui/panelitems/di.h \
+     ../widgetui/panelitems/displayinstrument.h \
+     ../widgetui/panelitems/enginedisplay.h \
+     ../widgetui/panelitems/navdisplay.h \
+     ../widgetui/panelitems/pfddisplay.h \
+     ../widgetui/panelitems/radarmap.h \
+     ../util/units.h \
+     ../widgetui/panelitems/turnbank.h \
+     ../widgetui/widgets/numberinputlineedit.h \
+     ../widgetui/widgets/colorselector.h \
+     ../widgetui/panelitemfactory.h

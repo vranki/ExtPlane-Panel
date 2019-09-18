@@ -8,7 +8,7 @@
 #include <QScroller>
 #include "../panelitemfactory.h"
 #include "simulatedextplaneconnection.h"
-#include "extplaneconnection.h"
+#include "extplaneclient.h"
 #include "../panel.h"
 
 namespace Ui {
@@ -36,7 +36,7 @@ private:
     Ui::PanelItemSelectionDialog *ui;
     PanelItemFactory factory;
     PanelItem *selectedPanelItem;
-    SimulatedExtPlaneConnection simulatedConnection; // Preview connection (simulated)
+    ExtPlaneClient simulatedClient; // Preview connection (simulated)
     QGraphicsScene scene; // Preview scence
     ExtPlanePanel *panel; // Preview panel
 };

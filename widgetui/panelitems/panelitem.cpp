@@ -52,7 +52,7 @@ void PanelItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->drawLine(0,height(),width(),0);
         painter->setOpacity(1.0);
     }
-    if(!panel()->hasAvionicsPower && (this->itemType() == PanelItemTypeGauge || this->itemType() == PanelItemTypeSwitch)) {
+    if(panel() && !panel()->hasAvionicsPower && (this->itemType() == PanelItemTypeGauge || this->itemType() == PanelItemTypeSwitch)) {
         // Dim the entire panel
         painter->setOpacity(0.5);
         painter->fillRect(0,0,this->width(),this->height(),Qt::black);
@@ -291,6 +291,10 @@ bool PanelItem::isResizing() {
 }
 
 void PanelItem::applySettings() {
+}
+
+void PanelItem::update() {
+    emit updateRequest();
 }
 
 void PanelItem::setDefaultFontSize(double dfs) {

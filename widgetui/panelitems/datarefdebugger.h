@@ -8,7 +8,7 @@ class DataRefDebugger : public PanelItem
     Q_OBJECT
 
 public:
-    Q_INVOKABLE DataRefDebugger(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE DataRefDebugger(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);
@@ -25,7 +25,7 @@ public slots:
     void setChosenIndex( float index ); // is float to avoid error from UI call
 
 private:
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     QString _currentValue;
     QString _currentName;
     double _currentAccuracy;

@@ -7,7 +7,7 @@ class Dial : public PanelItem {
     Q_OBJECT
 
 public:
-    Q_INVOKABLE Dial(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE Dial(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);
@@ -42,7 +42,7 @@ private slots:
     void updatePositions();
 
 private:
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     int _dialPosition;
     int _dialPositions;
     QString _label;

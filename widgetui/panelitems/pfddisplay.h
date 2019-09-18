@@ -11,7 +11,7 @@ class PFDDisplay : public DisplayInstrument
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE PFDDisplay(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE PFDDisplay(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void render(QPainter *painter, int width, int height);
     virtual QString typeName();
     virtual void storeSettings(QSettings &settings);

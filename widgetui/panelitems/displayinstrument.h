@@ -18,7 +18,7 @@ class DisplayInstrument : public PanelItem
 {
     Q_OBJECT
 public:
-    explicit DisplayInstrument(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    explicit DisplayInstrument(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual ~DisplayInstrument();
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void render(QPainter *painter, int width, int height) = 0;
@@ -42,7 +42,7 @@ public slots:
 
 protected:
     // Internal variables
-    ExtPlaneClient  _client;
+    ExtPlaneClient  *_client;
     QPixmap         _monitorImage;      // Image stores currently rendered image
     QPixmap         _bufferImage;       // Image for a fresh render
     int             _monitorFade;       // 0.0 - 1.0

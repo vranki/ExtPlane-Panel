@@ -3,11 +3,12 @@
 #include "../panelitems/panelitem.h"
 
 PanelItemSelectionDialog::PanelItemSelectionDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::PanelItemSelectionDialog), selectedPanelItem(0)
+    QDialog(parent)
+  , ui(new Ui::PanelItemSelectionDialog), selectedPanelItem(nullptr)
+  , simulatedClient(true)
 {
     // Init
-    panel = new ExtPlanePanel(NULL,this);
+    panel = new ExtPlanePanel(nullptr, this);
 
     // UI init
     ui->setupUi(this);
@@ -36,7 +37,7 @@ PanelItemSelectionDialog::PanelItemSelectionDialog(QWidget *parent) :
 }
 
 PanelItemSelectionDialog::~PanelItemSelectionDialog() {
-    itemChanged(0); // Make sure item is deleted
+    itemChanged(nullptr); // Make sure item is deleted
     delete ui;
 }
 
@@ -55,11 +56,11 @@ void PanelItemSelectionDialog::itemChanged(QListWidgetItem *newItem) {
         scene.removeItem(selectedPanelItem);
         scene.clear();
         selectedPanelItem->deleteLater();
-        selectedPanelItem = 0;
+        selectedPanelItem = nullptr;
     }
     if(!newItem) return;
     // Create new preview item
-    selectedPanelItem = factory.itemForName(newItem->text(), panel, &simulatedConnection);
+    selectedPanelItem = factory.itemForName(newItem->text(), panel, &simulatedClient);
     Q_ASSERT(selectedPanelItem);
     Q_ASSERT(ui->itemPreview->scene());
     selectedPanelItem->setAntialiasEnabled(true); // Wouldn't want the preview to look ugly would we?

@@ -34,7 +34,7 @@ class ExtPlanePanel : public QObject
     Q_OBJECT
 
 public:
-    explicit ExtPlanePanel(Settings *appSettings, QObject *parent = 0);
+    explicit ExtPlanePanel(Settings *appSettings, QObject *parent = nullptr);
     ~ExtPlanePanel();
     inline PanelItemList* items() { return _items; }
 

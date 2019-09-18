@@ -1,5 +1,7 @@
 CONFIG += c++11
 
+QT += quick
+
 # Place ExtPlane plugin to a directory next to or inside build directory, or
 # define the directory here:
 EXTPLANE_PLUGIN_PATH=$$absolute_path(../../ExtPlane)
@@ -16,11 +18,11 @@ EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt
 
 INCLUDEPATH += $$EXTPLANE_CLIENT_PATH
 
-
 SOURCES += \
     $$EXTPLANE_CLIENT_PATH/../../util/basictcpclient.cpp \
     $$EXTPLANE_CLIENT_PATH/extplaneclient.cpp \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.cpp \
+    $$EXTPLANE_CLIENT_PATH/dataref.cpp \
     $$EXTPLANE_CLIENT_PATH/clientdataref.cpp \
     $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.cpp \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.cpp \
@@ -31,6 +33,7 @@ SOURCES += \
 HEADERS += \
     $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
     $$EXTPLANE_CLIENT_PATH/extplaneclient.h \
+    $$EXTPLANE_CLIENT_PATH/dataref.h \
     $$EXTPLANE_CLIENT_PATH/clientdataref.h \
     $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.h \
     $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.h \

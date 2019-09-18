@@ -25,7 +25,7 @@ class HSI : public PanelItem
     Q_OBJECT
 
 public:
-    Q_INVOKABLE HSI(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE HSI(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void createSettings(QGridLayout *layout);
     virtual void loadSettings(QSettings &settings);
     virtual void storeSettings(QSettings &settings);
@@ -45,7 +45,7 @@ private:
     float   value2Angle(float value);
 
 private:
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     bool    _showDegrees;
     bool    _showPlane;
     float   _heading;

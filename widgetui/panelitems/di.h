@@ -16,7 +16,7 @@ class DirectionIndicator : public PanelItem
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE DirectionIndicator(ExtPlanePanel *panel, ExtPlaneConnection *conn);
+    Q_INVOKABLE DirectionIndicator(ExtPlanePanel *panel, ExtPlaneClient *client);
     virtual void storeSettings(QSettings &settings);
     virtual void loadSettings(QSettings &settings);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -32,7 +32,7 @@ public:
 private:
     float value2Angle1(float value);
     float value2Angle2(float value);
-    ExtPlaneClient _client;
+    ExtPlaneClient *_client;
     float _range1, _range2;
     float _value;
     float _thickBars, _thinBars, _numbers;
