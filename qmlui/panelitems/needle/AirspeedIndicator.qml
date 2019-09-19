@@ -5,9 +5,9 @@ import QtQuick.Layouts 1.3
 
 import "../.." as Panel
 import ".." as PanelItems
+import "../settingsui" as SettingsUi
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
     clip: false
     property real arcWidth: width * 0.03 // For main color arches
 
@@ -110,19 +110,17 @@ PanelItems.PanelItem {
             rotation: valueBars.value2Angle(airspeedRef.value)
         }
     }
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        propertyItems: [
-            Text { text: "In km/h, instead of knots" },
-            CheckBox { checked: settings.isKmh ; onCheckedChanged: settings.isKmh = checked },
+    propertiesDialog.propertyItems: [
+        Text { text: "In km/h, instead of knots" },
+        CheckBox { checked: settings.isKmh ; onCheckedChanged: settings.isKmh = checked },
 
-            Text { text: "Thick bars every" },
-            TextField { text: settings.thickBarValue; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.thickBarValue = text },
+        Text { text: "Thick bars every" },
+        SettingsUi.IntField { value: settings.thickBarValue; onValueChanged: settings.thickBarValue = value },
 
-            Text { text: "Thin bars every" },
-            TextField { text: settings.thinBarValue; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.thinBarValue = text }
-        ]
-    }
+        Text { text: "Thin bars every" },
+        SettingsUi.IntField { value: settings.thinBarValue; onValueChanged: settings.thinBarValue = value }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

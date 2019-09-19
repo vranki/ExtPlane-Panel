@@ -7,7 +7,6 @@ import "../.." as Panel
 import ".." as PanelItems
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
     clip: false
 
     Panel.UnitConverter {
@@ -72,13 +71,11 @@ PanelItems.PanelItem {
             movementDuration: 250
         }
     }
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        propertyItems: [
-            Text { text: "In meters instead of feet" },
-            CheckBox { checked: settings.isMs ; onCheckedChanged: settings.isMs = checked }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "In meters instead of feet" },
+        CheckBox { checked: settings.isMs ; onCheckedChanged: settings.isMs = checked }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

@@ -3,6 +3,8 @@ import QtQuick.Controls 2.2
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 
+import "panelitems/settingsui" as SettingsUi
+
 Window {
     id: itemPropertiesWindow
     flags: Qt.Dialog
@@ -10,6 +12,8 @@ Window {
     height: 600
     property alias propertyItems: propertyContainer.children
     property alias helpText: helpContainer.text
+    property var panelItem: undefined
+
     Flickable {
         width: parent.width
         height: parent.height
@@ -32,6 +36,18 @@ Window {
                 textFormat: TextEdit.AutoText
                 onLinkActivated: Qt.openUrlExternally(link)
                 text: helpText
+            }
+            // Common properties
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: 10
+                Label { text: "Z value (higher on top)" }
+                SettingsUi.IntField {
+                    value: 0
+                    maxValue: 10
+                    minValue: -10
+                    onValueChanged: panelItem.z = value
+                }
             }
 
             GridLayout {

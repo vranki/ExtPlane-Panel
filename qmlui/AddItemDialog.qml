@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
@@ -19,13 +19,23 @@ Dialog {
             height: parent.height
             clip: true
             ListView {
+                id: itemListView
+                property string filter: ""
                 model: panelItemModel
+                header: TextField {
+                    id: filterText
+                    placeholderText: "Search"
+                    onTextChanged: itemListView.filter = text
+                    Layout.fillWidth: true
+                }
                 delegate: Button {
+                    property bool shown: itemListView.filter.length === 0 || name.toLowerCase().includes(itemListView.filter.toLowerCase())
                     text: name + " - " + description
                     checkable: true
                     checked: itemName === previewItem
                     onClicked: previewItem = itemName
                     width: parent.width * 0.9
+                    height: shown ? Button.height : 0
                 }
             }
         }
@@ -36,11 +46,15 @@ Dialog {
             height: parent.height
 
             Loader {
+                onLoaded: {
+                    item.x = 0
+                    item.y = 0
+                }
                 source: previewItem ? "qrc:///panelitems/" + previewItem + ".qml" : ""
+                active: previewItem !== null
                 width: parent.width * 0.8
                 height: parent.height * 0.8
                 anchors.centerIn: parent
-                onStatusChanged: console.log("Loader state", status)
             }
         }
     }
@@ -57,6 +71,7 @@ Dialog {
     // Todo: Auto-generate this list from the directory contents.
     ListModel {
         id: panelItemModel
+
         ListElement {
             name: "Compass"
             itemName: "CompassBasic"
@@ -206,6 +221,11 @@ Dialog {
             name: "Fuel pressure"
             itemName: "needle/FuelPressure"
             description: "Shows fuel pressure."
+        }
+        ListElement {
+            name: "Image"
+            itemName: "decoration/ImageItem"
+            description: "Can show an image file."
         }
     }
 }

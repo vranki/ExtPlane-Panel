@@ -9,7 +9,6 @@ import "../settingsui" as SettingsUi
 
 
 ElectricGauge {
-    propertiesDialog: propertiesDialog
     value: (parseFloat(fuelRef.values[settings.tankNumber]) / settings.tankCapacity)
     label: "FUEL QTY"
     labels: ['E', '1/4', '1/2', '3/4', 'F']
@@ -20,15 +19,13 @@ ElectricGauge {
         accuracy: 1
     }
 
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        propertyItems: [
-            Text { text: "Tank number" },
-            SettingsUi.IntField { text: settings.tankNumber; minValue: 0; maxValue: 8; onValueChanged: settings.tankNumber = value },
-            Text { text: "Tank capacity (kg)" },
-            SettingsUi.IntField { text: settings.tankCapacity; minValue: 1; onValueChanged: settings.tankCapacity = value }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "Tank number" },
+        SettingsUi.IntField { text: settings.tankNumber; minValue: 0; maxValue: 8; onValueChanged: settings.tankNumber = value },
+        Text { text: "Tank capacity (kg)" },
+        SettingsUi.IntField { text: settings.tankCapacity; minValue: 1; onValueChanged: settings.tankCapacity = value }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

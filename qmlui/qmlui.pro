@@ -3,6 +3,8 @@ include(../common.pri)
 QT += quick widgets xml svg
 QTPLUGIN += qsvg
 
+TARGET = extplane-panel
+
 #CONFIG   -= debug_and_release
 #CONFIG += debug
 
@@ -33,6 +35,16 @@ QML_DESIGNER_IMPORT_PATH =
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+target.path = /usr/bin
+
+INSTALLS += target
+
+desktop.files = ../extplane-panel.desktop
+desktop.path = /usr/share/applications
+
+unix: INSTALLS += desktop
+
 
 HEADERS += \
     extplaneutilities.h \

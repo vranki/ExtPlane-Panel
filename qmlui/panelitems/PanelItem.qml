@@ -2,15 +2,17 @@ import QtQuick 2.0
 import Qt.labs.settings 1.0
 import ".."
 
+// Root element for all panel items.
 Item {
     id: panelItem
-    clip: true
+    clip: true // Can be set to false if no clipping needed
+
+    // Don't touch, used for internal bookkeeping:
     property int itemId: -1 // Index in item list
     property int panelId: -1 // Panel id to save in
-    property string itemName: ""
     property bool editMode: false
     property bool isSelectedItem: false
-    property PanelItemPropertiesDialog propertiesDialog: null
+    property alias propertiesDialog: propertiesDialog
 
     Rectangle {
         id: highlightRect
@@ -57,16 +59,20 @@ Item {
         }
     }
 
-    function showProperties() {
-        if(propertiesDialog)
-            propertiesDialog.visible = true
-    }
+    function showProperties() { propertiesDialog.visible = true }
 
     Settings {
         category: "panel-" + panelId + "-item-" + itemId
         property alias x: panelItem.x
         property alias y: panelItem.y
+        property alias z: panelItem.z
         property alias width: panelItem.width
         property alias height: panelItem.height
+    }
+
+    // Default properties dialog
+    PanelItemPropertiesDialog {
+        id: propertiesDialog
+        panelItem: panelItem
     }
 }

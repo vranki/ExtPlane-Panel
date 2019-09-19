@@ -8,8 +8,6 @@ import ".." as PanelItems
 import "../settingsui" as SettingsUi
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
-
     DataRef {
         id: gRef
         name: "sim/flightmodel/forces/g_nrml"
@@ -47,15 +45,13 @@ PanelItems.PanelItem {
         }
     }
 
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        propertyItems: [
-            Text { text: "Negative limit" },
-            SettingsUi.IntField { text: settings.limitNegative; minValue: -20; maxValue: 0; onValueChanged: settings.limitNegative = value },
-            Text { text: "Positive limit" },
-            SettingsUi.IntField { text: settings.limitPositive; minValue: 1; maxValue: 20; onValueChanged: settings.limitPositive = value }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "Negative limit" },
+        SettingsUi.IntField { text: settings.limitNegative; minValue: -20; maxValue: 0; onValueChanged: settings.limitNegative = value },
+        Text { text: "Positive limit" },
+        SettingsUi.IntField { text: settings.limitPositive; minValue: 1; maxValue: 20; onValueChanged: settings.limitPositive = value }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

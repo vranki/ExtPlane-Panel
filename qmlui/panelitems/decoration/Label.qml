@@ -5,8 +5,6 @@ import ".." as PanelItems
 import "../.." as Panel
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
-
     DataRef {
         id: labelRef
         name: settings.dataref
@@ -20,16 +18,13 @@ PanelItems.PanelItem {
         anchors.centerIn: parent
     }
 
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        helpText: 'Simple label - can show static text and a text dataref value'
-        propertyItems: [
-            Text { text: "Label text" },
-            TextField { text: settings.labelText; onTextChanged: settings.labelText = text },
-            Text { text: "Dataref" },
-            TextField { text: settings.dataref; onTextChanged: settings.dataref = text }
-        ]
-    }
+    propertiesDialog.helpText: 'Simple label - can show static text and a text dataref value'
+    propertiesDialog.propertyItems: [
+        Text { text: "Label text" },
+        TextField { text: settings.labelText; onTextChanged: settings.labelText = text },
+        Text { text: "Dataref" },
+        TextField { text: settings.dataref; onTextChanged: settings.dataref = text }
+    ]
 
     PanelItems.PanelItemSettings {
         id: settings

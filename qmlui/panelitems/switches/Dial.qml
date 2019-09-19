@@ -6,7 +6,6 @@ import "../.." as Panel
 import "../settingsui" as SettingsUi
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
     clip: false
 
     property int position: parseInt(dialRef.value) || 0
@@ -80,49 +79,46 @@ PanelItems.PanelItem {
             }
         }
     }
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        helpText: 'A generic dial, can set a dataref to different integer values.'
+    propertiesDialog.helpText: 'A generic dial, can set a dataref to different integer values.'
 
-        propertyItems: [
-            Text { text: "Dataref" },
-            TextField { text: settings.dataRef; onTextChanged: settings.dataRef = text },
-            Text { text: "Number of positions" },
-            SettingsUi.IntField { text: settings.positionCount; onValueChanged: settings.positionCount = limitValue(value, 2, 8) },
-            Text { text: "Label 1" },
-            TextField { text: settings.name0; onTextChanged: settings.name0 = text },
-            Text { text: "Label 2" },
-            TextField { text: settings.name1; onTextChanged: settings.name1 = text },
-            Text { text: "Label 3" },
-            TextField { text: settings.name2; onTextChanged: settings.name2 = text },
-            Text { text: "Label 4" },
-            TextField { text: settings.name3; onTextChanged: settings.name3 = text },
-            Text { text: "Label 5" },
-            TextField { text: settings.name4; onTextChanged: settings.name4 = text },
-            Text { text: "Label 6" },
-            TextField { text: settings.name5; onTextChanged: settings.name5 = text },
-            Text { text: "Label 7" },
-            TextField { text: settings.name6; onTextChanged: settings.name6 = text },
-            Text { text: "Label 8" },
-            TextField { text: settings.name7; onTextChanged: settings.name7 = text },
-            Text { text: "Value 1" },
-            SettingsUi.IntField { text: settings.value0; onValueChanged: settings.value0 = value },
-            Text { text: "Value 2" },
-            SettingsUi.IntField { text: settings.value1; onValueChanged: settings.value1 = value },
-            Text { text: "Value 3" },
-            SettingsUi.IntField { text: settings.value2; onValueChanged: settings.value2 = value },
-            Text { text: "Value 4" },
-            SettingsUi.IntField { text: settings.value3; onValueChanged: settings.value3 = value },
-            Text { text: "Value 5" },
-            SettingsUi.IntField { text: settings.value4; onValueChanged: settings.value4 = value },
-            Text { text: "Value 6" },
-            SettingsUi.IntField { text: settings.value5; onValueChanged: settings.value5 = value },
-            Text { text: "Value 7" },
-            SettingsUi.IntField { text: settings.value6; onValueChanged: settings.value6 = value },
-            Text { text: "Value 8" },
-            SettingsUi.IntField { text: settings.value7; onValueChanged: settings.value7 = value }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "Dataref" },
+        TextField { text: settings.dataRef; onTextChanged: settings.dataRef = text },
+        Text { text: "Number of positions" },
+        SettingsUi.IntField { text: settings.positionCount; onValueChanged: settings.positionCount = limitValue(value, 2, 8) },
+        Text { text: "Label 1" },
+        TextField { text: settings.name0; onTextChanged: settings.name0 = text },
+        Text { text: "Label 2" },
+        TextField { text: settings.name1; onTextChanged: settings.name1 = text },
+        Text { text: "Label 3" },
+        TextField { text: settings.name2; onTextChanged: settings.name2 = text },
+        Text { text: "Label 4" },
+        TextField { text: settings.name3; onTextChanged: settings.name3 = text },
+        Text { text: "Label 5" },
+        TextField { text: settings.name4; onTextChanged: settings.name4 = text },
+        Text { text: "Label 6" },
+        TextField { text: settings.name5; onTextChanged: settings.name5 = text },
+        Text { text: "Label 7" },
+        TextField { text: settings.name6; onTextChanged: settings.name6 = text },
+        Text { text: "Label 8" },
+        TextField { text: settings.name7; onTextChanged: settings.name7 = text },
+        Text { text: "Value 1" },
+        SettingsUi.IntField { text: settings.value0; onValueChanged: settings.value0 = value },
+        Text { text: "Value 2" },
+        SettingsUi.IntField { text: settings.value1; onValueChanged: settings.value1 = value },
+        Text { text: "Value 3" },
+        SettingsUi.IntField { text: settings.value2; onValueChanged: settings.value2 = value },
+        Text { text: "Value 4" },
+        SettingsUi.IntField { text: settings.value3; onValueChanged: settings.value3 = value },
+        Text { text: "Value 5" },
+        SettingsUi.IntField { text: settings.value4; onValueChanged: settings.value4 = value },
+        Text { text: "Value 6" },
+        SettingsUi.IntField { text: settings.value5; onValueChanged: settings.value5 = value },
+        Text { text: "Value 7" },
+        SettingsUi.IntField { text: settings.value6; onValueChanged: settings.value6 = value },
+        Text { text: "Value 8" },
+        SettingsUi.IntField { text: settings.value7; onValueChanged: settings.value7 = value }
+    ]
 
     PanelItems.PanelItemSettings {
         id: settings

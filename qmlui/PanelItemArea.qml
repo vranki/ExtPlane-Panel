@@ -45,15 +45,21 @@ MouseArea {
     }
 
     function snapValue(value) {
-        if(snapToGrid) {
-            return Math.floor(value / gridSize) * gridSize
-        } else {
-            return value
-        }
+        return snapToGrid ? Math.floor(value / gridSize) * gridSize : value
     }
 
     // x,y,width & height can be -1 for loading
     function addItem(itemName, itemId, x, y, width, height) {
+        if(!itemName) {
+            console.error("addItem: trying to add item with null name!")
+            return
+        }
+        if(itemId < 0) {
+            console.error("addItem: trying to add item with negative itemId!")
+            return
+        }
+        // console.log(itemName, itemId, x, y, width, height)
+
         var component = Qt.createComponent("qrc:///panelitems/" + itemName + ".qml");
         if (component.status === Component.Error) {
             console.log("Component failed to load:", component.errorString() )
@@ -71,7 +77,7 @@ MouseArea {
                                              });
 
         if (newItem === null) {
-            console.log("Error creating panel item!");
+            console.log("Error creating panel item!", itemName, itemId, panelId);
             return
         }
 
@@ -82,17 +88,21 @@ MouseArea {
             newItem.width = width
             newItem.height = height
         }
+
+        // Make sure no zero-size items can be created
+        newItem.width = Math.max(10, newItem.width)
+        newItem.height = Math.max(10, newItem.height)
+
         panelItemModel.append( {"itemName": itemName, "item": newItem} )
         selectItem(newItem)
+        // console.log("Added", itemName, newItem.itemId, newItem.x, newItem.y, newItem.width, newItem.height)
+
         return newItem
     }
 
     function selectItem(newItem) {
         for(var i=0;i<panelItemModel.count;i++) {
-            if(!panelItemModel.get(i).item) {
-                console.log("WTF, panel item at", i, " doesn't exist!")
-            }
-            panelItemModel.get(i).item.isSelectedItem = false // TODO: TypeError: Value is undefined and could not be converted to an object
+            panelItemModel.get(i).item.isSelectedItem = false
         }
         if(newItem) newItem.isSelectedItem = true
         selectedItem = newItem
@@ -104,7 +114,6 @@ MouseArea {
             for(var i=0;i<panelItemModel.count;i++) {
                 if(panelItemModel.get(i).item === selectedItem) deletedIndex = i
             }
-            console.log("Deleting item", deletedIndex, " from model")
             panelItemModel.remove(deletedIndex)
             selectedItem.destroy()
             selectItem(null)
@@ -115,14 +124,15 @@ MouseArea {
         var panelModel = []
 
         for(var i=0;i<panelItemModel.count;i++) {
-            var item = panelItemModel.get(i).item
+            var itemObject = panelItemModel.get(i)
             panelModel.push({
-                                "itemName": item.itemName,
-                                "itemId": item.itemId
+                                "itemName": itemObject.itemName,
+                                "itemId": itemObject.item.itemId
                             })
         }
         panelsModel[panelId] = { "panelId": panelId, "panelItems": panelModel }
         datastore = JSON.stringify(panelsModel)
+        console.log("Saved:", datastore)
     }
 
     function loadPanel(id) {
@@ -156,9 +166,9 @@ MouseArea {
         }
     }
 
-    function duplicateSelectedItem() {
+    function duplicateSelectedItem() { // TODO: WIP
         if(selectedItem) {
-            console.log("Adding ", selectedItem.itemName, selectedItem.x + snapValue, selectedItem.y + snapValue, selectedItem.width, selectedItem.height)
+            console.log("Duplicating ", selectedItem.itemName, selectedItem.x + snapValue, selectedItem.y + snapValue, selectedItem.width, selectedItem.height)
             var oldItem = selectedItem
             var newItem = addItem(selectedItem.itemName, undefined, selectedItem.x + gridSize, selectedItem.y + gridSize, selectedItem.width, selectedItem.height)
             for(var i=0;i<oldItem.children.length;i++) {

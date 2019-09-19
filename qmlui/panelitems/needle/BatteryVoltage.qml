@@ -8,7 +8,6 @@ import ".." as PanelItems
 import "../settingsui" as SettingsUi
 
 ElectricGauge {
-    propertiesDialog: propertiesDialog
     value: voltageRef.values[settings.batteryNumber] / settings.maxVoltage
     label: "DC Volts"
     labels: ['0', '6', '12', '18', '24']
@@ -19,15 +18,13 @@ ElectricGauge {
         accuracy: 0.05
     }
 
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        propertyItems: [
-            Text { text: "Battery number" },
-            SettingsUi.IntField { text: settings.batteryNumber; minValue: 0; maxValue: 7; onValueChanged: settings.batteryNumber = value },
-            Text { text: "Max voltage" },
-            SettingsUi.IntField { text: settings.maxVoltage; minValue: 1; onValueChanged: settings.maxVoltage = value }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "Battery number" },
+        SettingsUi.IntField { text: settings.batteryNumber; minValue: 0; maxValue: 7; onValueChanged: settings.batteryNumber = value },
+        Text { text: "Max voltage" },
+        SettingsUi.IntField { text: settings.maxVoltage; minValue: 1; onValueChanged: settings.maxVoltage = value }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

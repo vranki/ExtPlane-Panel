@@ -3,9 +3,10 @@ import QtQuick.Controls 2.2
 import org.vranki.extplane 1.0
 import ".." as PanelItems
 import "../.." as Panel
+import "../settingsui" as SettingsUi
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
+    id: annunciator
     property var colors: ['red', 'yellow', 'green', 'blue']
     property color textColor: settings.backgroundLights ? (active ? "black" : "#494949") : (active ? lightColor : "black")
     property color lightColor: colors[settings.annunciatorColor]
@@ -59,26 +60,23 @@ PanelItems.PanelItem {
         anchors.bottomMargin: parent.height * 0.1
         visible: twoLines
     }
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        helpText: 'Generic annunciator light with text. Set bottom text for 2 rows.'
-        propertyItems: [
-            Text { text: "Text (top)" },
-            TextField { text: settings.topText; onTextChanged: settings.topText = text },
-            Text { text: "Text (bottom)" },
-            TextField { text: settings.bottomText; onTextChanged: settings.bottomText = text },
-            Text { text: "Color" },
-            SpinBox {
-                value: settings.annunciatorColor;
-                onValueChanged: settings.annunciatorColor = limitValue(value, 0, colors.length - 1)
-                background: Rectangle { color: lightColor; opacity: 0.5; anchors.fill: parent }
-            },
-            Text { text: "Whole annunciator lights up (not just text)" },
-            CheckBox { checked: settings.backgroundLights ; onCheckedChanged: settings.backgroundLights = checked },
-            Text { text: "Dataref" },
-            TextField { text: settings.dataref; onTextChanged: settings.dataref = text }
-        ]
-    }
+    propertiesDialog.helpText: 'Generic annunciator light with text. Set bottom text for 2 rows.'
+    propertiesDialog.propertyItems: [
+        Text { text: "Text (top)" },
+        TextField { text: settings.topText; onTextChanged: settings.topText = text },
+        Text { text: "Text (bottom)" },
+        TextField { text: settings.bottomText; onTextChanged: settings.bottomText = text },
+        Text { text: "Color" },
+        SettingsUi.ColorSelector {
+            colors: annunciator.colors
+            value: settings.annunciatorColor
+            onValueChanged: settings.annunciatorColor = value
+        },
+        Text { text: "Whole annunciator lights up (not just text)" },
+        CheckBox { checked: settings.backgroundLights ; onCheckedChanged: settings.backgroundLights = checked },
+        Text { text: "Dataref" },
+        TextField { text: settings.dataref; onTextChanged: settings.dataref = text }
+    ]
 
     PanelItems.PanelItemSettings {
         id: settings

@@ -5,10 +5,9 @@ import QtQuick.Layouts 1.3
 
 import "../.." as Panel
 import ".." as PanelItems
+import "../settingsui" as SettingsUi
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
-
     DataRef {
         id: apuEgtRef
         name: settings.x737 ? "x737/ovh/APUGENPanel/APU_EGT" : "sim/cockpit2/electrical/APU_EGT_c"
@@ -27,15 +26,13 @@ PanelItems.PanelItem {
         valueMultiplier: 100
     }
 
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        propertyItems: [
-            Text { text: "Max value" },
-            TextField { text: settings.maxValue; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.maxValue = text },
-            Text { text: "Use x737 dataref instead of standard" },
-            CheckBox { checked: settings.x737 ; onCheckedChanged: settings.x737 = checked }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "Max value" },
+        SettingsUi.IntField { value: settings.maxValue; onValueChanged: settings.maxValue = value },
+        Text { text: "Use x737 dataref instead of standard" },
+        CheckBox { checked: settings.x737 ; onCheckedChanged: settings.x737 = checked }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

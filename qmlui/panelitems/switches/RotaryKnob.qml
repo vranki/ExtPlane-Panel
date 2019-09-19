@@ -5,7 +5,6 @@ import ".." as PanelItems
 import "../.." as Panel
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
     clip: false
 
     property real rotationAngle: (parseFloat(rotaryRef.value) || 0)  * settings.rotationScale
@@ -54,18 +53,16 @@ PanelItems.PanelItem {
         id: rotaryRef
         name: settings.dataref
     }
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        helpText: 'Knob you can rotate using mouse. Changes dataref up or down by defined value.';
-        propertyItems: [
-            Text { text: "Change amount" },
-            TextField { text: settings.changeValue; onTextChanged: settings.changeValue = parseFloat(text) || 1 },
-            Text { text: "Scale between dial angle and dataref value" },
-            TextField { text: settings.rotationScale; onTextChanged: settings.rotationScale = parseFloat(text) || 1 },
-            Text { text: "Dataref" },
-            TextField { text: settings.dataref; onTextChanged: settings.dataref = text }
-        ]
-    }
+    propertiesDialog.helpText: 'Knob you can rotate using mouse. Changes dataref up or down by defined value.';
+    propertiesDialog.propertyItems: [
+        Text { text: "Change amount" },
+        TextField { text: settings.changeValue; onTextChanged: settings.changeValue = parseFloat(text) || 1 },
+        Text { text: "Scale between dial angle and dataref value" },
+        TextField { text: settings.rotationScale; onTextChanged: settings.rotationScale = parseFloat(text) || 1 },
+        Text { text: "Dataref" },
+        TextField { text: settings.dataref; onTextChanged: settings.dataref = text }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

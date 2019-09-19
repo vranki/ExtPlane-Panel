@@ -7,7 +7,6 @@ import "../.." as Panel
 import ".." as PanelItems
 
 PanelItems.PanelItem {
-    // propertiesDialog: propertiesDialog
     property int maxValue: (redlineRef.value  * 1.3) || 4500
 
     DataRef {
@@ -48,19 +47,4 @@ PanelItems.PanelItem {
             arcWidth: width * 0.06
         }
     }
-
-/*
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        helpText: 'RPM Gauge'
-        propertyItems: [
-            Text { text: "Max value" },
-            TextField { text: settings.maxValue; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.maxValue = parseInt(text) || 0 }
-        ]
-    }
-
-    PanelItems.PanelItemSettings {
-        id: settings
-        property int maxValue: 10000
-    }*/
 }

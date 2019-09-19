@@ -3,9 +3,9 @@ import QtQuick.Controls 2.2
 import org.vranki.extplane 1.0
 import ".." as PanelItems
 import "../.." as Panel
+import "../settingsui" as SettingsUi
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
     property color frontColor: buttonMouseArea.pressed ? "black" : "white"
     property color backColor: buttonMouseArea.pressed ? "white" : "black"
 
@@ -30,22 +30,19 @@ PanelItems.PanelItem {
         onPressed: settings.isButton ? extplaneClient.extplaneConnection.buttonPress(settings.buttonId) : extplaneClient.extplaneConnection.keyPress(settings.buttonId)
         onReleased: if(settings.isButton) extplaneClient.extplaneConnection.buttonRelease(settings.buttonId)
     }
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        helpText: 'Can act as X-Plane key or button command. \
+    propertiesDialog.helpText: 'Can act as X-Plane key or button command. \
 See <a href="http://www.xsquawkbox.net/xpsdk/mediawiki/Category:XPLMUtilities">this page</a> for list of \
 available button and key ID\'s. Buttons support press and release, keys only press.'
-        propertyItems: [
-            Text { text: "Button (not key)" },
-            CheckBox { checked: settings.isButton ; onCheckedChanged: settings.isButton = checked },
+    propertiesDialog.propertyItems: [
+        Text { text: "Button (not key)" },
+        CheckBox { checked: settings.isButton ; onCheckedChanged: settings.isButton = checked },
 
-            Text { text: "Button text" },
-            TextField { text: settings.buttonText; onTextChanged: settings.buttonText = text },
+        Text { text: "Button text" },
+        TextField { text: settings.buttonText; onTextChanged: settings.buttonText = text },
 
-            Text { text: "Button/key id" },
-            TextField { text: settings.buttonId; inputMethodHints: Qt.ImhDigitsOnly; onTextChanged: settings.buttonId = parseInt(text) || 0 }
-        ]
-    }
+        Text { text: "Button/key id" },
+        SettingsUi.IntField { value: settings.buttonId; onValueChanged: settings.buttonId = value }
+    ]
 
     PanelItems.PanelItemSettings {
         id: settings

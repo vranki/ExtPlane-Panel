@@ -5,7 +5,6 @@ import ".." as PanelItems
 import "../.." as Panel
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
     clip: false
     property color frontColor: "white"
     property color backColor: "black"
@@ -53,23 +52,21 @@ PanelItems.PanelItem {
         id: switchRef
         name: settings.dataref
     }
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        helpText: 'A generic toggle switch, can set a dataref 1 or 0. \
+    propertiesDialog.helpText: 'A generic toggle switch, can set a dataref 1 or 0. \
 Check invert if you want to have 1 down and 0 up';
-        propertyItems: [
-            Text { text: "Label text" },
-            TextField { text: settings.labelText; onTextChanged: settings.labelText = text },
-            Text { text: "Up text" },
-            TextField { text: settings.upText; onTextChanged: settings.upText = text },
-            Text { text: "Down text" },
-            TextField { text: settings.downText; onTextChanged: settings.downText = text },
-            Text { text: "Dataref" },
-            TextField { text: settings.dataref; onTextChanged: settings.dataref = text },
-            Text { text: "Invert" },
-            CheckBox { checked: settings.invert ; onCheckedChanged: settings.invert = checked }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "Label text" },
+        TextField { text: settings.labelText; onTextChanged: settings.labelText = text },
+        Text { text: "Up text" },
+        TextField { text: settings.upText; onTextChanged: settings.upText = text },
+        Text { text: "Down text" },
+        TextField { text: settings.downText; onTextChanged: settings.downText = text },
+        Text { text: "Dataref" },
+        TextField { text: settings.dataref; onTextChanged: settings.dataref = text },
+        Text { text: "Invert" },
+        CheckBox { checked: settings.invert ; onCheckedChanged: settings.invert = checked }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

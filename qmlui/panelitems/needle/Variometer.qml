@@ -7,12 +7,16 @@ import "../.." as Panel
 import ".." as PanelItems
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
     clip: false
 
     Panel.UnitConverter {
         id: unitConverter
         inUnit: Panel.UnitConverter.Unit.VelocityFPM
+        outUnit: settings.isMs ? Panel.UnitConverter.Unit.VelocityMS : Panel.UnitConverter.Unit.VelocityFPM
+    }
+    Panel.UnitConverter {
+        id: laminarUnitConverter
+        inUnit: Panel.UnitConverter.Unit.VelocityMS
         outUnit: settings.isMs ? Panel.UnitConverter.Unit.VelocityMS : Panel.UnitConverter.Unit.VelocityFPM
     }
 
@@ -23,10 +27,17 @@ PanelItems.PanelItem {
         scaleFactor: unitConverter.scaleFactor
     }
 
+    DataRef { // Laminar ASK-21 dataref, in m/s
+        id: laminarVariometerRef
+        name: settings.isLaminarAsk && settings.isTotalEnergy ? "laminar/ask21/vvi_ms_compensated" : ""
+        accuracy: 0.01
+        scaleFactor: laminarUnitConverter.scaleFactor
+    }
+
     DataRef {
         id: totalEnergyRef
-        accuracy: 10 // Todo: there's laminar/ask21/vvi_ms_compensated
-        name: settings.isTotalEnergy ? "sim/cockpit2/gauges/indicators/total_energy_fpm" : ""
+        accuracy: 10
+        name: (settings.isTotalEnergy && !settings.isLaminarAsk) ? "sim/cockpit2/gauges/indicators/total_energy_fpm" : ""
         scaleFactor: unitConverter.scaleFactor
     }
 
@@ -50,8 +61,8 @@ PanelItems.PanelItem {
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Needle {
-            rotation: valueBars.value2Angle(settings.isTotalEnergy ? totalEnergyRef.value : variometerRef.value)
-            movementDuration: 16
+            rotation: valueBars.value2Angle(settings.isTotalEnergy ? ( settings.isLaminarAsk ? laminarVariometerRef.value : totalEnergyRef.value) : variometerRef.value)
+            movementDuration: 32
         }
         Image {
             source: "overlay-0.svg"
@@ -59,19 +70,25 @@ PanelItems.PanelItem {
             fillMode: Image.PreserveAspectFit
         }
     }
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        propertyItems: [
-            Text { text: "In m/s, instead of knots" },
-            CheckBox { checked: settings.isMs ; onCheckedChanged: settings.isMs = checked },
-            Text { text: "Total energy variometer" },
-            CheckBox { checked: settings.isTotalEnergy ; onCheckedChanged: settings.isTotalEnergy = checked }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "In m/s, instead of knots" },
+        CheckBox { checked: settings.isMs ; onCheckedChanged: settings.isMs = checked },
+        Text { text: "Total energy variometer" },
+        CheckBox { checked: settings.isTotalEnergy ; onCheckedChanged: settings.isTotalEnergy = checked },
+        Text { text: "Use Laminar ASK-21 custom dataref" },
+        CheckBox {
+            checked: settings.isLaminarAsk
+            onCheckedChanged: {
+                settings.isLaminarAsk = checked
+                if(checked) settings.isTotalEnergy = true
+            }
+        }
+    ]
 
     PanelItems.PanelItemSettings {
         id: settings
         property bool isMs: false
         property bool isTotalEnergy: false
+        property bool isLaminarAsk: false
     }
 }

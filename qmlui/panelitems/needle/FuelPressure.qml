@@ -8,8 +8,6 @@ import ".." as PanelItems
 import "../settingsui" as SettingsUi
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
-
     DataRef {
         id: fuelRef
         name: "sim/cockpit2/engine/indicators/fuel_pressure_psi"
@@ -30,13 +28,11 @@ PanelItems.PanelItem {
     }
 
 
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        propertyItems: [
-            Text { text: "Maximum value (psi)" },
-            SettingsUi.IntField { text: settings.maxValue; minValue: 1; onValueChanged: settings.maxValue = value }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "Maximum value (psi)" },
+        SettingsUi.IntField { text: settings.maxValue; minValue: 1; onValueChanged: settings.maxValue = value }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

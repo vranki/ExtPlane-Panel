@@ -56,5 +56,8 @@
         <file>panelitems/needle/FuelPressure.qml</file>
         <file>panelitems/needle/ElectricGauge.qml</file>
         <file>WarningLogWindow.qml</file>
+        <file>panelitems/decoration/ImageItem.qml</file>
+        <file>panelitems/settingsui/FileSelector.qml</file>
+        <file>panelitems/settingsui/ColorSelector.qml</file>
     </qresource>
 </RCC>

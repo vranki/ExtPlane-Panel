@@ -5,7 +5,6 @@ import ".." as PanelItems
 import "../.." as Panel
 
 PanelItems.PanelItem {
-    propertiesDialog: propertiesDialog
     clip: false
     property color frontColor: "white"
     property color backColor: "black"
@@ -81,27 +80,25 @@ PanelItems.PanelItem {
         id: switchRef
         name: settings.dataref
     }
-    Panel.PanelItemPropertiesDialog {
-        id: propertiesDialog
-        helpText: 'A generic 3-way switch, can set a dataref 0, 1 or 2. \
+    propertiesDialog.helpText: 'A generic 3-way switch, can set a dataref 0, 1 or 2. \
 You can set up/down positions to return to center when released.'
-        propertyItems: [
-            Text { text: "Label text" },
-            TextField { text: settings.labelText; onTextChanged: settings.labelText = text },
-            Text { text: "Up text" },
-            TextField { text: settings.upText; onTextChanged: settings.upText = text },
-            Text { text: "Center text" },
-            TextField { text: settings.centerText; onTextChanged: settings.centerText = text },
-            Text { text: "Down text" },
-            TextField { text: settings.downText; onTextChanged: settings.downText = text },
-            Text { text: "Dataref" },
-            TextField { text: settings.dataref; onTextChanged: settings.dataref = text },
-            Text { text: "Up returns" },
-            CheckBox { checked: settings.upReturns ; onCheckedChanged: settings.upReturns = checked },
-            Text { text: "Down returns" },
-            CheckBox { checked: settings.downReturns ; onCheckedChanged: settings.downReturns = checked }
-        ]
-    }
+    propertiesDialog.propertyItems: [
+        Text { text: "Label text" },
+        TextField { text: settings.labelText; onTextChanged: settings.labelText = text },
+        Text { text: "Up text" },
+        TextField { text: settings.upText; onTextChanged: settings.upText = text },
+        Text { text: "Center text" },
+        TextField { text: settings.centerText; onTextChanged: settings.centerText = text },
+        Text { text: "Down text" },
+        TextField { text: settings.downText; onTextChanged: settings.downText = text },
+        Text { text: "Dataref" },
+        TextField { text: settings.dataref; onTextChanged: settings.dataref = text },
+        Text { text: "Up returns" },
+        CheckBox { checked: settings.upReturns ; onCheckedChanged: settings.upReturns = checked },
+        Text { text: "Down returns" },
+        CheckBox { checked: settings.downReturns ; onCheckedChanged: settings.downReturns = checked }
+    ]
+
 
     PanelItems.PanelItemSettings {
         id: settings

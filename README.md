@@ -38,6 +38,12 @@ Download at releases page:
 
 https://github.com/vranki/ExtPlane-Panel/releases
 
+Releases should contain linux and windows binary and linux .deb package
+for Ubuntu & Debian.
+
+Note: debian package version numbers are not updated when doing
+automated releases.
+
 ### ExtPlane Plugin
 
 You'll need ExtPlane plugin for X-Plane from:
@@ -75,9 +81,13 @@ See installation instructions at https://github.com/vranki/ExtPlane
 * Rotary knob
 * Battery voltage
 * Fuel pressure
+* Image
 
 Most instruments look like general aviation instruments and can be customized and adjusted.
 Some can be used with airliners and some are specifically for x737.
+
+You can use Image element to load any jpg/png/whatever file and show it in cockpit. This
+allows having a bitmap background and/or foreground image in addition to the instrument displays.
 
 ### Compability with ExtPlane-Panel 1.x
 
@@ -113,7 +123,7 @@ W = Wrapped in QML
 * W di
 * N engine_battery -> BatteryVoltage
 * N engine_fuel_p -> FuelPressure
-* ! gaugecover  (Needs rewrite)
+* N gaugecover -> Image
 * W gpsmap -> GpsMap
 * N indicatordisplay -> Annunciator
 * W pfddisplay (Does not work)
@@ -148,6 +158,12 @@ automatically - you need to save the panel after editing.
 
 TODO: Panels can be exported to a .ini file to be copied to
 other computers or versioned.
+
+### Z value
+
+Panel items have z-value property. This is used to decide
+which items are painted on top of each other. Set z to higher
+to draw over other items.
 
 ### Command Line
 
