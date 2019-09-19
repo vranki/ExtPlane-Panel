@@ -38,3 +38,6 @@ cp qmlui/release/extplane-panel.exe build
 pushd build
 zip -r extplane-panel.zip extplane-panel extplane-panel.exe *.deb
 popd
+
+# Clean up
+make clean distclean

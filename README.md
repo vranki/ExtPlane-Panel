@@ -242,6 +242,19 @@ nmake
 # Visual Studio Express: http://www.microsoft.com/visualstudio/eng/downloads#d-2012-express
 ```
 
+### Docker
+
+If you can run docker, you can build both win & lin versions with these
+commands:
+```bash
+# Build docker image for compiling
+docker build -t extplane .
+# Run the continous integration build script
+docker run -it -v $PWD:/ExtPlane-Panel -w /ExtPlane-Panel extplane ./scripts/ci-build.sh
+# Now you should have build/extplane-panel.zip
+```
+
+
 ## Creating new Panel Items
 
 See wiki page at:
