@@ -51,5 +51,10 @@ pushd output
 zip -r extplane-panel.zip extplane-panel extplane-panel.exe *.deb *.snap
 popd
 
+echo "Output dir results:"
+
+ls -l output
+
+echo "Cleaning up.."
 # Clean up
 make clean distclean
