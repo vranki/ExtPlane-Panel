@@ -38,11 +38,14 @@ Download at releases page:
 
 https://github.com/vranki/ExtPlane-Panel/releases
 
-Releases should contain linux and windows binary and linux .deb package
-for Ubuntu & Debian.
+Releases should contain
 
-Note: debian package version numbers are not updated when doing
-automated releases.
+* Linux binary
+* Windows binary
+* Debian/Ubuntu .deb package
+* Snap package for various distributions
+
+Note: package version numbers are not updated when doing automated releases.
 
 ### ExtPlane Plugin
 
@@ -183,7 +186,7 @@ The requirements for ExtPlane-Panel are as follows:
 ### Linux
 
 ```bash
-# 1: (Debian/Ubuntu) Install required libraries and tools
+# 1: (Debian/Ubuntu) Install required libraries and tools (see debian/rules for up to date list)
 sudo apt-get install git build-essential qtbase5-dev qt5-default qtmobility-dev debhelper cdbs devscripts
 
 # 2: Download source code from GitHub and enter the ExtPlane directory
@@ -251,7 +254,7 @@ commands:
 docker build -t extplane .
 # Run the continous integration build script
 docker run -it -v $PWD:/ExtPlane-Panel -w /ExtPlane-Panel extplane ./scripts/ci-build.sh
-# Now you should have build/extplane-panel.zip
+# Now you should have output/extplane-panel.zip
 ```
 
 

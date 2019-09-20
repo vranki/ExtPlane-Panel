@@ -10,15 +10,16 @@
 
 # Build for linux first..
 
+rm -rf output
+mkdir -p output
+
 echo "Building for linux.."
 
-rm -rf build
 qmake -r
 make clean distclean
 qmake -r
 make
-mkdir -p build
-cp qmlui/extplane-panel build
+cp qmlui/extplane-panel output
 
 make clean distclean
 
@@ -26,17 +27,28 @@ echo "Building debian package.."
 make clean distclean
 rm ../*.deb
 dpkg-buildpackage -rfakeroot -b
-cp ../*.deb build
+
+
+echo "Debian packages built and should be in ..:"
+ls ..
+cp -v ../*.deb output
+echo "Output dir now:"
+ls output
 make clean distclean
+
+echo "Building snap.."
+rm -rf parts prime stage snap
+snapcraft
+cp *.snap output
 
 # Build for windows..
 ./scripts/cross-compile-win64-from-lin.sh
 
 # Zip the results for release
-cp qmlui/release/extplane-panel.exe build
+cp qmlui/release/extplane-panel.exe output
 
-pushd build
-zip -r extplane-panel.zip extplane-panel extplane-panel.exe *.deb
+pushd output
+zip -r extplane-panel.zip extplane-panel extplane-panel.exe *.deb *.snap
 popd
 
 # Clean up

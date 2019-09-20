@@ -1,0 +1,26 @@
+name: extplane-panel
+version: "2.0.0-git"
+summary: External networked panel for flight simulators
+description: |
+  External networked panel for flight simulators such
+  as X-Plane, FlightGear and Condor
+base: core18
+confinement: devmode
+parts:
+
+parts:
+  extplane:
+    source: https://github.com/vranki/ExtPlane.git
+    plugin: dump
+
+  extplane-panel:
+    source: .
+    plugin: qmake
+    options:
+    - -r
+    qt-version: qt5
+    after: [desktop-qt5, extplane]
+
+apps:
+  extplane-panel:
+    command: bin/desktop-launch extplane-panel
