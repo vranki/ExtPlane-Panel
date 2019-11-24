@@ -6,7 +6,7 @@ import QtQuick.Dialogs 1.2
 Dialog {
     id: addItemDialog
     modality: Qt.NonModal
-    property string previewItem: null
+    property string previewItem: ""
     signal addItem(string itemName)
     standardButtons: StandardButton.Cancel | StandardButton.Ok
     width: 600
@@ -51,7 +51,7 @@ Dialog {
                     item.y = 0
                 }
                 source: previewItem ? "qrc:///panelitems/" + previewItem + ".qml" : ""
-                active: previewItem !== null
+                active: previewItem !== ""
                 width: parent.width * 0.8
                 height: parent.height * 0.8
                 anchors.centerIn: parent
@@ -62,11 +62,11 @@ Dialog {
         if(previewItem) {
             // Destroy the preview before adding
             var newItem = previewItem
-            previewItem = null
+            previewItem = ""
             addItem(newItem)
         }
     }
-    onVisibleChanged: previewItem = null
+    onVisibleChanged: previewItem = ""
 
     // Todo: Auto-generate this list from the directory contents.
     ListModel {

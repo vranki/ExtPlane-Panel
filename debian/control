@@ -8,7 +8,7 @@ Homepage: https://github.com/vranki/ExtPlane-Panel
 
 Package: extplane-panel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, qml-module-qt-labs-settings, qml-module-qtquick-layouts, qml-module-qtquick-window2, qml-module-qtquick2, qml-module-qtquick-dialogs, qml-module-qtquick-controls
+Depends: ${shlibs:Depends}, ${misc:Depends}, qml-module-qt-labs-settings, qml-module-qtquick-layouts, qml-module-qtquick-window2, qml-module-qtquick2, qml-module-qtquick-dialogs, qml-module-qtquick-controls, qml-module-qtquick-shapes
 Description: An external, networked cockpit panel for X-Plane flight simulator and a couple of others.
  It is possible to run this panel on the same computer or another computer on the
  network to display cockpit instruments from remote X-Plane.
