@@ -32,14 +32,30 @@ PanelItems.PanelItem {
         name: "sim/cockpit/misc/barometer_setting"
         scaleFactor: pressureConverter.scaleFactor
     }
-
+    CircularGaugeBars {
+        barValue: 100
+        valueMax: 10000
+        valueMultiplier: 1000
+        barsAngleMin: 90
+        barsAngle: 359
+        showLastValue: false
+    }
+    CircularGaugeBars {
+        longBars: true
+        barValue: 500
+        valueMax: 10000
+        valueMultiplier: 1000
+        barsAngleMin: 90
+        barsAngle: 359
+        showLastValue: false
+    }
     CircularGaugeBars {
         id: valueBars
 
         thickBars: true
         showValue: true
-        barValue: settings.isMs ? 1000 : 1000
-        valueMax: settings.isMs ? 10000 : 10000
+        barValue: 1000
+        valueMax: 10000
         valueMultiplier: 1000
         barsAngleMin: 90
         barsAngle: 359

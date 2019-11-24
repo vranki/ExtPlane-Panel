@@ -46,6 +46,8 @@ PanelItems.PanelItem {
 
         thickBars: true
         showValue: true
+        absValue: true
+        fontSizeMultiplier: 1.3
         barValue: settings.isMs ? 1 : 200
         valueMax: settings.isMs ? 5 : 1000
         valueMin: -valueMax

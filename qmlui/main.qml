@@ -21,6 +21,11 @@ Window {
     Text {
         color: extplaneClient.extplaneConnection.connected ? "white" : "red"
         text: extplaneClient.connectionMessage + " " + extplaneClient.extplaneConnection.networkError
+        onTextChanged: {
+            opacity = 1
+            opacityAnimation.start()
+        }
+        NumberAnimation on opacity { id: opacityAnimation; to: 0; duration: 10*1000}
     }
 
     Item {

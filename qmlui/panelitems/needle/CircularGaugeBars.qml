@@ -2,8 +2,10 @@ import QtQuick 2.0
 
 Item { // Gets parent size
     property bool thickBars: false // Thick or thin bars
+    property bool longBars: thickBars // Long bars
     property bool showValue: false // Show values as numbers
     property bool showLastValue: true // Can be used to hide last value (for 360 degree gauges)
+    property bool absValue: false // Don't show negative numbers with -
     property bool limitAngle: false // Limit value2angle between min & max values
     property real valueMin: 0 // Minimum value to show
     property real valueMax: 100 // Maximum value to show
@@ -11,6 +13,7 @@ Item { // Gets parent size
     property int barsAngleMin: -90 // Angle of minimum value, 0=west
     property int barsAngle: 270 // Total angle of values
     property real valueMultiplier: 1 // Multiplier of value labels
+    property real fontSizeMultiplier: 1
 
     readonly property int barCount: valueRange / barValue + 1
     readonly property real valueRange: valueMax - valueMin
@@ -37,7 +40,7 @@ Item { // Gets parent size
                 transformOrigin: Item.Center
                 Rectangle {
                     color: "white"
-                    width: thickBars ? 50 : 25
+                    width: longBars ? 50 : 25
                     height: thickBars ? 15 : 5
                     antialiasing: true
                 }
@@ -45,10 +48,11 @@ Item { // Gets parent size
                     x: 70
                     visible: showValue && (showLastValue || index < barCount - 1)
                     color: "white"
-                    font.pixelSize: Math.min((barsItem.width / barCount) * 1.1, 100)
+                    font.pixelSize: 100 * fontSizeMultiplier
                     rotation: -barItem.rotation
                     anchors.verticalCenter: parent.verticalCenter
-                    text: Math.round((index * barValue + valueMin) / valueMultiplier)
+                    text: absValue ? Math.abs(value) : value
+                    property int value: Math.round((index * barValue + valueMin) / valueMultiplier)
                 }
             }
         }

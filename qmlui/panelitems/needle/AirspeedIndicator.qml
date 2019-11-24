@@ -51,17 +51,25 @@ PanelItems.PanelItem {
     }
 
     CircularGaugeBars {
+        id: thinValueBars
+        barValue: settings.thinBarValue
+        valueMax: valueBars.valueMax
+        showLastValue: true
+    }
+
+    CircularGaugeBars {
         id: valueBars
 
         thickBars: true
         showValue: true
+        fontSizeMultiplier: 0.7
         barValue: settings.thickBarValue
-        valueMax: vneRef.value || 100
+        valueMax: Math.round(vneRef.value) || 200
+        Component.onCompleted: console.log("Thick bars", barCount, barAngle, "values", valueMax, barValue)
 
         GaugeArc { // Vne bar
             anchors.fill: parent
             arcColor: "red"
-            z: -10
             startAngle: valueBars.value2Angle(vneRef.value)
             arcAngle: 0.3
             arcWidth: width * 0.06
@@ -69,7 +77,6 @@ PanelItems.PanelItem {
         GaugeArc { // Yellow arc
             anchors.fill: parent
             arcColor: "yellow"
-            z: -20
             startAngle: valueBars.value2Angle(vnoRef.value)
             arcAngle: valueBars.value2Angle(vneRef.value) - startAngle
             arcWidth: arcWidth
@@ -77,7 +84,6 @@ PanelItems.PanelItem {
         GaugeArc { // Vno arc
             anchors.fill: parent
             arcColor: "green"
-            z: -20
             startAngle: valueBars.value2Angle(vsRef.value)
             arcAngle: valueBars.value2Angle(vnoRef.value) -startAngle
             arcWidth: arcWidth
@@ -88,14 +94,9 @@ PanelItems.PanelItem {
             anchors.fill: parent
             radius: width / 2 - 2*arcWidth
             arcColor: "white"
-            z: -30
             startAngle: valueBars.value2Angle(vsoRef.value)
             arcAngle: valueBars.value2Angle(vfeRef.value) - startAngle
             arcWidth: arcWidth
-        }
-        CircularGaugeBars {
-            barValue: settings.thinBarValue
-            valueMax: valueBars.valueMax
         }
         Text {
             text: unitConverter.outUnitName
