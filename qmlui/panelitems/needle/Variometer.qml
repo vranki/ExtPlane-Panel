@@ -11,13 +11,13 @@ PanelItems.PanelItem {
 
     Panel.UnitConverter {
         id: unitConverter
-        inUnit: Panel.UnitConverter.Unit.VelocityFPM
-        outUnit: settings.isMs ? Panel.UnitConverter.Unit.VelocityMS : Panel.UnitConverter.Unit.VelocityFPM
+        inUnit: uVelocityFPM
+        outUnit: settings.isMs ? uVelocityMS : uVelocityFPM
     }
     Panel.UnitConverter {
         id: laminarUnitConverter
-        inUnit: Panel.UnitConverter.Unit.VelocityMS
-        outUnit: settings.isMs ? Panel.UnitConverter.Unit.VelocityMS : Panel.UnitConverter.Unit.VelocityFPM
+        inUnit: uVelocityMS
+        outUnit: settings.isMs ? uVelocityMS : uVelocityFPM
     }
 
     DataRef {

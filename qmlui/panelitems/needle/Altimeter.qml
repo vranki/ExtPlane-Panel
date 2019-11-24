@@ -11,13 +11,13 @@ PanelItems.PanelItem {
 
     Panel.UnitConverter {
         id: altitudeConverter
-        inUnit: Panel.UnitConverter.Unit.DistanceFeet
-        outUnit: settings.isMs ? Panel.UnitConverter.Unit.DistanceMeters : Panel.UnitConverter.Unit.DistanceFeet
+        inUnit: uDistanceFeet
+        outUnit: settings.isMs ? uDistanceMeters : uDistanceFeet
     }
     Panel.UnitConverter {
         id: pressureConverter
-        inUnit: Panel.UnitConverter.Unit.PressureInHG
-        outUnit: settings.isMs ? Panel.UnitConverter.Unit.PressurehPa : Panel.UnitConverter.Unit.PressureInHG
+        inUnit: uPressureInHG
+        outUnit: settings.isMs ? uPressurehPa : uPressureInHG
     }
 
     DataRef {

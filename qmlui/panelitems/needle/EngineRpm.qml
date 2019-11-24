@@ -21,8 +21,8 @@ PanelItems.PanelItem {
     }
     Panel.UnitConverter {
         id: radianConverter
-        inUnit: Panel.UnitConverter.TurnRateRadiansPerSecond
-        outUnit: Panel.UnitConverter.TurnRateRPM
+        inUnit: uTurnRateRadiansPerSecond
+        outUnit: uTurnRateRPM
     }
 
     CircularGauge {

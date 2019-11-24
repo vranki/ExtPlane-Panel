@@ -13,8 +13,8 @@ PanelItems.PanelItem {
 
     Panel.UnitConverter {
         id: unitConverter
-        inUnit: Panel.UnitConverter.Unit.VelocityKnots
-        outUnit: settings.isKmh ? Panel.UnitConverter.Unit.VelocityKMH : Panel.UnitConverter.Unit.VelocityKnots
+        inUnit: uVelocityKnots
+        outUnit: settings.isKmh ? uVelocityKMH : uVelocityKnots
     }
 
     DataRef {
