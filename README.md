@@ -70,7 +70,8 @@ See installation instructions at https://github.com/vranki/ExtPlane
 * Turn & Bank indicator
 * Toggle switch (normal & 3-way)
 * Attitude Indicator
-* Compass
+* Compass (basic digital)
+* Whisky compass
 * Airspeed indicator
 * Variometer
 * Altimeter

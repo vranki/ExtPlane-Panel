@@ -1,3 +1,9 @@
+extplane-panel (2.0.2) UNRELEASED; urgency=low
+
+  * 2.0.2, Fixed more dependencies, better instruments, added whisky compass
+
+ -- Ville Ranki <ville.ranki@iki.fi>  Thu, 19 Sep 2019 12:34:56 +0300
+
 extplane-panel (2.0.1) UNRELEASED; urgency=low
 
   * 2.0.1, Fixed dependencies

@@ -23,7 +23,7 @@ PanelItems.PanelItem {
     DataRef {
         id: altitudeRef
         name: "sim/flightmodel/misc/h_ind"
-        accuracy: 10
+        accuracy: 3
         scaleFactor: altitudeConverter.scaleFactor
     }
 

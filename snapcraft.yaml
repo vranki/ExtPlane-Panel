@@ -1,5 +1,5 @@
 name: extplane-panel
-version: "2.0.0-git"
+version: "2.0.2-git"
 summary: External networked panel for flight simulators
 description: |
   External networked panel for flight simulators such
@@ -20,6 +20,14 @@ parts:
     - -r
     qt-version: qt5
     after: [desktop-qt5, extplane]
+    stage-packages:
+      - qml-module-qt-labs-settings
+      - qml-module-qtquick-layouts
+      - qml-module-qtquick-window2
+      - qml-module-qtquick2
+      - qml-module-qtquick-dialogs
+      - qml-module-qtquick-controls
+      - qml-module-qtquick-shapes
 
 apps:
   extplane-panel:

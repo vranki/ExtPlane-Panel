@@ -59,5 +59,6 @@
         <file>panelitems/decoration/ImageItem.qml</file>
         <file>panelitems/settingsui/FileSelector.qml</file>
         <file>panelitems/settingsui/ColorSelector.qml</file>
+        <file>panelitems/CompassWhisky.qml</file>
     </qresource>
 </RCC>

@@ -78,6 +78,11 @@ Dialog {
             description: "Simple digital compass"
         }
         ListElement {
+            name: "Whisky Compass"
+            itemName: "CompassWhisky"
+            description: "Wet compass used in GA aircraft"
+        }
+        ListElement {
             name: "Airspeed indicator"
             itemName: "needle/AirspeedIndicator"
             description: "Generic airspeed indicator"

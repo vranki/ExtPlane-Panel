@@ -36,10 +36,13 @@ echo "Output dir now:"
 ls output
 make clean distclean
 
-echo "Building snap.."
-rm -rf parts prime stage snap
-snapcraft
-cp *.snap output
+
+# Disabled as some deps not available on bionic
+
+#echo "Building snap.."
+#rm -rf parts prime stage snap
+#snapcraft
+#cp *.snap output
 
 # Build for windows..
 ./scripts/cross-compile-win64-from-lin.sh

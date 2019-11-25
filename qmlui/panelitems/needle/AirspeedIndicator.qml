@@ -62,10 +62,9 @@ PanelItems.PanelItem {
 
         thickBars: true
         showValue: true
-        fontSizeMultiplier: 0.7
+        fontSizeMultiplier: 0.6
         barValue: settings.thickBarValue
         valueMax: Math.round(vneRef.value) || 200
-        Component.onCompleted: console.log("Thick bars", barCount, barAngle, "values", valueMax, barValue)
 
         GaugeArc { // Vne bar
             anchors.fill: parent
