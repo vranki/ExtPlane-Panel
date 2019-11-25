@@ -15,7 +15,10 @@ PanelItems.PanelItem {
     property int needleType: 0
     readonly property real barAngle: valueBars.barAngle
 
-    width: Math.min(parent.width, parent.height)
+    // Keep rectangular
+    readonly property int itemSize: Math.min(parent.width, parent.height)
+    width: itemSize
+    height: itemSize
 
     CircularGaugeBars {
         id: valueBars

@@ -16,7 +16,7 @@ PanelItems.PanelItem {
 
     CircularGauge {
         id: gauge
-        anchors.fill: parent
+
         gaugeValue: parseFloat(gRef.value) || 1
         barValue: 1
         thinBarValue: 0.5

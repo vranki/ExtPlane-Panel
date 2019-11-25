@@ -64,7 +64,7 @@ PanelItems.PanelItem {
         Text {
             text: altitudeConverter.outUnitName + " x " + valueBars.valueMultiplier
             color: "white"
-            font.pixelSize: parent.height * 0.03
+            font.pixelSize: parent.height * 0.04
             font.family: b612.name
             y: parent.height * 0.70
             anchors.horizontalCenter: parent.horizontalCenter
@@ -72,10 +72,15 @@ PanelItems.PanelItem {
         Text {
             text: parseFloat(altimeterSettingRef.value).toPrecision(6) + " " + pressureConverter.outUnitName
             color: "white"
-            font.pixelSize: parent.height * 0.03
+            font.pixelSize: parent.height * 0.04
             font.family: b612.name
             x: parent.width * 0.60
             anchors.verticalCenter: parent.verticalCenter
+            Rectangle {
+                color: "#292929"
+                anchors.fill: parent
+                z: -1
+            }
         }
         Needle {
             needleType: 2

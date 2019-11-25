@@ -6,11 +6,12 @@ Shape {
     property real startAngle: 0 // Angle, relative from top
     property real endAngle: 90 // End
     property real arcAngle: endAngle - startAngle
-    property real radius: centerX - arcWidth / 2
+    property real radius: itemSize/2 - arcWidth / 2
     property real arcWidth: 5
     property color arcColor: "white"
-    readonly property real centerX: width/2
+    readonly property real centerX: itemSize/2
     readonly property real centerY: centerX
+    readonly property real itemSize: Math.min(width, height)
     antialiasing: true
     rotation: startAngle
 
