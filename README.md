@@ -188,7 +188,7 @@ The requirements for ExtPlane-Panel are as follows:
 
 ```bash
 # 1: (Debian/Ubuntu) Install required libraries and tools (see debian/rules for up to date list)
-sudo apt-get install git build-essential qtbase5-dev qt5-default qtmobility-dev debhelper cdbs devscripts
+sudo apt-get install git build-essential qtbase5-dev qt5-default qtdeclarative5-dev libqt5svg5-dev debhelper cdbs devscripts
 
 # 2: Download source code from GitHub and enter the ExtPlane directory
 git clone https://github.com/vranki/ExtPlane.git
