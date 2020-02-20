@@ -6,6 +6,7 @@ PanelItem {
     Item {
         width: height
         height: parent.height
+        property bool twoMin: false // 2 min = power planes, 1 min = gliders
 
         DataRef {
             id: turnRef
@@ -66,7 +67,7 @@ PanelItem {
             width: parent.width
             height: parent.height
             anchors.centerIn: parent
-            rotation: limitValue(parseFloat(turnRef.value), -50, 50)
+            rotation: limitValue(parseFloat(twoMin ? turnRef.value : turnRef.value / 2), -50, 50)
         }
     }
 }
