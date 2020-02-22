@@ -1,6 +1,8 @@
 import QtQuick 2.0
+import QtQuick.Controls 2.2
 import org.vranki.extplane 1.0
 import "needle" as Needle
+import "." as PanelItems
 
 PanelItem {
     Item {
@@ -67,7 +69,17 @@ PanelItem {
             width: parent.width
             height: parent.height
             anchors.centerIn: parent
-            rotation: limitValue(parseFloat(twoMin ? turnRef.value : turnRef.value / 2), -50, 50)
+            rotation: limitValue(parseFloat(settings.twoMin ? turnRef.value : turnRef.value / 2), -50, 50)
         }
+    }
+    propertiesDialog.helpText: 'Basic GA turn & slip indicator. 2 minute version used in powered planes, 1 min version in gliders.'
+    propertiesDialog.propertyItems: [
+        Text { text: "2 minute version" },
+        CheckBox { checked: settings.twoMin ; onCheckedChanged: settings.twoMin = checked }
+    ]
+
+    PanelItems.PanelItemSettings {
+        id: settings
+        property bool twoMin: true
     }
 }
