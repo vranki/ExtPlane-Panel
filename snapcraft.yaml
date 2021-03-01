@@ -1,12 +1,12 @@
 name: extplane-panel
-version: "2.0.2-git"
+version: "2.1.0-git"
 summary: External networked panel for flight simulators
 description: |
   External networked panel for flight simulators such
   as X-Plane, FlightGear and Condor
-base: core18
+base: core20
 confinement: devmode
-parts:
+grade: stable
 
 parts:
   extplane:
@@ -14,12 +14,18 @@ parts:
     plugin: dump
 
   extplane-panel:
+    build-packages: [qt5-default]
     source: .
-    plugin: qmake
-    options:
-    - -r
-    qt-version: qt5
-    after: [desktop-qt5, extplane]
+    plugin: make
+    override-build: |
+      set -eux
+      qmake -set prefix $SNAPCRAFT_PART_INSTALL
+      qmake -r
+      snapcraftctl build
+    after: [extplane]
+    build-packages:
+      - libqt5svg5-dev
+      - qtdeclarative5-dev
     stage-packages:
       - qml-module-qt-labs-settings
       - qml-module-qtquick-layouts
@@ -28,7 +34,10 @@ parts:
       - qml-module-qtquick-dialogs
       - qml-module-qtquick-controls
       - qml-module-qtquick-shapes
+      - qml-module-qt-labs-folderlistmodel
 
 apps:
   extplane-panel:
-    command: bin/desktop-launch extplane-panel
+    command: extplane-panel
+    adapter: full
+    plugs: [x11, network, network-bind]

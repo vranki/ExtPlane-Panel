@@ -1,7 +1,7 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.3
-import QtQuick.Dialogs 1.2
+import QtQuick 2.11
+import QtQuick.Controls 2.4
+import QtQuick.Layouts 1.11
+import QtQuick.Dialogs 1.3
 
 Dialog {
     title: "Main menu"
@@ -25,12 +25,17 @@ Dialog {
         Button {
             Layout.fillWidth: true
             text: "Save panels (s)"
-            onClicked: panelItemArea.savePanel()
+            onClicked: main.saveAll()
         }
         Button {
             Layout.fillWidth: true
             text: "Clear panel"
             onClicked: panelItemArea.clearPanel()
+        }
+        Button {
+            Layout.fillWidth: true
+            text: "Background image"
+            onClicked: bgImageDialog.open()
         }
         Button {
             Layout.fillWidth: true
@@ -82,5 +87,13 @@ Dialog {
         Label {
             text: "Press ESC to close or tab to open"
         }
+    }
+    FileDialog {
+        id: bgImageDialog
+        title: "Choose background image"
+        onAccepted: {
+            mainSettings.backgroundImage = bgImageDialog.fileUrl
+        }
+        onRejected: mainSettings.backgroundImage = ""
     }
 }

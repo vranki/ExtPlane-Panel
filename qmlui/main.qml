@@ -1,8 +1,8 @@
-import QtQuick 2.6
-import QtQuick.Window 2.2
+import QtQuick 2.11
+import QtQuick.Window 2.12
 import Qt.labs.settings 1.0
 import org.vranki.extplane 1.0
-import QtQuick.Layouts 1.3
+import QtQuick.Layouts 1.11
 
 Window {
     id: window
@@ -12,12 +12,18 @@ Window {
     title: qsTr("ExtPlane Panel 2")
     color: "black"
 
+    signal saveAll
+
     property int panelId: 0
     property bool simulatedConnection: true
     property string extplaneHost: "127.0.0.1"
 
     onExtplaneHostChanged: extplaneClient.extplaneConnection.hostName = extplaneHost
 
+    Image {
+        source: mainSettings.backgroundImage
+        anchors.fill: parent
+    }
     Text {
         color: extplaneClient.extplaneConnection.connected ? "white" : "red"
         text: extplaneClient.connectionMessage + " " + extplaneClient.extplaneConnection.networkError
@@ -36,7 +42,7 @@ Window {
         Keys.onPressed: {
             if (event.text === 'f') window.toggleFullscreen()
             if (event.text === 'a') addItemDialog.visible = !addItemDialog.visible
-            if (event.text === 's') panelItemArea.savePanel()
+            if (event.text === 's') window.saveAll()
             if (event.text === 'd') panelItemArea.duplicateSelectedItem()
         }
         Keys.onDeletePressed: panelItemArea.deleteSelectedItem()
@@ -54,11 +60,14 @@ Window {
         id: warningLogWindow
     }
     Settings {
+        id: mainSettings
         category: "mainwindow"
-        property alias x: window.x
-        property alias y: window.y
-        property alias width: window.width
-        property alias height: window.height
+        property int x: 0
+        property int y: 0
+        property int width: 1024
+        property int height: 768
+        property bool fullscreen: false
+        property string backgroundImage: ""
     }
     Settings {
         category: "panel/" + panelId
@@ -81,13 +90,28 @@ Window {
             window.showFullScreen()
         }
     }
-    Component.onCompleted: {
-        extplaneClient.simulated = simulatedConnection
-        extplaneClient.extplaneConnection.hostName = extplaneHost
+
+    onSaveAll: {
+        mainSettings.width = window.width
+        mainSettings.height = window.height
+        mainSettings.x = window.x
+        mainSettings.y = window.y
+        mainSettings.fullscreen = window.visibility & Window.FullScreen
     }
+
     onSimulatedConnectionChanged: {
         extplaneClient.simulated = simulatedConnection
         extplaneClient.extplaneConnection.hostName = extplaneHost
+    }
+
+    Component.onCompleted: {
+        extplaneClient.simulated = simulatedConnection
+        extplaneClient.extplaneConnection.hostName = extplaneHost
+        window.width = mainSettings.width
+        window.height = mainSettings.height
+        window.x = mainSettings.x
+        window.y = mainSettings.y
+        if(mainSettings.fullscreen) window.showFullScreen()
     }
 
     FontLoader { id: b612; source: "qrc:/B612-Regular.ttf" }

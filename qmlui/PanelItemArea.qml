@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.11
 import Qt.labs.settings 1.0
 import org.vranki.extplane 1.0
 import "panelitems"
@@ -120,19 +120,22 @@ MouseArea {
         }
     }
 
-    function savePanel() {
-        var panelModel = []
+    Connections {
+        target: window
+        onSaveAll: {
+            var panelModel = []
 
-        for(var i=0;i<panelItemModel.count;i++) {
-            var itemObject = panelItemModel.get(i)
-            panelModel.push({
-                                "itemName": itemObject.itemName,
-                                "itemId": itemObject.item.itemId
-                            })
+            for(var i=0;i<panelItemModel.count;i++) {
+                var itemObject = panelItemModel.get(i)
+                panelModel.push({
+                                    "itemName": itemObject.itemName,
+                                    "itemId": itemObject.item.itemId
+                                })
+            }
+            panelsModel[panelId] = { "panelId": panelId, "panelItems": panelModel }
+            datastore = JSON.stringify(panelsModel)
+            console.log("Saved:", datastore)
         }
-        panelsModel[panelId] = { "panelId": panelId, "panelItems": panelModel }
-        datastore = JSON.stringify(panelsModel)
-        console.log("Saved:", datastore)
     }
 
     function loadPanel(id) {
