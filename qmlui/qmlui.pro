@@ -44,7 +44,6 @@ desktop.path = /usr/share/applications
 
 unix: INSTALLS += desktop
 
-
 HEADERS += \
     extplaneutilities.h \
     paintedpanelitem.h

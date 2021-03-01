@@ -23,28 +23,4 @@ message(plugin path $$EXTPLANE_PLUGIN_PATH)
 
 EXTPLANE_CLIENT_PATH=$$EXTPLANE_PLUGIN_PATH/clients/extplane-client-qt
 
-INCLUDEPATH += $$EXTPLANE_CLIENT_PATH
-
-SOURCES += \
-    $$EXTPLANE_CLIENT_PATH/../../util/basictcpclient.cpp \
-    $$EXTPLANE_CLIENT_PATH/extplaneclient.cpp \
-    $$EXTPLANE_CLIENT_PATH/extplaneconnection.cpp \
-    $$EXTPLANE_CLIENT_PATH/dataref.cpp \
-    $$EXTPLANE_CLIENT_PATH/clientdataref.cpp \
-    $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.cpp \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.cpp \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/fixedsimulateddataref.cpp \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/alternatingsimulateddataref.cpp \
-    $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.cpp
-
-HEADERS += \
-    $$EXTPLANE_CLIENT_PATH/extplaneconnection.h \
-    $$EXTPLANE_CLIENT_PATH/extplaneclient.h \
-    $$EXTPLANE_CLIENT_PATH/dataref.h \
-    $$EXTPLANE_CLIENT_PATH/clientdataref.h \
-    $$EXTPLANE_CLIENT_PATH/clientdatarefprovider.h \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/simulateddataref.h \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/fixedsimulateddataref.h \
-    $$EXTPLANE_CLIENT_PATH/simulateddatarefs/alternatingsimulateddataref.h \
-    $$EXTPLANE_CLIENT_PATH/simulatedextplaneconnection.h \
-    $$EXTPLANE_PLUGIN_PATH/util/basictcpclient.h \
+include($$EXTPLANE_CLIENT_PATH/extplane-client-qt.pri)
