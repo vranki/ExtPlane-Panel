@@ -13,6 +13,7 @@ PanelItems.PanelItem {
     property string bottomLabel: ""
     property real valueMultiplier: 1
     property int needleType: 0
+    property bool showGauge: true
     readonly property real barAngle: valueBars.barAngle
 
     // Keep rectangular
@@ -30,6 +31,7 @@ PanelItems.PanelItem {
         valueMin: parent.valueMin
         valueMax: parent.valueMax
         valueMultiplier: parent.valueMultiplier
+        showGauge: parent.showGauge
         Needle {
             needleType: parent.parent.needleType
             rotation: valueBars.value2Angle(gaugeValue)
@@ -42,6 +44,7 @@ PanelItems.PanelItem {
         barsAngleMin: parent.barsAngleMin
         valueMin: parent.valueMin
         valueMax: parent.valueMax
+        showGauge: parent.showGauge
         z: -10
     }
     Text {

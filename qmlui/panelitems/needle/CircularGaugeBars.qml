@@ -14,6 +14,7 @@ Item { // Gets parent size
     property int barsAngle: 270 // Total angle of values
     property real valueMultiplier: 1 // Multiplier of value labels
     property real fontSizeMultiplier: 1
+    property bool showGauge: true
 
     readonly property int barCount: valueRange / barValue + 1
     readonly property real valueRange: valueMax - valueMin
@@ -30,7 +31,7 @@ Item { // Gets parent size
         transformOrigin: Item.TopLeft
         Repeater {
             id: thickBarsRepeater
-            model: barCount
+            model: showGauge ? barCount : 0
             Item {
                 id: barItem
                 width: barsItem.width

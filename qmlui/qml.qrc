@@ -60,5 +60,14 @@
         <file>panelitems/settingsui/FileSelector.qml</file>
         <file>panelitems/settingsui/ColorSelector.qml</file>
         <file>panelitems/CompassWhisky.qml</file>
+        <file>panelitems/switches/bcap-closed.svg</file>
+        <file>panelitems/switches/bcap-open.svg</file>
+        <file>panelitems/switches/rcap_closed.svg</file>
+        <file>panelitems/switches/rcap-open.svg</file>
+        <file>panelitems/switches/knob1.svg</file>
+        <file>panelitems/switches/knob2.svg</file>
+        <file>panelitems/needle/GaugeLess.qml</file>
+        <file>panelitems/switches/B738GenericCap.qml</file>
+        <file>panelitems/annunciators/DualAnnunciator.qml</file>
     </qresource>
 </RCC>
