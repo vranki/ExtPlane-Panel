@@ -232,5 +232,20 @@ Dialog {
             itemName: "decoration/ImageItem"
             description: "Can show an image file."
         }
+        ListElement {
+            name: "Needle only gauge"
+            itemName: "needle/GaugeLess"
+            description: "Shows an arbitrary gauge."
+        }
+        ListElement {
+            name: "B738 generic cap switch"
+            itemName: "switches/B738GenericCap"
+            description: "Caps that are not backed by an spcecific dataref."
+        }
+        ListElement {
+            name: "Dual Annunciator"
+            itemName: "annunciators/DualAnnunciator"
+            description: "It has three states off, dim and bright"
+        }
     }
 }

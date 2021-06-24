@@ -195,6 +195,7 @@ MouseArea {
     Settings {
         id: settings
         category: "panelitems"
+        fileName: "panel.ini"
         property alias datastore: dragArea.datastore
         property int largestId: 0
         onDatastoreChanged: {

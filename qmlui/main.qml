@@ -68,10 +68,12 @@ Window {
         property int height: 768
         property bool fullscreen: false
         property string backgroundImage: ""
+        fileName: "panel.ini"
     }
     Settings {
         category: "panel/" + panelId
         property int itemCount: 0
+        fileName: "panel.ini"
     }
     Settings {
         id: applicationSettings
@@ -80,6 +82,7 @@ Window {
         property alias panelId: panelItemArea.panelId
         property alias snapToGrid: panelItemArea.snapToGrid
         property alias extplaneHost: window.extplaneHost
+        fileName: "panel.ini"
     }
     ExtplaneUtilities { id: extplaneUtilities }
 

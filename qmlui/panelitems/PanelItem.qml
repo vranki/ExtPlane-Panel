@@ -68,6 +68,7 @@ Item {
         property alias z: panelItem.z
         property alias width: panelItem.width
         property alias height: panelItem.height
+        fileName: "panel.ini"
     }
 
     // Default properties dialog
