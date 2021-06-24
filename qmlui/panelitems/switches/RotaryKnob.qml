@@ -6,7 +6,8 @@ import "../.." as Panel
 
 PanelItems.PanelItem {
     clip: false
-
+    property bool timerActive: false
+    property bool rightDirection: false
     property real rotationAngle: (parseFloat(rotaryRef.value) || 0)  * settings.rotationScale
 
     Rectangle {
@@ -46,9 +47,38 @@ PanelItems.PanelItem {
         anchors.fill: knob
         onWheel: {
             var rotationChange = settings.changeValue * (wheel.angleDelta.y / 120)
-            rotaryRef.value = parseFloat(rotaryRef.value) + rotationChange
+            if (settings.leftCommand=="")
+                rotaryRef.value = parseFloat(rotaryRef.value) + rotationChange
+            else
+                rotationChange >= 0 ? extplaneClient.extplaneConnection.commandOnce(settings.rightCommand) :
+                                      extplaneClient.extplaneConnection.commandOnce(settings.leftCommand)
         }
     }
+    MouseArea {
+        id: leftMouseArea
+        enabled: !editMode
+        width: parent.width/2
+        height: parent.height
+        anchors.left: parent.left
+        onPressed: pressOnce(false)
+        onPressAndHold: { rightDirection = false
+                            timerActive = true
+        }
+        onReleased: timerActive = false
+    }
+    MouseArea {
+        id: rightMouseArea
+        enabled: !editMode
+        width: parent.width/2
+        height: parent.height
+        anchors.right: parent.right
+        onPressed: pressOnce(true)
+        onPressAndHold: { rightDirection = true
+                          timerActive = true
+        }
+        onReleased: timerActive = false
+    }
+
     DataRef {
         id: rotaryRef
         name: settings.dataref
@@ -60,14 +90,45 @@ PanelItems.PanelItem {
         Text { text: "Scale between dial angle and dataref value" },
         TextField { text: settings.rotationScale; onTextChanged: settings.rotationScale = parseFloat(text) || 1 },
         Text { text: "Dataref" },
-        TextField { text: settings.dataref; onTextChanged: settings.dataref = text }
+        TextField { text: settings.dataref; onTextChanged: settings.dataref = text },
+        Text { text: "Move Right Command" },
+        TextField { text: settings.rightCommand; onTextChanged: settings.rightCommand = text },
+        Text { text: "Move Left Command" },
+        TextField { text: settings.leftCommand; onTextChanged: settings.leftCommand = text }
     ]
-
 
     PanelItems.PanelItemSettings {
         id: settings
         property string dataref: ""
+        property string leftCommand: ""
+        property string rightCommand: ""
         property real changeValue: 1
         property real rotationScale: 1
+    }
+    function pressOnce(right)
+    {
+        if (settings.leftCommand=="")
+        {
+            if (right)
+                rotaryRef.value = parseFloat(rotaryRef.value) + settings.changeValue
+            else
+                rotaryRef.value = parseFloat(rotaryRef.value) - settings.changeValue
+        }
+        else
+        {
+            if (right)
+                extplaneClient.extplaneConnection.commandOnce(settings.rightCommand)
+            else
+                extplaneClient.extplaneConnection.commandOnce(settings.leftCommand)
+        }
+    }
+    Timer
+    {
+        id: timer
+        interval: 100
+        repeat: true
+        triggeredOnStart: true
+        running: timerActive
+        onTriggered: pressOnce(rightDirection)
     }
 }

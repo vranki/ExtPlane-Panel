@@ -7,9 +7,9 @@ import "../settingsui" as SettingsUi
 
 PanelItems.PanelItem {
     id: annunciator
-    property var colors: ['red', 'yellow', 'green', 'blue']
+    property var colors: ['red', 'yellow', 'green', 'blue','orange']
     property color textColor: settings.backgroundLights ? (active ? "black" : "#494949") : (active ? lightColor : "black")
-    property color lightColor: colors[settings.annunciatorColor]
+    property color lightColor: settings.overrideColor=="" ? colors[settings.annunciatorColor] : settings.overrideColor
     property bool active: annunciatorRef.value !== "0"
     property alias settings: settings
     readonly property bool twoLines: settings.bottomText.length
@@ -21,7 +21,7 @@ PanelItems.PanelItem {
     Rectangle {
         anchors.fill: parent
         radius: 2
-        color: settings.backgroundLights ? (active ? colors[settings.annunciatorColor] : "black") : lightColor
+        color: settings.backgroundLights ? (active ? lightColor : "black") : lightColor
         opacity: settings.backgroundLights ? 1 : 0.1
         border.color: "#494949"
         border.width: 2
@@ -29,7 +29,7 @@ PanelItems.PanelItem {
     Rectangle {
         anchors.fill: parent
         radius: 2
-        color: colors[settings.annunciatorColor]
+        color: lightColor
         opacity: 0.02
     }
     Text { // One line version
@@ -75,7 +75,9 @@ PanelItems.PanelItem {
         Text { text: "Whole annunciator lights up (not just text)" },
         CheckBox { checked: settings.backgroundLights ; onCheckedChanged: settings.backgroundLights = checked },
         Text { text: "Dataref" },
-        TextField { text: settings.dataref; onTextChanged: settings.dataref = text }
+        TextField { text: settings.dataref; onTextChanged: settings.dataref = text },
+        Text { text: "Override Color" },
+        TextField { text: settings.overrideColor; onTextChanged: settings.overrideColor = text }
     ]
 
     PanelItems.PanelItemSettings {
@@ -85,6 +87,7 @@ PanelItems.PanelItem {
         property int annunciatorColor: 0
         property string dataref: ""
         property bool backgroundLights: false
+        property string overrideColor: ""
     }
 
     function copySettings(other) {
@@ -94,5 +97,6 @@ PanelItems.PanelItem {
         settings.annunciatorColor = other.settings.annunciatorColor
         settings.dataref = other.settings.dataref
         settings.backgroundLights = other.settings.backgroundLights
+        settings.overrideColor = other.settings.overrideColor
     }
 }

@@ -8,7 +8,7 @@ PanelItems.PanelItem {
     clip: false
     property color frontColor: "white"
     property color backColor: "black"
-    property int position: parseInt(switchRef.value) || 0
+    property int position: switchRef.value == settings.upValue ? 0 : switchRef.value == settings.centerValue ? 1 : 2
 
     Image {
         property var positionImages: ["switch-up.svg", "switch-center.svg", "switch-down.svg"]
@@ -17,13 +17,19 @@ PanelItems.PanelItem {
         source: positionImages[positionImageIndex]
         anchors.fill: parent
         fillMode: Image.PreserveAspectFit
+        rotation: parseInt(settings.rotation)
         MouseArea {
             id: topMouseArea
             enabled: !editMode
             width: parent.width
             height: parent.height/3
-            onPressed: switchRef.setValue("0")
-            onReleased: if(settings.upReturns) switchRef.setValue("1")
+            onPressed: settings.upCommand == "" ? switchRef.setValue(settings.upValue) : extplaneClient.extplaneConnection.commandBegin(settings.upCommand)
+            onReleased: if (settings.upCommand == "")
+                        {
+                            if(settings.upReturns) switchRef.setValue(settings.centerValue)
+                        }
+                        else
+                            extplaneClient.extplaneConnection.commandEnd(settings.upCommand)
         }
         MouseArea {
             id: centerMouseArea
@@ -31,7 +37,8 @@ PanelItems.PanelItem {
             width: parent.width
             height: parent.height/3
             anchors.centerIn: parent
-            onPressed: switchRef.setValue("1")
+            onPressed: settings.downCommand == "" ? switchRef.setValue(settings.centerValue) : position == 0 ?
+                          extplaneClient.extplaneConnection.commandOnce(settings.downCommand) : extplaneClient.extplaneConnection.commandOnce(settings.upCommand)
         }
         MouseArea {
             id: bottomMouseArea
@@ -39,8 +46,13 @@ PanelItems.PanelItem {
             width: parent.width
             height: parent.height/3
             anchors.bottom: parent.bottom
-            onPressed: switchRef.setValue("2")
-            onReleased: if(settings.downReturns) switchRef.setValue("1")
+            onPressed: settings.downCommand == "" ? switchRef.setValue(settings.downValue) : extplaneClient.extplaneConnection.commandBegin(settings.downCommand)
+            onReleased: if (settings.downCommand == "")
+                        {
+                            if(settings.downReturns) switchRef.setValue(settings.centerValue)
+                        }
+                        else
+                            extplaneClient.extplaneConnection.commandEnd(settings.downCommand)
         }
     }
     Text {
@@ -80,7 +92,7 @@ PanelItems.PanelItem {
         id: switchRef
         name: settings.dataref
     }
-    propertiesDialog.helpText: 'A generic 3-way switch, can set a dataref 0, 1 or 2. \
+    propertiesDialog.helpText: 'A generic 3-way switch, can set a dataref arbitrary values (defaults are 0, 1 or 2). \
 You can set up/down positions to return to center when released.'
     propertiesDialog.propertyItems: [
         Text { text: "Label text" },
@@ -93,12 +105,23 @@ You can set up/down positions to return to center when released.'
         TextField { text: settings.downText; onTextChanged: settings.downText = text },
         Text { text: "Dataref" },
         TextField { text: settings.dataref; onTextChanged: settings.dataref = text },
+        Text { text: "Move Up Command" },
+        TextField { text: settings.upCommand; onTextChanged: settings.upCommand = text },
+        Text { text: "Move Down Command" },
+        TextField { text: settings.downCommand; onTextChanged: settings.downCommand = text },
         Text { text: "Up returns" },
         CheckBox { checked: settings.upReturns ; onCheckedChanged: settings.upReturns = checked },
         Text { text: "Down returns" },
-        CheckBox { checked: settings.downReturns ; onCheckedChanged: settings.downReturns = checked }
+        CheckBox { checked: settings.downReturns ; onCheckedChanged: settings.downReturns = checked },
+        Text { text: "Angle" },
+        TextField { text: settings.rotation; onTextChanged: settings.rotation = text },
+        Text { text: "Up value" },
+        TextField { text: settings.upValue ; onTextChanged: settings.upValue = text },
+        Text { text: "Center value" },
+        TextField { text: settings.centerValue ; onTextChanged: settings.centerValue = text },
+        Text { text: "Down value" },
+        TextField { text: settings.downValue ; onTextChanged: settings.downValue = text }
     ]
-
 
     PanelItems.PanelItemSettings {
         id: settings
@@ -109,5 +132,11 @@ You can set up/down positions to return to center when released.'
         property string dataref: ""
         property bool upReturns: false
         property bool downReturns: false
+         property string rotation: "0"
+        property string upValue: "0"
+        property string centerValue: "1"
+        property string downValue: "2"
+        property string upCommand: ""
+        property string downCommand: ""
     }
 }
